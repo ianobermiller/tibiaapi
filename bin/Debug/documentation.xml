@@ -1,0 +1,977 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TibiaAPI</name>
+    </assembly>
+    <members>
+        <member name="T:Tibia.Objects.Inventory">
+            <summary>
+            Represents the player's inventory.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Inventory.#ctor(Tibia.Objects.Client)">
+            <summary>
+            Create a new inventory object with the specified client.
+            </summary>
+            <param name="c"></param>
+        </member>
+        <member name="M:Tibia.Objects.Inventory.getContainers">
+            <summary>
+            Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Inventory.findItem(System.Predicate{Tibia.Objects.Item})">
+            <summary>
+            Find an item in the player's inventory.
+            </summary>
+            <param name="match">A delegate that returns true when a matched item is found.</param>
+            <returns>Item object describing the item and its location.</returns>
+        </member>
+        <member name="M:Tibia.Objects.Inventory.findItem(System.UInt32)">
+            <summary>
+            Find an item in the player's inventory by its id.
+            </summary>
+            <param name="itemId"></param>
+            <returns>Item object describing the item and its location.</returns>
+        </member>
+        <member name="M:Tibia.Objects.Inventory.findItem``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns>Item object describing the item and its location.</returns>
+        </member>
+        <member name="T:Tibia.Objects.Creature">
+            <summary>
+            Creature object.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Creature.#ctor(Tibia.Objects.Client,System.UInt32)">
+            <summary>
+            Create a new creature object with the given client and address.
+            </summary>
+            <param name="c"></param>
+            <param name="a"></param>
+        </member>
+        <member name="T:Tibia.Packets.Attack">
+            <summary>
+            Create packets pertaining to attacking.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Attack.AttackCreature(System.UInt32)">
+            <summary>
+            Attack a creature by its id.
+            </summary>
+            <param name="creatureId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Attack.AttackCreature(Tibia.Objects.Creature)">
+            <summary>
+            Attack a creature.
+            </summary>
+            <param name="creature"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Attack.SetAttackMode(Tibia.Memory.Addresses.Client.Attack)">
+            <summary>
+            Set the client attack mode (sends a packet and changes the client memory).
+            </summary>
+            <param name="attackMode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Attack.SetFollowMode(Tibia.Memory.Addresses.Client.Follow)">
+            <summary>
+            Set the client follow mode (sends a packet and changes the client memory).
+            </summary>
+            <param name="followMode"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Client">
+            <summary>
+            Client addresses and enumerations, not specific to a player.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.MouseCursor">
+            <summary>
+            Cursor icon
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.XTeaKey">
+            <summary>
+            Address to the encryption key.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.FrameRate">
+            <summary>
+            FPS (Frames Per Second) Limi
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.MultiClient">
+            <summary>
+            Address to activate multiclient.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.MultiClientValue">
+            <summary>
+            Value to be written to the multiclient address.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.Status">
+            <summary>
+            8 = Connected | 0 = Disconnected
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.FollowMode">
+            <summary>
+            Follow mode while attacking (Follow, keep distance, stand still)
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.AttackMode">
+            <summary>
+            Attack type (Full attack, half and half, full defense)
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.SafeMode">
+            <summary>
+            Safe mode (don't attack other players)
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.CurrentWindow">
+            <summary>
+            The window that is foremost
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.LastMSGAuthor">
+            <summary>
+            The last player to send a message to the default channel.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.LastMSGText">
+            <summary>
+            The text of the last message sent to the default channel.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.Statusbar_Text">
+            <summary>
+            Statusbar
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.Click_Id">
+            <summary>
+            Information on the last clicked item
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.See_Id">
+            <summary>
+            See (inspect)
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.LoginServer1">
+            <summary>
+            Login server IP.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.PortServer1">
+            <summary>
+            Server port.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.LoginCharList">
+            <summary>
+            Login character list.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Client.LoginSelectedChar">
+            <summary>
+            Login character list selected character.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.BattleList">
+            <summary>
+            Battle list object.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.#ctor(Tibia.Objects.Client)">
+            <summary>
+            Create a battlelist object.
+            </summary>
+            <param name="c"></param>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreatures">
+            <summary>
+            Get a list of all the creatures on the battlelist.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreatures(System.String)">
+            <summary>
+            Get a list of all the cratures with the specified string in the name.
+            </summary>
+            <param name="creatureName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreatures(System.String,System.Boolean)">
+            <summary>
+            Get a list of all the creatures with the specified name.
+            </summary>
+            <param name="creatureName"></param>
+            <param name="wholeWord"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreature(System.Int32)">
+            <summary>
+            Get the creature with the specified id.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreature(System.String)">
+            <summary>
+            Get the first creature with the specified string in the name.
+            </summary>
+            <param name="creatureName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.BattleList.getCreature(System.String,System.Boolean)">
+            <summary>
+            Get the first creature with the specified name.
+            </summary>
+            <param name="creatureName"></param>
+            <param name="wholeWord"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Objects.Container">
+            <summary>
+            Container object.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Container.#ctor(Tibia.Objects.Client,System.UInt32,System.Byte)">
+            <summary>
+            Create a new container object with the specified client, address, and number.
+            </summary>
+            <param name="c"></param>
+            <param name="a"></param>
+            <param name="n"></param>
+        </member>
+        <member name="M:Tibia.Objects.Container.getAddress">
+            <summary>
+            Get the container's address.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Container.getItems">
+            <summary>
+            Return a list of all the items in the container.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Tibia.Objects.Container.Id">
+            Get and set various aspects of the container *
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Creature">
+            <summary>
+            Distances and enumerations for creatures.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Spell">
+            <summary>
+            Represents a spell.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Spell.#ctor(System.String,System.String,System.UInt32,Tibia.Objects.Spell.SpellCategory,Tibia.Objects.Spell.SpellType)">
+            <summary>
+            Default spell constructor.
+            </summary>
+            <param name="name"></param>
+            <param name="words"></param>
+            <param name="mp"></param>
+            <param name="category"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Tibia.Objects.SpellList">
+            <summary>
+            A list of spells. Usage: create a new SpellList object and use it to find a certain spell (say, from user input). Or, add this list to a list box.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.SpellList.findSpell(System.String)">
+            <summary>
+            Find a spell by its partial name or words.
+            </summary>
+            <param name="spellNameOrWords"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.SpellList.findSpell(System.String,System.Boolean)">
+            <summary>
+            Find a spell by its name or words.
+            </summary>
+            <param name="spellNameOrWords"></param>
+            <param name="wholeWord">if true, function only returns a spell whose words match exactly those in spellNameOrWords, if false, it returns a partial match as well</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.SpellList.findSpells(Tibia.Objects.Spell.SpellCategory)">
+            <summary>
+            Find all the spells in the given category.
+            </summary>
+            <param name="spellCategory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.SpellList.findSpells(Tibia.Objects.Spell.SpellType)">
+            <summary>
+            Find all the spells of a given spell type.
+            </summary>
+            <param name="spellType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.SpellList.findSpells(System.UInt32)">
+            <summary>
+            Find all the spells with required mana less than or equivalent to a given mana amount.
+            </summary>
+            <param name="requiredMana"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Constants.Items">
+            <summary>
+            Contains item ids.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Client">
+            <summary>
+            Represents a single Tibia Client. Contains wraper methods 
+            for memory, packet sending, battlelist, and slots. Also contains
+            any "helper methods" that automate tasks, such as making a rune.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Client.#ctor(System.Diagnostics.Process)">
+            <summary>
+            Main constructor
+            </summary>
+            <param name="p">the client's process object</param>
+        </member>
+        <member name="M:Tibia.Objects.Client.ReadBytes(System.Int64,System.UInt32)">
+            The following are all wrapper methods for Memory.Methods *
+        </member>
+        <member name="M:Tibia.Objects.Client.Status">
+            <summary>
+            Get the status of the client.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.LoggedIn">
+            <summary>
+            Check whether or not the client is logged in.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.Send(System.Byte[])">
+            <summary>
+            Wrapper method for Packets.Packet.SendPacket.
+            </summary>
+            <param name="packet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.bringToFront">
+            <summary>
+            Bring this Tibia window to the foreground. Wrapper for SetForegroundWindow.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.ToString">
+            <summary>
+            Return the character name.
+            </summary>
+            <returns>Character name</returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getClients">
+            <summary>
+            Get a list of all the open clients. Class method.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getPlayer">
+            <summary>
+            Get the client's player.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getProcess">
+            <summary>
+            Get the client's process.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getBattleList">
+            <summary>
+            Get the client's battlelist.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getSlot(Tibia.Objects.Slot.SlotNumber)">
+            <summary>
+            Get the content of a player's slot.
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.getItem(Tibia.Objects.ItemLocation)">
+            <summary>
+            Incomplete. Returns the item located at the specified location.
+            </summary>
+            <param name="location"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.makeRune(System.UInt16)">
+            <summary>
+            Make a rune with the specified id. Wrapper for makeRune(Rune).
+            </summary>
+            <param name="id"></param>
+            <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.eatFood">
+            <summary>
+            Eat food found in any container.
+            </summary>
+            <returns>True if eating succeeded, false if no food found or eating failed.</returns>
+        </member>
+        <member name="M:Tibia.Objects.Client.makeRune(Tibia.Objects.Rune)">
+            <summary>
+            Make a rune. Drags a blank to the right hand, casts the words, and moved the new rune back.
+            TODO add option to change the hand and a method to make sure the hand is free.
+            TODO add option to check for soul points
+            </summary>
+            <param name="rune">The rune to make.</param>
+            <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
+        </member>
+        <member name="T:Tibia.Exceptions.NotLoggedInException">
+            <summary>
+            Exception used mainly in Objects.Client when a player is not logged in
+            </summary>
+        </member>
+        <member name="T:Tibia.Packets.Speech">
+            <summary>
+            Create packets to send messages.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Default(System.String)">
+            <summary>
+            Say something in the default channel (wrapper for Say)
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Spell(System.String)">
+            <summary>
+            Say the spell words (wrapper for Say)
+            </summary>
+            <param name="words"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Spell(Tibia.Objects.Spell)">
+            <summary>
+            Say the words of a spell (wrapper for Say)
+            </summary>
+            <param name="spell"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Say(Tibia.Packets.Speech.Message)">
+            <summary>
+            Send a message (generic).
+            </summary>
+            <param name="message"></param>
+            <param name="type"></param>
+            <returns>message packet</returns>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Send(System.String,System.String)">
+            <summary>
+            Send a private message.
+            </summary>
+            <param name="message"></param>
+            <param name="recipient"></param>
+            <returns>message packet</returns>
+        </member>
+        <member name="T:Tibia.Packets.Speech.Message">
+            <summary>
+            A message in Tibia.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Message.#ctor(System.String)">
+            <summary>
+            Create a default message.
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Message.#ctor(System.String,System.String)">
+            <summary>
+            Create a private message.
+            </summary>
+            <param name="text"></param>
+            <param name="recipient"></param>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Message.#ctor(System.String,Tibia.Packets.Speech.Channel)">
+            <summary>
+            Create a channel message.
+            </summary>
+            <param name="text"></param>
+            <param name="channel"></param>
+        </member>
+        <member name="M:Tibia.Packets.Speech.Message.#ctor(System.String,Tibia.Packets.Speech.Type)">
+            <summary>
+            Create a yell or whisper message.
+            </summary>
+            <param name="text"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Tibia.Packets.General">
+            <summary>
+            Create general use packets.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.General.Logout">
+            <summary>
+            Logout.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.General.Stop">
+            <summary>
+            Stop all actions.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Constants.Objects">
+            <summary>
+            Contains object ids.
+            </summary>
+        </member>
+        <member name="T:Tibia.Packets.Position">
+            <summary>
+            Create packets to alter your position.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Position.Turn(Tibia.Memory.Addresses.Creature.Direction_t)">
+            <summary>
+            Turn to the specified direction.
+            </summary>
+            <param name="direction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Position.Walk(Tibia.Packets.Position.WalkDirection)">
+            <summary>
+            Walk in the specified direction
+            </summary>
+            <param name="direction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Position.Walk(System.Collections.Generic.List{Tibia.Packets.Position.WalkDirection})">
+            <summary>
+            Walk in the specified list of directions.
+            </summary>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Position.GoTo(Tibia.Objects.Location)">
+            <summary>
+            Go to the specified location. Not actually a packet, just memory writing.
+            </summary>
+            <param name="location"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Map">
+            <summary>
+            Map memory addresses.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Map.MapPointer">
+            <summary>
+            Pointer to the start of the map memory addresses.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Map.Step_Tile">
+            <summary>
+            Map distances and offsets.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Map.Max_Tiles">
+            <summary>
+            Maximum number of tiles.
+            </summary>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Map.LevelSpy">
+            <summary>
+            Class of addresses and distances for level spy.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Map">
+            <summary>
+            Represents the Tibia map in memory.
+            </summary>
+        </member>
+        <member name="T:Tibia.Packets.Packet">
+            <summary>
+            Helper class for packets.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Packet.Lo(System.Int64)">
+            <summary>
+            Get the low byte of a short value (first in the packet)
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Packet.Hi(System.Int64)">
+            <summary>
+            Get the high byte of a short value (second in the packet)
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Packet.SendPacket(Tibia.Objects.Client,System.Byte[])">
+            <summary>
+            Send a packet through the client using encryption and packet.dll.
+            </summary>
+            <param name="client"></param>
+            <param name="packet"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Tibia.ClientChooser.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Tibia.ClientChooser.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Tibia.ClientChooser.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Player">
+            <summary>
+            Player memory addresses.
+            </summary>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.Container">
+            <summary>
+            Player container addresses and distances.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Container.Start">
+            <summary>
+            Start and end of the container list in memory.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Container.Step_Container">
+            <summary>
+            Distances between containers and slots.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Container.Max_Containers">
+            <summary>
+            Maximums.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Container.Distance_IsOpen">
+            <summary>
+            Container properties.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.Container.Distance_Item_Id">
+            <summary>
+            Item properties.
+            </summary>
+        </member>
+        <member name="T:Tibia.Memory.Addresses.BattleList">
+            <summary>
+            Battle list adddresses and distances.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.BattleList.Start">
+            <summary>
+            Start of the battle list.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.BattleList.End">
+            <summary>
+            End of the battle list.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.BattleList.Step_Creatures">
+            <summary>
+            Distance between creatures.
+            </summary>
+        </member>
+        <member name="F:Tibia.Memory.Addresses.BattleList.Max_Creatures">
+            <summary>
+            Maximum number of creatures.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Item">
+            <summary>
+            Represents one stack of items. Can also represent a type of item (with no location in memory).
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Item.#ctor">
+            Many different constructors *
+        </member>
+        <member name="M:Tibia.Objects.Item.#ctor(System.UInt32,System.String,System.Byte,Tibia.Objects.ItemLocation,System.Boolean)">
+            <summary>
+            Main constructor.
+            </summary>
+            <param name="id">item id</param>
+            <param name="name">item name (only used when representing an item type)</param>
+            <param name="count">number of items in the stack (also charges on a rune)</param>
+            <param name="loc">location in game</param>
+            <param name="found">used when searching</param>
+        </member>
+        <member name="M:Tibia.Objects.Item.isInList``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Check whether or not this item is in a list (checks by ID only)
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns>True if the item is in the list, false if not</returns>
+        </member>
+        <member name="T:Tibia.Objects.Ammunition">
+            <summary>
+            Represents an ammo item. Same as a regular item, but with the PickUp field.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Food">
+            <summary>
+            Represents a food item. Same as regular item but also stores regeneration time.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Rune">
+            <summary>
+            Represents a rune item. Contains metadata relating specifically to runes.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Rune.#ctor(System.UInt32,System.String,System.String,System.UInt32,System.UInt32,Tibia.Objects.Spell.SpellCategory)">
+            <summary>
+            Default rune constructor.
+            </summary>
+            <param name="id">item id</param>
+            <param name="name">item name</param>
+            <param name="words">spell words used to create the rune</param>
+            <param name="manaPoints">amount of mana needed to make the rune</param>
+            <param name="soulPoints">amount of soul points needed to make the rune</param>
+            <param name="category">the runes category (attack, healing, etc.)</param>
+        </member>
+        <member name="T:Tibia.Objects.ItemLocation">
+            <summary>
+            Represents an item's location in game/memory. Can be either a slot, an inventory location, or on the ground.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.ItemLocation.#ctor(Tibia.Objects.Slot.SlotNumber)">
+            <summary>
+            Create a new item location at the specified slot (head, backpack, right, left, etc).
+            </summary>
+            <param name="s">slot</param>
+        </member>
+        <member name="M:Tibia.Objects.ItemLocation.#ctor(System.Byte,System.Byte)">
+            <summary>
+            Create a new item loction at the specified inventory location.
+            </summary>
+            <param name="c">container</param>
+            <param name="p">position in container</param>
+        </member>
+        <member name="M:Tibia.Objects.ItemLocation.#ctor(Tibia.Objects.Location)">
+            <summary>
+            Create a new item location from a general location (Objects.Location, in the Structures file).
+            </summary>
+            <param name="l"></param>
+        </member>
+        <member name="T:Tibia.Objects.ItemLocation.ItemLocationType">
+            <summary>
+            Different types of locations.
+            </summary>
+        </member>
+        <member name="T:Tibia.Objects.Slot">
+            <summary>
+            Represents a slot in memory.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Slot.#ctor(Tibia.Objects.Client)">
+            <summary>
+            Default constructor.
+            </summary>
+            <param name="c">client</param>
+        </member>
+        <member name="M:Tibia.Objects.Slot.getSlot(Tibia.Objects.Slot.SlotNumber)">
+            <summary>
+            Get the item in the specified slot. Is also implemented as a helper method in Objects.Client for ease of use.
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Packets.Item">
+            <summary>
+            Create packets pertaining to items.
+            </summary>
+        </member>
+        <member name="M:Tibia.Packets.Item.Use(Tibia.Objects.Item)">
+            <summary>
+            Use an item (eg. eat food).
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Item.Use(Tibia.Objects.Item,Tibia.Objects.Tile)">
+            <summary>
+            Use an item on a tile (eg. fish, rope, pick, shovel, etc).
+            </summary>
+            <param name="item"></param>
+            <param name="onTile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Item.Use(Tibia.Objects.Item,Tibia.Objects.Item)">
+            <summary>
+            Use an item on another item.
+            </summary>
+            <param name="item"></param>
+            <param name="onItem"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Item.Use(Tibia.Objects.Item,Tibia.Objects.Creature)">
+            <summary>
+            Use an item on a creature (eg. use a rune on someone, drink a manafluid).
+            </summary>
+            <param name="item"></param>
+            <param name="onCreature"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Item.Move(Tibia.Objects.Item,Tibia.Objects.ItemLocation)">
+            <summary>
+            Move an item to a location (eg. move a blank rune to the right hand).
+            </summary>
+            <param name="fromItem"></param>
+            <param name="toLocation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Packets.Item.Move(Tibia.Objects.Item,Tibia.Objects.Item)">
+            <summary>
+            Move an item into another item (eg. put an item into a backpack).
+            </summary>
+            <param name="fromItem"></param>
+            <param name="toItem"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Memory.Methods">
+            <summary>
+            Helper methods for reading memory.
+            </summary>
+        </member>
+        <member name="M:Tibia.Memory.Methods.ReadBytes(System.Diagnostics.Process,System.Int64,System.UInt32)">
+            <summary>
+            Read a specified number of bytes from a process.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <param name="bytesToRead"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.ReadInt(System.Diagnostics.Process,System.Int64)">
+            <summary>
+            Read an integer from the process (actually a short because it is only 4 bytes)
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.ReadByte(System.Diagnostics.Process,System.Int64)">
+            <summary>
+            Read a byte from memory.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.ReadString(System.Diagnostics.Process,System.Int64)">
+            <summary>
+            Read a string from memmory. Splits at 00 and returns first section to avoid junk.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.WriteBytes(System.Diagnostics.Process,System.Int64,System.Byte[],System.UInt32)">
+            <summary>
+            Write a specified number of bytes to a process.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <param name="bytes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.WriteInt(System.Diagnostics.Process,System.Int64,System.Int32)">
+            <summary>
+            Write an integer to memory.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.WriteByte(System.Diagnostics.Process,System.Int64,System.Byte)">
+            <summary>
+            Write a byte to memory.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tibia.Memory.Methods.WriteString(System.Diagnostics.Process,System.Int64,System.String)">
+            <summary>
+            Write a string to memory.
+            </summary>
+            <param name="process"></param>
+            <param name="address"></param>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tibia.Objects.Player">
+            <summary>
+            Represents a player, which is just an extended version of creature.
+            </summary>
+        </member>
+        <member name="M:Tibia.Objects.Player.#ctor(Tibia.Objects.Client,System.UInt32)">
+            <summary>
+            Default constructor, same as Objects.Creature.
+            </summary>
+            <param name="c"></param>
+            <param name="a"></param>
+        </member>
+        <member name="T:Tibia.Constants.Tiles">
+            <summary>
+            Contains tile ids.
+            </summary>
+        </member>
+        <member name="T:Tibia.Constants.Tiles.Water">
+            <summary>
+            Water tiles given as ranges
+            </summary>
+        </member>
+        <member name="F:Tibia.Constants.Tiles.Water.FishStart">
+            <summary>
+            Range of the water tiles with fish in them
+            </summary>
+        </member>
+        <member name="F:Tibia.Constants.Tiles.Water.NoFishStart">
+            <summary>
+            Range of the water tiles with no fish
+            </summary>
+        </member>
+        <member name="T:Tibia.Constants.ItemList">
+            <summary>
+            Contains lists of items.
+            </summary>
+        </member>
+    </members>
+</doc>
