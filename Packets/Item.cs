@@ -139,15 +139,46 @@ namespace Tibia.Packets
             packet[09] = Packet.Hi(item.Id);
             packet[10] = packet[07];
 
-            packet[11] = Packet.Lo(onCreature.Location.X); // X LOW
-            packet[12] = Packet.Hi(onCreature.Location.X); // X HIGH
-            packet[13] = Packet.Lo(onCreature.Location.Y); // Y LOW
-            packet[14] = Packet.Hi(onCreature.Location.Y); // Y HIGH
-            packet[15] = Convert.ToByte(onCreature.Location.Z); // Z
+            int x = onCreature.Location.X;
+            packet[11] = Packet.Lo(x);
+            packet[12] = Packet.Hi(x);
+
+            int y = onCreature.Location.Y;
+            packet[13] = Packet.Lo(y);
+            packet[14] = Packet.Hi(y);
+            packet[15] = Convert.ToByte(onCreature.Location.Z);
 
             packet[16] = 0x63;
             packet[17] = 0x00;
             packet[18] = 0x01;
+            return packet;
+        }
+
+        public static byte[] UseOnBattlelist(Objects.Item item, Objects.Creature onCreature)
+        {
+            byte[] packet = new byte[15];
+            packet[00] = 0x0D;
+            packet[01] = 0x00;
+            packet[02] = 0x84;
+
+            packet[03] = 0xFF;
+            packet[04] = 0xFF;
+            packet[05] = 0x00;
+            packet[06] = 0x00;
+            packet[07] = 0x00;
+
+            packet[08] = Packet.Lo(item.Id);
+            packet[09] = Packet.Hi(item.Id);
+
+            packet[10] = packet[07];
+
+            int id = onCreature.Id;
+            packet[11] = Packet.Lo(id);
+            packet[12] = Packet.Hi(id);
+
+            packet[13] = 0x00;
+            packet[14] = 0x01;
+
             return packet;
         }
 
