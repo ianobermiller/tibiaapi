@@ -154,6 +154,12 @@ namespace Tibia.Packets
             return packet;
         }
 
+        /// <summary>
+        /// Use an item on a creature in the battlelist. Is the same as shooting a rune on the battlelist.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="onCreature"></param>
+        /// <returns></returns>
         public static byte[] UseOnBattlelist(Objects.Item item, Objects.Creature onCreature)
         {
             byte[] packet = new byte[15];
