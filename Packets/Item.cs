@@ -176,14 +176,12 @@ namespace Tibia.Packets
             packet[08] = Packet.Lo(item.Id);
             packet[09] = Packet.Hi(item.Id);
 
-            packet[10] = packet[07];
+            packet[10] = 0x00;
+            packet[11] = BitConverter.GetBytes(onCreature.Id)[0];
+            packet[12] = BitConverter.GetBytes(onCreature.Id)[1];
 
-            int id = onCreature.Id;
-            packet[11] = Packet.Lo(id);
-            packet[12] = Packet.Hi(id);
-
-            packet[13] = 0x00;
-            packet[14] = 0x01;
+            packet[13] = BitConverter.GetBytes(onCreature.Id)[2];
+            packet[14] = BitConverter.GetBytes(onCreature.Id)[3];
 
             return packet;
         }
