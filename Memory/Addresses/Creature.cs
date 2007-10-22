@@ -54,312 +54,312 @@ namespace Tibia.Memory.Addresses
                 public static uint Peach = 1;
             }
 
-            public static class Addon
+            public enum Addon : byte
             {
-                public static uint None = 0;
-                public static uint Addon1 = 1;
-                public static uint Addon2 = 2;
-                public static uint Both = 3;
+                None = 0,
+                Addon1 = 1,
+                Addon2 = 2,
+                Both = 3
             }
 
-            public static class Type
+            public enum Type
             {
-                public static uint Invisible = 0;               // Stealth Ring Effect Also For Item As Outfit
+                Invisible = 0,               // Stealth Ring Effect Also For Item As Outfit
 
                 // Orcs
-                public static uint OrcWarlord = 2;
-                public static uint WarWolf = 3;
-                public static uint OrcRider = 4;
-                public static uint Orc = 5;
-                public static uint OrcShaman = 6;
-                public static uint OrcWarrior = 7;
-                public static uint OrcBerserker = 8;
-                public static uint OrcSpearman = 50;
-                public static uint OrcLeader = 59;
+                OrcWarlord = 2,
+                WarWolf = 3,
+                OrcRider = 4,
+                Orc = 5,
+                OrcShaman = 6,
+                OrcWarrior = 7,
+                OrcBerserker = 8,
+                OrcSpearman = 50,
+                OrcLeader = 59,
 
-                public static uint Necromancer = 9;
+                Necromancer = 9,
 
                 // Butterflies
-                public static uint ButterflyYellow = 10;
-                public static uint ButterflyPink = 213;
-                public static uint ButterflyBlue = 227;
-                public static uint ButterflyRed = 228;
+                ButterflyYellow = 10,
+                ButterflyPink = 213,
+                ButterflyBlue = 227,
+                ButterflyRed = 228,
 
                 // Elementals
-                public static uint WaterElemental = 11;
-                public static uint FireElemental = 49;
+                WaterElemental = 11,
+                FireElemental = 49,
 
                 // Demons
-                public static uint DemonColor = 12;
-                public static uint Demon = 35; // Standard Demon
-                public static uint Demon2 = 107;
-                public static uint Demon3 = 201;
+                DemonColor = 12,
+                Demon = 35, // Standard Demon
+                Demon2 = 107,
+                Demon3 = 201,
 
-                public static uint BlackSheep = 13;
-                public static uint Sheep = 14;
-                public static uint Troll = 15;
-                public static uint Bear = 16;
-                public static uint Beholder = 17;
-                public static uint Ghoul = 18;
-                public static uint Slime = 19;
+                BlackSheep = 13,
+                Sheep = 14,
+                Troll = 15,
+                Bear = 16,
+                Beholder = 17,
+                Ghoul = 18,
+                Slime = 19,
 
                 // Quara
-                public static uint QuaraPredator = 20;
-                public static uint QuaraConstrictor = 46;
-                public static uint QuaraHydromancer = 47;
-                public static uint QuaraMantassin = 72;
-                public static uint QuaraPincher = 77;
+                QuaraPredator = 20,
+                QuaraConstrictor = 46,
+                QuaraHydromancer = 47,
+                QuaraMantassin = 72,
+                QuaraPincher = 77,
 
-                public static uint Rat = 21;
-                public static uint Cyclops = 22;
+                Rat = 21,
+                Cyclops = 22,
 
                 // Minotaur
-                public static uint MinotaurMage = 23;
-                public static uint MinotaurArcher = 24;
-                public static uint Minotaur = 25;
-                public static uint MinotaurGuard = 29;
-                public static uint MinotaurGuard2 = 202;
-                public static uint MinotaurGuard3 = 207;
+                MinotaurMage = 23,
+                MinotaurArcher = 24,
+                Minotaur = 25,
+                MinotaurGuard = 29,
+                MinotaurGuard2 = 202,
+                MinotaurGuard3 = 207,
 
-                public static uint Rotworm = 26;
-                public static uint Wolf = 27;
-                public static uint Snake = 28;
+                Rotworm = 26,
+                Wolf = 27,
+                Snake = 28,
                 // Spiders
-                public static uint Spider = 30;
-                public static uint PoisonSpider = 36;
-                public static uint GiantSpider = 38;
-                public static uint GiantSpider2 = 208;
-                public static uint Tarantula = 219;
-                public static uint CrystalSpider = 263;
+                Spider = 30,
+                PoisonSpider = 36,
+                GiantSpider = 38,
+                GiantSpider2 = 208,
+                Tarantula = 219,
+                CrystalSpider = 263,
 
-                public static uint Deer = 31;
-                public static uint Dog = 32;
-                public static uint Skeleton = 33;
+                Deer = 31,
+                Dog = 32,
+                Skeleton = 33,
 
                 // Dragons
-                public static uint Dragon = 34;
-                public static uint DragonLord = 39;
-                public static uint DragonLord2 = 204;
-                public static uint UndeadDragon = 231;
-                public static uint FrostDragon = 248;
+                Dragon = 34,
+                DragonLord = 39,
+                DragonLord2 = 204,
+                UndeadDragon = 231,
+                FrostDragon = 248,
 
-                public static uint DemonSkeleton = 37;
-                public static uint FireDevil = 40;
-                public static uint Lion = 41;
-                public static uint PolarBear = 42;
-                public static uint Scorpion = 43;
-                public static uint Wasp = 44;
-                public static uint Bug = 45;
-                public static uint Ghost = 48;
+                DemonSkeleton = 37,
+                FireDevil = 40,
+                Lion = 41,
+                PolarBear = 42,
+                Scorpion = 43,
+                Wasp = 44,
+                Bug = 45,
+                Ghost = 48,
 
                 // Djinn
-                public static uint GreenDjinn = 51;
-                public static uint BlueDjinn = 80;
-                public static uint Efreet = 103;
-                public static uint Marid = 104;
+                GreenDjinn = 51,
+                BlueDjinn = 80,
+                Efreet = 103,
+                Marid = 104,
 
-                public static uint WinterWolf = 52;
-                public static uint FrostTroll = 53;
-                public static uint Witch = 54;
-                public static uint Behemoth = 55;
-                public static uint CaveRat = 56;
-                public static uint Monk = 57;
-                public static uint Priestess = 58;
-                public static uint Pig = 60;
-                public static uint Goblin = 61;
+                WinterWolf = 52,
+                FrostTroll = 53,
+                Witch = 54,
+                Behemoth = 55,
+                CaveRat = 56,
+                Monk = 57,
+                Priestess = 58,
+                Pig = 60,
+                Goblin = 61,
 
                 // Elves
-                public static uint Elf = 62;
-                public static uint ElfArcanist = 63;
-                public static uint ElfScout = 64;
-                public static uint ElfColor = 159;
-                public static uint ElfArcanist2 = 203;
+                Elf = 62,
+                ElfArcanist = 63,
+                ElfScout = 64,
+                ElfColor = 159,
+                ElfArcanist2 = 203,
 
-                public static uint Mummy = 65;
-                public static uint StoneGolem = 67;
-                public static uint Vampire = 68;
+                Mummy = 65,
+                StoneGolem = 67,
+                Vampire = 68,
 
                 // Dwarves
-                public static uint Dwarf = 69;
-                public static uint DwarfGuard = 70;
-                public static uint DwarfSoldier = 71;
-                public static uint DwarfGeomancer = 66;
-                public static uint DwarfColor = 160;
+                Dwarf = 69,
+                DwarfGuard = 70,
+                DwarfSoldier = 71,
+                DwarfGeomancer = 66,
+                DwarfColor = 160,
 
-                public static uint Hero = 73;
-                public static uint Rabbit = 74;
-                public static uint GameMaster = 75;
-                public static uint SwampTroll = 76;
-                public static uint Banshee = 78;
-                public static uint AncientScarab = 79;
+                Hero = 73,
+                Rabbit = 74,
+                GameMaster = 75,
+                SwampTroll = 76,
+                Banshee = 78,
+                AncientScarab = 79,
 
-                public static uint Cobra = 81;
-                public static uint Larva = 82;
-                public static uint Scarab = 83;
+                Cobra = 81,
+                Larva = 82,
+                Scarab = 83,
 
                 // Pharaohs
-                public static uint Pharaoh1 = 84;
-                public static uint Pharaoh2 = 85;
-                public static uint Pharaoh3 = 86;
-                public static uint PharaohDressed1 = 87;
-                public static uint PharaohDressed2 = 88;
-                public static uint Pharaoh4 = 89;
-                public static uint Pharaoh5 = 90;
-                public static uint PharaohDressed3 = 91;
+                Pharaoh1 = 84,
+                Pharaoh2 = 85,
+                Pharaoh3 = 86,
+                PharaohDressed1 = 87,
+                PharaohDressed2 = 88,
+                Pharaoh4 = 89,
+                Pharaoh5 = 90,
+                PharaohDressed3 = 91,
 
-                public static uint Mimic = 92;
-                public static uint Hyaena = 94;
-                public static uint Gargoyle = 95;
+                Mimic = 92,
+                Hyaena = 94,
+                Gargoyle = 95,
 
                 // Pirates
-                public static uint PirateCutthroat = 96;
-                public static uint PirateBuccaneer = 97;
-                public static uint PirateCorsair = 98;
-                public static uint PirateMarauder = 93;
-                public static uint PirateSkeleton = 195;
-                public static uint PirateGhost = 196;
+                PirateCutthroat = 96,
+                PirateBuccaneer = 97,
+                PirateCorsair = 98,
+                PirateMarauder = 93,
+                PirateSkeleton = 195,
+                PirateGhost = 196,
 
-                public static uint Lich = 99;
-                public static uint CryptShambler = 100;
-                public static uint Bonebeast = 101;
-                public static uint Deathslicer = 102;
-                public static uint Badger = 105;
-                public static uint Skunk = 106;
-                public static uint ElderBeholder = 108;
-                public static uint Gazer = 109;
-                public static uint Yeti = 110;
-                public static uint Chicken = 111;
-                public static uint Crab = 112;
+                Lich = 99,
+                CryptShambler = 100,
+                Bonebeast = 101,
+                Deathslicer = 102,
+                Badger = 105,
+                Skunk = 106,
+                ElderBeholder = 108,
+                Gazer = 109,
+                Yeti = 110,
+                Chicken = 111,
+                Crab = 112,
 
                 // Lizards
-                public static uint LizardTemplar = 113;
-                public static uint LizardSentinel = 114;
-                public static uint LizardSnakecharmer = 115;
+                LizardTemplar = 113,
+                LizardSentinel = 114,
+                LizardSnakecharmer = 115,
 
                 // Apes
-                public static uint Kongra = 116;
-                public static uint Merlkin = 117;
-                public static uint Sibang = 118;
+                Kongra = 116,
+                Merlkin = 117,
+                Sibang = 118,
 
-                public static uint Crocodile = 119;
-                public static uint Carniphila = 120;
-                public static uint Hydra = 121;
-                public static uint Bat = 122;
-                public static uint Panda = 123;
-                public static uint Centipede = 124;
-                public static uint Tiger = 125;
+                Crocodile = 119,
+                Carniphila = 120,
+                Hydra = 121,
+                Bat = 122,
+                Panda = 123,
+                Centipede = 124,
+                Tiger = 125,
 
                 // Human Outfits
-                public static uint OldFemale = 126;
-                public static uint OldMale = 127;
+                OldFemale = 126,
+                OldMale = 127,
 
-                public static uint CitizenMale = 128;
-                public static uint HunterMale = 129;
-                public static uint MageMale = 130;
-                public static uint KnightMale = 131;
-                public static uint NoblemanMale = 132;
-                public static uint SummonerMale = 133;
-                public static uint WarriorMale = 134;
+                CitizenMale = 128,
+                HunterMale = 129,
+                MageMale = 130,
+                KnightMale = 131,
+                NoblemanMale = 132,
+                SummonerMale = 133,
+                WarriorMale = 134,
 
-                public static uint CitizenFemale = 136;
-                public static uint HunterFemale = 137;
-                public static uint SummonerFemale = 138;
-                public static uint KnightFemale = 139;
-                public static uint NoblemanFemale = 140;
-                public static uint MageFemale = 141;
-                public static uint WarriorFemale = 142;
+                CitizenFemale = 136,
+                HunterFemale = 137,
+                SummonerFemale = 138,
+                KnightFemale = 139,
+                NoblemanFemale = 140,
+                MageFemale = 141,
+                WarriorFemale = 142,
 
-                public static uint BarbarianMale = 143;
-                public static uint DruidMale = 144;
-                public static uint WizardMale = 145;
-                public static uint OrientalMale = 146;
+                BarbarianMale = 143,
+                DruidMale = 144,
+                WizardMale = 145,
+                OrientalMale = 146,
 
-                public static uint BarbarianFemale = 147;
-                public static uint DruidFemale = 148;
-                public static uint WizardFemale = 149;
-                public static uint OrientalFemale = 150;
+                BarbarianFemale = 147,
+                DruidFemale = 148,
+                WizardFemale = 149,
+                OrientalFemale = 150,
 
-                public static uint PirateMale = 151;
-                public static uint AssassinMale = 152;
-                public static uint BeggarMale = 153;
-                public static uint ShamanMale = 154;
+                PirateMale = 151,
+                AssassinMale = 152,
+                BeggarMale = 153,
+                ShamanMale = 154,
 
-                public static uint PirateFemale = 155;
-                public static uint AssassinFemale = 156;
-                public static uint BeggarFemale = 157;
-                public static uint ShamanFemale = 158;
+                PirateFemale = 155,
+                AssassinFemale = 156,
+                BeggarFemale = 157,
+                ShamanFemale = 158,
 
-                public static uint CarrionWorm = 192;
+                CarrionWorm = 192,
 
                 // Cult
-                public static uint EnlightenedsOfTheCult = 193;
-                public static uint AdeptsOfTheCult = 194;
+                EnlightenedsOfTheCult = 193,
+                AdeptsOfTheCult = 194,
 
-                public static uint Tortoise = 197;
-                public static uint ThornbackTortoise = 198;
-                public static uint Mammoth = 199;
-                public static uint BloodCrab = 200;
-                public static uint StoneGolem2 = 205;
-                public static uint Monk2 = 206;
-                public static uint Necromancer2 = 209;
-                public static uint ElderBeholder2 = 210;
-                public static uint Elephant = 211;
-                public static uint Flamingo = 212;
+                Tortoise = 197,
+                ThornbackTortoise = 198,
+                Mammoth = 199,
+                BloodCrab = 200,
+                StoneGolem2 = 205,
+                Monk2 = 206,
+                Necromancer2 = 209,
+                ElderBeholder2 = 210,
+                Elephant = 211,
+                Flamingo = 212,
 
                 // Dworcs
-                public static uint DworcVoodoomaster = 214;
-                public static uint DworcFleshhunter = 215;
-                public static uint DworcVenomsniper = 216;
+                DworcVoodoomaster = 214,
+                DworcFleshhunter = 215,
+                DworcVenomsniper = 216,
 
-                public static uint Parrot = 217;
-                public static uint TerrorBird = 218;
-                public static uint SerpentSpawn = 220;
-                public static uint SpitNettle = 221;
-                public static uint Toad = 222;
-                public static uint Seagull = 223;
-                public static uint AzureFrog = 224;
-                public static uint FrogColor = 226;
-                public static uint Ferumbras = 229;
-                public static uint HandOfCursedFate = 230;
-                public static uint LostSoul = 232;
-                public static uint BetrayedWraith = 233;
-                public static uint DarkTorturer = 234;
-                public static uint Spectre = 235;
-                public static uint Destroyer = 236;
-                public static uint DiabloicImp = 237;
-                public static uint Defiler = 238;
-                public static uint Wyvern = 239;
-                public static uint Hellhound = 240;
-                public static uint Phantasm = 241;
-                public static uint Hellfire = 242;
-                public static uint HellfireFighter = 243;
-                public static uint Juggernaut = 244;
-                public static uint Nightmare = 245;
-                public static uint Blightwalker = 246;
-                public static uint Plaguesmith = 247;
-                public static uint Penguin = 250;
-                public static uint NorsemanMale = 251;
-                public static uint NorsemanFemale = 252;
+                Parrot = 217,
+                TerrorBird = 218,
+                SerpentSpawn = 220,
+                SpitNettle = 221,
+                Toad = 222,
+                Seagull = 223,
+                AzureFrog = 224,
+                FrogColor = 226,
+                Ferumbras = 229,
+                HandOfCursedFate = 230,
+                LostSoul = 232,
+                BetrayedWraith = 233,
+                DarkTorturer = 234,
+                Spectre = 235,
+                Destroyer = 236,
+                DiabloicImp = 237,
+                Defiler = 238,
+                Wyvern = 239,
+                Hellhound = 240,
+                Phantasm = 241,
+                Hellfire = 242,
+                HellfireFighter = 243,
+                Juggernaut = 244,
+                Nightmare = 245,
+                Blightwalker = 246,
+                Plaguesmith = 247,
+                Penguin = 250,
+                NorsemanMale = 251,
+                NorsemanFemale = 252,
 
                 // Barbarians
-                public static uint BarbarianHeadsplitter = 253;
-                public static uint BarbarianSkullhunter = 254;
-                public static uint BarbarianBloodwalker = 255;
-                public static uint BarbarianBrutetamer = 264;
+                BarbarianHeadsplitter = 253,
+                BarbarianSkullhunter = 254,
+                BarbarianBloodwalker = 255,
+                BarbarianBrutetamer = 264,
 
-                public static uint Braindeath = 256;
-                public static uint FrostGiant = 257;
-                public static uint Husky = 258;
+                Braindeath = 256,
+                FrostGiant = 257,
+                Husky = 258,
 
                 // Chakoya
-                public static uint ChakoyaTribewarden = 249;
-                public static uint ChakoyaToolshaper = 259;
-                public static uint ChakoyaWindcaller = 260;
+                ChakoyaTribewarden = 249,
+                ChakoyaToolshaper = 259,
+                ChakoyaWindcaller = 260,
 
-                public static uint IceGolem = 261;
-                public static uint SilverRabbit = 262;
-                public static uint FrostGiantess = 265;
-                public static uint CommunityManager = 266;
+                IceGolem = 261,
+                SilverRabbit = 262,
+                FrostGiantess = 265,
+                CommunityManager = 266
             }
         }
 
