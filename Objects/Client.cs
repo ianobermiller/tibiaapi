@@ -93,6 +93,12 @@ namespace Tibia.Objects
             return Status() == Tibia.Memory.Addresses.Client.LoginStatus.LoggedIn;
         }
 
+        public string statusBar
+        {
+            get { return ReadString(Tibia.Memory.Addresses.Client.Statusbar_Text); }
+            set { WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Time, 50); WriteString(Tibia.Memory.Addresses.Client.Statusbar_Text, value); WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+        }
+
         /// <summary>
         /// Wrapper method for Packets.Packet.SendPacket.
         /// </summary>
