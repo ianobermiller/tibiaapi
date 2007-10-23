@@ -19,30 +19,7 @@ namespace Tibia.Packets
             packet[01] = 0x00;
             packet[02] = 0x82;
 
-            switch (item.Location.type)
-            {
-                case Objects.ItemLocation.ItemLocationType.CONTAINER:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(0x40 + item.Location.container);
-                    packet[06] = 0x00;
-                    packet[07] = item.Location.position;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.SLOT:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(item.Location.slot);
-                    packet[06] = 0x00;
-                    packet[07] = 0x00;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.GROUND:
-                    packet[03] = Packet.Lo(item.Location.groundLocation.X);
-                    packet[04] = Packet.Hi(item.Location.groundLocation.X);
-                    packet[05] = Packet.Lo(item.Location.groundLocation.Y);
-                    packet[06] = Packet.Hi(item.Location.groundLocation.Y);
-                    packet[07] = Convert.ToByte(item.Location.groundLocation.Z);
-                    break;
-            }
+            Array.Copy(ItemLocationToBytes(item.Location), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(item.Id);
             packet[09] = Packet.Hi(item.Id);
@@ -65,11 +42,9 @@ namespace Tibia.Packets
             packet[00] = 0x11;
             packet[01] = 0x00;
             packet[02] = 0x83;
-            packet[03] = 0xFF;
-            packet[04] = 0xFF;
-            packet[05] = 0x00;
-            packet[06] = 0x00;
-            packet[07] = 0x00;
+
+            Array.Copy(ItemLocationToBytes(item.Location), 0, packet, 3, 5);
+
             packet[08] = Packet.Lo(item.Id);
             packet[09] = Packet.Hi(item.Id);
             packet[10] = 0x00;
@@ -110,30 +85,7 @@ namespace Tibia.Packets
             packet[01] = 0x00;
             packet[02] = 0x83;
 
-            switch (item.Location.type)
-            {
-                case Objects.ItemLocation.ItemLocationType.CONTAINER:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(0x40 + item.Location.container);
-                    packet[06] = 0x00;
-                    packet[07] = item.Location.position;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.SLOT:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(item.Location.slot);
-                    packet[06] = 0x00;
-                    packet[07] = 0x00;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.GROUND:
-                    packet[03] = Packet.Lo(item.Location.groundLocation.X);
-                    packet[04] = Packet.Hi(item.Location.groundLocation.X);
-                    packet[05] = Packet.Lo(item.Location.groundLocation.Y);
-                    packet[06] = Packet.Hi(item.Location.groundLocation.Y);
-                    packet[07] = Convert.ToByte(item.Location.groundLocation.Z);
-                    break;
-            }
+            Array.Copy(ItemLocationToBytes(item.Location), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(item.Id);
             packet[09] = Packet.Hi(item.Id);
@@ -212,60 +164,14 @@ namespace Tibia.Packets
             packet[01] = 0x00;
             packet[02] = 0x78;
 
-            switch (fromItem.Location.type)
-            {
-                case Objects.ItemLocation.ItemLocationType.CONTAINER:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(0x40 + fromItem.Location.container);
-                    packet[06] = 0x00;
-                    packet[07] = fromItem.Location.position;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.SLOT:
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = Convert.ToByte(fromItem.Location.slot);
-                    packet[06] = 0x00;
-                    packet[07] = 0x00;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.GROUND:
-                    packet[03] = Packet.Lo(fromItem.Location.groundLocation.X);
-                    packet[04] = Packet.Hi(fromItem.Location.groundLocation.X);
-                    packet[05] = Packet.Lo(fromItem.Location.groundLocation.Y);
-                    packet[06] = Packet.Hi(fromItem.Location.groundLocation.Y);
-                    packet[07] = Convert.ToByte(fromItem.Location.groundLocation.Z);
-                    break;
-            }
+            Array.Copy(ItemLocationToBytes(fromItem.Location), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(fromItem.Id);
             packet[09] = Packet.Hi(fromItem.Id);
 
             packet[10] = packet[07];
 
-            switch (toItem.Location.type)
-            {
-                case Objects.ItemLocation.ItemLocationType.CONTAINER:
-                    packet[11] = 0xFF;
-                    packet[12] = 0xFF;
-                    packet[13] = Convert.ToByte(0x40 + toItem.Location.container);
-                    packet[14] = 0x00;
-                    packet[15] = toItem.Location.position;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.SLOT:
-                    packet[11] = 0xFF;
-                    packet[12] = 0xFF;
-                    packet[13] = Convert.ToByte(toItem.Location.slot);
-                    packet[14] = 0x00;
-                    packet[15] = 0x00;
-                    break;
-                case Objects.ItemLocation.ItemLocationType.GROUND:
-                    packet[11] = Packet.Lo(toItem.Location.groundLocation.X);
-                    packet[12] = Packet.Hi(toItem.Location.groundLocation.X);
-                    packet[13] = Packet.Lo(toItem.Location.groundLocation.Y);
-                    packet[14] = Packet.Hi(toItem.Location.groundLocation.Y);
-                    packet[15] = Convert.ToByte(toItem.Location.groundLocation.Z);
-                    break;
-            }
+            Array.Copy(ItemLocationToBytes(toItem.Location), 0, packet, 11, 5);
 
             packet[16] = fromItem.Count;
 
