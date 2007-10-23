@@ -82,6 +82,38 @@ namespace Tibia.Objects
                 return idList.Contains(i);
             }, newTileId);
         }
+        /// <summary>
+        /// Find player on local map
+        /// </summary>
+        /// <param name="Player"></param>
+        /// <param name="Client"></param>
+        /// <returns></returns>
+        public static Tile getPlayerTile(Player Player, Client Client)
+        {
+            int MapStart = Client.ReadInt(Tibia.Memory.Addresses.Map.MapPointer);
+            Tile Loc = new Tile();
+            for (uint i = 0; i < Memory.Addresses.Map.Max_Tiles; i++)
+            {
+                long TAdress = MapStart + (i * Memory.Addresses.Map.Step_Tile);
+                if (Client.ReadInt(TAdress) > 1)
+                {
+                    TAdress = TAdress + 4;
+                    for (uint y = 0; i < 10; y++)
+                    {
+                        TAdress = TAdress + (12 * y);
+                        if (Client.ReadByte(TAdress + Memory.Addresses.Map.Distance_Object_Id) == 99)
+                        {
+                            if (Client.ReadInt(TAdress + Memory.Addresses.Map.Distance_Object_Data) == Player.Id)
+                            {
+                                Loc.Id = i;
+                                return Loc;
+                            }
+                        }
+                    }
+                }
+            }
+            return Loc;
+        }
 
         /// <summary>
         /// Convert a tiles number to xyz coordinates.
