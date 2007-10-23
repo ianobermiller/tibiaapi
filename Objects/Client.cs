@@ -93,7 +93,10 @@ namespace Tibia.Objects
             return Status() == Tibia.Memory.Addresses.Client.LoginStatus.LoggedIn;
         }
 
-        public string statusBar
+        /// <summary>
+        /// Get and set the Statusbar text (the white text above the console).
+        /// </summary>
+        public string Statusbar
         {
             get { return ReadString(Tibia.Memory.Addresses.Client.Statusbar_Text); }
             set { WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Time, 50); WriteString(Tibia.Memory.Addresses.Client.Statusbar_Text, value); WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Text + value.Length, 0x00); }
@@ -113,9 +116,9 @@ namespace Tibia.Objects
         /// Bring this Tibia window to the foreground. Wrapper for SetForegroundWindow.
         /// </summary>
         /// <returns></returns>
-        public bool bringToFront()
+        public bool BringToFront()
         {
-            return SetForegroundWindow(process.Handle);
+            return SetForegroundWindow(process.MainWindowHandle);
         }
 
         /// <summary>
