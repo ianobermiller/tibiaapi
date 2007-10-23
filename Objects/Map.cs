@@ -25,13 +25,13 @@ namespace Tibia.Objects
         /// <param name="match"></param>
         /// <param name="newTileId"></param>
         /// <returns></returns>
-        public int replaceTile(Predicate<int> match, int newTileId)
+        public int ReplaceTile(Predicate<int> match, int newTileId)
         {
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Memory.Addresses.Map.MapPointer));
             int replacedTileCount = 0;
 
             // search through map data
-            for (uint i = mapBegin; i < mapBegin + (Memory.Addresses.Map.Step_Tile * Memory.Addresses.Map.Max_Tiles); i += Memory.Addresses.Map.Step_Tile)
+            for (uint i = mapBegin; i < mapBegin + (Memory.Addresses.Map.Step_Square * Memory.Addresses.Map.Max_Squares); i += Memory.Addresses.Map.Step_Square)
             {
                 // get tile id from current tile data
                 uint j = i + Memory.Addresses.Map.Distance_Object_Id;
@@ -61,9 +61,9 @@ namespace Tibia.Objects
         /// <param name="oldTileId"></param>
         /// <param name="newTileId"></param>
         /// <returns></returns>
-        public int replaceTile(int oldTileId, int newTileId)
+        public int ReplaceTile(int oldTileId, int newTileId)
         {
-            return replaceTile(delegate(int i)
+            return ReplaceTile(delegate(int i)
             {
                 return i == oldTileId;
             }, newTileId);
@@ -75,44 +75,52 @@ namespace Tibia.Objects
         /// <param name="idList"></param>
         /// <param name="newTileId"></param>
         /// <returns></returns>
-        public int replaceTile(List<int> idList, int newTileId)
+        public int ReplaceTile(List<int> idList, int newTileId)
         {
-            return replaceTile(delegate(int i)
+            return ReplaceTile(delegate(int i)
             {
                 return idList.Contains(i);
             }, newTileId);
         }
+
         /// <summary>
         /// Find player on local map
         /// </summary>
         /// <param name="Player"></param>
         /// <param name="Client"></param>
         /// <returns></returns>
-        public static Tile getPlayerTile(Player Player, Client Client)
+        public Tile GetPlayerTile()
         {
-            int MapStart = Client.ReadInt(Tibia.Memory.Addresses.Map.MapPointer);
-            Tile Loc = new Tile();
-            for (uint i = 0; i < Memory.Addresses.Map.Max_Tiles; i++)
+            Tile playerLocation = new Tile();
+
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Memory.Addresses.Map.MapPointer));
+
+            uint squarePointer = mapBegin;
+
+            for (uint i = 0; i < Memory.Addresses.Map.Max_Squares; i++)
             {
-                long TAdress = MapStart + (i * Memory.Addresses.Map.Step_Tile);
-                if (Client.ReadInt(TAdress) > 1)
+                if (client.ReadInt(squarePointer + Memory.Addresses.Map.Distance_Square_ObjectCount) > 1)
                 {
-                    TAdress = TAdress + 4;
-                    for (uint y = 0; i < 10; y++)
+                    uint objectPointer = squarePointer + Memory.Addresses.Map.Distance_Square_Objects;
+                    for (uint j = 0; j < Memory.Addresses.Map.Max_Square_Objects; j++)
                     {
-                        TAdress = TAdress + (12 * y);
-                        if (Client.ReadByte(TAdress + Memory.Addresses.Map.Distance_Object_Id) == 99)
+                        if (client.ReadInt(objectPointer + Memory.Addresses.Map.Distance_Object_Id) == 99)
                         {
-                            if (Client.ReadInt(TAdress + Memory.Addresses.Map.Distance_Object_Data) == Player.Id)
+                            int objectId = client.ReadInt(objectPointer + Memory.Addresses.Map.Distance_Object_Data);
+                            int playerId = client.ReadInt(Memory.Addresses.Player.Id);
+                            if (objectId == playerId)
                             {
-                                Loc.Id = i;
-                                return Loc;
+                                playerLocation.Id = i;
+                                return playerLocation;
                             }
                         }
+                        objectPointer += Memory.Addresses.Map.Step_Square_Object;
                     }
                 }
+                squarePointer += Memory.Addresses.Map.Step_Square;
             }
-            return Loc;
+
+            return playerLocation;
         }
 
         /// <summary>
@@ -120,7 +128,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="tileNumber"></param>
         /// <returns></returns>
-        public static Location getLocation(uint tileNumber)
+        public static Location GetLocation(uint tileNumber)
         {
             Location l = new Location();
 
