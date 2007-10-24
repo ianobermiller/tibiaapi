@@ -34,7 +34,7 @@ namespace Tibia.Objects
             for (uint i = mapBegin; i < mapBegin + (Memory.Addresses.Map.Step_Square * Memory.Addresses.Map.Max_Squares); i += Memory.Addresses.Map.Step_Square)
             {
                 // get tile id from current tile data
-                uint j = i + Memory.Addresses.Map.Distance_Object_Id;
+                uint j = i + Memory.Addresses.Map.Distance_Square_Objects + Memory.Addresses.Map.Distance_Object_Id;
 
                 // read tile id
                 int tileId = client.ReadInt(j);
