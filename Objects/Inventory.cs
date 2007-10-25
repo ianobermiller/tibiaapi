@@ -27,9 +27,9 @@ namespace Tibia.Objects
         {
             byte containerNumber = 0;
             List<Container> containers = new List<Container>();
-            for (uint i = Memory.Addresses.Container.Start; i < Memory.Addresses.Container.End; i += Memory.Addresses.Container.Step_Container)
+            for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
             {
-                if (client.ReadByte(i + Memory.Addresses.Container.Distance_IsOpen) == 1)
+                if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
                     containers.Add(new Container(client, i, containerNumber));
                 containerNumber++;
             }

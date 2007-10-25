@@ -22,7 +22,7 @@ namespace Tibia.Objects
         public List<Creature> getCreatures(Predicate<Creature> match)
         {
             List<Creature> creatures = new List<Creature>();
-            for (uint i = Memory.Addresses.BattleList.Start; i < Memory.Addresses.BattleList.End; i += Memory.Addresses.BattleList.Step_Creatures)
+            for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
             {
                 Creature creature = new Creature(client, i);
                 if (match(creature))
@@ -39,9 +39,9 @@ namespace Tibia.Objects
         public List<Creature> getCreatures()
         {
             List<Creature> creatures = new List<Creature>();
-            for (uint i = Memory.Addresses.BattleList.Start; i < Memory.Addresses.BattleList.End; i += Memory.Addresses.BattleList.Step_Creatures)
+            for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
             {
-                if (client.ReadByte(i + Memory.Addresses.Creature.Distance_IsVisible) == 1)
+                if (client.ReadByte(i + Addresses.Creature.Distance_IsVisible) == 1)
                     creatures.Add(new Creature(client, i));
             }
             return creatures;

@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Tibia.Memory;
 
 namespace Tibia.Objects
 {
@@ -40,42 +39,42 @@ namespace Tibia.Objects
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
         {
-            return Memory.Methods.ReadBytes(process, address, bytesToRead);
+            return Memory.ReadBytes(process, address, bytesToRead);
         }
 
         public int ReadInt(long address)
         {
-            return Memory.Methods.ReadInt(process, address);
+            return Memory.ReadInt(process, address);
         }
 
         public byte ReadByte(long address)
         {
-            return Memory.Methods.ReadByte(process, address);
+            return Memory.ReadByte(process, address);
         }
 
         public string ReadString(long address)
         {
-            return Memory.Methods.ReadString(process, address);
+            return Memory.ReadString(process, address);
         }
 
         public bool WriteBytes(long address, byte[] bytes, uint length)
         {
-            return Memory.Methods.WriteBytes(process, address, bytes, length);
+            return Memory.WriteBytes(process, address, bytes, length);
         }
 
         public bool WriteInt(long address, int value)
         {
-            return Memory.Methods.WriteInt(process, address, value);
+            return Memory.WriteInt(process, address, value);
         }
 
         public bool WriteByte(long address, byte value)
         {
-            return Memory.Methods.WriteByte(process, address, value);
+            return Memory.WriteByte(process, address, value);
         }
 
         public bool WriteString(long address, string str)
         {
-            return Memory.Methods.WriteString(process, address, str);
+            return Memory.WriteString(process, address, str);
         }
         #endregion
 
@@ -85,7 +84,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Constants.LoginStatus Status()
         {
-            return (Constants.LoginStatus)ReadByte(Memory.Addresses.Client.Status);
+            return (Constants.LoginStatus)ReadByte(Addresses.Client.Status);
         }
 
         /// <summary>
@@ -102,8 +101,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Statusbar
         {
-            get { return ReadString(Tibia.Memory.Addresses.Client.Statusbar_Text); }
-            set { WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Time, 50); WriteString(Tibia.Memory.Addresses.Client.Statusbar_Text, value); WriteByte(Tibia.Memory.Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+            get { return ReadString(Addresses.Client.Statusbar_Text); }
+            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
         }
 
         /// <summary>
@@ -157,7 +156,7 @@ namespace Tibia.Objects
         public Player getPlayer()
         {
             if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.getCreature(ReadInt(Memory.Addresses.Player.Id));
+            Creature creature = battleList.getCreature(ReadInt(Addresses.Player.Id));
             return new Player(this, creature.Address);
         }
 

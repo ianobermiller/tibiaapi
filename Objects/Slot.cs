@@ -26,8 +26,8 @@ namespace Tibia.Objects
         public Item getSlot(Constants.SlotNumber s)
         {
             Item item;
-            uint address = Memory.Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
-            byte count = client.ReadByte(address + Memory.Addresses.Player.Distance_Slot_Count);
+            uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
+            byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
             uint id = (uint) client.ReadInt(address);
             if (id > 0)
             {
