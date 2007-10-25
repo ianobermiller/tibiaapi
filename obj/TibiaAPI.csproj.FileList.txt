@@ -1,0 +1,8 @@
+bin\Release\TibiaAPI.dll
+bin\Release\TibiaAPI.pdb
+bin\Release\documentation.xml
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\Tibia.ClientChooser.resources
+obj\Release\TibiaAPI.csproj.GenerateResource.Cache
+obj\Release\TibiaAPI.dll
+obj\Release\TibiaAPI.pdb
