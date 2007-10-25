@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Tibia.Objects
 {
     /// <summary>
@@ -224,12 +227,114 @@ namespace Tibia.Objects
         {
         }
 
+        #region Packet Methods
+
+        /// <summary>
+        /// Turn to the specified direction.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public bool Turn(Constants.TurnDirection direction)
+        {
+            byte[] packet = new byte[3];
+            packet[0] = 0x01;
+            packet[1] = 0x00;
+            packet[2] = Convert.ToByte(0x6F + direction);
+            return client.Send(packet);
+        }
+
+        /// <summary>
+        /// Walk in the specified direction
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public bool Walk(Constants.WalkDirection direction)
+        {
+            byte[] packet = new byte[3];
+            packet[0] = 0x01;
+            packet[1] = 0x00;
+            packet[2] = Convert.ToByte(0x65 + direction);
+            return client.Send(packet);
+        }
+
+        /// <summary>
+        /// Walk in the specified list of directions.
+        /// TODO: Finish
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public bool Walk(List<Constants.WalkDirection> list)
+        {
+            int len = 4 + list.Count;
+            byte[] packet = new byte[len];
+            packet[0] = Convert.ToByte(len);
+            packet[1] = 0x00;
+            packet[2] = 0x64;
+            packet[3] = Convert.ToByte(list.Count);
+            // Finish
+            return client.Send(packet);
+        }
+
+        /// <summary>
+        /// Go to the specified location.
+        /// TODO
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public static byte[] GoTo(Objects.Location location)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Stop all actions.
+        /// </summary>
+        /// <returns></returns>
+        public bool Stop()
+        {
+            byte[] packet = new byte[3];
+            packet[0] = 0x01;
+            packet[1] = 0x00;
+            packet[2] = 0xBE;
+            return client.Send(packet);
+        }
+
+        /// <summary>
+        /// Set the player's outfit. Sends a packet.
+        /// </summary>
+        /// <param name="outfitType"></param>
+        /// <param name="headColor"></param>
+        /// <param name="bodyColor"></param>
+        /// <param name="legsColor"></param>
+        /// <param name="feetColor"></param>
+        /// <param name="addons"></param>
+        /// <returns></returns>
+        public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
+        {
+            byte[] packet = new byte[10];
+
+            packet[0] = 0x08;
+            packet[1] = 0x00;
+            packet[2] = 0xD3;
+            packet[3] = Packet.Lo(Convert.ToInt32(outfitType));
+            packet[4] = Packet.Hi(Convert.ToInt32(outfitType));
+            packet[5] = headColor;
+            packet[6] = bodyColor;
+            packet[7] = legsColor;
+            packet[8] = feetColor;
+            packet[9] = Convert.ToByte(addons);
+            
+            return client.Send(packet);
+        }
+
+        #endregion
+
         /// <summary>
         /// Check if the specified flag is set. Wrapper for Flags.
         /// </summary>
         /// <param name="flag"></param>
         /// <returns></returns>
-        public bool hasFlag(Memory.Addresses.Player.Flags_t flag)
+        public bool hasFlag(Constants.Flag flag)
         {
             return (Flags & (int)flag) == (int)flag;
         }

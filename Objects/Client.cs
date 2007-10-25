@@ -18,8 +18,12 @@ namespace Tibia.Objects
         public static extern bool SetForegroundWindow(IntPtr hWnd);
         #endregion
 
-        protected Process process;
-        protected BattleList battleList;
+        private Process process;
+
+        /// <summary>
+        /// Keep a local copy of battleList to speed up GetPlayer()
+        /// </summary>
+        private BattleList battleList;
 
         /// <summary>
         /// Main constructor
@@ -79,9 +83,9 @@ namespace Tibia.Objects
         /// Get the status of the client.
         /// </summary>
         /// <returns></returns>
-        public Memory.Addresses.Client.LoginStatus Status()
+        public Constants.LoginStatus Status()
         {
-            return (Memory.Addresses.Client.LoginStatus)ReadByte(Memory.Addresses.Client.Status);
+            return (Constants.LoginStatus)ReadByte(Memory.Addresses.Client.Status);
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool LoggedIn()
         {
-            return Status() == Tibia.Memory.Addresses.Client.LoginStatus.LoggedIn;
+            return Status() == Constants.LoginStatus.LoggedIn;
         }
 
         /// <summary>
@@ -109,7 +113,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Send(byte[] packet)
         {
-            return Packets.Packet.SendPacket(this, packet);
+            return Packet.SendPacket(this, packet);
         }
 
         /// <summary>
@@ -181,7 +185,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public Item getSlot(Slot.SlotNumber s)
+        public Item getSlot(Constants.SlotNumber s)
         {
             if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             return new Slot(this).getSlot(s);
@@ -210,9 +214,22 @@ namespace Tibia.Objects
             Inventory inventory = new Inventory(this);
             Item food = inventory.findItem(new Tibia.Constants.ItemList.Food());
             if (food.Found)
-                return Send(Tibia.Packets.Item.Use(food));
+                return food.Use();
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Logout.
+        /// </summary>
+        /// <returns></returns>
+        public bool Logout()
+        {
+            byte[] packet = new byte[3];
+            packet[0] = 0x01;
+            packet[1] = 0x00;
+            packet[2] = 0x14;
+            return Send(packet);
         }
 
         /// <summary>
@@ -226,6 +243,7 @@ namespace Tibia.Objects
         {
             if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
+            Console console = new Console(this);
             Player player = getPlayer();
 
             // Keeps a running total of success
@@ -241,14 +259,14 @@ namespace Tibia.Objects
                 if (blank.Found)
                 {
                     // Save the current location of the blank rune
-                    ItemLocation oldLocation = blank.Location;
+                    ItemLocation oldLocation = blank.Loc;
 
                     // The location where the rune will be made
-                    ItemLocation newLocation = new ItemLocation(Slot.SlotNumber.Right);
+                    ItemLocation newLocation = new ItemLocation(Constants.SlotNumber.Right);
 
                     // Move the rune and say the magic words, make sure everything went well
-                    allClear = allClear & Send(Tibia.Packets.Item.Move(blank, newLocation));
-                    allClear = allClear & Send(Tibia.Packets.Speech.Default(rune.Words));
+                    allClear = allClear & blank.Move(newLocation);
+                    allClear = allClear & console.Default(rune.Words);
 
                     // Don't bother continuing if both the above actions didn't work
                     if (!allClear) return false;
@@ -256,10 +274,10 @@ namespace Tibia.Objects
                     // Build a rune object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newRune = new Item(rune.Id, 1, new ItemLocation(Slot.SlotNumber.Right), true);
+                    Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), true);
 
                     // Move the rune back to it's original location
-                    allClear = allClear & Send(Tibia.Packets.Item.Move(newRune, oldLocation));
+                    allClear = allClear & newRune.Move(oldLocation);
 
                     // Return true if everything worked well, false if it did not
                     return allClear;

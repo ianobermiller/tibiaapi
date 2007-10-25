@@ -70,19 +70,5 @@ namespace Tibia.Memory.Addresses
         public static uint Target_Type = 0x60EA9F;      //8.0
         public static uint Target_BList_ID = 0x60EA94;  //8.0
         public static uint Target_BList_Type = 0x60EA97;//8.0
-
-        public enum Flags_t
-        {
-            Poisoned = 1,
-            Burning = 2, 
-            Energized = 4,
-            Drunk = 8, 
-            MagicShield = 16, 
-            Paralyzed = 32, 
-            Hasted = 64, 
-            Battle = 128, 
-            Drowning = 256, 
-            None = 0
-        }
     }
 }

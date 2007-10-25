@@ -1,18 +1,26 @@
 using System;
 
-namespace Tibia.Packets
+namespace Tibia.Objects
 {
-    /// <summary>
-    /// Create packets to send messages.
-    /// </summary>
-    public static class Speech
+    public class Console
     {
+        private Client client;
+
+        /// <summary>
+        /// Create a new inventory object with the specified client.
+        /// </summary>
+        /// <param name="c"></param>
+        public Console(Client c)
+        {
+            client = c;
+        }
+        
         /// <summary>
         /// Say something in the default channel (wrapper for Say)
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static byte[] Default(string text)
+        public bool Default(string text)
         {
             return Say(new Message(text));
         }
@@ -22,7 +30,7 @@ namespace Tibia.Packets
         /// </summary>
         /// <param name="words"></param>
         /// <returns></returns>
-        public static byte[] Spell(string words)
+        public bool Spell(string words)
         {
            return Default(words);
         }
@@ -32,7 +40,7 @@ namespace Tibia.Packets
         /// </summary>
         /// <param name="spell"></param>
         /// <returns></returns>
-        public static byte[] Spell(Objects.Spell spell)
+        public bool Spell(Objects.Spell spell)
         {
             return Spell(spell.Words);
         }
@@ -43,7 +51,7 @@ namespace Tibia.Packets
         /// <param name="message"></param>
         /// <param name="type"></param>
         /// <returns>message packet</returns>
-        public static byte[] Say(Message message)
+        public bool Say(Message message)
         {
             byte[] packet = { };
             int packetLength, payloadLength;
@@ -51,9 +59,9 @@ namespace Tibia.Packets
 
             switch (message.type)
             {
-                case Type.Normal:
-                case Type.Whisper:
-                case Type.Yell:
+                case Constants.SpeechType.Normal:
+                case Constants.SpeechType.Whisper:
+                case Constants.SpeechType.Yell:
                     packetLength = 6 + message.text.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -68,7 +76,7 @@ namespace Tibia.Packets
                     // Copy the message to the rest of the bytes
                     Array.Copy(enc.GetBytes(message.text), 0, packet, 6, message.text.Length);
                     break;
-                case Type.Channel:
+                case Constants.SpeechType.Channel:
                     packetLength = 8 + message.text.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -85,7 +93,7 @@ namespace Tibia.Packets
                     // Copy the message to the rest of the bytes
                     Array.Copy(enc.GetBytes(message.text), 0, packet, 8, message.text.Length);
                     break;
-                case Type.PrivateMessage:
+                case Constants.SpeechType.PrivateMessage:
                     packetLength = 8 + message.text.Length + message.recipient.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -111,7 +119,7 @@ namespace Tibia.Packets
                     break;
             }
 
-            return packet;
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -120,92 +128,71 @@ namespace Tibia.Packets
         /// <param name="message"></param>
         /// <param name="recipient"></param>
         /// <returns>message packet</returns>
-        public static byte[] Send(string message, string recipient)
+        public bool Send(string message, string recipient)
         {
-            return null;
+            return Say(new Message(message, recipient));
+        }
+    }
+
+    /// <summary>
+    /// A message in Tibia.
+    /// </summary>
+    public struct Message
+    {
+        public string text;
+        public string recipient;
+        public Constants.SpeechChannel channel;
+        public Constants.SpeechType type;
+
+        /// <summary>
+        /// Create a default message.
+        /// </summary>
+        /// <param name="text"></param>
+        public Message(string text)
+        {
+            this.text = text;
+            this.recipient = "";
+            this.channel = Constants.SpeechChannel.None;
+            this.type = Constants.SpeechType.Normal;
         }
 
         /// <summary>
-        /// A message in Tibia.
+        /// Create a private message.
         /// </summary>
-        public struct Message
+        /// <param name="text"></param>
+        /// <param name="recipient"></param>
+        public Message(string text, string recipient)
         {
-            public string text;
-            public string recipient;
-            public Channel channel;
-            public Type type;
-
-            /// <summary>
-            /// Create a default message.
-            /// </summary>
-            /// <param name="text"></param>
-            public Message(string text)
-            {
-                this.text = text;
-                this.recipient = "";
-                this.channel = Channel.None;
-                this.type = Type.Normal;
-            }
-
-            /// <summary>
-            /// Create a private message.
-            /// </summary>
-            /// <param name="text"></param>
-            /// <param name="recipient"></param>
-            public Message(string text, string recipient)
-            {
-                this.text = text;
-                this.recipient = recipient;
-                this.channel = Channel.None;
-                this.type = Type.PrivateMessage;
-            }
-
-            /// <summary>
-            /// Create a channel message.
-            /// </summary>
-            /// <param name="text"></param>
-            /// <param name="channel"></param>
-            public Message(string text, Channel channel)
-            {
-                this.text = text;
-                this.recipient = "";
-                this.channel = channel;
-                this.type = Type.Channel;
-            }
-
-            /// <summary>
-            /// Create a yell or whisper message.
-            /// </summary>
-            /// <param name="text"></param>
-            /// <param name="type"></param>
-            public Message(string text, Type type)
-            {
-                this.text = text;
-                this.recipient = "";
-                this.channel = Channel.None;
-                this.type = type;
-            }
+            this.text = text;
+            this.recipient = recipient;
+            this.channel = Constants.SpeechChannel.None;
+            this.type = Constants.SpeechType.PrivateMessage;
         }
 
-        public enum Channel
+        /// <summary>
+        /// Create a channel message.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="channel"></param>
+        public Message(string text, Constants.SpeechChannel channel)
         {
-            None = -1,
-            Guild = 0,
-            Game = 4,
-            Trade = 5,
-            RealLife = 6,
-            Help = 7,
-            OwnPrivate = 14,
-            Private1 = 17
+            this.text = text;
+            this.recipient = "";
+            this.channel = channel;
+            this.type = Constants.SpeechType.Channel;
         }
 
-        public enum Type
+        /// <summary>
+        /// Create a yell or whisper message.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="type"></param>
+        public Message(string text, Constants.SpeechType type)
         {
-            Normal = 1,
-            Whisper = 2,
-            Yell = 3,
-            PrivateMessage = 4,
-            Channel = 5
+            this.text = text;
+            this.recipient = "";
+            this.channel = Constants.SpeechChannel.None;
+            this.type = type;
         }
     }
 }

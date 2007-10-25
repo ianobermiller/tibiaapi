@@ -8,9 +8,9 @@ namespace Tibia.Objects
     /// </summary>
     public class Container
     {
-        protected Client _client;
-        protected uint _address;
-        protected byte _number;
+        protected Client client;
+        protected uint address;
+        protected byte number;
 
         /// <summary>
         /// Create a new container object with the specified client, address, and number.
@@ -20,9 +20,9 @@ namespace Tibia.Objects
         /// <param name="n"></param>
         public Container(Client c, uint a, byte n)
         {
-            _client = c;
-            _address = a;
-            _number = n;
+            client = c;
+            address = a;
+            number = n;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public uint getAddress()
         {
-            return _address;
+            return address;
         }
 
         /// <summary>
@@ -43,15 +43,15 @@ namespace Tibia.Objects
             byte slot = 0;
             int amount = Amount;
             List<Item> items = new List<Item>(amount);
-            for (uint i = _address; i <= _address + Memory.Addresses.Container.Step_Slot * amount - 1; i += Memory.Addresses.Container.Step_Slot)
+            for (uint i = address; i <= address + Memory.Addresses.Container.Step_Slot * amount - 1; i += Memory.Addresses.Container.Step_Slot)
             {
-                byte itemCount = _client.ReadByte(i + Memory.Addresses.Container.Distance_Item_Count);
-                uint itemId = (uint) _client.ReadInt(i + Memory.Addresses.Container.Distance_Item_Id);
+                byte itemCount = client.ReadByte(i + Memory.Addresses.Container.Distance_Item_Count);
+                uint itemId = (uint) client.ReadInt(i + Memory.Addresses.Container.Distance_Item_Id);
                 if (itemId > 0)
                     items.Add(new Item(
                         itemId,
                         itemCount,
-                        new ItemLocation(_number, slot),
+                        new ItemLocation(number, slot),
                         true));
                 slot++;
             }
@@ -62,28 +62,28 @@ namespace Tibia.Objects
         #region Get/Set Methods
         public int Id
         {
-            get { return _client.ReadInt(_address + Memory.Addresses.Container.Distance_Id); }
-            set { _client.WriteInt(_address + Memory.Addresses.Container.Distance_Id, value); Id = value; }
+            get { return client.ReadInt(address + Memory.Addresses.Container.Distance_Id); }
+            set { client.WriteInt(address + Memory.Addresses.Container.Distance_Id, value); Id = value; }
         }
         public bool IsOpen
         {
-            get { return Convert.ToBoolean(_client.ReadInt(_address + Memory.Addresses.Container.Distance_IsOpen)); }
-            set { _client.WriteInt(_address + Memory.Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); IsOpen = value; }
+            get { return Convert.ToBoolean(client.ReadInt(address + Memory.Addresses.Container.Distance_IsOpen)); }
+            set { client.WriteInt(address + Memory.Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); IsOpen = value; }
         }
         public int Amount
         {
-            get { return _client.ReadInt(_address + Memory.Addresses.Container.Distance_Amount); }
-            set { _client.WriteInt(_address + Memory.Addresses.Container.Distance_Amount, value); Amount = value; }
+            get { return client.ReadInt(address + Memory.Addresses.Container.Distance_Amount); }
+            set { client.WriteInt(address + Memory.Addresses.Container.Distance_Amount, value); Amount = value; }
         }
         public string Name
         {
-            get { return _client.ReadString(_address + Memory.Addresses.Container.Distance_Name); }
-            set { _client.WriteString(_address + Memory.Addresses.Container.Distance_Name, value); Name = value; }
+            get { return client.ReadString(address + Memory.Addresses.Container.Distance_Name); }
+            set { client.WriteString(address + Memory.Addresses.Container.Distance_Name, value); Name = value; }
         }
         public int Volume
         {
-            get { return _client.ReadInt(_address + Memory.Addresses.Container.Distance_Volume); }
-            set { _client.WriteInt(_address + Memory.Addresses.Container.Distance_Volume, value); Volume = value; }
+            get { return client.ReadInt(address + Memory.Addresses.Container.Distance_Volume); }
+            set { client.WriteInt(address + Memory.Addresses.Container.Distance_Volume, value); Volume = value; }
         }
         #endregion
     }

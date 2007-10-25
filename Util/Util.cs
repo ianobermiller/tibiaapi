@@ -1,11 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Tibia.Packets
+namespace Tibia
 {
-    /// <summary>
-    /// Helper class for packets.
-    /// </summary>
     public static class Packet
     {
         [DllImport("packet.dll")]
@@ -46,14 +43,12 @@ namespace Tibia.Packets
         {
             try
             {
-                return SendPacket((uint) client.getProcess().Id, packet, Convert.ToByte(encrypt), 0);
+                return SendPacket((uint)client.getProcess().Id, packet, Convert.ToByte(encrypt), 0);
             }
             catch (AccessViolationException ave)
             {
                 return false;
             }
         }
-
-
     }
 }

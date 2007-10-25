@@ -1,7 +1,7 @@
 namespace Tibia.Memory.Addresses
 {
     /// <summary>
-    /// Client addresses and enumerations, not specific to a player.
+    /// Client addresses not specific to a player.
     /// </summary>
     public static class Client
     {
@@ -122,42 +122,5 @@ namespace Tibia.Memory.Addresses
         /// Login character list selected character.
         /// </summary>
         public static uint LoginSelectedChar = 0x766DB8;
-
-        public enum Cursor : byte
-        {
-            None = 0,
-            Left = 1,    // walk etc
-            Right = 2,   // use
-            Inspect = 3,
-            Drag = 6,
-            Using = 7,   // in-use fishing shooting rune
-            Help = 10   // client help
-        }
-
-        public enum Window
-        {
-            MoveObjects = 88
-        }
-
-        public enum LoginStatus : byte
-        {
-            NotLoggedIn = 0,
-            LoggingIn = 6,
-            LoggedIn = 8
-        }
-
-        public enum Attack : byte
-        {
-            FullAttack = 1,
-            Balance = 2,
-            FullDefense = 3
-        }
-
-        public enum Follow : byte
-        {
-            DoNotFollow = 0,
-            FollowClose = 1,
-            FollowDistance = 2
-        }
     }
 }

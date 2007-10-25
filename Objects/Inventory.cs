@@ -8,7 +8,7 @@ namespace Tibia.Objects
     /// </summary>
     public class Inventory
     {
-        protected Client client;
+        private Client client;
 
         /// <summary>
         /// Create a new inventory object with the specified client.
@@ -43,14 +43,13 @@ namespace Tibia.Objects
         /// <returns>Item object describing the item and its location.</returns>
         public Item findItem(Predicate<Item> match)
         {
-            Item item = new Item(false);
+            Item item = new Item(client, false);
             List<Container> containers = getContainers();
             foreach (Container c in containers)
             {
                 item = c.getItems().Find(match);
                 if (item != null) return item;
             }
-            if (item == null) item = new Item(false);
             return item;
         }
 
@@ -83,6 +82,7 @@ namespace Tibia.Objects
 
         /// <summary>
         /// Get the item at the specified location.
+        /// TODO
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>

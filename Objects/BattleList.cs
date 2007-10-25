@@ -116,7 +116,7 @@ namespace Tibia.Objects
 
         public int showInvisible()
         {
-            return showInvisible(Memory.Addresses.Creature.Outfit_t.Type.OldMale);
+            return showInvisible(Constants.OutfitType.OldMale);
         }
 
         /// <summary>
@@ -124,13 +124,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="outfitType"></param>
         /// <returns></returns>
-        public int showInvisible(Memory.Addresses.Creature.Outfit_t.Type outfitType)
+        public int showInvisible(Constants.OutfitType outfitType)
         {
             int replacedCount = 0;
 
             List<Creature> creatures = getCreatures(delegate(Creature c)
             {
-                return c.Outfit == Convert.ToInt32(Memory.Addresses.Creature.Outfit_t.Type.Invisible);
+                return c.Outfit == Convert.ToInt32(Constants.OutfitType.Invisible);
             });
 
             foreach(Creature c in creatures)

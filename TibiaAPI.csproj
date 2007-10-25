@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemList.cs" />
-    <Compile Include="Constants\Objects.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Extras\ClientChooser.cs">
@@ -77,15 +77,11 @@
     <Compile Include="Objects\Client.cs" />
     <Compile Include="Memory\Methods.cs" />
     <Compile Include="Constants\Items.cs" />
+    <Compile Include="Objects\Console.cs" />
     <Compile Include="Objects\Spell.cs" />
     <Compile Include="Objects\Structures.cs" />
-    <Compile Include="Packets\Attack.cs" />
-    <Compile Include="Packets\General.cs" />
-    <Compile Include="Packets\Item.cs" />
-    <Compile Include="Packets\Speech.cs" />
-    <Compile Include="Packets\Packet.cs" />
-    <Compile Include="Packets\Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Extras\ClientChooser.resx">

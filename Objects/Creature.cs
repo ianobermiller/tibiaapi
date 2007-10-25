@@ -25,10 +25,30 @@ namespace Tibia.Objects
         /// Check if a player (creature) is in your party.
         /// </summary>
         /// <returns>True if the player is a member or leader of your party. False otherwise.</returns>
-        public bool inParty()
+        public bool InParty()
         {
-            Memory.Addresses.Creature.Party_t party = Party;
-            return (party == Tibia.Memory.Addresses.Creature.Party_t.Member || party == Tibia.Memory.Addresses.Creature.Party_t.Leader);
+            Constants.Party party = Party;
+            return (party == Constants.Party.Member || party == Constants.Party.Leader);
+        }
+        
+        /// <summary>
+        /// Attack the creature.
+        /// Sends a packet to the server and sets the red square around the creature.
+        /// </summary>
+        /// <returns></returns>
+        public bool Attack()
+        {
+            byte[] packet = new byte[7];
+            int creatureId = Id;
+
+            packet[0] = 0x05;
+            packet[1] = 0x00;
+            packet[2] = 0xA1;
+
+            byte[] idBytes = BitConverter.GetBytes(creatureId);
+            Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
+            client.WriteInt(Memory.Addresses.Player.Target_ID, creatureId);
+            return client.Send(packet);
         }
 
         public uint Address
@@ -43,9 +63,9 @@ namespace Tibia.Objects
             get { return client.ReadInt(address + Memory.Addresses.Creature.Distance_Id); }
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_Id, value); }
         }
-        public Memory.Addresses.Creature.CreatureType_t Type
+        public Constants.CreatureType Type
         {
-            get { return (Memory.Addresses.Creature.CreatureType_t)client.ReadByte(address + Memory.Addresses.Creature.Distance_Type); }
+            get { return (Constants.CreatureType)client.ReadByte(address + Memory.Addresses.Creature.Distance_Type); }
             set { client.WriteByte(address + Memory.Addresses.Creature.Distance_Type, (byte)value); }
         }
         public string Name
@@ -95,9 +115,9 @@ namespace Tibia.Objects
             get { return client.ReadInt(address + Memory.Addresses.Creature.Distance_WalkSpeed); }
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_WalkSpeed, value); }
         }
-        public Memory.Addresses.Creature.Direction_t Direction
+        public Constants.TurnDirection Direction
         {
-            get { return (Memory.Addresses.Creature.Direction_t)client.ReadInt(address + Memory.Addresses.Creature.Distance_Direction); }
+            get { return (Constants.TurnDirection)client.ReadInt(address + Memory.Addresses.Creature.Distance_Direction); }
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_Direction, (int)value); }
         }
         public bool IsVisible
@@ -122,14 +142,14 @@ namespace Tibia.Objects
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_HPBar, value); }
         }
 
-        public Memory.Addresses.Creature.Skull_t Skull
+        public Constants.Skull Skull
         {
-            get { return (Memory.Addresses.Creature.Skull_t)client.ReadInt(address + Memory.Addresses.Creature.Distance_Skull); }
+            get { return (Constants.Skull)client.ReadInt(address + Memory.Addresses.Creature.Distance_Skull); }
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_Skull, (int)value); }
         }
-        public Memory.Addresses.Creature.Party_t Party
+        public Constants.Party Party
         {
-            get { return (Memory.Addresses.Creature.Party_t)client.ReadInt(address + Memory.Addresses.Creature.Distance_Party); }
+            get { return (Constants.Party)client.ReadInt(address + Memory.Addresses.Creature.Distance_Party); }
             set { client.WriteInt(address + Memory.Addresses.Creature.Distance_Party, (int)value); }
         }
 
