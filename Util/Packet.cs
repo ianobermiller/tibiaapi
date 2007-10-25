@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace Tibia
 {
+    /// <summary>
+    /// Helper methods for sending packets
+    /// </summary>
     public static class Packet
     {
         [DllImport("packet.dll")]

@@ -2,12 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Tibia.Memory
+namespace Tibia
 {
     /// <summary>
     /// Helper methods for reading memory.
     /// </summary>
-    public static class Methods
+    public static class Memory
     {
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
