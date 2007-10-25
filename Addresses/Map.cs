@@ -1,4 +1,4 @@
-namespace Addresses
+namespace Tibia.Addresses
 {
     /// <summary>
     /// Map memory addresses.

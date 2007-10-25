@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Addresses
+namespace Tibia.Addresses
 {
     /// <summary>
     /// Battle list adddresses and distances.

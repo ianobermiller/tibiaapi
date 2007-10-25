@@ -1,4 +1,4 @@
-namespace Addresses
+namespace Tibia.Addresses
 {
     /// <summary>
     /// Distances for creatures.

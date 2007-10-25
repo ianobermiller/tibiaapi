@@ -1,4 +1,4 @@
-namespace Addresses
+namespace Tibia.Addresses
 {
     /// <summary>
     /// Client addresses not specific to a player.
