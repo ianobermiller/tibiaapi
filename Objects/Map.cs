@@ -19,6 +19,8 @@ namespace Tibia.Objects
             client = c;
         }
 
+        #region Replace Tiles
+
         /// <summary>
         /// Replace all the tile matching a certain criteria with a new id.
         /// </summary>
@@ -82,6 +84,10 @@ namespace Tibia.Objects
                 return idList.Contains(i);
             }, newTileId);
         }
+
+        #endregion
+
+        #region Replace Objects
 
         /// <summary>
         /// Replace all the object matching a certain criteria with a new id.
@@ -151,6 +157,20 @@ namespace Tibia.Objects
                 return idList.Contains(i);
             }, newObjectId);
         }
+
+        public int replaceTrees()
+        {
+            int[] treearray = { 3608, 3614, 3615, 3616, 3617,
+                3618, 3619, 3620, 3621, 3622,
+                3623, 3624, 3625, 3609, 3613,
+                3626, 3632, 3633, 3634, 3636,
+                3637, 3638, 3639, 3640, 3641,
+                3647, 3649 };
+            List<int> trees = new List<int>(treearray);
+            return ReplaceObject(trees, 3682);
+        }
+
+        #endregion
 
         /// <summary>
         /// Find player on local map
