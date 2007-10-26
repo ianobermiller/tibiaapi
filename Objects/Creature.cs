@@ -178,10 +178,10 @@ namespace Tibia.Objects
             get { return client.ReadInt(address + Addresses.Creature.Distance_Color_Feet); }
             set { client.WriteInt(address + Addresses.Creature.Distance_Color_Feet, value); }
         }
-        public int Addon
+        public Constants.OutfitAddon Addon
         {
-            get { return client.ReadInt(address + Addresses.Creature.Distance_Addon); }
-            set { client.WriteInt(address + Addresses.Creature.Distance_Addon, value); }
+        	get { return (Constants.OutfitAddon)client.ReadInt(address + Addresses.Creature.Distance_Addon); }
+        	set { client.WriteInt(address + Addresses.Creature.Distance_Addon, (int)value); }
         }
         #endregion
     }
