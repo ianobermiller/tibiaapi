@@ -45,8 +45,8 @@ namespace Tibia.Objects
             List<Item> items = new List<Item>(amount);
             for (uint i = address; i <= address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
             {
-                byte itemCount = client.ReadByte(i + Addresses.Container.Distance_Item_Count);
-                uint itemId = (uint) client.ReadInt(i + Addresses.Container.Distance_Item_Id);
+                byte itemCount = client.readByte(i + Addresses.Container.Distance_Item_Count);
+                uint itemId = (uint) client.readInt(i + Addresses.Container.Distance_Item_Id);
                 if (itemId > 0)
                     items.Add(new Item(
                         itemId,
@@ -62,28 +62,28 @@ namespace Tibia.Objects
         #region Get/Set Methods
         public int Id
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Id); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Id, value); Id = value; }
+            get { return client.readInt(address + Addresses.Container.Distance_Id); }
+            set { client.writeInt(address + Addresses.Container.Distance_Id, value); Id = value; }
         }
         public bool IsOpen
         {
-            get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Container.Distance_IsOpen)); }
-            set { client.WriteInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); IsOpen = value; }
+            get { return Convert.ToBoolean(client.readInt(address + Addresses.Container.Distance_IsOpen)); }
+            set { client.writeInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); IsOpen = value; }
         }
         public int Amount
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Amount); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Amount, value); Amount = value; }
+            get { return client.readInt(address + Addresses.Container.Distance_Amount); }
+            set { client.writeInt(address + Addresses.Container.Distance_Amount, value); Amount = value; }
         }
         public string Name
         {
-            get { return client.ReadString(address + Addresses.Container.Distance_Name); }
-            set { client.WriteString(address + Addresses.Container.Distance_Name, value); Name = value; }
+            get { return client.readString(address + Addresses.Container.Distance_Name); }
+            set { client.writeString(address + Addresses.Container.Distance_Name, value); Name = value; }
         }
         public int Volume
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Volume); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Volume, value); Volume = value; }
+            get { return client.readInt(address + Addresses.Container.Distance_Volume); }
+            set { client.writeInt(address + Addresses.Container.Distance_Volume, value); Volume = value; }
         }
         #endregion
     }

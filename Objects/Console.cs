@@ -20,9 +20,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public bool Default(string text)
+        public bool say(string text)
         {
-            return Say(new Message(text));
+            return say(new Message(text));
         }
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="words"></param>
         /// <returns></returns>
-        public bool Spell(string words)
+        public bool spell(string words)
         {
-           return Default(words);
+           return say(words);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="spell"></param>
         /// <returns></returns>
-        public bool Spell(Objects.Spell spell)
+        public bool spell(Objects.Spell s)
         {
-            return Spell(spell.Words);
+            return spell(s.Words);
         }
         
         /// <summary>
@@ -51,7 +51,7 @@ namespace Tibia.Objects
         /// <param name="message"></param>
         /// <param name="type"></param>
         /// <returns>message packet</returns>
-        public bool Say(Message message)
+        public bool say(Message message)
         {
             byte[] packet = { };
             int packetLength, payloadLength;
@@ -119,7 +119,7 @@ namespace Tibia.Objects
                     break;
             }
 
-            return client.Send(packet);
+            return client.send(packet);
         }
 
         /// <summary>
@@ -128,9 +128,9 @@ namespace Tibia.Objects
         /// <param name="message"></param>
         /// <param name="recipient"></param>
         /// <returns>message packet</returns>
-        public bool Send(string message, string recipient)
+        public bool send(string message, string recipient)
         {
-            return Say(new Message(message, recipient));
+            return say(new Message(message, recipient));
         }
     }
 

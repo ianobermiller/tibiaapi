@@ -37,42 +37,42 @@ namespace Tibia.Objects
 
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
-        public byte[] ReadBytes(long address, uint bytesToRead)
+        public byte[] readBytes(long address, uint bytesToRead)
         {
             return Memory.ReadBytes(process, address, bytesToRead);
         }
 
-        public int ReadInt(long address)
+        public int readInt(long address)
         {
             return Memory.ReadInt(process, address);
         }
 
-        public byte ReadByte(long address)
+        public byte readByte(long address)
         {
             return Memory.ReadByte(process, address);
         }
 
-        public string ReadString(long address)
+        public string readString(long address)
         {
             return Memory.ReadString(process, address);
         }
 
-        public bool WriteBytes(long address, byte[] bytes, uint length)
+        public bool writeBytes(long address, byte[] bytes, uint length)
         {
             return Memory.WriteBytes(process, address, bytes, length);
         }
 
-        public bool WriteInt(long address, int value)
+        public bool writeInt(long address, int value)
         {
             return Memory.WriteInt(process, address, value);
         }
 
-        public bool WriteByte(long address, byte value)
+        public bool writeByte(long address, byte value)
         {
             return Memory.WriteByte(process, address, value);
         }
 
-        public bool WriteString(long address, string str)
+        public bool writeString(long address, string str)
         {
             return Memory.WriteString(process, address, str);
         }
@@ -82,18 +82,18 @@ namespace Tibia.Objects
         /// Get the status of the client.
         /// </summary>
         /// <returns></returns>
-        public Constants.LoginStatus Status()
+        public Constants.LoginStatus status()
         {
-            return (Constants.LoginStatus)ReadByte(Addresses.Client.Status);
+            return (Constants.LoginStatus)readByte(Addresses.Client.Status);
         }
 
         /// <summary>
         /// Check whether or not the client is logged in.
         /// </summary>
         /// <returns></returns>
-        public bool LoggedIn()
+        public bool loggedIn()
         {
-            return Status() == Constants.LoginStatus.LoggedIn;
+            return status() == Constants.LoginStatus.LoggedIn;
         }
 
         /// <summary>
@@ -101,8 +101,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Statusbar
         {
-            get { return ReadString(Addresses.Client.Statusbar_Text); }
-            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+            get { return readString(Addresses.Client.Statusbar_Text); }
+            set { writeByte(Addresses.Client.Statusbar_Time, 50); writeString(Addresses.Client.Statusbar_Text, value); writeByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public bool Send(byte[] packet)
+        public bool send(byte[] packet)
         {
             return Packet.SendPacket(this, packet);
         }
@@ -119,7 +119,7 @@ namespace Tibia.Objects
         /// Bring this Tibia window to the foreground. Wrapper for SetForegroundWindow.
         /// </summary>
         /// <returns></returns>
-        public bool BringToFront()
+        public bool bringToFront()
         {
             return SetForegroundWindow(process.MainWindowHandle);
         }
@@ -130,7 +130,7 @@ namespace Tibia.Objects
         /// <returns>Character name</returns>
         public override string ToString()
         {
-            if (!LoggedIn()) return "Not logged in.";
+            if (!loggedIn()) return "Not logged in.";
             return getPlayer().Name;
         }
 
@@ -155,8 +155,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Player getPlayer()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.getCreature(ReadInt(Addresses.Player.Id));
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
+            Creature creature = battleList.getCreature(readInt(Addresses.Player.Id));
             return new Player(this, creature.Address);
         }
 
@@ -175,7 +175,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public BattleList getBattleList()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
             return battleList;
         }
 
@@ -186,7 +186,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Item getSlot(Constants.SlotNumber s)
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
             return new Slot(this).getSlot(s);
         }
 
@@ -197,7 +197,7 @@ namespace Tibia.Objects
         /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
         public bool makeRune(ushort id)
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
             Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
             if (rune == null) return false;
             return makeRune(rune);
@@ -209,11 +209,11 @@ namespace Tibia.Objects
         /// <returns>True if eating succeeded, false if no food found or eating failed.</returns>
         public bool eatFood()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Item food = inventory.findItem(new Tibia.Constants.ItemList.Food());
             if (food.Found)
-                return food.Use();
+                return food.use();
             else
                 return false;
         }
@@ -222,13 +222,13 @@ namespace Tibia.Objects
         /// Logout.
         /// </summary>
         /// <returns></returns>
-        public bool Logout()
+        public bool logout()
         {
             byte[] packet = new byte[3];
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = 0x14;
-            return Send(packet);
+            return send(packet);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="newKey"></param>
         /// <returns></returns>
-        public bool SetRSA(string newKey)
+        public bool setRSA(string newKey)
         {
             return Memory.WriteRSA(getProcess(), Addresses.Client.RSA, newKey);
         }
@@ -247,7 +247,7 @@ namespace Tibia.Objects
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool SetServer(string ip, int port)
+        public bool setServer(string ip, int port)
         {
             // 25
             bool result = true;
@@ -257,12 +257,12 @@ namespace Tibia.Objects
 
             for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
             {
-                result &= WriteString(pointer, ip);
-                result &= WriteInt(pointer + Addresses.Client.Distance_Port, port);
+                result &= writeString(pointer, ip);
+                result &= writeInt(pointer + Addresses.Client.Distance_Port, port);
                 pointer += Addresses.Client.Step_LoginServer;
             }
 
-            result &= SetRSA(Constants.RSAKey.OpenTibia);
+            result &= setRSA(Constants.RSAKey.OpenTibia);
 
             return result;
         }
@@ -273,11 +273,11 @@ namespace Tibia.Objects
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool SetOT(string ip, int port)
+        public bool setOT(string ip, int port)
         {
-            bool result = SetServer(ip, port);
+            bool result = setServer(ip, port);
             
-            result &= SetRSA(Constants.RSAKey.OpenTibia);
+            result &= setRSA(Constants.RSAKey.OpenTibia);
 
             return result;
         }
@@ -291,7 +291,7 @@ namespace Tibia.Objects
         /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
         public bool makeRune(Rune rune)
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Console console = new Console(this);
             Player player = getPlayer();
@@ -315,8 +315,8 @@ namespace Tibia.Objects
                     ItemLocation newLocation = new ItemLocation(Constants.SlotNumber.Right);
 
                     // Move the rune and say the magic words, make sure everything went well
-                    allClear = allClear & blank.Move(newLocation);
-                    allClear = allClear & console.Default(rune.Words);
+                    allClear = allClear & blank.move(newLocation);
+                    allClear = allClear & console.say(rune.Words);
 
                     // Don't bother continuing if both the above actions didn't work
                     if (!allClear) return false;
@@ -327,7 +327,7 @@ namespace Tibia.Objects
                     Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), true);
 
                     // Move the rune back to it's original location
-                    allClear = allClear & newRune.Move(oldLocation);
+                    allClear = allClear & newRune.move(oldLocation);
 
                     // Return true if everything worked well, false if it did not
                     return allClear;

@@ -25,11 +25,11 @@ namespace Tibia.Objects
         {
             uint pointer;
 
-            objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount);
+            objectCount = client.readInt(address + Addresses.Map.Distance_Square_ObjectCount);
 
             // Get the tile data (first object)
             pointer = address + Addresses.Map.Distance_Square_Objects;
-            tile = new Tile(Convert.ToUInt32(client.ReadInt(pointer + Addresses.Map.Distance_Object_Id)));
+            tile = new Tile(Convert.ToUInt32(client.readInt(pointer + Addresses.Map.Distance_Object_Id)));
 
             // Get all the objects above the tile, first clear out the old objects
             objects.Clear();
@@ -40,9 +40,9 @@ namespace Tibia.Objects
                 pointer += Addresses.Map.Step_Square_Object;
 
                 objects.Add(new MapObject(
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Id),
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Data),
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Data_Ex)));
+                    client.readInt(pointer + Addresses.Map.Distance_Object_Id),
+                    client.readInt(pointer + Addresses.Map.Distance_Object_Data),
+                    client.readInt(pointer + Addresses.Map.Distance_Object_Data_Ex)));
             }
         }
     }

@@ -27,8 +27,8 @@ namespace Tibia.Objects
         {
             Item item;
             uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
-            byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
-            uint id = (uint) client.ReadInt(address);
+            byte count = client.readByte(address + Addresses.Player.Distance_Slot_Count);
+            uint id = (uint) client.readInt(address);
             if (id > 0)
             {
                 item = new Item(id, count, new ItemLocation(s), true);

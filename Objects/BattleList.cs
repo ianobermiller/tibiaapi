@@ -41,7 +41,7 @@ namespace Tibia.Objects
             List<Creature> creatures = new List<Creature>();
             for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
             {
-                if (client.ReadByte(i + Addresses.Creature.Distance_IsVisible) == 1)
+                if (client.readByte(i + Addresses.Creature.Distance_IsVisible) == 1)
                     creatures.Add(new Creature(client, i));
             }
             return creatures;

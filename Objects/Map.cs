@@ -29,7 +29,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public int ReplaceTile(Predicate<int> match, int newTileId)
         {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
             int replacedTileCount = 0;
 
             // search through map data
@@ -39,7 +39,7 @@ namespace Tibia.Objects
                 uint j = i + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id;
 
                 // read tile id
-                int tileId = client.ReadInt(j);
+                int tileId = client.readInt(j);
 
                 // skip blank ids
                 if (tileId == 0)
@@ -49,7 +49,7 @@ namespace Tibia.Objects
                 if (match(tileId))
                 {
                     // replace current tile id with new tile id
-                    client.WriteInt(j, newTileId);
+                    client.writeInt(j, newTileId);
                     replacedTileCount++;
                 }
             }
@@ -96,9 +96,9 @@ namespace Tibia.Objects
         /// <param name="match"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int ReplaceObject(Predicate<int> match, int newObjectId)
+        public int replaceObject(Predicate<int> match, int newObjectId)
         {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
             int replacedObjectCount = 0;
 
             // search through map data
@@ -111,7 +111,7 @@ namespace Tibia.Objects
                     addressId += Addresses.Map.Step_Square_Object;
 
                     // read object id
-                    int objectId = client.ReadInt(addressId);
+                    int objectId = client.readInt(addressId);
 
                     // skip blank ids
                     if (objectId > 0)
@@ -120,7 +120,7 @@ namespace Tibia.Objects
                         if (match(objectId))
                         {
                             // replace current object id with new object id
-                            client.WriteInt(addressId, newObjectId);
+                            client.writeInt(addressId, newObjectId);
                             replacedObjectCount++;
                         }
                     }
@@ -136,9 +136,9 @@ namespace Tibia.Objects
         /// <param name="oldObjectId"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int ReplaceObject(int oldObjectId, int newObjectId)
+        public int replaceObject(int oldObjectId, int newObjectId)
         {
-            return ReplaceObject(delegate(int i)
+            return replaceObject(delegate(int i)
             {
                 return i == oldObjectId;
             }, newObjectId);
@@ -150,9 +150,9 @@ namespace Tibia.Objects
         /// <param name="idList"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int ReplaceObject(List<int> idList, int newObjectId)
+        public int replaceObject(List<int> idList, int newObjectId)
         {
-            return ReplaceObject(delegate(int i)
+            return replaceObject(delegate(int i)
             {
                 return idList.Contains(i);
             }, newObjectId);
@@ -171,7 +171,7 @@ namespace Tibia.Objects
                 3637, 3638, 3639, 3640, 3641,
                 3647, 3649 };
             List<int> trees = new List<int>(treearray);
-            return ReplaceObject(trees, 3682);
+            return replaceObject(trees, 3682);
         }
 
         #endregion
@@ -180,25 +180,25 @@ namespace Tibia.Objects
         /// Find player on local map
         /// </summary>
         /// <returns></returns>
-        public Tile GetPlayerSquare()
+        public Tile getPlayerSquare()
         {
             Tile playerLocation = new Tile();
 
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
 
             uint squarePointer = mapBegin;
 
             for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
             {
-                if (client.ReadInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount) > 1)
+                if (client.readInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount) > 1)
                 {
                     uint objectPointer = squarePointer + Addresses.Map.Distance_Square_Objects;
                     for (uint j = 0; j < Addresses.Map.Max_Square_Objects; j++)
                     {
-                        if (client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
+                        if (client.readInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
                         {
-                            int objectId = client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Data);
-                            int playerId = client.ReadInt(Addresses.Player.Id);
+                            int objectId = client.readInt(objectPointer + Addresses.Map.Distance_Object_Data);
+                            int playerId = client.readInt(Addresses.Player.Id);
                             if (objectId == playerId)
                             {
                                 playerLocation.Id = i;
@@ -221,7 +221,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="squareNumber"></param>
         /// <returns></returns>
-        public static Location SquareNumberToLocation(uint squareNumber)
+        public static Location squareNumberToLocation(uint squareNumber)
         {
             Location l = new Location();
 
@@ -237,16 +237,16 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="squareNumber"></param>
         /// <returns></returns>
-        public Location GetAbsoluteLocation(uint squareNumber)
+        public Location getAbsoluteLocation(uint squareNumber)
         {
-            Tile player = GetPlayerSquare();
-            Location playerRelative = SquareNumberToLocation(player.Id);
+            Tile player = getPlayerSquare();
+            Location playerRelative = squareNumberToLocation(player.Id);
 
             int xAdjustment = player.Location.X - playerRelative.X;
             int yAdjustment = player.Location.Y - playerRelative.Y;
             int zAdjustment = player.Location.Z - playerRelative.Z;
 
-            Location squareRelative = SquareNumberToLocation(squareNumber);
+            Location squareRelative = squareNumberToLocation(squareNumber);
             return new Location(
                 squareRelative.X + xAdjustment,
                 squareRelative.Y + yAdjustment,

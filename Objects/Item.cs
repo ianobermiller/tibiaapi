@@ -51,7 +51,7 @@ namespace Tibia.Objects
         /// Use the item (eg. eat food).
         /// </summary>
         /// <returns></returns>
-        public bool Use()
+        public bool use()
         {
             if (client == null) return false;
             
@@ -60,14 +60,14 @@ namespace Tibia.Objects
             packet[01] = 0x00;
             packet[02] = 0x82;
 
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+            Array.Copy(itemLocationToBytes(Loc), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(Id);
             packet[09] = Packet.Hi(Id);
             packet[10] = packet[07];
             packet[11] = 0x01;
 
-            return client.Send(packet);
+            return client.send(packet);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="onTile"></param>
         /// <returns></returns>
-        public bool Use(Objects.Tile onTile)
+        public bool use(Objects.Tile onTile)
         {
             if (client == null) return false;
             
@@ -85,7 +85,7 @@ namespace Tibia.Objects
             packet[01] = 0x00;
             packet[02] = 0x83;
 
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+            Array.Copy(itemLocationToBytes(Loc), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(Id);
             packet[09] = Packet.Hi(Id);
@@ -99,7 +99,7 @@ namespace Tibia.Objects
             packet[17] = 0x00;
             packet[18] = Packet.Lo(onTile.Id);
 
-            return client.Send(packet);
+            return client.send(packet);
         }
 
         /// <summary>
@@ -108,12 +108,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="onItem"></param>
         /// <returns></returns>
-        public bool Use(Objects.Item onItem)
+        public bool use(Objects.Item onItem)
         {
             if (client == null) return false;
             byte[] packet = null;
 
-            return client.Send(packet);
+            return client.send(packet);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="onCreature"></param>
         /// <returns></returns>
-        public bool Use(Objects.Creature onCreature)
+        public bool use(Objects.Creature onCreature)
         {
             if (client == null) return false;
 
@@ -139,7 +139,7 @@ namespace Tibia.Objects
                     packet[01] = 0x00;
                     packet[02] = 0x83;
 
-                    Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+                    Array.Copy(itemLocationToBytes(Loc), 0, packet, 3, 5);
 
                     packet[08] = Packet.Lo(Id);
                     packet[09] = Packet.Hi(Id);
@@ -158,7 +158,7 @@ namespace Tibia.Objects
                     packet[17] = 0x00;
                     packet[18] = 0x01;
 
-                    return client.Send(packet);
+                    return client.send(packet);
 
                     break;
 
@@ -185,7 +185,7 @@ namespace Tibia.Objects
                     packet[13] = BitConverter.GetBytes(onCreature.Id)[2];
                     packet[14] = BitConverter.GetBytes(onCreature.Id)[3];
 
-                    return client.Send(packet);
+                    return client.send(packet);
 
                 default:
                     return false;
@@ -197,11 +197,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="toLocation"></param>
         /// <returns></returns>
-        public bool Move(Objects.ItemLocation toLocation)
+        public bool move(Objects.ItemLocation toLocation)
         {
             if (client == null) return false;
             
-            return Move(new Objects.Item(toLocation));
+            return move(new Objects.Item(toLocation));
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="toItem"></param>
         /// <returns></returns>
-        public bool Move(Objects.Item toItem)
+        public bool move(Objects.Item toItem)
         {
             if (client == null) return false;
 
@@ -218,18 +218,18 @@ namespace Tibia.Objects
             packet[01] = 0x00;
             packet[02] = 0x78;
 
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+            Array.Copy(itemLocationToBytes(Loc), 0, packet, 3, 5);
 
             packet[08] = Packet.Lo(Id);
             packet[09] = Packet.Hi(Id);
 
             packet[10] = packet[07];
 
-            Array.Copy(ItemLocationToBytes(toItem.Loc), 0, packet, 11, 5);
+            Array.Copy(itemLocationToBytes(toItem.Loc), 0, packet, 11, 5);
 
             packet[16] = Count;
 
-            return client.Send(packet);
+            return client.send(packet);
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public static byte[] ItemLocationToBytes(Objects.ItemLocation location)
+        public static byte[] itemLocationToBytes(Objects.ItemLocation location)
         {            
             byte[] bytes = new byte[5];
 
