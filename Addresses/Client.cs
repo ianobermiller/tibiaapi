@@ -85,38 +85,17 @@ namespace Tibia.Addresses
         public static uint See_Count = 0x766EA4; // also 0x00766EB0
         public static uint See_Z = 0x766E00; // also 0x00766E10
 
-        /// <summary>
-        /// Login server IP.
-        /// </summary>
-        public static uint LoginServer1 = 0x75EAE8; //8.0
-        public static uint LoginServer2 = 0x75EB58; //8.0
-        public static uint LoginServer3 = 0x75EBC8; //8.0
-        public static uint LoginServer4 = 0x75EC38; //8.0
-        public static uint LoginServer5 = 0x75ECA8; //8.0
-        public static uint LoginServer6 = 0x75ED18; //8.0
-        public static uint LoginServer7 = 0x75ED88; //8.0
-        public static uint LoginServer8 = 0x75EDF8; //8.0
-        public static uint LoginServer9 = 0x75EE68; //8.0
-        public static uint LoginServer0 = 0x75EED8; //8.0
-
-        /// <summary>
-        /// Server port.
-        /// </summary>
-        public static uint PortServer1 = 0x75EB4C; //8.0
-        public static uint PortServer2 = 0x75EBBC; //8.0
-        public static uint PortServer3 = 0x75EC2C; //8.0
-        public static uint PortServer4 = 0x75EC9C; //8.0
-        public static uint PortServer5 = 0x75ED0C; //8.0
-        public static uint PortServer6 = 0x75ED7C; //8.0
-        public static uint PortServer7 = 0x75EDEC; //8.0
-        public static uint PortServer8 = 0x75EE5C; //8.0
-        public static uint PortServer9 = 0x75EECC; //8.0
-        public static uint PortServer0 = 0x75EADC; //8.0
+        // Login Server addresses
+        public static uint LoginServerStart = 0x75EAE8; //8.0
+		  public static uint Step_LoginServer = 112;
+		  public static uint Distance_Port = 100;
+		  public static uint Max_LoginServers = 10;
 
         /// <summary>
         /// RSA Key Adress
         /// </summary>
         public static uint RSAAdress = 0x593610;
+		  
         /// <summary>
         /// Login character list.
         /// </summary>
