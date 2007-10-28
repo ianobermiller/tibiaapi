@@ -153,7 +153,7 @@ namespace Tibia.Objects
             set { client.WriteInt(address + Addresses.Creature.Distance_Party, (int)value); }
         }
 
-        public int Outfit
+        public Constants.Outfit Outfit
         {
             get { return client.ReadInt(address + Addresses.Creature.Distance_Outfit); }
             set { client.WriteInt(address + Addresses.Creature.Distance_Outfit, value); }
