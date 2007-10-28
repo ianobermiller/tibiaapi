@@ -242,6 +242,47 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Set the client to connect to a different server and port.
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public bool SetServer(string ip, int port)
+        {
+            // 25
+            bool result = true;
+            long pointer = Addresses.Client.LoginServerStart;
+
+            ip += (char)0;
+
+            for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+            {
+                result &= WriteString(pointer, ip);
+                result &= WriteInt(pointer + Addresses.Client.Distance_Port, port);
+                pointer += Addresses.Client.Step_LoginServer;
+            }
+
+            result &= SetRSA(Constants.RSAKey.OpenTibia);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Set the client to connect to an OT server (changes IP, port, and RSA key).
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public bool SetOT(string ip, int port)
+        {
+            bool result = SetServer(ip, port);
+            
+            result &= SetRSA(Constants.RSAKey.OpenTibia);
+
+            return result;
+        }
+
+        /// <summary>
         /// Make a rune. Drags a blank to the right hand, casts the words, and moved the new rune back.
         /// TODO add option to change the hand and a method to make sure the hand is free.
         /// TODO add option to check for soul points

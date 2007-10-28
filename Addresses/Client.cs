@@ -87,9 +87,9 @@ namespace Tibia.Addresses
 
         // Login Server addresses
         public static uint LoginServerStart = 0x75EAE8; //8.0
-		  public static uint Step_LoginServer = 112;
-		  public static uint Distance_Port = 100;
-		  public static uint Max_LoginServers = 10;
+        public static uint Step_LoginServer = 112;
+        public static uint Distance_Port = 100;
+        public static uint Max_LoginServers = 10;
 
         /// <summary>
         /// RSA Key Adress
