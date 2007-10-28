@@ -114,6 +114,10 @@ namespace Tibia.Addresses
         public static uint PortServer0 = 0x75EADC; //8.0
 
         /// <summary>
+        /// RSA Key Adress
+        /// </summary>
+        public static uint RSAAdress = 0x593610;
+        /// <summary>
         /// Login character list.
         /// </summary>
         public static uint LoginCharList = 0x766DBC;
