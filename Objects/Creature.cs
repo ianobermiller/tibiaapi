@@ -153,9 +153,9 @@ namespace Tibia.Objects
             set { client.WriteInt(address + Addresses.Creature.Distance_Party, (int)value); }
         }
 
-        public Constants.Outfit Outfit
+        public Constants.OutfitType Outfit
         {
-            get { return (Constants.Outfit)client.ReadInt(address + Addresses.Creature.Distance_Outfit); }
+            get { return (Constants.OutfitType)client.ReadInt(address + Addresses.Creature.Distance_Outfit); }
             set { client.WriteInt(address + Addresses.Creature.Distance_Outfit, (int)value); }
         }
         public int Color_Head

@@ -130,12 +130,12 @@ namespace Tibia.Objects
 
             List<Creature> creatures = getCreatures(delegate(Creature c)
             {
-                return c.Outfit == Convert.ToInt32(Constants.OutfitType.Invisible);
+                return c.Outfit == Constants.OutfitType.Invisible;
             });
 
             foreach(Creature c in creatures)
             {
-                c.Outfit = Convert.ToInt32(outfitType);
+                c.Outfit = outfitType;
                 replacedCount++;
             }
 
