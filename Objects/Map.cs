@@ -158,6 +158,10 @@ namespace Tibia.Objects
             }, newObjectId);
         }
 
+        /// <summary>
+        /// Replace all the trees on the map with small fir trees.
+        /// </summary>
+        /// <returns></returns>
         public int replaceTrees()
         {
             int[] treearray = { 3608, 3614, 3615, 3616, 3617,
