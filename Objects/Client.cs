@@ -232,6 +232,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Set the RSA key, wrapper for Memory.WriteRSA
+        /// </summary>
+        /// <param name="newKey"></param>
+        /// <returns></returns>
+        public bool SetRSA(string newKey)
+        {
+            return Memory.WriteRSA(getProcess(), Addresses.Client.RSA, newKey);
+        }
+
+        /// <summary>
         /// Make a rune. Drags a blank to the right hand, casts the words, and moved the new rune back.
         /// TODO add option to change the hand and a method to make sure the hand is free.
         /// TODO add option to check for soul points

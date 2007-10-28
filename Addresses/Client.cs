@@ -94,7 +94,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSAAdress = 0x593610;
+        public static uint RSA = 0x593610;
 		  
         /// <summary>
         /// Login character list.

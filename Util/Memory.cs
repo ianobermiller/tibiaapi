@@ -9,32 +9,34 @@ namespace Tibia
     /// </summary>
     public static class Memory
     {
+        public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
+        public const uint PROCESS_VM_READ = 0x0010;
+        public const uint PROCESS_VM_WRITE = 0x0020;
+        public const uint PROCESS_VM_OPERATION = 0x0008;
+
+        public const uint PAGE_EXECUTE_READWRITE = 0x40;
+
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
         [DllImport("kernel32.dll")]
         public static extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
             [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesRead);
-
-        public const uint PROCESS_VM_READ = 0x0010;
-        public const uint PROCESS_VM_WRITE = 0x0020;
-        public const uint PROCESS_VM_OPERATION = 0x0008;
-
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, 
+            IntPtr dwSize, uint flNewProtect, ref uint lpflOldProtect);
         [DllImport("kernel32.dll")]
         public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
             [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
-        [DllImport("kernel32.dll")]
-        private static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, 
-            [In, Out] uint[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
         [DllImport("kernel32.dll")]
         public static extern Int32 CloseHandle(IntPtr hObject);
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
-        static extern IntPtr SetActiveWindow(IntPtr hWnd);
+        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
         [DllImport("user32.dll", SetLastError = true)]
-        static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
+        public static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowText(IntPtr hWnd, string newTitle);
+        public static extern IntPtr SetWindowText(IntPtr hWnd, string newTitle);
 
         /// <summary>
         /// Read a specified number of bytes from a process.
@@ -157,6 +159,41 @@ namespace Tibia
             System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
             byte[] bytes = enc.GetBytes(str);
             return WriteBytes(process, address, bytes, (uint)bytes.Length);
+        }
+
+        /// <summary>
+        /// Set the RSA key. Different from WriteString because must overcome protection.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="address"></param>
+        /// <param name="newKey"></param>
+        /// <returns></returns>
+        public static bool WriteRSA(Process process, long address, string newKey)
+        {
+            IntPtr handle;
+            IntPtr bytesWritten;
+            int result;
+            uint oldProtection = 0;
+
+            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
+            byte[] bytes = enc.GetBytes(newKey);
+
+            // Use the pid to get a Process Handle
+            handle = OpenProcess(PROCESS_ALL_ACCESS, 0, (uint)process.Id);
+
+            // Make it so we can write to the memory block
+            VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), PAGE_EXECUTE_READWRITE, ref oldProtection);
+
+            // Write to memory
+            result = WriteProcessMemory(handle, new IntPtr(address), bytes, (uint)bytes.Length, out bytesWritten);
+
+            // Put the protection back on the memory block
+            VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), oldProtection, ref oldProtection);
+
+            // Close the process handle
+            CloseHandle(handle);
+
+            return (result != 0);
         }
     }
 }
