@@ -531,4 +531,15 @@ namespace Tibia.Constants
     }
 
     #endregion
+    #region VipList
+    public enum VipStatus
+    {
+        Online = 1,
+        Offline = 0
+    }
+    public enum VipIcon
+    {
+
+    }
+    #endregion
 }
