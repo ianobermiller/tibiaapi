@@ -62,5 +62,24 @@ namespace Tibia.Objects
             }
             return players;
         }
+
+        /// <summary>
+        /// Gets list of player with specific icon
+        /// </summary>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public List<Vip> getIcon(Constants.VipIcon icon)
+        {
+            List<Vip> players = new List<Vip>();
+            for (uint i = Addresses.VipList.Start; i < Addresses.VipList.End; i += Addresses.VipList.Step_Players)
+            {
+                Vip vip = new Vip(client, i);
+                if (vip.Icon == icon)
+                {
+                    players.Add(vip);
+                }
+            }
+            return players;
+        }
     }
 }

@@ -539,6 +539,17 @@ namespace Tibia.Constants
     }
     public enum VipIcon
     {
+        Blank = 0,
+        Heart = 1,
+        Skull = 2,
+        Lightning = 3,
+        Crosshair = 4,
+        Star = 5,
+        YinYang = 6,
+        Triangle = 7,
+        X = 8,
+        Dollar = 9,
+        Cross = 10,
 
     }
     #endregion

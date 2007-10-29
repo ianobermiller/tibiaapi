@@ -34,6 +34,11 @@ namespace Tibia.Objects
             get { return (Constants.VipStatus)client.readByte(address + Addresses.Vip.Distance_Status); }
             set { client.writeByte(address + Addresses.Vip.Distance_Status, (byte)value); }
         }
+        public Constants.VipIcon Icon
+        {
+            get { return (Constants.VipIcon)client.readByte(address + Addresses.Vip.Distance_Icon); }
+            set { client.writeByte(address + Addresses.Vip.Distance_Icon, (byte)value); }
+        }
         #endregion
     }
 }
