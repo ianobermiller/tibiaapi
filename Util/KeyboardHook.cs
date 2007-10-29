@@ -6,41 +6,65 @@ namespace Tibia
     public class KeyboardHook
     {
         public Objects.Client client;
+
         public KeyboardHook(Objects.Client c)
         {
             client = c;
         }
-        [DllImport("user32.dll", SetLastError=true)]
-        public static extern int RegisterHotKey(Int32 hProcess, int id, int fsModifiers, int vk);
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int UnregisterHotKey(Int32 hProcess, int id);
-        private const int MOD_ALT = 1;
-        private const int MOD_CONTROL = 2;
-        private const int MOD_SHIFT = 4;
-        private const int MOD_WIN = 8;
-        short hotkeyID;
-        public enum Keys : int
+
+        public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        //The handle to the hook (used for installing/uninstalling it).
+        public static int hHook = 0;
+
+        //This is the Import for the SetWindowsHookEx function.
+        //Use this function to install a thread-specific hook.
+        [DllImport("user32.dll", CharSet = CharSet.Auto,
+         CallingConvention = CallingConvention.StdCall)]
+        public static extern int SetWindowsHookEx(int idHook, HookProc lpfn,
+        IntPtr hInstance, int threadId);
+
+        //This is the Import for the UnhookWindowsHookEx function.
+        //Call this function to uninstall the hook.
+        [DllImport("user32.dll", CharSet = CharSet.Auto,
+         CallingConvention = CallingConvention.StdCall)]
+        public static extern bool UnhookWindowsHookEx(int idHook);
+
+        //This is the Import for the CallNextHookEx function.
+        //Use this function to pass the hook information to the next hook procedure in chain.
+        [DllImport("user32.dll", CharSet = CharSet.Auto,
+         CallingConvention = CallingConvention.StdCall)]
+        public static extern int CallNextHookEx(int idHook, int nCode,
+        IntPtr wParam, IntPtr lParam);
+
+        public void InstallHook(int HookType, HookProc TheProc)
         {
-            Insert = 0x2D,       
+            hHook = SetWindowsHookEx(HookType, TheProc, (IntPtr)0, AppDomain.GetCurrentThreadId());
         }
-        public void RegisterGlobalHotkey(Keys hotkey,int id, int modifiers)
+
+        public void UninstallHook()
         {
-            try
-            {
-                if (RegisterHotKey(client.getProcess().Id, id, modifiers, (int)hotkey) == 0)
-                {
-                    throw new Exception("Doesnt work: " + Marshal.GetLastWin32Error().ToString());
-                }
-                
-            }
-            catch (Exception e)
-            {
-                UnregisterGlobalHotkey(id);
-            }
+            UnhookWindowsHookEx(hHook);
         }
-        public void UnregisterGlobalHotkey(int id)
+
+        public enum HookTypes : int
         {
-            UnregisterHotKey(client.getProcess().Id, id);
+            
+            WH_KEYBOARD = 2,
+            WH_GETMESSAGE = 3,
+            WH_CALLWNDPROC = 4,
+            WH_CBT = 5,
+            WH_SYSMSGFILTER = 6,
+            WH_MOUSE = 7,
+            WH_HARDWARE = 8,
+            WH_DEBUG = 9,
+            WH_SHELL = 10,
+            WH_FOREGROUNDIDLE = 11,
+            WH_CALLWNDPROCRET = 12,
+            WH_KEYBOARD_LL = 13,
+            WH_MOUSE_LL = 14
         }
+
+
     }
 }
