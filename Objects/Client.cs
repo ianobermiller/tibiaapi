@@ -170,6 +170,15 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's version
+        /// </summary>
+        /// <returns></returns>
+        public string getVersion()
+        {
+            return process.MainModule.FileVersionInfo.FileVersion;
+        }
+
+        /// <summary>
         /// Get the client's battlelist.
         /// </summary>
         /// <returns></returns>
