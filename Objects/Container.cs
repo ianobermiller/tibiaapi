@@ -58,6 +58,24 @@ namespace Tibia.Objects
             return items;
         }
 
+        /// <summary>
+        /// TODO Close this container (packet function)
+        /// </summary>
+        /// <returns></returns>
+        public bool Close()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// TODO Open this containers parent container (packet)
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenParent()
+        {
+
+        }
+
         /** Get and set various aspects of the container **/
         #region Get/Set Methods
         public int Id
