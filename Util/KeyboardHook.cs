@@ -21,7 +21,7 @@ namespace Tibia
         short hotkeyID;
         public enum Keys : int
         {
-            Insert = 0x312,       
+            Insert = 0x2D,       
         }
         public void RegisterGlobalHotkey(Keys hotkey,int id, int modifiers)
         {
