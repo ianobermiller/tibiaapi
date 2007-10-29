@@ -15,7 +15,7 @@ namespace Tibia.Objects
         public List<Vip> getPlayers()
         {
             List<Vip> players = new List<Vip>();
-            for (uint i = Addresses.VipList.Start; i < Addresses.VipList.End; i += Addresses.VipList.Step_Players)
+            for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
             {
                 players.Add(new Vip(client,i));
             }
@@ -52,7 +52,7 @@ namespace Tibia.Objects
         public List<Vip> getOnline()
         {
             List<Vip> players = new List<Vip>();
-            for (uint i = Addresses.VipList.Start; i < Addresses.VipList.End; i += Addresses.VipList.Step_Players)
+            for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
             {
                 Vip vip = new Vip(client, i);
                 if (vip.Status == Constants.VipStatus.Online)
@@ -71,7 +71,7 @@ namespace Tibia.Objects
         public List<Vip> getPlayers(Constants.VipIcon icon)
         {
             List<Vip> players = new List<Vip>();
-            for (uint i = Addresses.VipList.Start; i < Addresses.VipList.End; i += Addresses.VipList.Step_Players)
+            for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
             {
                 Vip vip = new Vip(client, i);
                 if (vip.Icon == icon)

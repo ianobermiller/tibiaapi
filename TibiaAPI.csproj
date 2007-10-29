@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Addresses\VipList.cs" />
+    <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemList.cs" />
     <Compile Include="Constants\Tiles.cs" />
