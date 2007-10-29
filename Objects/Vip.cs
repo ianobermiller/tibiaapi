@@ -8,6 +8,7 @@ namespace Tibia.Objects
     {
         protected Client client;
         protected uint address;
+
         public Vip(Client c, uint a)
         {
             client = c;
@@ -18,7 +19,9 @@ namespace Tibia.Objects
             get { return address; }
             set { address = value; }
         }
-#region Get/Set Methods
+
+        #region Get/Set Methods
+
         public int Id
         {
             get { return client.readInt(address + Addresses.Vip.Distance_Id); }
@@ -39,6 +42,7 @@ namespace Tibia.Objects
             get { return (Constants.VipIcon)client.readByte(address + Addresses.Vip.Distance_Icon); }
             set { client.writeByte(address + Addresses.Vip.Distance_Icon, (byte)value); }
         }
+
         #endregion
     }
 }

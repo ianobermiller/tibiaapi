@@ -68,7 +68,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="icon"></param>
         /// <returns></returns>
-        public List<Vip> getIcon(Constants.VipIcon icon)
+        public List<Vip> getPlayers(Constants.VipIcon icon)
         {
             List<Vip> players = new List<Vip>();
             for (uint i = Addresses.VipList.Start; i < Addresses.VipList.End; i += Addresses.VipList.Step_Players)

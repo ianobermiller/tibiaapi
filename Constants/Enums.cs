@@ -531,7 +531,9 @@ namespace Tibia.Constants
     }
 
     #endregion
+
     #region VipList
+
     public enum VipStatus
     {
         Online = 1,
@@ -552,5 +554,6 @@ namespace Tibia.Constants
         Cross = 10,
 
     }
+
     #endregion
 }
