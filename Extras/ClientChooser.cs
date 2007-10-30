@@ -17,7 +17,7 @@ namespace Tibia
 
         public static Objects.Client ShowBox()
         {
-            List<Objects.Client> clients = Objects.Client.getClients();
+            List<Objects.Client> clients = Objects.Client.GetClients();
             if (clients.Count == 0) return null;
             newClientChooser = new ClientChooser();
             newClientChooser.uxClients.DataSource = clients;

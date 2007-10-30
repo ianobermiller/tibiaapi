@@ -23,7 +23,7 @@ namespace Tibia.Objects
         /// Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open.
         /// </summary>
         /// <returns></returns>
-        public List<Container> getContainers()
+        public List<Container> GetContainers()
         {
             byte containerNumber = 0;
             List<Container> containers = new List<Container>();
@@ -41,13 +41,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="match">A delegate that returns true when a matched item is found.</param>
         /// <returns>Item object describing the item and its location.</returns>
-        public Item findItem(Predicate<Item> match)
+        public Item FindItem(Predicate<Item> match)
         {
             Item item = new Item(client, false);
-            List<Container> containers = getContainers();
+            List<Container> containers = GetContainers();
             foreach (Container c in containers)
             {
-                item = c.getItems().Find(match);
+                item = c.GetItems().Find(match);
                 if (item != null) return item;
             }
             return item;
@@ -58,9 +58,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="itemId"></param>
         /// <returns>Item object describing the item and its location.</returns>
-        public Item findItem(uint itemId)
+        public Item FindItem(uint itemId)
         {
-            return findItem(delegate(Item i)
+            return FindItem(delegate(Item i)
             {
                 return i.Id == itemId;
             });
@@ -72,11 +72,11 @@ namespace Tibia.Objects
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns>Item object describing the item and its location.</returns>
-        public Item findItem<T>(List<T> list) where T : Item
+        public Item FindItem<T>(List<T> list) where T : Item
         {
-            return findItem(delegate(Item i)
+            return FindItem(delegate(Item i)
             {
-                return i.isInList(list);
+                return i.IsInList(list);
             });
         }
 
@@ -86,7 +86,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Item getItem(ItemLocation location)
+        public Item GetItem(ItemLocation location)
         {
             return null;
         }

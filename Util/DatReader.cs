@@ -7,16 +7,18 @@ namespace Tibia
 {
     public class DatReader
     {
-        protected Objects.Client client;
-        protected string file;
-        protected byte tbyte;
-        protected byte option;
-        protected int Id;
+        private Objects.Client client;
+        private string file;
+        private byte tbyte;
+        private byte option;
+        private int Id;
+
         public DatReader(Objects.Client c, string f)
         {
             client = c;
             file = f;
         }
+
         public List<DatItem> ReadDatFile()
         {
             List<DatItem> Items = new List<DatItem>();

@@ -12,7 +12,7 @@ namespace Tibia.Objects
             client = c;
         }
 
-        public List<Vip> getPlayers()
+        public List<Vip> GetPlayers()
         {
             List<Vip> players = new List<Vip>();
             for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
@@ -26,9 +26,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Vip getPlayer(int id)
+        public Vip GetPlayer(int id)
         {
-            return getPlayers().Find(delegate(Vip v)
+            return GetPlayers().Find(delegate(Vip v)
                 {
                     return v.Id == id;
                 });
@@ -38,9 +38,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="playerName"></param>
         /// <returns></returns>
-        public Vip getPlayer(string playerName)
+        public Vip GetPlayer(string playerName)
         {
-            return getPlayers().Find(delegate(Vip v)
+            return GetPlayers().Find(delegate(Vip v)
             {
                 return v.Name.Equals(playerName, StringComparison.CurrentCultureIgnoreCase);
             });
@@ -49,7 +49,7 @@ namespace Tibia.Objects
         /// Gets a list of online players in viplist
         /// </summary>
         /// <returns></returns>
-        public List<Vip> getOnline()
+        public List<Vip> GetOnline()
         {
             List<Vip> players = new List<Vip>();
             for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
@@ -68,7 +68,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="icon"></param>
         /// <returns></returns>
-        public List<Vip> getPlayers(Constants.VipIcon icon)
+        public List<Vip> GetPlayers(Constants.VipIcon icon)
         {
             List<Vip> players = new List<Vip>();
             for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
@@ -101,7 +101,7 @@ namespace Tibia.Objects
             packet[04] = Packet.Hi(name.Length);
             Array.Copy(enc.GetBytes(name), 0, packet, 5, name.Length);
             
-            return client.send(packet);
+            return client.Send(packet);
         }
     }
 }

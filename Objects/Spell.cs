@@ -201,9 +201,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="spellNameOrWords"></param>
         /// <returns></returns>
-        public Spell findSpell(string spellNameOrWords)
+        public Spell FindSpell(string spellNameOrWords)
         {
-            return findSpell(spellNameOrWords, false);
+            return FindSpell(spellNameOrWords, false);
         }
         
         /// <summary>
@@ -212,7 +212,7 @@ namespace Tibia.Objects
         /// <param name="spellNameOrWords"></param>
         /// <param name="wholeWord">if true, function only returns a spell whose words match exactly those in spellNameOrWords, if false, it returns a partial match as well</param>
         /// <returns></returns>
-        public Spell findSpell(string spellNameOrWords, bool wholeWord)
+        public Spell FindSpell(string spellNameOrWords, bool wholeWord)
         {
             return this.Find(delegate(Spell s)
             {
@@ -230,7 +230,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="spellCategory"></param>
         /// <returns></returns>
-        public List<Spell> findSpells(Constants.SpellCategory spellCategory)
+        public List<Spell> FindSpells(Constants.SpellCategory spellCategory)
         {
             return this.FindAll(delegate(Spell s)
             {
@@ -243,7 +243,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="spellType"></param>
         /// <returns></returns>
-        public List<Spell> findSpells(Constants.SpellType spellType)
+        public List<Spell> FindSpells(Constants.SpellType spellType)
         {
             return this.FindAll(delegate(Spell s)
             {
@@ -256,7 +256,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="requiredMana"></param>
         /// <returns></returns>
-        public List<Spell> findSpells(uint requiredMana)
+        public List<Spell> FindSpells(uint requiredMana)
         {
             return this.FindAll(delegate(Spell s)
             {

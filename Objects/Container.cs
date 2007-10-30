@@ -29,7 +29,7 @@ namespace Tibia.Objects
         /// Get the container's address.
         /// </summary>
         /// <returns></returns>
-        public uint getAddress()
+        public uint GetAddress()
         {
             return address;
         }
@@ -38,7 +38,7 @@ namespace Tibia.Objects
         /// Return a list of all the items in the container.
         /// </summary>
         /// <returns></returns>
-        public List<Item> getItems()
+        public List<Item> GetItems()
         {
             byte slot = 0;
             int amount = Amount;
@@ -65,11 +65,13 @@ namespace Tibia.Objects
         public bool OpenParent()
         {
             byte[] packet = new byte[4];
+
             packet[0] = 0x02;
             packet[1] = 0x00;
             packet[2] = 0x88;
-            packet[3] = Packet.Lo(number);
-            return client.send(packet);
+            packet[3] = number;
+
+            return client.Send(packet);
         }
 
         /** Get and set various aspects of the container **/

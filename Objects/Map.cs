@@ -180,7 +180,7 @@ namespace Tibia.Objects
         /// Find player on local map
         /// </summary>
         /// <returns></returns>
-        public Tile getPlayerSquare()
+        public Tile GetPlayerSquare()
         {
             Tile playerLocation = new Tile();
 
@@ -202,7 +202,7 @@ namespace Tibia.Objects
                             if (objectId == playerId)
                             {
                                 playerLocation.Id = i;
-                                Player player = client.getPlayer();
+                                Player player = client.GetPlayer();
                                 playerLocation.Location = new Location(player.X, player.Y, player.Z);
                                 return playerLocation;
                             }
@@ -221,7 +221,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="squareNumber"></param>
         /// <returns></returns>
-        public static Location squareNumberToLocation(uint squareNumber)
+        public static Location SquareNumberToLocation(uint squareNumber)
         {
             Location l = new Location();
 
@@ -237,16 +237,16 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="squareNumber"></param>
         /// <returns></returns>
-        public Location getAbsoluteLocation(uint squareNumber)
+        public Location GetAbsoluteLocation(uint squareNumber)
         {
-            Tile player = getPlayerSquare();
-            Location playerRelative = squareNumberToLocation(player.Id);
+            Tile player = GetPlayerSquare();
+            Location playerRelative = SquareNumberToLocation(player.Id);
 
             int xAdjustment = player.Location.X - playerRelative.X;
             int yAdjustment = player.Location.Y - playerRelative.Y;
             int zAdjustment = player.Location.Z - playerRelative.Z;
 
-            Location squareRelative = squareNumberToLocation(squareNumber);
+            Location squareRelative = SquareNumberToLocation(squareNumber);
             return new Location(
                 squareRelative.X + xAdjustment,
                 squareRelative.Y + yAdjustment,

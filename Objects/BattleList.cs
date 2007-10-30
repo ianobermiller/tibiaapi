@@ -19,7 +19,7 @@ namespace Tibia.Objects
             client = c;
         }
 
-        public List<Creature> getCreatures(Predicate<Creature> match)
+        public List<Creature> GetCreatures(Predicate<Creature> match)
         {
             List<Creature> creatures = new List<Creature>();
             for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
@@ -36,7 +36,7 @@ namespace Tibia.Objects
         /// Get a list of all the creatures on the battlelist.
         /// </summary>
         /// <returns></returns>
-        public List<Creature> getCreatures()
+        public List<Creature> GetCreatures()
         {
             List<Creature> creatures = new List<Creature>();
             for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
@@ -52,9 +52,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="creatureName"></param>
         /// <returns></returns>
-        public List<Creature> getCreatures(string creatureName)
+        public List<Creature> GetCreatures(string creatureName)
         {
-            return getCreatures(creatureName, false);
+            return GetCreatures(creatureName, false);
         }
 
         /// <summary>
@@ -63,9 +63,9 @@ namespace Tibia.Objects
         /// <param name="creatureName"></param>
         /// <param name="wholeWord"></param>
         /// <returns></returns>
-        public List<Creature> getCreatures(string creatureName, bool wholeWord)
+        public List<Creature> GetCreatures(string creatureName, bool wholeWord)
         {
-            return getCreatures().FindAll(delegate(Creature c)
+            return GetCreatures().FindAll(delegate(Creature c)
             {
                 if (wholeWord)
                     return c.Name.Equals(creatureName, StringComparison.CurrentCultureIgnoreCase);
@@ -79,9 +79,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Creature getCreature(int id)
+        public Creature GetCreature(int id)
         {
-            return getCreatures().Find(delegate(Creature c)
+            return GetCreatures().Find(delegate(Creature c)
             {
                 return c.Id == id;
             });
@@ -92,9 +92,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="creatureName"></param>
         /// <returns></returns>
-        public Creature getCreature(string creatureName)
+        public Creature GetCreature(string creatureName)
         {
-            return getCreature(creatureName, false);
+            return GetCreature(creatureName, false);
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace Tibia.Objects
         /// <param name="creatureName"></param>
         /// <param name="wholeWord"></param>
         /// <returns></returns>
-        public Creature getCreature(string creatureName, bool wholeWord)
+        public Creature GetCreature(string creatureName, bool wholeWord)
         {
-            return getCreatures().Find(delegate(Creature c)
+            return GetCreatures().Find(delegate(Creature c)
             {
                 if (wholeWord)
                     return c.Name.Equals(creatureName, StringComparison.CurrentCultureIgnoreCase);
@@ -114,9 +114,9 @@ namespace Tibia.Objects
             });
         }
 
-        public int showInvisible()
+        public int ShowInvisible()
         {
-            return showInvisible(Constants.OutfitType.OldMale);
+            return ShowInvisible(Constants.OutfitType.OldMale);
         }
 
         /// <summary>
@@ -124,11 +124,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="outfitType"></param>
         /// <returns></returns>
-        public int showInvisible(Constants.OutfitType outfitType)
+        public int ShowInvisible(Constants.OutfitType outfitType)
         {
             int replacedCount = 0;
 
-            List<Creature> creatures = getCreatures(delegate(Creature c)
+            List<Creature> creatures = GetCreatures(delegate(Creature c)
             {
                 return c.Outfit == Constants.OutfitType.Invisible;
             });

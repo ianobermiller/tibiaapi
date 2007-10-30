@@ -46,7 +46,7 @@ namespace Tibia
         {
             try
             {
-                return SendPacket((uint)client.getProcess().Id, packet, Convert.ToByte(encrypt), 0);
+                return SendPacket((uint)client.GetProcess().Id, packet, Convert.ToByte(encrypt), 0);
             }
             catch (AccessViolationException ave)
             {

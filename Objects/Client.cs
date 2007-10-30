@@ -91,7 +91,7 @@ namespace Tibia.Objects
         /// Check whether or not the client is logged in.
         /// </summary>
         /// <returns></returns>
-        public bool loggedIn()
+        public bool LoggedIn()
         {
             return status() == Constants.LoginStatus.LoggedIn;
         }
@@ -110,7 +110,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public bool send(byte[] packet)
+        public bool Send(byte[] packet)
         {
             return Packet.SendPacket(this, packet);
         }
@@ -119,7 +119,7 @@ namespace Tibia.Objects
         /// Bring this Tibia window to the foreground. Wrapper for SetForegroundWindow.
         /// </summary>
         /// <returns></returns>
-        public bool bringToFront()
+        public bool BringToFront()
         {
             return SetForegroundWindow(process.MainWindowHandle);
         }
@@ -130,15 +130,15 @@ namespace Tibia.Objects
         /// <returns>Character name</returns>
         public override string ToString()
         {
-            if (!loggedIn()) return "Not logged in.";
-            return getPlayer().Name;
+            if (!LoggedIn()) return "Not logged in.";
+            return GetPlayer().Name;
         }
 
         /// <summary>
         /// Get a list of all the open clients. Class method.
         /// </summary>
         /// <returns></returns>
-        public static List<Client> getClients()
+        public static List<Client> GetClients()
         {
             Process[] processes = Process.GetProcessesByName("Tibia");
             List<Client> clients = new List<Client>(processes.Length);
@@ -153,10 +153,10 @@ namespace Tibia.Objects
         /// Get the client's player.
         /// </summary>
         /// <returns></returns>
-        public Player getPlayer()
+        public Player GetPlayer()
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.getCreature(readInt(Addresses.Player.Id));
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            Creature creature = battleList.GetCreature(readInt(Addresses.Player.Id));
             return new Player(this, creature.Address);
         }
 
@@ -164,7 +164,7 @@ namespace Tibia.Objects
         /// Get the client's process.
         /// </summary>
         /// <returns></returns>
-        public Process getProcess()
+        public Process GetProcess()
         {
             return process;
         }
@@ -173,7 +173,7 @@ namespace Tibia.Objects
         /// Get the client's version
         /// </summary>
         /// <returns></returns>
-        public string getVersion()
+        public string GetVersion()
         {
             return process.MainModule.FileVersionInfo.FileVersion;
         }
@@ -182,9 +182,9 @@ namespace Tibia.Objects
         /// Get the client's battlelist.
         /// </summary>
         /// <returns></returns>
-        public BattleList getBattleList()
+        public BattleList GetBattleList()
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             return battleList;
         }
 
@@ -193,10 +193,10 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public Item getSlot(Constants.SlotNumber s)
+        public Item GetSlot(Constants.SlotNumber s)
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
-            return new Slot(this).getSlot(s);
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            return new Slot(this).GetSlot(s);
         }
 
         /// <summary>
@@ -204,25 +204,25 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="id"></param>
         /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
-        public bool makeRune(ushort id)
+        public bool MakeRune(ushort id)
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
             if (rune == null) return false;
-            return makeRune(rune);
+            return MakeRune(rune);
         }
 
         /// <summary>
         /// Eat food found in any container.
         /// </summary>
         /// <returns>True if eating succeeded, false if no food found or eating failed.</returns>
-        public bool eatFood()
+        public bool EatFood()
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
-            Item food = inventory.findItem(new Tibia.Constants.ItemList.Food());
+            Item food = inventory.FindItem(new Tibia.Constants.ItemList.Food());
             if (food.Found)
-                return food.use();
+                return food.Use();
             else
                 return false;
         }
@@ -231,13 +231,13 @@ namespace Tibia.Objects
         /// Logout.
         /// </summary>
         /// <returns></returns>
-        public bool logout()
+        public bool Logout()
         {
             byte[] packet = new byte[3];
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = 0x14;
-            return send(packet);
+            return Send(packet);
         }
 
         /// <summary>
@@ -245,9 +245,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="newKey"></param>
         /// <returns></returns>
-        public bool setRSA(string newKey)
+        public bool SetRSA(string newKey)
         {
-            return Memory.WriteRSA(getProcess(), Addresses.Client.RSA, newKey);
+            return Memory.WriteRSA(GetProcess(), Addresses.Client.RSA, newKey);
         }
 
         /// <summary>
@@ -256,9 +256,8 @@ namespace Tibia.Objects
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool setServer(string ip, int port)
+        public bool SetServer(string ip, int port)
         {
-            // 25
             bool result = true;
             long pointer = Addresses.Client.LoginServerStart;
 
@@ -271,7 +270,7 @@ namespace Tibia.Objects
                 pointer += Addresses.Client.Step_LoginServer;
             }
 
-            result &= setRSA(Constants.RSAKey.OpenTibia);
+            result &= SetRSA(Constants.RSAKey.OpenTibia);
 
             return result;
         }
@@ -282,11 +281,11 @@ namespace Tibia.Objects
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool setOT(string ip, int port)
+        public bool SetOT(string ip, int port)
         {
-            bool result = setServer(ip, port);
+            bool result = SetServer(ip, port);
             
-            result &= setRSA(Constants.RSAKey.OpenTibia);
+            result &= SetRSA(Constants.RSAKey.OpenTibia);
 
             return result;
         }
@@ -298,12 +297,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="rune">The rune to make.</param>
         /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
-        public bool makeRune(Rune rune)
+        public bool MakeRune(Rune rune)
         {
-            if (!loggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Console console = new Console(this);
-            Player player = getPlayer();
+            Player player = GetPlayer();
 
             // Keeps a running total of success
             bool allClear = true;
@@ -312,7 +311,7 @@ namespace Tibia.Objects
             if (player.Mana >= rune.ManaPoints)
             {
                 // Find the first blank rune
-                Item blank = inventory.findItem(Tibia.Constants.Items.Rune.Blank);
+                Item blank = inventory.FindItem(Tibia.Constants.Items.Rune.Blank);
 
                 // Make sure a blank rune was found
                 if (blank.Found)
@@ -324,8 +323,8 @@ namespace Tibia.Objects
                     ItemLocation newLocation = new ItemLocation(Constants.SlotNumber.Right);
 
                     // Move the rune and say the magic words, make sure everything went well
-                    allClear = allClear & blank.move(newLocation);
-                    allClear = allClear & console.say(rune.Words);
+                    allClear = allClear & blank.Move(newLocation);
+                    allClear = allClear & console.Say(rune.Words);
 
                     // Don't bother continuing if both the above actions didn't work
                     if (!allClear) return false;
@@ -336,7 +335,7 @@ namespace Tibia.Objects
                     Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), true);
 
                     // Move the rune back to it's original location
-                    allClear = allClear & newRune.move(oldLocation);
+                    allClear = allClear & newRune.Move(oldLocation);
 
                     // Return true if everything worked well, false if it did not
                     return allClear;

@@ -20,9 +20,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public bool say(string text)
+        public bool Say(string text)
         {
-            return say(new Message(text));
+            return Say(new Message(text));
         }
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="words"></param>
         /// <returns></returns>
-        public bool spell(string words)
+        public bool Spell(string words)
         {
-           return say(words);
+           return Say(words);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="spell"></param>
         /// <returns></returns>
-        public bool spell(Objects.Spell s)
+        public bool Spell(Objects.Spell s)
         {
-            return spell(s.Words);
+            return Spell(s.Words);
         }
         
         /// <summary>
@@ -51,7 +51,7 @@ namespace Tibia.Objects
         /// <param name="message"></param>
         /// <param name="type"></param>
         /// <returns>message packet</returns>
-        public bool say(Message message)
+        public bool Say(Message message)
         {
             byte[] packet = { };
             int packetLength, payloadLength;
@@ -119,7 +119,7 @@ namespace Tibia.Objects
                     break;
             }
 
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Tibia.Objects
         /// <returns>message packet</returns>
         public bool send(string message, string recipient)
         {
-            return say(new Message(message, recipient));
+            return Say(new Message(message, recipient));
         }
     }
 

@@ -25,7 +25,7 @@ namespace Tibia.Objects
         /// Check if a player (creature) is in your party.
         /// </summary>
         /// <returns>True if the player is a member or leader of your party. False otherwise.</returns>
-        public bool inParty()
+        public bool InParty()
         {
             Constants.Party party = Party;
             return (party == Constants.Party.Member || party == Constants.Party.Leader);
@@ -36,7 +36,7 @@ namespace Tibia.Objects
         /// Sends a packet to the server and sets the red square around the creature.
         /// </summary>
         /// <returns></returns>
-        public bool attack()
+        public bool Attack()
         {
             byte[] packet = new byte[7];
             int creatureId = Id;
@@ -48,7 +48,7 @@ namespace Tibia.Objects
             byte[] idBytes = BitConverter.GetBytes(creatureId);
             Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
             client.writeInt(Addresses.Player.Target_ID, creatureId);
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         public uint Address

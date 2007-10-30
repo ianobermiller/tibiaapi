@@ -23,7 +23,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public Item getSlot(Constants.SlotNumber s)
+        public Item GetSlot(Constants.SlotNumber s)
         {
             Item item;
             uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);

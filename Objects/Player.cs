@@ -234,13 +234,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public bool turn(Constants.TurnDirection direction)
+        public bool Turn(Constants.TurnDirection direction)
         {
             byte[] packet = new byte[3];
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = Convert.ToByte(0x6F + direction);
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -248,13 +248,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public bool walk(Constants.WalkDirection direction)
+        public bool Walk(Constants.WalkDirection direction)
         {
             byte[] packet = new byte[3];
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = Convert.ToByte(0x65 + direction);
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public bool walk(List<Constants.WalkDirection> list)
+        public bool Walk(List<Constants.WalkDirection> list)
         {
             int len = 4 + list.Count;
             byte[] packet = new byte[len];
@@ -272,7 +272,7 @@ namespace Tibia.Objects
             packet[2] = 0x64;
             packet[3] = Convert.ToByte(list.Count);
             // Finish
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public static byte[] goTo(Objects.Location location)
+        public static byte[] GoTo(Objects.Location location)
         {
             return null;
         }
@@ -290,13 +290,13 @@ namespace Tibia.Objects
         /// Stop all actions.
         /// </summary>
         /// <returns></returns>
-        public bool stop()
+        public bool Stop()
         {
             byte[] packet = new byte[3];
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = 0xBE;
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Tibia.Objects
         /// <param name="feetColor"></param>
         /// <param name="addons"></param>
         /// <returns></returns>
-        public bool setOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
+        public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
         {
             byte[] packet = new byte[10];
 
@@ -324,7 +324,7 @@ namespace Tibia.Objects
             packet[8] = feetColor;
             packet[9] = Convert.ToByte(addons);
             
-            return client.send(packet);
+            return client.Send(packet);
         }
 
         #endregion
@@ -334,7 +334,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="flag"></param>
         /// <returns></returns>
-        public bool hasFlag(Constants.Flag flag)
+        public bool HasFlag(Constants.Flag flag)
         {
             return (Flags & (int)flag) == (int)flag;
         }
