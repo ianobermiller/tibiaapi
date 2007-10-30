@@ -59,21 +59,17 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// TODO Close this container (packet function)
-        /// </summary>
-        /// <returns></returns>
-        public bool Close()
-        {
-            return false;
-        }
-
-        /// <summary>
-        /// TODO Open this containers parent container (packet)
+        /// Open this containers parent container
         /// </summary>
         /// <returns></returns>
         public bool OpenParent()
         {
-
+            byte[] packet = new byte[4];
+            packet[0] = 0x02;
+            packet[1] = 0x00;
+            packet[2] = 0x88;
+            packet[3] = Packet.Lo(number);
+            return client.send(packet);
         }
 
         /** Get and set various aspects of the container **/
