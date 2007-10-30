@@ -5,46 +5,71 @@ namespace Tibia
 {
     public class KeyboardHook
     {
-        public Objects.Client client;
-
-        public KeyboardHook(Objects.Client c)
-        {
-            client = c;
-        }
-
         public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
+        HookProc TheProc;
+
         //The handle to the hook (used for installing/uninstalling it).
-        public static int hHook = 0;
+        public static IntPtr hHook = IntPtr.Zero;
 
         //This is the Import for the SetWindowsHookEx function.
         //Use this function to install a thread-specific hook.
         [DllImport("user32.dll", CharSet = CharSet.Auto,
          CallingConvention = CallingConvention.StdCall)]
-        public static extern int SetWindowsHookEx(int idHook, HookProc lpfn,
+        public static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn,
         IntPtr hInstance, int threadId);
 
         //This is the Import for the UnhookWindowsHookEx function.
         //Call this function to uninstall the hook.
         [DllImport("user32.dll", CharSet = CharSet.Auto,
          CallingConvention = CallingConvention.StdCall)]
-        public static extern bool UnhookWindowsHookEx(int idHook);
+        public static extern bool UnhookWindowsHookEx(IntPtr idHook);
 
         //This is the Import for the CallNextHookEx function.
         //Use this function to pass the hook information to the next hook procedure in chain.
         [DllImport("user32.dll", CharSet = CharSet.Auto,
          CallingConvention = CallingConvention.StdCall)]
-        public static extern int CallNextHookEx(int idHook, int nCode,
+        public static extern int CallNextHookEx(IntPtr idHook, int nCode,
         IntPtr wParam, IntPtr lParam);
 
         public void InstallHook(int HookType, HookProc TheProc)
         {
-            hHook = SetWindowsHookEx(HookType, TheProc, (IntPtr)0, AppDomain.GetCurrentThreadId());
+            try
+            {
+                hHook = SetWindowsHookEx(HookType, TheProc, (IntPtr)0, AppDomain.GetCurrentThreadId());
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
         }
 
         public void UninstallHook()
         {
-            UnhookWindowsHookEx(hHook);
+            try
+            {
+                UnhookWindowsHookEx(hHook);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+        }
+
+        public int CallNext(int code, IntPtr wParam, IntPtr lParam)
+        {
+            int t = 0;
+
+            try
+            {
+                t = CallNextHookEx(hHook, code, wParam, lParam);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+
+            return t;
         }
 
         public enum HookTypes : int
@@ -64,7 +89,5 @@ namespace Tibia
             WH_KEYBOARD_LL = 13,
             WH_MOUSE_LL = 14
         }
-
-
     }
 }
