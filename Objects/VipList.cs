@@ -100,6 +100,7 @@ namespace Tibia.Objects
             packet[03] = Packet.Lo(name.Length);
             packet[04] = Packet.Hi(name.Length);
             Array.Copy(enc.GetBytes(name), 0, packet, 5, name.Length);
+            
             return client.send(packet);
         }
     }

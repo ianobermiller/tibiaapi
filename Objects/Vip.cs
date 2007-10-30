@@ -43,17 +43,5 @@ namespace Tibia.Objects
         }
 
         #endregion
-        public bool Remove()
-        {
-            byte[] packet = new byte[7];
-            packet[00] = 0x05;
-            packet[01] = 0x00;
-            packet[02] = 0xDD;
-            packet[03] = BitConverter.GetBytes(Id)[0];
-            packet[04] = BitConverter.GetBytes(Id)[1];
-            packet[05] = BitConverter.GetBytes(Id)[2];
-            packet[06] = BitConverter.GetBytes(Id)[3];
-            return client.send(packet);
-        }
     }
 }
