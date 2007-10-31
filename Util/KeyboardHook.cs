@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Tibia
@@ -32,11 +33,16 @@ namespace Tibia
         public static extern int CallNextHookEx(IntPtr idHook, int nCode,
         IntPtr wParam, IntPtr lParam);
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
+
         public void InstallHook(int HookType, HookProc TheProc)
         {
             try
             {
-                hHook = SetWindowsHookEx(HookType, TheProc, (IntPtr)0, AppDomain.GetCurrentThreadId());
+                using (Process curProcess = Process.GetCurrentProcess())
+                using (ProcessModule curModule = curProcess.MainModule)
+                    hHook = SetWindowsHookEx(HookType, TheProc, GetModuleHandle(curModule.ModuleName), 0);
             }
             catch (Exception ex)
             {
