@@ -33,12 +33,15 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#f61b34f1d84a15c52b391994f38c3568">Container</a> (<a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a> c, uint a, byte n)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create a new container object with the specified client, address, and number.  <a href="#f61b34f1d84a15c52b391994f38c3568"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#4d9fa52ee0fb30b1a6b142d37a3edec2">getAddress</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#95b3827ff29c701d54cd0567f3236354">GetAddress</a> ()</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the container's address.  <a href="#4d9fa52ee0fb30b1a6b142d37a3edec2"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">List&lt; <a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a> &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#b5357fae8df37bb100bc32e70a340d32">getItems</a> ()</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the container's address.  <a href="#95b3827ff29c701d54cd0567f3236354"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">List&lt; <a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a> &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#ee1719b187083ee102c6b64a6c288248">GetItems</a> ()</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a list of all the items in the container.  <a href="#b5357fae8df37bb100bc32e70a340d32"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a list of all the items in the container.  <a href="#ee1719b187083ee102c6b64a6c288248"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#2980de4602d250b6bbdd59d33c990f54">OpenParent</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Open this containers parent container.  <a href="#2980de4602d250b6bbdd59d33c990f54"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_container.html#a6d60a70c3331cb95e90e5caf02301b6">client</a></td></tr>
 
@@ -107,12 +110,12 @@ Create a new container object with the specified client, address, and number.
 </div>
 </div><p>
 <hr><h2>Member Function Documentation</h2>
-<a class="anchor" name="4d9fa52ee0fb30b1a6b142d37a3edec2"></a><!-- doxytag: member="Tibia::Objects::Container::getAddress" ref="4d9fa52ee0fb30b1a6b142d37a3edec2" args="()" -->
+<a class="anchor" name="95b3827ff29c701d54cd0567f3236354"></a><!-- doxytag: member="Tibia::Objects::Container::GetAddress" ref="95b3827ff29c701d54cd0567f3236354" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint Tibia.Objects.Container.getAddress           </td>
+          <td class="memname">uint Tibia.Objects.Container.GetAddress           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -129,12 +132,12 @@ Get the container's address.
 
 </div>
 </div><p>
-<a class="anchor" name="b5357fae8df37bb100bc32e70a340d32"></a><!-- doxytag: member="Tibia::Objects::Container::getItems" ref="b5357fae8df37bb100bc32e70a340d32" args="()" -->
+<a class="anchor" name="ee1719b187083ee102c6b64a6c288248"></a><!-- doxytag: member="Tibia::Objects::Container::GetItems" ref="ee1719b187083ee102c6b64a6c288248" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;<a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&gt; Tibia.Objects.Container.getItems           </td>
+          <td class="memname">List&lt;<a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&gt; Tibia.Objects.Container.GetItems           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -146,6 +149,28 @@ Get the container's address.
 
 <p>
 Return a list of all the items in the container. 
+<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="2980de4602d250b6bbdd59d33c990f54"></a><!-- doxytag: member="Tibia::Objects::Container::OpenParent" ref="2980de4602d250b6bbdd59d33c990f54" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Tibia.Objects.Container.OpenParent           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Open this containers parent container. 
 <p>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
 
@@ -274,8 +299,8 @@ Get and set various aspects of the container
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
-<li>E:/programs/tibia/_c# programs/TibiaAPI/Objects/<a class="el" href="_objects_2_container_8cs.html">Container.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Oct 28 15:16:01 2007 for TibiaAPI by&nbsp;
+<li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Objects/<a class="el" href="_objects_2_container_8cs.html">Container.cs</a></ul>
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Oct 31 09:58:00 2007 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>
