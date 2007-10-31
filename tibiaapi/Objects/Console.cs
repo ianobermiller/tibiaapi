@@ -128,7 +128,7 @@ namespace Tibia.Objects
         /// <param name="message"></param>
         /// <param name="recipient"></param>
         /// <returns>message packet</returns>
-        public bool send(string message, string recipient)
+        public bool Send(string message, string recipient)
         {
             return Say(new Message(message, recipient));
         }
