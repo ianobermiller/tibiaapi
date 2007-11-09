@@ -82,12 +82,26 @@ namespace Tibia.Objects
 
         /// <summary>
         /// Get the item at the specified location.
-        /// TODO
+        /// TODO: Add functionality for ItemLocationType.Ground 
+		  /// (would interface with map reading, which has yet to be completed)
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
         public Item GetItem(ItemLocation location)
         {
+            if (location.type == Tibia.Constants.ItemLocationType.SLOT)
+            {
+                return client.GetSlot(location.slot);
+            }
+            else if (location.type == Tibia.Constants.ItemLocationType.CONTAINER)
+            {
+                long address = Addresses.Container.Start +
+                              Addresses.Container.Step_Container * (int)location.container +
+                              Addresses.Container.Step_Slot * (int)location.slot;
+                return new Item((uint)client.readInt(address + Addresses.Container.Distance_Item_Id),
+                                     client.readByte(address + Addresses.Container.Distance_Item_Count),
+                                     location, true);
+            }
             return null;
         }
     }

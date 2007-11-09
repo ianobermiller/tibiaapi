@@ -291,21 +291,34 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Make a rune. Drags a blank to the right hand, casts the words, and moved the new rune back.
-        /// TODO add option to change the hand and a method to make sure the hand is free.
-        /// TODO add option to check for soul points
+        /// Make the specified rune with the default options.
         /// </summary>
         /// <param name="rune">The rune to make.</param>
-        /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
+        /// <returns></returns>
         public bool MakeRune(Rune rune)
+        {
+            return MakeRune(rune, false);
+        }
+
+        /// <summary>
+        /// Make a rune. Drags a blank to a free hand, casts the words, and moved the new rune back.
+        /// If no free hand is found, but the ammo is open, it moved the item in the right hand down to ammo.
+        /// </summary>
+        /// <param name="rune">The rune to make.</param>
+        /// <param name="checkSoulPoints">Whether or not to check for soul points.</param>
+        /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
+        public bool MakeRune(Rune rune, bool checkSoulPoints)
         {
             if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Console console = new Console(this);
             Player player = GetPlayer();
+            bool allClear = true; // Keeps a running total of success
+            Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
 
-            // Keeps a running total of success
-            bool allClear = true;
+            // If wanted, check for soul points
+            if (checkSoulPoints)
+                if (player.Soul < rune.SoulPoints) return false;
 
             // Make sure the player has enough mana
             if (player.Mana >= rune.ManaPoints)
@@ -320,7 +333,23 @@ namespace Tibia.Objects
                     ItemLocation oldLocation = blank.Loc;
 
                     // The location where the rune will be made
-                    ItemLocation newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                    ItemLocation newLocation;
+
+                    // Determine the location to make the rune
+                    if (GetSlot(Tibia.Constants.SlotNumber.Left).Found)
+                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
+                    else if (GetSlot(Tibia.Constants.SlotNumber.Right).Found)
+                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                    else if (!GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
+                    {
+                        // If no hands are open, but the ammo slot is, 
+                        // move the right hand item to clear the ammo slot
+                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                        itemMovedToAmmo = GetSlot(Tibia.Constants.SlotNumber.Right);
+                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
+                    }
+                    else
+                        return false; // No where to put the rune!
 
                     // Move the rune and say the magic words, make sure everything went well
                     allClear = allClear & blank.Move(newLocation);
@@ -337,6 +366,13 @@ namespace Tibia.Objects
                     // Move the rune back to it's original location
                     allClear = allClear & newRune.Move(oldLocation);
 
+                    // Check if we moved an item to the ammo slot
+                    // If we did, move it back
+                    if (itemMovedToAmmo != null)
+                    {
+                        itemMovedToAmmo.Loc = new ItemLocation(Tibia.Constants.SlotNumber.Ammo);
+                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Right));
+                    }
                     // Return true if everything worked well, false if it did not
                     return allClear;
                 }
