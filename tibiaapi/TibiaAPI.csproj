@@ -101,4 +101,7 @@
       <DependentUpon>ClientChooser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="LICENSE" />
+  </ItemGroup>
 </Project>
