@@ -259,7 +259,6 @@ namespace Tibia.Objects
 
         /// <summary>
         /// Walk in the specified list of directions.
-        /// TODO: Finish
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
@@ -271,19 +270,30 @@ namespace Tibia.Objects
             packet[1] = 0x00;
             packet[2] = 0x64;
             packet[3] = Convert.ToByte(list.Count);
-            // Finish
+
+            int i = 4;
+            foreach (Constants.WalkDirection dir in list)
+            {
+                packet[i] = Convert.ToByte(dir);
+            }
+
             return client.Send(packet);
         }
 
         /// <summary>
         /// Go to the specified location.
-        /// TODO
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public static byte[] GoTo(Objects.Location location)
+        public bool GoTo(Objects.Location location)
         {
-            return null;
+            bool result = true;
+
+            result &= client.writeInt(Addresses.Player.GoTo_X, location.X);
+            result &= client.writeInt(Addresses.Player.GoTo_Y, location.Y);
+            result &= client.writeInt(Addresses.Player.GoTo_Z, location.Z);
+
+            return result;
         }
 
         /// <summary>
