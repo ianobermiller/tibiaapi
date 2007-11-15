@@ -269,9 +269,6 @@ namespace Tibia.Objects
                 result &= writeInt(pointer + Addresses.Client.Distance_Port, port);
                 pointer += Addresses.Client.Step_LoginServer;
             }
-
-            result &= SetRSA(Constants.RSAKey.OpenTibia);
-
             return result;
         }
 
