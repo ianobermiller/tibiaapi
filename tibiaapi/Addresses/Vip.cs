@@ -24,7 +24,7 @@ namespace Tibia.Addresses
 
         public static uint Distance_Id = 0;
         public static uint Distance_Name = 4;
-        public static uint Distance_Status = 34;
+        public static uint Distance_Status = 34; // 0 = offline, 1 = online
         public static uint Distance_Icon = 40;
     }
 }

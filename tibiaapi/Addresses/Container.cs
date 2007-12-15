@@ -8,8 +8,8 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start and end of the container list in memory.
         /// </summary>
-        public static uint Start = 0x617000;
-        public static uint End = 0x618EC0;
+        public static uint Start = 0x0061C0D0; //8.1, 8.0 = 0x617000
+        public static uint End = 0x0061DF90; //8.1, 8.0 = 0x618EC0
 
         /// <summary>
         /// Distances between containers and slots.
