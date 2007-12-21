@@ -75,6 +75,42 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get a list of creatures with the specified name, ignoring spaces.
+        /// </summary>
+        /// <param name="creatureName"></param>
+        /// <param name="wholeWord">If true, matches the entire name; false, searches inside.</param>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesIgnoreSpace(string creatureName, bool wholeWord)
+        {
+            creatureName = creatureName.Replace(" ", "");
+            return GetCreatures().FindAll(delegate(Creature c)
+            {
+                if (wholeWord)
+                {
+                    string name = c.Name;
+                    name = name.Replace(" ", "");
+                    return name.Equals(creatureName, StringComparison.CurrentCultureIgnoreCase);
+                }
+                else
+                {
+                    string name = c.Name;
+                    name = name.Replace(" ", "");
+                    return name.IndexOf(creatureName, StringComparison.CurrentCultureIgnoreCase) != -1;
+                }   
+            });
+        }
+        
+        /// <summary>
+        /// Get a list of creatures with the specified string in the name, ignoring spaces.
+        /// </summary>
+        /// <param name="creatureName"></param>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesIgnoreSpace(string creatureName)
+        {
+            return GetCreaturesIgnoreSpace(creatureName, false);
+        }
+
+        /// <summary>
         /// Get the creature with the specified id.
         /// </summary>
         /// <param name="id"></param>

@@ -160,8 +160,7 @@ namespace Tibia.Objects
 
                     return client.Send(packet);
 
-                    break;
-
+                case Constants.CreatureType.Target:
                 case Constants.CreatureType.NPC:
 
                     packet = new byte[15];

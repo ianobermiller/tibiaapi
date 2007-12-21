@@ -15,14 +15,35 @@ namespace Tibia
             client = null;
         }
 
+        /// <summary>
+        /// Opens a box to pick a client. (Wrapper for Showbox(bool) with smart enabled).
+        /// </summary>
+        /// <returns></returns>
         public static Objects.Client ShowBox()
         {
+            return ShowBox(true);
+        }
+
+        /// <summary>
+        /// Opens a box to pick a client.
+        /// </summary>
+        /// <param name="smart">If true, will not open a box if there is only one 
+        /// client; just returns that client.</param>
+        /// <returns></returns>
+        public static Objects.Client ShowBox(bool smart)
+        {
             List<Objects.Client> clients = Objects.Client.GetClients();
-            if (clients.Count == 0) return null;
-            newClientChooser = new ClientChooser();
-            newClientChooser.uxClients.DataSource = clients;
-            newClientChooser.ShowDialog();
-            return client;
+            if (clients.Count == 0)
+                return null;
+            else if (clients.Count == 1)
+                return clients[0];
+            else
+            {
+                newClientChooser = new ClientChooser();
+                newClientChooser.uxClients.DataSource = clients;
+                newClientChooser.ShowDialog();
+                return client;
+            }
         }
 
         private void uxChoose_Click(object sender, EventArgs e)

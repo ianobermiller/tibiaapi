@@ -483,6 +483,7 @@ namespace Tibia.Constants
     public enum CreatureType : byte
     {
         Player = 0,
+        Target = 1,
         NPC = 64
     }
 

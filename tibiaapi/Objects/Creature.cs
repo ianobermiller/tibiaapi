@@ -51,6 +51,37 @@ namespace Tibia.Objects
             return client.Send(packet);
         }
 
+        /// <summary>
+        /// Look at the creature / player.
+        /// Sends a packet to the server with the same effect as
+        /// shift-clicking or left-right clicking a creature.
+        /// </summary>
+        /// <returns></returns>
+        public bool Look()
+        {
+            byte[] packet = new byte[11];
+            int creatureId = Id;
+
+            packet[00] = 0x09;
+            packet[01] = 0x00;
+            packet[02] = 0x8C;
+
+            int x = X;
+            int y = Y;
+
+            packet[03] = Packet.Lo(x);
+            packet[04] = Packet.Hi(x);
+            packet[05] = Packet.Lo(y);
+            packet[06] = Packet.Hi(y);
+            packet[07] = Convert.ToByte(Z);
+
+            packet[08] = 0x63;
+            packet[09] = 0x00;
+            packet[10] = 0x01;
+
+            return client.Send(packet);
+        }
+
         public uint Address
         {
             get { return address; }

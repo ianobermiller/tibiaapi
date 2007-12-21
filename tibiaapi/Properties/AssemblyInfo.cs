@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("A library for interfacing with the Tibia client.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TProgramming")]
-[assembly: AssemblyProduct("Tibia.Properties")]
+[assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("Copyright ©  2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

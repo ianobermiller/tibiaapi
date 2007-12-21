@@ -7,11 +7,12 @@ namespace Tibia.Addresses
     {
         public static uint Flags = 0x00613AF8; //8.1, 8.0 = 0x60EA58
 
+        public static uint Exp = 0x00613B64; //8.1, 8.0 = 0x60EAC4
+
         public static uint Id = Exp + 12; //8.1, 8.0 = 0x60EAD0
         public static uint HP = Exp + 8; //8.1, 8.0 = 0x60EACC
         public static uint HP_Max = Exp + 4; //8.1, 8.0 = 0x60EAC8
 
-        public static uint Exp = 0x00613B64; //8.1, 8.0 = 0x60EAC4
         public static uint Level = Exp - 4; //8.1, 8.0 = 0x60EAC0
         public static uint MagicLevel = Exp - 8; //8.1, 8.0 = 0x60EABC
         public static uint Level_Percent = Exp - 12; //8.1, 8.0 = 0x60EAB8
@@ -61,8 +62,8 @@ namespace Tibia.Addresses
         public static uint GoTo_Z = GoTo_X - 8;           //8.1, 8.0 = 0x60EB0C
 
         public static uint RedSquare = 0x60EA9C;        //8.0
-        public static uint GreenSquare = 0x60EA98;      //8.0
-        public static uint WhiteSquare = 0x60EA94;      //8.0
+        public static uint GreenSquare = RedSquare - 4;      //8.0
+        public static uint WhiteSquare = GreenSquare - 8;      //8.0
 
         public static uint AccessN = 0x766DF4;          //8.0
         public static uint AccessS = 0x766DC4;          //8.0

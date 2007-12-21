@@ -18,6 +18,7 @@ namespace Tibia.Objects
         #endregion
 
         private Process process;
+        private IntPtr handle;
 
         /// <summary>
         /// Keep a local copy of battleList to speed up GetPlayer()
@@ -31,50 +32,65 @@ namespace Tibia.Objects
         public Client(Process p)
         {
             process = p;
+
+            // Save a copy of the handle so the process doesn't have to be opened
+            // every read/write operation
+            handle = Memory.OpenProcess(Memory.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
+
             // The client get's it's own battle list to speed up getPlayer()
             battleList = new BattleList(this);
+        }
+
+        /// <summary>
+        /// Uninitialize this client, closing the handle.
+        /// Call when you are no longer using a client.
+        /// </summary>
+        public void Uninitialize()
+        {
+            // Close the process handle
+            Memory.CloseHandle(handle);
         }
 
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
         public byte[] readBytes(long address, uint bytesToRead)
         {
-            return Memory.ReadBytes(process, address, bytesToRead);
+            return Memory.ReadBytes(handle, address, bytesToRead);
         }
 
         public int readInt(long address)
         {
-            return Memory.ReadInt(process, address);
+            return Memory.ReadInt(handle, address);
         }
 
         public byte readByte(long address)
         {
-            return Memory.ReadByte(process, address);
+            return Memory.ReadByte(handle, address);
         }
 
         public string readString(long address)
         {
-            return Memory.ReadString(process, address);
+            return Memory.ReadString(handle, address);
         }
 
         public bool writeBytes(long address, byte[] bytes, uint length)
         {
-            return Memory.WriteBytes(process, address, bytes, length);
+            return Memory.WriteBytes(handle, address, bytes, length);
         }
 
         public bool writeInt(long address, int value)
         {
-            return Memory.WriteInt(process, address, value);
+            return Memory.WriteInt(handle, address, value);
         }
 
         public bool writeByte(long address, byte value)
         {
-            return Memory.WriteByte(process, address, value);
+            return Memory.WriteByte(handle, address, value);
         }
 
         public bool writeString(long address, string str)
         {
-            return Memory.WriteString(process, address, str);
+            return Memory.WriteString(handle, address, str);
         }
         #endregion
 
@@ -247,7 +263,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool SetRSA(string newKey)
         {
-            return Memory.WriteRSA(GetProcess(), Addresses.Client.RSA, newKey);
+            return Memory.WriteRSA(handle, Addresses.Client.RSA, newKey);
         }
 
         /// <summary>

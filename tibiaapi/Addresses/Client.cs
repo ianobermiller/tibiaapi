@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Cursor icon
         /// </summary>
-        public const long MouseCursor = 0x0076C328; //8.1, 8.0 = 0x751BD8
+        public static uint MouseCursor = 0x0076C328; //8.1, 8.0 = 0x751BD8
 
         /// <summary>
         /// The window that is foremost
