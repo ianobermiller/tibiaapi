@@ -6,6 +6,12 @@ namespace Tibia.Addresses
     public static class Client
     {
         /// <summary>
+        /// The system time in ms when the client was started.
+        /// Used for Creatures.Distance_BlackSquare calculations.
+        /// </summary>
+        public static uint StartTime = 0x76D90C; //8.1
+
+        /// <summary>
         /// Address to the encryption key.
         /// </summary>
         public static uint XTeaKey = 0x768C7C; //8.1, 8.0 = 7637AC
@@ -13,12 +19,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// FPS (Frames Per Second) Limit
         /// </summary>
-        public static uint FrameRate = 0x7661F4; //8.0
+        public static uint FrameRate = 0x76CE0C; //8.1, 8.0 = 0x7661F4
 
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x4EFB71; //?.?
+        public static uint MultiClient = 0xF8961; //8.1
 
         /// <summary>
         /// Value to be written to the multiclient address.
@@ -33,17 +39,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Attack type (Full attack, half and half, full defense)
         /// </summary>
-        public static uint AttackMode = 0x763BD4; //8.0
+        public static uint AttackMode = 0x7690A4; //8.1, 8.0 = 0x763BD4
 
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
-        public static uint FollowMode = 0x763BD0; //8.0
+        public static uint FollowMode = 0x7690A0; //8.1, 8.0 = 0x763BD0
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x763BCC; //8.0
+        public static uint SafeMode = 0x76909C; //8.1, 8.0 = 0x763BCC
 
         /// <summary>
         /// Cursor icon
@@ -53,7 +59,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The window that is foremost
         /// </summary>
-        public static uint CurrentWindow = 0x6198B4;    //Window
+        public static uint CurrentWindow = 0x61E984;    //8.1, 8.0 = 0x6198B4
 
         /// <summary>
         /// The last player to send a message to the default channel.
@@ -63,7 +69,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x0076DB78; //8.1, 8.0 = 0x7686A8
+        public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
 
         /// <summary>
         /// Statusbar
@@ -74,7 +80,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Information on the last clicked item
         /// </summary>
-        public static uint Click_Id = 0x0076C364;   //8.1, 8.0 = 0x766E94
+        public static uint Click_Id = 0x76C364;   //8.1, 8.0 = 0x766E94
         public static uint Click_Count = Click_Id + 4;  //8.1, 8.0 = 0x766E98
         public static uint Click_Z = Click_Id - 0x68;      //8.1, 8.0 = 0x766E2C
 

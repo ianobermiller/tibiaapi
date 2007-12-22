@@ -57,20 +57,23 @@ namespace Tibia.Addresses
         public static uint Slot_Left_Count = Slot_Left + 4; //8.1, 8.0 = 0x616FBC
         public static uint Slot_Ammo_Count = Slot_Ammo + 4; //8.1, 8.0 = 0x616FF8
 
+        public static uint CurrentTileToGo = 0x613B78; //8.1
+        public static uint TilesToGo = 0x613B7C; //8.1
+
         public static uint GoTo_X = 0x613BB4;           //8.1, 8.0 = 0x60EB10
         public static uint GoTo_Y = GoTo_X - 4;           //8.1, 8.0 = 0x60EB14
         public static uint GoTo_Z = GoTo_X - 8;           //8.1, 8.0 = 0x60EB0C
 
-        public static uint RedSquare = 0x60EA9C;        //8.0
-        public static uint GreenSquare = RedSquare - 4;      //8.0
-        public static uint WhiteSquare = GreenSquare - 8;      //8.0
+        public static uint RedSquare = 0x613B3C;        //8.1, 8.0 = 0x60EA9C
+        public static uint GreenSquare = RedSquare - 4;      //8.1
+        public static uint WhiteSquare = GreenSquare - 8;      //8.1
 
         public static uint AccessN = 0x766DF4;          //8.0
         public static uint AccessS = 0x766DC4;          //8.0
 
-        public static uint Target_ID = 0x60EA9C;        //8.0
-        public static uint Target_Type = 0x60EA9F;      //8.0
-        public static uint Target_BList_ID = 0x60EA94;  //8.0
-        public static uint Target_BList_Type = 0x60EA97;//8.0
+        public static uint Target_ID = RedSquare;        //8.1
+        public static uint Target_BList_ID = Target_ID - 8;  //8.1
+        public static uint Target_BList_Type = Target_ID - 5;//8.1
+        public static uint Target_Type = Target_ID + 3;      //8.1
     }
 }

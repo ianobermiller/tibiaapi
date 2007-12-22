@@ -19,6 +19,7 @@ namespace Tibia.Objects
 
         private Process process;
         private IntPtr handle;
+        private int startTime;
 
         /// <summary>
         /// Keep a local copy of battleList to speed up GetPlayer()
@@ -32,6 +33,9 @@ namespace Tibia.Objects
         public Client(Process p)
         {
             process = p;
+
+            // Save the start time (it isn't changing)
+            startTime = ReadInt(Addresses.Client.StartTime);
 
             // Save a copy of the handle so the process doesn't have to be opened
             // every read/write operation
@@ -53,42 +57,42 @@ namespace Tibia.Objects
 
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
-        public byte[] readBytes(long address, uint bytesToRead)
+        public byte[] ReadBytes(long address, uint bytesToRead)
         {
             return Memory.ReadBytes(handle, address, bytesToRead);
         }
 
-        public int readInt(long address)
+        public int ReadInt(long address)
         {
             return Memory.ReadInt(handle, address);
         }
 
-        public byte readByte(long address)
+        public byte ReadByte(long address)
         {
             return Memory.ReadByte(handle, address);
         }
 
-        public string readString(long address)
+        public string ReadString(long address)
         {
             return Memory.ReadString(handle, address);
         }
 
-        public bool writeBytes(long address, byte[] bytes, uint length)
+        public bool WriteBytes(long address, byte[] bytes, uint length)
         {
             return Memory.WriteBytes(handle, address, bytes, length);
         }
 
-        public bool writeInt(long address, int value)
+        public bool WriteInt(long address, int value)
         {
             return Memory.WriteInt(handle, address, value);
         }
 
-        public bool writeByte(long address, byte value)
+        public bool WriteByte(long address, byte value)
         {
             return Memory.WriteByte(handle, address, value);
         }
 
-        public bool writeString(long address, string str)
+        public bool WriteString(long address, string str)
         {
             return Memory.WriteString(handle, address, str);
         }
@@ -98,9 +102,9 @@ namespace Tibia.Objects
         /// Get the status of the client.
         /// </summary>
         /// <returns></returns>
-        public Constants.LoginStatus status()
+        public Constants.LoginStatus Status()
         {
-            return (Constants.LoginStatus)readByte(Addresses.Client.Status);
+            return (Constants.LoginStatus)ReadByte(Addresses.Client.Status);
         }
 
         /// <summary>
@@ -109,7 +113,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool LoggedIn()
         {
-            return status() == Constants.LoginStatus.LoggedIn;
+            return Status() == Constants.LoginStatus.LoggedIn;
         }
 
         /// <summary>
@@ -117,8 +121,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Statusbar
         {
-            get { return readString(Addresses.Client.Statusbar_Text); }
-            set { writeByte(Addresses.Client.Statusbar_Time, 50); writeString(Addresses.Client.Statusbar_Text, value); writeByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+            get { return ReadString(Addresses.Client.Statusbar_Text); }
+            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
         }
 
         /// <summary>
@@ -172,8 +176,17 @@ namespace Tibia.Objects
         public Player GetPlayer()
         {
             if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.GetCreature(readInt(Addresses.Player.Id));
+            Creature creature = battleList.GetCreature(ReadInt(Addresses.Player.Id));
             return new Player(this, creature.Address);
+        }
+
+        /// <summary>
+        /// Get the time the client was started.
+        /// </summary>
+        /// <returns></returns>
+        public int GetStartTime()
+        {
+            return startTime;
         }
 
         /// <summary>
@@ -281,8 +294,8 @@ namespace Tibia.Objects
 
             for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
             {
-                result &= writeString(pointer, ip);
-                result &= writeInt(pointer + Addresses.Client.Distance_Port, port);
+                result &= WriteString(pointer, ip);
+                result &= WriteInt(pointer + Addresses.Client.Distance_Port, port);
                 pointer += Addresses.Client.Step_LoginServer;
             }
             return result;

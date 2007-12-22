@@ -29,7 +29,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public int ReplaceTile(Predicate<int> match, int newTileId)
         {
-            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
             int replacedTileCount = 0;
 
             // search through map data
@@ -39,7 +39,7 @@ namespace Tibia.Objects
                 uint j = i + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id;
 
                 // read tile id
-                int tileId = client.readInt(j);
+                int tileId = client.ReadInt(j);
 
                 // skip blank ids
                 if (tileId == 0)
@@ -49,7 +49,7 @@ namespace Tibia.Objects
                 if (match(tileId))
                 {
                     // replace current tile id with new tile id
-                    client.writeInt(j, newTileId);
+                    client.WriteInt(j, newTileId);
                     replacedTileCount++;
                 }
             }
@@ -98,7 +98,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public int replaceObject(Predicate<int> match, int newObjectId)
         {
-            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
             int replacedObjectCount = 0;
 
             // search through map data
@@ -111,7 +111,7 @@ namespace Tibia.Objects
                     addressId += Addresses.Map.Step_Square_Object;
 
                     // read object id
-                    int objectId = client.readInt(addressId);
+                    int objectId = client.ReadInt(addressId);
 
                     // skip blank ids
                     if (objectId > 0)
@@ -120,7 +120,7 @@ namespace Tibia.Objects
                         if (match(objectId))
                         {
                             // replace current object id with new object id
-                            client.writeInt(addressId, newObjectId);
+                            client.WriteInt(addressId, newObjectId);
                             replacedObjectCount++;
                         }
                     }
@@ -184,21 +184,21 @@ namespace Tibia.Objects
         {
             Tile playerLocation = new Tile();
 
-            uint mapBegin = Convert.ToUInt32(client.readInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
 
             uint squarePointer = mapBegin;
 
             for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
             {
-                if (client.readInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount) > 1)
+                if (client.ReadInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount) > 1)
                 {
                     uint objectPointer = squarePointer + Addresses.Map.Distance_Square_Objects;
                     for (uint j = 0; j < Addresses.Map.Max_Square_Objects; j++)
                     {
-                        if (client.readInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
+                        if (client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
                         {
-                            int objectId = client.readInt(objectPointer + Addresses.Map.Distance_Object_Data);
-                            int playerId = client.readInt(Addresses.Player.Id);
+                            int objectId = client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Data);
+                            int playerId = client.ReadInt(Addresses.Player.Id);
                             if (objectId == playerId)
                             {
                                 playerLocation.Id = i;

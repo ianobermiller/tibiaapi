@@ -20,7 +20,7 @@ namespace Tibia.Addresses
         public static uint Distance_WalkSpeed = 140;
         public static uint Distance_Direction = 80;
         public static uint Distance_IsVisible = 144;
-        public static uint Distance_BlackSquare = 128; // Is attacking player
+        public static uint Distance_BlackSquare = 128;
 
         public static uint Distance_Light = 120;
         public static uint Distance_LightColor = 124;

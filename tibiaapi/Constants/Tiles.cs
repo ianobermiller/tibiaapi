@@ -7,6 +7,8 @@ namespace Tibia.Constants
     /// </summary>
     public static class Tiles
     {
+        public static uint ClosedHole = 593;
+
         /// <summary>
         /// Water tiles given as ranges
         /// </summary>

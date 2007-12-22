@@ -29,7 +29,7 @@ namespace Tibia.Objects
             List<Container> containers = new List<Container>();
             for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
             {
-                if (client.readByte(i + Addresses.Container.Distance_IsOpen) == 1)
+                if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
                     containers.Add(new Container(client, i, containerNumber));
                 containerNumber++;
             }
@@ -98,8 +98,8 @@ namespace Tibia.Objects
                 long address = Addresses.Container.Start +
                               Addresses.Container.Step_Container * (int)location.container +
                               Addresses.Container.Step_Slot * (int)location.slot;
-                return new Item((uint)client.readInt(address + Addresses.Container.Distance_Item_Id),
-                                     client.readByte(address + Addresses.Container.Distance_Item_Count),
+                return new Item((uint)client.ReadInt(address + Addresses.Container.Distance_Item_Id),
+                                     client.ReadByte(address + Addresses.Container.Distance_Item_Count),
                                      location, true);
             }
             return null;
