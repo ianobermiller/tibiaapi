@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tibia
 {
-    class Version
+    public class Version
     {
         public static void Set(string version)
         {

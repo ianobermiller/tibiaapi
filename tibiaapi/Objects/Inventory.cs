@@ -9,6 +9,7 @@ namespace Tibia.Objects
     public class Inventory
     {
         private Client client;
+        private Item lastFound = null;
 
         /// <summary>
         /// Create a new inventory object with the specified client.
@@ -33,7 +34,42 @@ namespace Tibia.Objects
                     containers.Add(new Container(client, i, containerNumber));
                 containerNumber++;
             }
+            // containers.Reverse();
             return containers;
+        }
+
+        /// <summary>
+        /// Used after calling FindItem, gets the next item (eg. for stacking)
+        /// </summary>
+        /// <returns>FindNext().Found == false if nothing found.</returns>
+        public Item FindNext()
+        {
+            if (lastFound != null)
+            {
+                Item item = null;
+                List<Container> containers = GetContainers();
+                foreach (Container c in containers)
+                {
+                    item = c.GetItems().Find(delegate(Item i)
+                    {
+                        return i.Id == lastFound.Id;
+                    });
+                    if (item != null)
+                    {
+                        if ((item.Loc.container == lastFound.Loc.container &&
+                            item.Loc.position > lastFound.Loc.position) ||
+                            (item.Loc.container > lastFound.Loc.container))
+                        {
+                            lastFound = item;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lastFound.Found = false;
+            }
+            return lastFound;
         }
 
         /// <summary>
@@ -43,14 +79,21 @@ namespace Tibia.Objects
         /// <returns>Item object describing the item and its location.</returns>
         public Item FindItem(Predicate<Item> match)
         {
-            Item item = new Item(client, false);
+            Item item = null;
             List<Container> containers = GetContainers();
             foreach (Container c in containers)
             {
-                item = c.GetItems().Find(match);
-                if (item != null) return item;
+                foreach (Item i in c.GetItems())
+                {
+                    if (match(i))
+                    {
+                        item = i;
+                        lastFound = item;
+                    }
+                }
             }
-            return item;
+            lastFound = (item == null ? new Item(client, false) : item);
+            return lastFound;
         }
 
         /// <summary>
@@ -66,12 +109,13 @@ namespace Tibia.Objects
             });
         }
 
+
         /// <summary>
         /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <returns>Item object describing the item and its location.</returns>
+        /// <param name="second">If true, return the second item found.</param>
         public Item FindItem<T>(List<T> list) where T : Item
         {
             return FindItem(delegate(Item i)
@@ -98,11 +142,45 @@ namespace Tibia.Objects
                 long address = Addresses.Container.Start +
                               Addresses.Container.Step_Container * (int)location.container +
                               Addresses.Container.Step_Slot * (int)location.slot;
-                return new Item((uint)client.ReadInt(address + Addresses.Container.Distance_Item_Id),
-                                     client.ReadByte(address + Addresses.Container.Distance_Item_Count),
-                                     location, true);
+                return new Item(
+                    (uint)client.ReadInt(address + Addresses.Container.Distance_Item_Id),
+                    client.ReadByte(address + Addresses.Container.Distance_Item_Count),
+                    location,
+                    client,
+                    true);
             }
             return null;
+        }
+
+        public bool Stack(uint itemId)
+        {
+            Item first = null;
+            Item second = null;
+            List<Container> containers = GetContainers();
+            foreach (Container c in containers)
+            {
+                foreach (Item i in c.GetItems())
+                {
+                    if (i.Id == itemId)
+                    {
+                        if (first == null)
+                            first = i;
+                        else
+                        {
+                            second = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (first != null && second != null && first.Found && second.Found &&
+                !(first.Loc.container == second.Loc.container && second.Count == 100))
+            {
+                second.Move(first);
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

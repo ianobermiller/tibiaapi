@@ -52,9 +52,11 @@ namespace Tibia.Objects
                         itemId,
                         itemCount,
                         new ItemLocation(number, slot),
+                        client,
                         true));
                 slot++;
             }
+            // items.Reverse();
             return items;
         }
 

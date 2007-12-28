@@ -23,7 +23,7 @@ namespace Tibia.Objects
         public Item(uint id) : this(id, "") { }
         public Item(uint id, string name) : this(id, name, 0, null, null, false) { }
         public Item(ItemLocation loc) : this(0, "", 0, loc, null, false) { }
-        public Item(uint id, byte count, ItemLocation loc, bool found) : this(id, "", count, loc, null, found) { }
+        public Item(uint id, byte count, ItemLocation loc, Client c, bool found) : this(id, "", count, loc, c, found) { }
 
         /// <summary>
         /// Main constructor.
@@ -64,8 +64,8 @@ namespace Tibia.Objects
 
             packet[08] = Packet.Lo(Id);
             packet[09] = Packet.Hi(Id);
-            packet[10] = packet[07];
-            packet[11] = 0x01;
+            packet[10] = Loc.stackOrder;
+            packet[11] = 0x0F;
 
             return client.Send(packet);
         }
@@ -381,16 +381,18 @@ namespace Tibia.Objects
             type = Constants.ItemLocationType.CONTAINER;
             container = c;
             position = p;
+            stackOrder = p;
         }
 
         /// <summary>
-        /// Create a new item location from a general location (Objects.Location, in the Structures file).
+        /// Create a new item location from a general location and stack order (Objects.Location, in the Structures file).
         /// </summary>
         /// <param name="l"></param>
-        public ItemLocation(Location l)
+        public ItemLocation(Location l, byte stack)
         {
             type = Constants.ItemLocationType.GROUND;
             groundLocation = l;
+            stackOrder = stack;
         }
     }
 }

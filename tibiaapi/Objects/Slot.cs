@@ -31,7 +31,7 @@ namespace Tibia.Objects
             uint id = (uint) client.ReadInt(address);
             if (id > 0)
             {
-                item = new Item(id, count, new ItemLocation(s), true);
+                item = new Item(id, count, new ItemLocation(s), client, true);
             }
             else
             {

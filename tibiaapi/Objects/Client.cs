@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Net.Sockets;
 
 namespace Tibia.Objects
 {
@@ -14,7 +15,10 @@ namespace Tibia.Objects
     {
         #region Windows API Import
         [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
         #endregion
 
         private Process process;
@@ -46,10 +50,10 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Uninitialize this client, closing the handle.
-        /// Call when you are no longer using a client.
+        /// Finalize this client, closing the handle.
+        /// Called before the object is garbage collected.
         /// </summary>
-        public void Uninitialize()
+        ~Client()
         {
             // Close the process handle
             Memory.CloseHandle(handle);
@@ -142,6 +146,15 @@ namespace Tibia.Objects
         public bool BringToFront()
         {
             return SetForegroundWindow(process.MainWindowHandle);
+        }
+
+        /// <summary>
+        /// Check if the client is the active (foreground) window.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsActive()
+        {
+            return process.MainWindowHandle == GetForegroundWindow();
         }
 
         /// <summary>
@@ -387,7 +400,7 @@ namespace Tibia.Objects
                     // Build a rune object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), true);
+                    Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), this, true);
 
                     // Move the rune back to it's original location
                     allClear = allClear & newRune.Move(oldLocation);

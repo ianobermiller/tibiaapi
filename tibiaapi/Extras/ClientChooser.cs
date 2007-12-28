@@ -21,16 +21,17 @@ namespace Tibia
         /// <returns></returns>
         public static Objects.Client ShowBox()
         {
-            return ShowBox(true);
+            return ShowBox(String.Empty, true);
         }
 
         /// <summary>
         /// Opens a box to pick a client.
         /// </summary>
+        /// <param name="title">The title of the box.</param>
         /// <param name="smart">If true, will not open a box if there is only one 
         /// client; just returns that client.</param>
         /// <returns></returns>
-        public static Objects.Client ShowBox(bool smart)
+        public static Objects.Client ShowBox(string title, bool smart)
         {
             List<Objects.Client> clients = Objects.Client.GetClients();
             if (clients.Count == 0)
@@ -40,6 +41,7 @@ namespace Tibia
             else
             {
                 newClientChooser = new ClientChooser();
+                newClientChooser.Text = title == string.Empty ? "Choose a client." : title;
                 newClientChooser.uxClients.DataSource = clients;
                 newClientChooser.ShowDialog();
                 return client;
