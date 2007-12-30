@@ -349,7 +349,7 @@ namespace Tibia.Objects
             return (Flags & (int)flag) == (int)flag;
         }
         /// <summary>
-        /// Get Experience to Next Level
+        /// Get the experience still needed for the next level.
         /// </summary>
         /// <returns></returns>
         public long ExpLeft()
@@ -361,7 +361,7 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Get experience needed for any level.
+        /// Get experience still needed for a specified level.
         /// </summary>
         /// <param name="levelNeeded"></param>
         /// <returns></returns>

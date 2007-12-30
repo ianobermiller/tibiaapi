@@ -70,33 +70,28 @@ window.onload = initDynSections;
 <a href="class_tibia_1_1_objects_1_1_client-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#9a252d12a2996949165e3b0a59b190ae">SetForegroundWindow</a> (IntPtr hWnd)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#2d33e205cb8f5e00dd17730889b2fa83">Client</a> (Process p)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Main constructor.  <a href="#2d33e205cb8f5e00dd17730889b2fa83"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#fdce0a95aa305415186b7a1072c84bbe">Uninitialize</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">byte[]&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#0a5bbc69363961f289b0bcf10224c1b7">ReadBytes</a> (long address, uint bytesToRead)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Uninitialize this client, closing the handle. Call when you are no longer using a client.  <a href="#fdce0a95aa305415186b7a1072c84bbe"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">byte[]&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#fe71a440675bae5f6d105fadeb29721a">readBytes</a> (long address, uint bytesToRead)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#b86b4a444ad6812c56514d533781c647">ReadInt</a> (long address)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#001712b374cd6e5c1bbc1fa9137cd87f">readInt</a> (long address)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">byte&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#d298aefd25d77631973b8e7828ef36c5">ReadByte</a> (long address)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">byte&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#00501b778398aae72fc719d3c990b754">readByte</a> (long address)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#b93c411549446225534041d9eba02db4">ReadString</a> (long address)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#eeabdd69e940b6a08668a39618394bf2">readString</a> (long address)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#1dd92847e7133de24bb2dfa8de9ae0eb">WriteBytes</a> (long address, byte[] bytes, uint length)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#e1ddf4b757e88804d5e8089bdff6d44f">writeBytes</a> (long address, byte[] bytes, uint length)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#77b218ffa4049a38432a377504db3480">WriteInt</a> (long address, int value)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#155a70a64c1a1adfb025f4a4c1d9d053">writeInt</a> (long address, int value)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#421760025614b3ad047c45e3aa0f6608">WriteByte</a> (long address, byte value)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#f12fa08ecab7cbb7e00d05bbb09965dc">writeByte</a> (long address, byte value)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#da8755c3184977e3a299a9e5021b0caf">WriteString</a> (long address, string str)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#534b791a1b290277a8470668a8354274">writeString</a> (long address, string str)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="namespace_tibia_1_1_constants.html#53e5ac21c1fefa9385930411afe480c7">Constants.LoginStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#3ab133c3c9d15abd4e1ab0a0a10be642">Status</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="namespace_tibia_1_1_constants.html#53e5ac21c1fefa9385930411afe480c7">Constants.LoginStatus</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#b239fcd458c42043a8adfadfa2127230">status</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the status of the client.  <a href="#b239fcd458c42043a8adfadfa2127230"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the status of the client.  <a href="#3ab133c3c9d15abd4e1ab0a0a10be642"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#a1e3a89bc0e3bb435c5b1512dd5dc100">LoggedIn</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check whether or not the client is logged in.  <a href="#a1e3a89bc0e3bb435c5b1512dd5dc100"></a><br></td></tr>
@@ -106,12 +101,18 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#9405c72c2203502b73b0beba95ed62be">BringToFront</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Bring this <a class="el" href="namespace_tibia.html">Tibia</a> window to the foreground. Wrapper for SetForegroundWindow.  <a href="#9405c72c2203502b73b0beba95ed62be"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#66759712fa78723c39e6468fae4c40c2">IsActive</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if the client is the active (foreground) window.  <a href="#66759712fa78723c39e6468fae4c40c2"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">override string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#5d9b675c460374d0c59c3f34079551e0">ToString</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the character name.  <a href="#5d9b675c460374d0c59c3f34079551e0"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_player.html">Player</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#9a41cac9c42178eb64a342a34ed1e146">GetPlayer</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the client's player.  <a href="#9a41cac9c42178eb64a342a34ed1e146"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#f8ed14294e635332eb4a3862ed693ecf">GetStartTime</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the time the client was started.  <a href="#f8ed14294e635332eb4a3862ed693ecf"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">Process&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#5b8cddec9ac439a72a9a4256d50254c5">GetProcess</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the client's process.  <a href="#5b8cddec9ac439a72a9a4256d50254c5"></a><br></td></tr>
@@ -156,10 +157,20 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#ad96db19f5a2261c94144780e0a84124">Statusbar</a><code> [get, set]</code></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get and set the Statusbar text (the white text above the console).  <a href="#ad96db19f5a2261c94144780e0a84124"></a><br></td></tr>
+<tr><td colspan="2"><br><h2>Private Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#9a252d12a2996949165e3b0a59b190ae">SetForegroundWindow</a> (IntPtr hWnd)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static IntPtr&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#6d40c293372f348a312435a526d4a8b3">GetForegroundWindow</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#f8a87260dc62a7f9fc2cd8e9726e6e3c">~Client</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Finalize this client, closing the handle. Called before the object is garbage collected.  <a href="#f8a87260dc62a7f9fc2cd8e9726e6e3c"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Private Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">Process&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#8d73a9c62e9e2c3cbdae479cd8e03222">process</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">IntPtr&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#43772ddc7389fa9e12691e303ea0bc1f">handle</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#ad3d708b50895474eba4d23bae365b85">startTime</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_battle_list.html">BattleList</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_client.html#3f8949c0d3200284ec9f6310ea1a2957">battleList</a></td></tr>
 
@@ -196,6 +207,27 @@ Main constructor.
 
 </div>
 </div><p>
+<a class="anchor" name="f8a87260dc62a7f9fc2cd8e9726e6e3c"></a><!-- doxytag: member="Tibia::Objects::Client::~Client" ref="f8a87260dc62a7f9fc2cd8e9726e6e3c" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Tibia.Objects.Client.~Client           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"><code> [private]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Finalize this client, closing the handle. Called before the object is garbage collected. 
+<p>
+
+</div>
+</div><p>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="9a252d12a2996949165e3b0a59b190ae"></a><!-- doxytag: member="Tibia::Objects::Client::SetForegroundWindow" ref="9a252d12a2996949165e3b0a59b190ae" args="(IntPtr hWnd)" -->
 <div class="memitem">
@@ -207,7 +239,7 @@ Main constructor.
           <td class="paramtype">IntPtr&nbsp;</td>
           <td class="paramname"> <em>hWnd</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td width="100%"></td>
+          <td width="100%"><code> [private]</code></td>
         </tr>
       </table>
 </div>
@@ -217,33 +249,31 @@ Main constructor.
 
 </div>
 </div><p>
-<a class="anchor" name="fdce0a95aa305415186b7a1072c84bbe"></a><!-- doxytag: member="Tibia::Objects::Client::Uninitialize" ref="fdce0a95aa305415186b7a1072c84bbe" args="()" -->
+<a class="anchor" name="6d40c293372f348a312435a526d4a8b3"></a><!-- doxytag: member="Tibia::Objects::Client::GetForegroundWindow" ref="6d40c293372f348a312435a526d4a8b3" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Tibia.Objects.Client.Uninitialize           </td>
+          <td class="memname">static IntPtr Tibia.Objects.Client.GetForegroundWindow           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td width="100%"></td>
+          <td width="100%"><code> [private]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Uninitialize this client, closing the handle. Call when you are no longer using a client. 
-<p>
 
 </div>
 </div><p>
-<a class="anchor" name="fe71a440675bae5f6d105fadeb29721a"></a><!-- doxytag: member="Tibia::Objects::Client::readBytes" ref="fe71a440675bae5f6d105fadeb29721a" args="(long address, uint bytesToRead)" -->
+<a class="anchor" name="0a5bbc69363961f289b0bcf10224c1b7"></a><!-- doxytag: member="Tibia::Objects::Client::ReadBytes" ref="0a5bbc69363961f289b0bcf10224c1b7" args="(long address, uint bytesToRead)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">byte [] Tibia.Objects.Client.readBytes           </td>
+          <td class="memname">byte [] Tibia.Objects.Client.ReadBytes           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>, </td>
@@ -267,12 +297,12 @@ Uninitialize this client, closing the handle. Call when you are no longer using 
 The following are all wrapper methods for Memory.Methods 
 </div>
 </div><p>
-<a class="anchor" name="001712b374cd6e5c1bbc1fa9137cd87f"></a><!-- doxytag: member="Tibia::Objects::Client::readInt" ref="001712b374cd6e5c1bbc1fa9137cd87f" args="(long address)" -->
+<a class="anchor" name="b86b4a444ad6812c56514d533781c647"></a><!-- doxytag: member="Tibia::Objects::Client::ReadInt" ref="b86b4a444ad6812c56514d533781c647" args="(long address)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int Tibia.Objects.Client.readInt           </td>
+          <td class="memname">int Tibia.Objects.Client.ReadInt           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>          </td>
@@ -287,12 +317,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="00501b778398aae72fc719d3c990b754"></a><!-- doxytag: member="Tibia::Objects::Client::readByte" ref="00501b778398aae72fc719d3c990b754" args="(long address)" -->
+<a class="anchor" name="d298aefd25d77631973b8e7828ef36c5"></a><!-- doxytag: member="Tibia::Objects::Client::ReadByte" ref="d298aefd25d77631973b8e7828ef36c5" args="(long address)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">byte Tibia.Objects.Client.readByte           </td>
+          <td class="memname">byte Tibia.Objects.Client.ReadByte           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>          </td>
@@ -307,12 +337,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="eeabdd69e940b6a08668a39618394bf2"></a><!-- doxytag: member="Tibia::Objects::Client::readString" ref="eeabdd69e940b6a08668a39618394bf2" args="(long address)" -->
+<a class="anchor" name="b93c411549446225534041d9eba02db4"></a><!-- doxytag: member="Tibia::Objects::Client::ReadString" ref="b93c411549446225534041d9eba02db4" args="(long address)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">string Tibia.Objects.Client.readString           </td>
+          <td class="memname">string Tibia.Objects.Client.ReadString           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>          </td>
@@ -327,12 +357,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="e1ddf4b757e88804d5e8089bdff6d44f"></a><!-- doxytag: member="Tibia::Objects::Client::writeBytes" ref="e1ddf4b757e88804d5e8089bdff6d44f" args="(long address, byte[] bytes, uint length)" -->
+<a class="anchor" name="1dd92847e7133de24bb2dfa8de9ae0eb"></a><!-- doxytag: member="Tibia::Objects::Client::WriteBytes" ref="1dd92847e7133de24bb2dfa8de9ae0eb" args="(long address, byte[] bytes, uint length)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Tibia.Objects.Client.writeBytes           </td>
+          <td class="memname">bool Tibia.Objects.Client.WriteBytes           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>, </td>
@@ -362,12 +392,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="155a70a64c1a1adfb025f4a4c1d9d053"></a><!-- doxytag: member="Tibia::Objects::Client::writeInt" ref="155a70a64c1a1adfb025f4a4c1d9d053" args="(long address, int value)" -->
+<a class="anchor" name="77b218ffa4049a38432a377504db3480"></a><!-- doxytag: member="Tibia::Objects::Client::WriteInt" ref="77b218ffa4049a38432a377504db3480" args="(long address, int value)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Tibia.Objects.Client.writeInt           </td>
+          <td class="memname">bool Tibia.Objects.Client.WriteInt           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>, </td>
@@ -391,12 +421,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="f12fa08ecab7cbb7e00d05bbb09965dc"></a><!-- doxytag: member="Tibia::Objects::Client::writeByte" ref="f12fa08ecab7cbb7e00d05bbb09965dc" args="(long address, byte value)" -->
+<a class="anchor" name="421760025614b3ad047c45e3aa0f6608"></a><!-- doxytag: member="Tibia::Objects::Client::WriteByte" ref="421760025614b3ad047c45e3aa0f6608" args="(long address, byte value)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Tibia.Objects.Client.writeByte           </td>
+          <td class="memname">bool Tibia.Objects.Client.WriteByte           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>, </td>
@@ -420,12 +450,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="534b791a1b290277a8470668a8354274"></a><!-- doxytag: member="Tibia::Objects::Client::writeString" ref="534b791a1b290277a8470668a8354274" args="(long address, string str)" -->
+<a class="anchor" name="da8755c3184977e3a299a9e5021b0caf"></a><!-- doxytag: member="Tibia::Objects::Client::WriteString" ref="da8755c3184977e3a299a9e5021b0caf" args="(long address, string str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Tibia.Objects.Client.writeString           </td>
+          <td class="memname">bool Tibia.Objects.Client.WriteString           </td>
           <td>(</td>
           <td class="paramtype">long&nbsp;</td>
           <td class="paramname"> <em>address</em>, </td>
@@ -449,12 +479,12 @@ The following are all wrapper methods for Memory.Methods
 
 </div>
 </div><p>
-<a class="anchor" name="b239fcd458c42043a8adfadfa2127230"></a><!-- doxytag: member="Tibia::Objects::Client::status" ref="b239fcd458c42043a8adfadfa2127230" args="()" -->
+<a class="anchor" name="3ab133c3c9d15abd4e1ab0a0a10be642"></a><!-- doxytag: member="Tibia::Objects::Client::Status" ref="3ab133c3c9d15abd4e1ab0a0a10be642" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespace_tibia_1_1_constants.html#53e5ac21c1fefa9385930411afe480c7">Constants.LoginStatus</a> Tibia.Objects.Client.status           </td>
+          <td class="memname"><a class="el" href="namespace_tibia_1_1_constants.html#53e5ac21c1fefa9385930411afe480c7">Constants.LoginStatus</a> Tibia.Objects.Client.Status           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -543,6 +573,28 @@ Bring this <a class="el" href="namespace_tibia.html">Tibia</a> window to the for
 
 </div>
 </div><p>
+<a class="anchor" name="66759712fa78723c39e6468fae4c40c2"></a><!-- doxytag: member="Tibia::Objects::Client::IsActive" ref="66759712fa78723c39e6468fae4c40c2" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Tibia.Objects.Client.IsActive           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Check if the client is the active (foreground) window. 
+<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="5d9b675c460374d0c59c3f34079551e0"></a><!-- doxytag: member="Tibia::Objects::Client::ToString" ref="5d9b675c460374d0c59c3f34079551e0" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -604,6 +656,28 @@ Get a list of all the open clients. Class method.
 
 <p>
 Get the client's player. 
+<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="f8ed14294e635332eb4a3862ed693ecf"></a><!-- doxytag: member="Tibia::Objects::Client::GetStartTime" ref="f8ed14294e635332eb4a3862ed693ecf" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Tibia.Objects.Client.GetStartTime           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Get the time the client was started. 
 <p>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
 
@@ -976,6 +1050,21 @@ Make a rune. Drags a blank to a free hand, casts the words, and moved the new ru
 
 </div>
 </div><p>
+<a class="anchor" name="ad3d708b50895474eba4d23bae365b85"></a><!-- doxytag: member="Tibia::Objects::Client::startTime" ref="ad3d708b50895474eba4d23bae365b85" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="class_tibia_1_1_objects_1_1_client.html#ad3d708b50895474eba4d23bae365b85">Tibia.Objects.Client.startTime</a><code> [private]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="3f8949c0d3200284ec9f6310ea1a2957"></a><!-- doxytag: member="Tibia::Objects::Client::battleList" ref="3f8949c0d3200284ec9f6310ea1a2957" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -1013,7 +1102,7 @@ Get and set the Statusbar text (the white text above the console).
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Objects/<a class="el" href="_objects_2_client_8cs.html">Client.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Dec 21 08:18:01 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:45 2007 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>

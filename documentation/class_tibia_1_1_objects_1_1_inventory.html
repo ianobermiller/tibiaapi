@@ -76,6 +76,9 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" nowrap align="right" valign="top">List&lt; <a class="el" href="class_tibia_1_1_objects_1_1_container.html">Container</a> &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#01d0a2e93750074ee1e4225c99a3a0b7">GetContainers</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open.  <a href="#01d0a2e93750074ee1e4225c99a3a0b7"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#051cb5e48afaeef840de041a9ee06fde">FindNext</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Used after calling FindItem, gets the next item (eg. for stacking).  <a href="#051cb5e48afaeef840de041a9ee06fde"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#e03686b9cf117d3d6e78fc35a28948f6">FindItem</a> (Predicate&lt; <a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a> &gt; match)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Find an item in the player's inventory.  <a href="#e03686b9cf117d3d6e78fc35a28948f6"></a><br></td></tr>
@@ -88,8 +91,12 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#e6bf6849c4510482b5a0ceef3de730b6">GetItem</a> (<a class="el" href="class_tibia_1_1_objects_1_1_item_location.html">ItemLocation</a> location)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the item at the specified location. TODO: Add functionality for ItemLocationType.Ground.  <a href="#e6bf6849c4510482b5a0ceef3de730b6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#f1605e56d40fde460c22fb9f5320c202">Stack</a> (uint itemId)</td></tr>
+
 <tr><td colspan="2"><br><h2>Private Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#ddfa343a36938489b99730ae044e2338">client</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#4dd4ebea628435aae788e061717f1b91">lastFound</a> = null</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -143,6 +150,28 @@ Create a new inventory object with the specified client.
 Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open. 
 <p>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="051cb5e48afaeef840de041a9ee06fde"></a><!-- doxytag: member="Tibia::Objects::Inventory::FindNext" ref="051cb5e48afaeef840de041a9ee06fde" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a> Tibia.Objects.Inventory.FindNext           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Used after calling FindItem, gets the next item (eg. for stacking). 
+<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#051cb5e48afaeef840de041a9ee06fde" title="Used after calling FindItem, gets the next item (eg. for stacking).">FindNext()</a>.Found == false if nothing found.</dd></dl>
 
 </div>
 </div><p>
@@ -224,9 +253,9 @@ Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Conts
 &lt;typeparam name="T"&gt;&lt;/typeparam&gt; <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>list</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>second</em>&nbsp;</td><td>If true, return the second item found.</td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="class_tibia_1_1_objects_1_1_item.html" title="Represents one stack of items. Can also represent a type of item (with no location...">Item</a> object describing the item and its location.</dd></dl>
 <div class="typeconstraint">
 <dl compact><dt><b>Type constraints</b><dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
@@ -265,6 +294,26 @@ Get the item at the specified location. TODO: Add functionality for ItemLocation
 
 </div>
 </div><p>
+<a class="anchor" name="f1605e56d40fde460c22fb9f5320c202"></a><!-- doxytag: member="Tibia::Objects::Inventory::Stack" ref="f1605e56d40fde460c22fb9f5320c202" args="(uint itemId)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Tibia.Objects.Inventory.Stack           </td>
+          <td>(</td>
+          <td class="paramtype">uint&nbsp;</td>
+          <td class="paramname"> <em>itemId</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <hr><h2>Member Data Documentation</h2>
 <a class="anchor" name="ddfa343a36938489b99730ae044e2338"></a><!-- doxytag: member="Tibia::Objects::Inventory::client" ref="ddfa343a36938489b99730ae044e2338" args="" -->
 <div class="memitem">
@@ -281,9 +330,24 @@ Get the item at the specified location. TODO: Add functionality for ItemLocation
 
 </div>
 </div><p>
+<a class="anchor" name="4dd4ebea628435aae788e061717f1b91"></a><!-- doxytag: member="Tibia::Objects::Inventory::lastFound" ref="4dd4ebea628435aae788e061717f1b91" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_tibia_1_1_objects_1_1_item.html">Item</a> <a class="el" href="class_tibia_1_1_objects_1_1_inventory.html#4dd4ebea628435aae788e061717f1b91">Tibia.Objects.Inventory.lastFound</a> = null<code> [private]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Objects/<a class="el" href="_inventory_8cs.html">Inventory.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Dec 21 08:18:02 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:45 2007 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>
