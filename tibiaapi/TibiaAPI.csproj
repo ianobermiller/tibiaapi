@@ -84,6 +84,7 @@
     <Compile Include="Objects\Client.cs" />
     <Compile Include="Objects\VipList.cs" />
     <Compile Include="Objects\Vip.cs" />
+    <Compile Include="Util\Calculate.cs" />
     <Compile Include="Util\DatItem.cs" />
     <Compile Include="Util\DatReader.cs" />
     <Compile Include="Util\KeyboardHook.cs" />

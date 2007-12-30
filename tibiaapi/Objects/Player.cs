@@ -355,16 +355,21 @@ namespace Tibia.Objects
         public long ExpLeft()
         {
             int levelNeeded = Level + 1;
-            double xpNeeded = ((50.0 / 3.0) * Math.Pow(levelNeeded, 3)) - (100.0 * Math.Pow(levelNeeded, 2)) + ((850.0 / 3.0) * levelNeeded) - 200;
-            long xpToGo = (long)xpNeeded - Exp;
-            return xpToGo;
+            long expNeeded = Calculate.ExpForLevel(levelNeeded);
+            long expToGo = expNeeded - Exp;
+            return expToGo;
         }
 
+        /// <summary>
+        /// Get experience needed for any level.
+        /// </summary>
+        /// <param name="levelNeeded"></param>
+        /// <returns></returns>
         public long ExpLeft(int levelNeeded)
         {
-            double xpNeeded = ((50.0 / 3.0) * Math.Pow(levelNeeded, 3)) - (100.0 * Math.Pow(levelNeeded, 2)) + ((850.0 / 3.0) * levelNeeded) - 200;
-            long xpToGo = (long)xpNeeded - Exp;
-            return xpToGo;
+            long expNeeded = Calculate.ExpForLevel(levelNeeded);
+            long expToGo = expNeeded - Exp;
+            return expToGo;
         }
     }
 }
