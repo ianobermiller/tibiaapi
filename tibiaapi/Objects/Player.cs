@@ -354,10 +354,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public long ExpLeft()
         {
-            int levelNeeded = Level + 1;
-            long expNeeded = Calculate.ExpForLevel(levelNeeded);
-            long expToGo = expNeeded - Exp;
-            return expToGo;
+            return ExpLeft(Level + 1);
         }
 
         /// <summary>

@@ -156,7 +156,11 @@ namespace Tibia.Objects
 
                     packet[16] = 0x63;
                     packet[17] = 0x00;
-                    packet[18] = 0x01;
+
+                    if (Id == Constants.Items.Bottle.Vial)
+                        packet[18] = Count;
+                    else
+                        packet[18] = 0x01;
 
                     return client.Send(packet);
 
@@ -177,18 +181,51 @@ namespace Tibia.Objects
                     packet[08] = Packet.Lo(Id);
                     packet[09] = Packet.Hi(Id);
 
-                    packet[10] = 0x00;
-                    packet[11] = BitConverter.GetBytes(onCreature.Id)[0];
-                    packet[12] = BitConverter.GetBytes(onCreature.Id)[1];
+                    if (Id == Constants.Items.Bottle.Vial)
+                        packet[10] = Count;
+                    else
+                        packet[10] = 0x00;
 
-                    packet[13] = BitConverter.GetBytes(onCreature.Id)[2];
-                    packet[14] = BitConverter.GetBytes(onCreature.Id)[3];
+                    // 11 - 14
+                    Array.Copy(BitConverter.GetBytes(onCreature.Id), 0, packet, 11, 4);
 
                     return client.Send(packet);
 
                 default:
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Use the item on yourself
+        /// </summary>
+        /// <returns></returns>
+        public bool UseOnSelf()
+        {
+            byte[] packet = new byte[15];
+            packet[00] = 0x0D;
+            packet[01] = 0x00;
+            packet[02] = 0x84;
+
+            packet[03] = 0xFF;
+            packet[04] = 0xFF;
+            packet[05] = 0x00;
+            packet[06] = 0x00;
+            packet[07] = 0x00;
+
+            packet[08] = Packet.Lo(Id);
+            packet[09] = Packet.Hi(Id);
+
+            if (Id == Constants.Items.Bottle.Vial)
+                packet[10] = Count;
+            else
+                packet[10] = 0x00;
+
+            // 11 - 14
+            int playerID = client.ReadInt(Addresses.Player.Id);
+            Array.Copy(BitConverter.GetBytes(playerID), 0, packet, 11, 4);
+
+            return client.Send(packet);
         }
 
         /// <summary>
