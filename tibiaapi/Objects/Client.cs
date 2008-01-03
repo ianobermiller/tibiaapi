@@ -81,6 +81,11 @@ namespace Tibia.Objects
             return Memory.ReadString(handle, address);
         }
 
+        public string ReadString(long address, uint length)
+        {
+            return Memory.ReadString(handle, address, length);
+        }
+
         public bool WriteBytes(long address, byte[] bytes, uint length)
         {
             return Memory.WriteBytes(handle, address, bytes, length);

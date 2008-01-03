@@ -24,12 +24,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0xF8961; //8.1
+        public static uint MultiClient = 0xF8944; //8.1
 
         /// <summary>
         /// Value to be written to the multiclient address.
         /// </summary>
-        public static uint MultiClientValue = 0xEB; //8.0
+        public static uint MultiClientValue = 0xEB; //8.1
 
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
@@ -100,16 +100,16 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x593610;                  //8.0
+        public static uint RSA = 0x597610;                  //8.1, 8.0 = 0x593610
 		  
         /// <summary>
         /// Login character list.
         /// </summary>
-        public static uint LoginCharList = 0x766DBC;        //8.0
+        public static uint LoginCharList = 0x76C28C;        //8.1, 8.0 = 0x766DBC
 
         /// <summary>
         /// Login character list selected character.
         /// </summary>
-        public static uint LoginSelectedChar = 0x766DB8;    //8.0
+        public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
     }
 }

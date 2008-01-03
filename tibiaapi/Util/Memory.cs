@@ -80,15 +80,27 @@ namespace Tibia
         }
 
         /// <summary>
-        /// Read a string from memmory. Splits at 00 and returns first section to avoid junk.
+        /// Read a string from memmory. Splits at 00 and returns first section to avoid junk. Uses default length of 255. Use ReadString(IntPtr handle, long address, int length) to read longer strings, such as the RSA key.
         /// </summary>
         /// <param name="handle"></param>
         /// <param name="address"></param>
         /// <returns></returns>
         public static string ReadString(IntPtr handle, long address)
         {
+            return ReadString(handle, address, 255);
+        }
+
+        /// <summary>
+        /// Read a string from memmory. Splits at 00 and returns first section to avoid junk.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="length">the length of the bytes to read</param>
+        /// <returns></returns>
+        public static string ReadString(IntPtr handle, long address, uint length)
+        {
             if (encoding == null) encoding = new System.Text.ASCIIEncoding();
-            String str = encoding.GetString(ReadBytes(handle, address, 255)).Split(new Char())[0];
+            String str = encoding.GetString(ReadBytes(handle, address, length)).Split(new Char())[0];
             return str;
         }
 
