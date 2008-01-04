@@ -96,7 +96,7 @@ namespace Tibia.Objects
         /// <param name="match"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int replaceObject(Predicate<int> match, int newObjectId)
+        public int ReplaceObject(Predicate<int> match, int newObjectId)
         {
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
             int replacedObjectCount = 0;
@@ -136,9 +136,9 @@ namespace Tibia.Objects
         /// <param name="oldObjectId"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int replaceObject(int oldObjectId, int newObjectId)
+        public int ReplaceObject(int oldObjectId, int newObjectId)
         {
-            return replaceObject(delegate(int i)
+            return ReplaceObject(delegate(int i)
             {
                 return i == oldObjectId;
             }, newObjectId);
@@ -150,9 +150,9 @@ namespace Tibia.Objects
         /// <param name="idList"></param>
         /// <param name="newObjectId"></param>
         /// <returns></returns>
-        public int replaceObject(List<int> idList, int newObjectId)
+        public int ReplaceObject(List<int> idList, int newObjectId)
         {
-            return replaceObject(delegate(int i)
+            return ReplaceObject(delegate(int i)
             {
                 return idList.Contains(i);
             }, newObjectId);
@@ -162,7 +162,7 @@ namespace Tibia.Objects
         /// Replace all the trees on the map with small fir trees.
         /// </summary>
         /// <returns></returns>
-        public int replaceTrees()
+        public int ReplaceTrees()
         {
             int[] treearray = { 3608, 3614, 3615, 3616, 3617,
                 3618, 3619, 3620, 3621, 3622,
@@ -171,7 +171,7 @@ namespace Tibia.Objects
                 3637, 3638, 3639, 3640, 3641,
                 3647, 3649 };
             List<int> trees = new List<int>(treearray);
-            return replaceObject(trees, 3682);
+            return ReplaceObject(trees, 3682);
         }
 
         #endregion
