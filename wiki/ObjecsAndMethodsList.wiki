@@ -1,4 +1,6 @@
+#summary A rundown of important TibiaAPI objects and their methods
 #labels Featured
+
 =TibiaAPI Features=
 As of TibiaAPI v1.3
 
