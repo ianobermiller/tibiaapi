@@ -7,8 +7,8 @@ Extras
 Client Chooser
 
 Objects
-	Battlelist
-		GetCreatures - get creatures by name, id, or other properties
+  * Battlelist
+   * GetCreatures - get creatures by name, id, or other properties
 		ShowInvisible - show invisible creatures with custom outfit
 	Client
 		EatFood - eat the first found food item
