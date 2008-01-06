@@ -77,7 +77,7 @@ namespace Tibia.Objects
         /// Get all the members of a party
         /// </summary>
         /// <returns></returns>
-        private List<Creature> GetPartyMembers()
+        public List<Creature> GetPartyMembers()
         {
             List<Creature> creatures;
             List<Creature> party = new List<Creature>();
@@ -95,7 +95,7 @@ namespace Tibia.Objects
         /// Get list of Partymembers with a HPBar below xx percent
         /// </summary>
         /// <returns></returns>
-        private List<Creature> GetPartyMembers(uint hpPercentage)
+        public List<Creature> GetPartyMembers(uint hpPercentage)
         {
             List<Creature> creatures;
             List<Creature> party = new List<Creature>();
