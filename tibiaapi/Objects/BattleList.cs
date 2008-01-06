@@ -82,7 +82,7 @@ namespace Tibia.Objects
             List<Creature> creatures;
             List<Creature> party = new List<Creature>();
             creatures = GetCreatures();
-            for (uint i = 0; i < creatures.Count(); i++)
+            for (int i = 0; i < creatures.Count; i++)
             {
                 if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
                 {
@@ -100,7 +100,7 @@ namespace Tibia.Objects
             List<Creature> creatures;
             List<Creature> party = new List<Creature>();
             creatures = GetCreatures();
-            for (uint i = 0; i < creatures.Count(); i++)
+            for (int i = 0; i < creatures.Count; i++)
             {
                 if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
                 {
