@@ -73,6 +73,45 @@ namespace Tibia.Objects
                     return c.Name.IndexOf(creatureName, StringComparison.CurrentCultureIgnoreCase) != -1;
             });
         }
+        /// <summary>
+        /// Get all the members of a party
+        /// </summary>
+        /// <returns></returns>
+        private List<Creature> GetPartyMembers()
+        {
+            List<Creature> creatures;
+            List<Creature> party = new List<Creature>();
+            creatures = GetCreatures();
+            for (uint i = 0; i < creatures.Count(); i++)
+            {
+                if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
+                {
+                    party.Add(creatures[i]);
+                }
+            }
+            return party;
+        }
+        /// <summary>
+        /// Get list of Partymembers with a HPBar below xx percent
+        /// </summary>
+        /// <returns></returns>
+        private List<Creature> GetPartyMembers(uint hpPercentage)
+        {
+            List<Creature> creatures;
+            List<Creature> party = new List<Creature>();
+            creatures = GetCreatures();
+            for (uint i = 0; i < creatures.Count(); i++)
+            {
+                if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
+                {
+                    if (creatures[i].HPBar < hpPercentage)
+                    {
+                        party.Add(creatures[i]);
+                    }
+                }
+            }
+            return party;
+        }
 
         /// <summary>
         /// Get a list of creatures with the specified name, ignoring spaces.
@@ -178,4 +217,5 @@ namespace Tibia.Objects
             return replacedCount;
         }
     }
+    
 }
