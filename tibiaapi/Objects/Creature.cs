@@ -41,6 +41,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets and Returns a Location object of the current creature xyz.
+        /// </summary>
+        /// <returns></returns>
+        public Objects.Location GetLocation()
+        {
+            Objects.Location tempLoc = new Location(this.X, this.Y, this.Z);
+            return tempLoc;
+        }
+
+        /// <summary>
         /// Attack the creature.
         /// Sends a packet to the server and sets the red square around the creature.
         /// </summary>
