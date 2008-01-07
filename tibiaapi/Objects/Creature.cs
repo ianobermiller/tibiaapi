@@ -173,7 +173,7 @@ namespace Tibia.Objects
         public bool IsVisible
         {
             get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Creature.Distance_IsVisible)); }
-            set { client.WriteInt(address + Addresses.Creature.Distance_IsVisible, Convert.ToInt32(value)); IsVisible = value; }
+            set { client.WriteInt(address + Addresses.Creature.Distance_IsVisible, Convert.ToInt32(value)); }
         }
 
         public int Light
