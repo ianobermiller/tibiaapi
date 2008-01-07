@@ -1,8 +1,8 @@
-#summary One-sentence summary of this page.
+#summary Short Tutorial on how to use SVN to get the latest Sources of TibiaAPI.
 
 = Introduction =
 
-Short Tutorial on how to use SVN to get the latest Sources of TibiaAPI.
+This little guide, tells you how to setup TortoiseSVN, to get the very latest version of TibiaAPI.
 
 
 = Details =
