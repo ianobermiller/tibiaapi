@@ -292,6 +292,7 @@ namespace Tibia.Objects
             result &= client.WriteInt(Addresses.Player.GoTo_X, location.X);
             result &= client.WriteInt(Addresses.Player.GoTo_Y, location.Y);
             result &= client.WriteInt(Addresses.Player.GoTo_Z, location.Z);
+            result &= this.IsWalking = true;
 
             return result;
         }

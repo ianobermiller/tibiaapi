@@ -147,8 +147,8 @@ namespace Tibia.Objects
 
         public bool IsWalking
         {
-            get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Creature.Distance_IsWalking)); }
-            set { client.WriteInt(address + Addresses.Creature.Distance_IsWalking, Convert.ToInt32(value)); IsWalking = value; }
+            get { return Convert.ToBoolean(client.ReadByte(address + Addresses.Creature.Distance_IsWalking)); }
+            set { client.WriteByte(address + Addresses.Creature.Distance_IsWalking, Convert.ToByte(value)); }
         }
         public int WalkSpeed
         {
