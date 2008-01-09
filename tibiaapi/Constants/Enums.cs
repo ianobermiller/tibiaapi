@@ -371,6 +371,15 @@ namespace Tibia.Constants
         BeggarFemale = 157,
         ShamanFemale = 158,
 
+        BrotherhoodMale = 278,
+        BrotherhoodFemale = 279,
+
+        NightmareKnightMale = 268,
+        NightmareKnightFemale = 269,
+
+        JesterMale = 273,
+        JesterFemale=274,
+
         CarrionWorm = 192,
 
         // Cult
@@ -442,6 +451,8 @@ namespace Tibia.Constants
         SilverRabbit = 262,
         FrostGiantess = 265,
         CommunityManager = 266
+
+        
     }
 
     #endregion
