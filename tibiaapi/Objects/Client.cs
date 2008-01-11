@@ -432,5 +432,66 @@ namespace Tibia.Objects
                 return false;
             }
         }
+        public void ShowNames(bool enable)
+        {
+            if (enable)
+            {
+                WriteBytes(Addresses.Client.NameSpy1, Addresses.Client.Nops, 2);
+                WriteBytes(Addresses.Client.NameSpy2, Addresses.Client.Nops, 2);
+            }
+            else
+            {
+                WriteBytes(Addresses.Client.NameSpy1, BitConverter.GetBytes(Addresses.Client.NameSpy1Default), 2);
+                WriteBytes(Addresses.Client.NameSpy2, BitConverter.GetBytes(Addresses.Client.NameSpy2Default), 2);
+            }
+        }
+        /// <summary>
+        /// LevelSpy
+        /// </summary>
+        /// <param name="enable"></param>
+        public bool ShowFloor(int floor, bool enable)
+        {
+            if (enable)
+            {
+                int playerZ, tempPtr;
+                
+                WriteBytes(Addresses.Client.LevelSpy1, Addresses.Client.Nops, 6);
+                WriteBytes(Addresses.Client.LevelSpy2, Addresses.Client.Nops, 6);
+                WriteBytes(Addresses.Client.LevelSpy3, Addresses.Client.Nops, 6);
+                
+                tempPtr = ReadInt(Addresses.Client.LevelSpyPtr);
+                tempPtr += Addresses.Client.LevelSpyAdd1;
+                tempPtr = ReadInt(tempPtr);
+                tempPtr += (int)Addresses.Client.LevelSpyAdd2;
+                
+                playerZ = ReadInt(Addresses.Client.Player_Z);
+
+                if (playerZ <= 7)
+                {
+                    if (playerZ-floor >= 0 && playerZ-floor <= 7)
+                    {
+                        playerZ = 7 - playerZ;
+                        WriteInt(tempPtr, playerZ + floor);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (floor >= -2 && floor <= 2 && playerZ-floor < 14)
+                    {
+                        WriteInt(tempPtr, 2 + floor);
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteBytes(Addresses.Client.LevelSpy1, Addresses.Client.LevelSpyDefault, 6);
+                WriteBytes(Addresses.Client.LevelSpy2, Addresses.Client.LevelSpyDefault, 6);
+                WriteBytes(Addresses.Client.LevelSpy3, Addresses.Client.LevelSpyDefault, 6);
+                return true;
+            }
+            return false;
+        }
     }
 }
