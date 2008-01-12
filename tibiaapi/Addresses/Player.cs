@@ -75,5 +75,10 @@ namespace Tibia.Addresses
         public static uint Target_BList_ID = Target_ID - 8;  //8.1
         public static uint Target_BList_Type = Target_ID - 5;//8.1
         public static uint Target_Type = Target_ID + 3;      //8.1
+
+        /// <summary>
+        /// Static address for player Z, used for level spy
+        /// </summary>
+        public static uint Z = 0x61E9C0;    //8.1
     }
 }

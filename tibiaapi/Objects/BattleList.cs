@@ -79,38 +79,23 @@ namespace Tibia.Objects
         /// <returns></returns>
         public List<Creature> GetPartyMembers()
         {
-            List<Creature> creatures;
-            List<Creature> party = new List<Creature>();
-            creatures = GetCreatures();
-            for (int i = 0; i < creatures.Count; i++)
+            return GetCreatures().FindAll(delegate(Creature c)
             {
-                if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
-                {
-                    party.Add(creatures[i]);
-                }
-            }
-            return party;
+                return c.InParty();
+            });
         }
+        
         /// <summary>
         /// Get list of Partymembers with a HPBar below xx percent
         /// </summary>
+        /// <param name="hpPercentage"></param>
         /// <returns></returns>
         public List<Creature> GetPartyMembers(uint hpPercentage)
         {
-            List<Creature> creatures;
-            List<Creature> party = new List<Creature>();
-            creatures = GetCreatures();
-            for (int i = 0; i < creatures.Count; i++)
+            return GetCreatures().FindAll(delegate(Creature c)
             {
-                if (creatures[i].Party == Tibia.Constants.Party.Leader || creatures[i].Party == Tibia.Constants.Party.Member)
-                {
-                    if (creatures[i].HPBar < hpPercentage)
-                    {
-                        party.Add(creatures[i]);
-                    }
-                }
-            }
-            return party;
+                return c.InParty() && c.HPBar <= hpPercentage;
+            });
         }
 
         /// <summary>

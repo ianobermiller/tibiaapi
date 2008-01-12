@@ -50,35 +50,37 @@ namespace Tibia.Addresses
         /// The default (starting) Z axis value
         /// </summary>
         public static uint Z_Axis_Default = 7; // default ground level
-        
-        /// <summary>
-        /// Class of addresses and distances for level spy.
-        /// </summary>
-        public class LevelSpy
-        {
-            public static uint NOP = 0x004C4FC0;        //8.1, 8.0 = 0x004C4320
-            public static uint Above = 0x004C4FBC;      //8.1, 8.0 = 0x004C431C
-            public static uint Below = 0x004C4FC4;      //8.1, 8.0 = 0x004C4324
-
-            public static uint NOP_Default = 49451;     //8.0
-            public static uint Above_Default = 7;       //8.0
-            public static uint Below_Default = 2;       //8.0
-
-            public static uint MIN = 0; //8.0
-            public static uint MAX = 7; //8.0
-
-        }
 
         /// <summary>
-        /// Class of addresses and distances for name spy.
+        /// Nop Value, to use with namespy and levelspy
         /// </summary>
-        public class NameSpy
-        {
-            public static uint NOP = 0x004DF469;     //8.1, 8.0 = 0x004DD2D7
-            public static uint NOP2 = 0x004DF473;    //8.1, 8.0 = 0x004DD2E1
+        public static byte[] Nops = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
-            public static uint NOP_Default = 19061;  //8.1, 8.0 = 19573
-            public static uint NOP2_Default = 16501; //8.1, 8.0 = 17013
-        }
+        /// <summary>
+        /// NameSpy Adresses
+        /// </summary>
+        public static uint NameSpy1 = 0x4DF469; // 8.1
+        public static uint NameSpy2 = 0x004DF473; // 8.1
+
+        /// <summary>
+        /// Default Values for Namespy1
+        /// </summary>
+        public static uint NameSpy1Default = 19061;
+        public static uint NameSpy2Default = 16501;
+
+        /// <summary>
+        /// Level spy addresses
+        /// </summary>
+        public static uint LevelSpy1 = 0x4E115A;
+        public static uint LevelSpy2 = 0x4E125F;
+        public static uint LevelSpy3 = 0x4E12E0;
+        public static uint LevelSpyPtr = 0x61B608;
+
+        /// <summary>
+        /// Defaults and constants for level spy
+        /// </summary>
+        public static byte[] LevelSpyDefault = { 0x89, 0x86, 0xD8, 0x25, 0x00, 0x00 };
+        public static byte LevelSpyAdd1 = 28;
+        public static uint LevelSpyAdd2 = 0x25D8;
     }
 }

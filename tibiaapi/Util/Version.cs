@@ -94,18 +94,6 @@ namespace Tibia
                 Addresses.Map.Max_Squares = 2016;
                 Addresses.Map.Max_Square_Objects = 13;
                 Addresses.Map.Z_Axis_Default = 7; 
-                Addresses.Map.LevelSpy.NOP = 0x004C4320;             
-                Addresses.Map.LevelSpy.Above = 0x004C431C;           
-                Addresses.Map.LevelSpy.Below = 0x004C4324;           
-                Addresses.Map.LevelSpy.NOP_Default = 49451;          
-                Addresses.Map.LevelSpy.Above_Default = 7;            
-                Addresses.Map.LevelSpy.Below_Default = 2;            
-                Addresses.Map.NameSpy.NOP = 0x004DD2D7;     
-                Addresses.Map.NameSpy.NOP2 = 0x004DD2E1;    
-                Addresses.Map.NameSpy.NOP_Default = 19573;  
-                Addresses.Map.NameSpy.NOP2_Default = 17013; 
-                Addresses.Map.LevelSpy.MIN = 0; 
-                Addresses.Map.LevelSpy.MAX = 7; 
 
                 Addresses.Player.Flags = 0x60EA58; 
                 Addresses.Player.Exp = 0x60EAC4;

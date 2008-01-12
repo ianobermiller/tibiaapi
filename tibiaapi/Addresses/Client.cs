@@ -111,34 +111,5 @@ namespace Tibia.Addresses
         /// Login character list selected character.
         /// </summary>
         public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
-        
-        /// <summary>
-        /// Nop Value, to use with namespy and levelspy
-        /// </summary>
-        public static byte[] Nops = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-        
-        /// <summary>
-        /// NameSpy Adresses
-        /// </summary>
-        public static uint NameSpy1 = 0x4DF469; // 8.1
-        public static uint NameSpy2 = 0x004DF473; // 8.1
-
-        /// <summary>
-        /// Default Values for Namespy1
-        /// </summary>
-        public static uint NameSpy1Default = 19061;
-        public static uint NameSpy2Default = 16501;
-
-        public static uint LevelSpy1 = 0x4E115A;
-        public static uint LevelSpy2 = 0x4E125F;
-        public static uint LevelSpy3 = 0x4E12E0;
-        public static uint LevelSpyPtr = 0x61B608;
-
-        public static byte[] LevelSpyDefault = { 0x89, 0x86, 0xD8, 0x25, 0x00, 0x00 };
-        public static byte LevelSpyAdd1 = 28;
-        public static uint LevelSpyAdd2 = 0x25D8;
-
-        public static uint Player_Z = 0x61E9C0;
-
     }
 }
