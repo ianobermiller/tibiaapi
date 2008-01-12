@@ -19,6 +19,10 @@ namespace Tibia.Objects
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern void SetWindowText(IntPtr hwnd, string str);
+
         #endregion
 
         private Process process;
@@ -500,6 +504,14 @@ namespace Tibia.Objects
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// Sets the Title of the Client
+        /// </summary>
+        /// <param name="Text"></param>
+        public void SetTitle(String Text)
+        {
+            SetWindowText(process.MainWindowHandle, Text);
         }
     }
 }
