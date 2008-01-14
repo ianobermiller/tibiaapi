@@ -252,5 +252,74 @@ namespace Tibia.Objects
                 squareRelative.Y + yAdjustment,
                 squareRelative.Z + zAdjustment);
         }
+
+        /// <summary>
+        /// Enable or disable name spying
+        /// </summary>
+        /// <param name="enable"></param>
+        public void ShowNames(bool enable)
+        {
+            if (enable)
+            {
+                client.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
+                client.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
+            }
+            else
+            {
+                client.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
+                client.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
+            }
+        }
+
+        /// <summary>
+        /// Enable or disable level spy for the given floor
+        /// </summary>
+        /// <param name="floor"></param>
+        /// <param name="enable"></param>
+        /// <returns></returns>
+        public bool ShowFloor(int floor, bool enable)
+        {
+            if (enable)
+            {
+                int playerZ, tempPtr;
+
+                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
+
+                tempPtr = client.ReadInt(Addresses.Map.LevelSpyPtr);
+                tempPtr += Addresses.Map.LevelSpyAdd1;
+                tempPtr = client.ReadInt(tempPtr);
+                tempPtr += (int)Addresses.Map.LevelSpyAdd2;
+
+                playerZ = client.ReadInt(Addresses.Player.Z);
+
+                if (playerZ <= 7)
+                {
+                    if (playerZ - floor >= 0 && playerZ - floor <= 7)
+                    {
+                        playerZ = 7 - playerZ;
+                        client.WriteInt(tempPtr, playerZ + floor);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (floor >= -2 && floor <= 2 && playerZ - floor < 14)
+                    {
+                        client.WriteInt(tempPtr, 2 + floor);
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
+                return true;
+            }
+            return false;
+        }
     }
 }

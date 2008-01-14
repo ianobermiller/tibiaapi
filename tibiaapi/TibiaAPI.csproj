@@ -107,4 +107,7 @@
   <ItemGroup>
     <None Include="LICENSE" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="CurrentForumPost.txt" />
+  </ItemGroup>
 </Project>
