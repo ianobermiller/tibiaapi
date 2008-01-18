@@ -66,6 +66,7 @@
     <Compile Include="Extras\ClientChooser.Designer.cs">
       <DependentUpon>ClientChooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Extras\MapViewer.cs" />
     <Compile Include="Objects\MapSquare.cs" />
     <Compile Include="Objects\Creature.cs" />
     <Compile Include="Objects\Inventory.cs" />

@@ -63,6 +63,28 @@ namespace Tibia.Objects
             Memory.CloseHandle(handle);
         }
 
+        /// <summary>
+        /// Open a client at the default path
+        /// </summary>
+        /// <returns></returns>
+        public static Client Open()
+        {
+            return Open(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + "\\Tibia\\tibia.exe");
+        }
+
+        /// <summary>
+        /// Open a client from the specified path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static Client Open(string path)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo(path);
+            psi.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+            Process p = Process.Start(psi);
+            return new Client(p);
+        }
+
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
