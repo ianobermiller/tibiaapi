@@ -38,6 +38,10 @@ namespace Tibia.Util
                 TcpClient tcpRemote = new TcpClient(client.ReadString(Addresses.Client.LoginServerStart), DefaultPort);
                 netStreamRemote = tcpRemote.GetStream();
 
+                // Wait for the first chunk of data between the server and client (login list usually)
+                Byte[] data = new byte[1024]; int len = 0;
+                len = netStreamClient.Read(data, 0, data.Length);
+                netStreamRemote.Write(data, 0, len);
             }
         }
     }

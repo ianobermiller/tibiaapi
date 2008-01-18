@@ -97,6 +97,9 @@ namespace Tibia.Constants
         Hasted = 64,
         Battle = 128,
         Drowning = 256,
+        Frozen = 512,
+        Holy = 1024,
+        Thunder = 2048,
         None = 0
     }
 
@@ -130,18 +133,18 @@ namespace Tibia.Constants
     // Not really an enum, because we want to allow any number for color.
     public static class OutfitColor
     {
-        public static uint Red = 94;
-        public static uint Orange = 77;
-        public static uint Yellow = 79;
-        public static uint Green = 82;
-        public static uint Blue = 88;
-        public static uint Purple = 90;
-        public static uint Brown = 116;
-        public static uint Black = 114;
-        public static uint White = 0;
-        public static uint Pink = 91;
-        public static uint Grey = 57;
-        public static uint Peach = 1;
+        public static int Red = 94;
+        public static int Orange = 77;
+        public static int Yellow = 79;
+        public static int Green = 82;
+        public static int Blue = 88;
+        public static int Purple = 90;
+        public static int Brown = 116;
+        public static int Black = 114;
+        public static int White = 0;
+        public static int Pink = 91;
+        public static int Grey = 57;
+        public static int Peach = 1;
     }
 
     public enum OutfitType
@@ -461,16 +464,16 @@ namespace Tibia.Constants
 
     public static class LightSize
     {
-        public static uint None = 0;
-        public static uint Torch = 7;
-        public static uint Full = 27;
+        public static int None = 0;
+        public static int Torch = 7;
+        public static int Full = 27;
     }
 
     public static class LightColor
     {
-        public static uint None = 0;
-        public static uint Orange = 206;  // default light color
-        public static uint White = 215;
+        public static int None = 0;
+        public static int Orange = 206;  // default light color
+        public static int White = 215;
     }
 
     public enum Skull
