@@ -95,6 +95,7 @@
     <Compile Include="Objects\Spell.cs" />
     <Compile Include="Objects\Structures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Misc.cs" />
     <Compile Include="Util\Packet.cs" />
     <Compile Include="Util\Proxy.cs" />
     <Compile Include="Util\Version.cs" />

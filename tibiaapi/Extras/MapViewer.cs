@@ -28,6 +28,7 @@ namespace Tibia
 
         // Private Variables
         private PictureBox pictureBox;
+        private Graphics g;
         private Rectangle mapBoundary;
         private int currentZ = 7;
         private Bitmap[] floorImages = new Bitmap[FloorMax + 1];
@@ -40,6 +41,7 @@ namespace Tibia
         public MapViewer(PictureBox p)
         {
             pictureBox = p;
+            g = p.CreateGraphics();
             pictureBox.MouseDown += pictureBox_MouseDown;
             pictureBox.MouseMove += pictureBox_MouseMove;
             pictureBox.Paint += pictureBox_Paint;
@@ -384,6 +386,19 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Set the level of the map
+        /// </summary>
+        /// <param name="z"></param>
+        public void SetLevel(int z)
+        {
+            if (z != currentZ)
+            {
+                currentZ = z;
+                LoadMap();
+            }
+        }
+
+        /// <summary>
         /// Set the zoom factor for the map
         /// </summary>
         /// <param name="factor"></param>
@@ -413,7 +428,6 @@ namespace Tibia
         private void RedrawMap(bool clear)
         {
             if (mapImage == null) return;
-            Graphics g = pictureBox.CreateGraphics();
             if (clear)
                 g.Clear(Color.Black);
             g.DrawImage(mapImage, new Rectangle(imagePos, imageSize));
@@ -524,8 +538,6 @@ namespace Tibia
         /// <param name="p"></param>
         public void DrawCrosshairs(Point p)
         {
-            Graphics g = pictureBox.CreateGraphics();
-
             int x = p.X;
             int y = p.Y;
 
@@ -541,7 +553,6 @@ namespace Tibia
         /// <param name="percent"></param>
         public void DrawPercentBar(int percent)
         {
-            Graphics g = pictureBox.CreateGraphics();
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
             StringFormat sf = new StringFormat();
             sf.Alignment = StringAlignment.Center;
@@ -565,7 +576,6 @@ namespace Tibia
         /// </summary>
         public void DrawCoordinates()
         {
-            Graphics g = pictureBox.CreateGraphics();
             Location l = GetMapCenter();
 
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
@@ -577,6 +587,136 @@ namespace Tibia
             StringFormat sf = new StringFormat();
             sf.Alignment = StringAlignment.Center;
             g.DrawString("" + l.X + ", " + l.Y, font, Brushes.White, rect, sf);
+        }
+
+        /// <summary>
+        /// Draw a creature on the map
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="hpBar">if true the color of the name will be based on the creatures hp bar</param>
+        public void DrawCreatureMarker(Creature c, bool hpBar)
+        {
+            if (hpBar)
+                DrawMarker(c.Location, c.Name, Color.Yellow, Color.Black, Color.White, Color.Black, c.HPBar);
+            else
+                DrawMarker(c.Location, c.Name);
+        }
+
+        /// <summary>
+        /// Draw a marker with the default colors.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="text"></param>
+        public void DrawMarker(Location l, string text)
+        {
+            DrawMarker(l, text, Color.Yellow, Color.Black);
+        }
+
+        /// <summary>
+        /// Draw a marker with the default text fill and outline colors.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="text"></param>
+        /// <param name="markerFill"></param>
+        /// <param name="markerOutline"></param>
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline)
+        {
+            DrawMarker(l, text, markerFill, markerOutline, Color.White, Color.Black);
+        }
+
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline)
+        {
+            DrawMarker(l, text, markerFill, markerOutline, textFill, textOutline, -1);
+        }
+
+        /// <summary>
+        /// Draw a marker given the specifications.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="text"></param>
+        /// <param name="markerFill"></param>
+        /// <param name="markerOutline"></param>
+        /// <param name="textFill"></param>
+        /// <param name="textOutline"></param>
+        /// <param name="hpBar">if hpBar >= 0 && <= 100 draw an HP bar</param>
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar)
+        {
+            // Convert to Tibia coors
+            Point p = MapCoorsToPoint(l);
+
+            // This array of points makes the marker
+            Point[] points = {
+                new Point(p.X - 3, p.Y - 25),
+                new Point(p.X + 3, p.Y - 25),
+                new Point(p.X + 3, p.Y - 20),
+                new Point(p.X + 10, p.Y - 20),
+                new Point(p.X, p.Y),
+                new Point(p.X - 10, p.Y - 20),
+                new Point(p.X - 3, p.Y - 20)
+            };
+
+            // Anti-aliased for nice effect
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // Draw the marker
+            g.FillPolygon(new SolidBrush(markerFill), points);
+            g.DrawPolygon(new Pen(markerOutline), points);
+
+            // The text font
+            Font font = new Font("Tahoma", 8, FontStyle.Bold);
+
+            // The rectangle to hold the text
+            Rectangle rect = new Rectangle(p.X - 100, 
+                p.Y - (((hpBar >= 0 && hpBar <= 100) ? 33 : 27) + font.Height), 
+                200, font.Height);
+
+            // Center the text
+            StringFormat sf = new StringFormat();
+            sf.Alignment = StringAlignment.Center;
+
+            // Add "up" or "down" to the name
+            if (l.Z != 0 && l.Z != currentZ)
+                text += " (" + (currentZ - l.Z > 0 ? "+" : "") + (currentZ - l.Z) + ")";
+
+            // Draw the outlined text
+            DrawOutlinedText(text, font, new SolidBrush(textFill), new SolidBrush(textOutline), rect, sf);
+
+            // Draw HP bar if needed
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            if (hpBar >= 0 && hpBar <= 100)
+            {
+                Rectangle hpOuter = new Rectangle(p.X - 14, p.Y - 27 - 4, 28, 4);
+                Rectangle hpInner = new Rectangle(p.X - 13, p.Y - 26 - 4,
+                    (int)(hpBar / 100.0 * 26), 2);
+                g.FillRectangle(Brushes.Black, hpOuter);
+                g.FillRectangle(new SolidBrush(Misc.HpPercentToColor(hpBar)), hpInner);
+            }
+        }
+
+        /// <summary>
+        /// Draw the specified text with an outline
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="font"></param>
+        /// <param name="fill"></param>
+        /// <param name="outline"></param>
+        /// <param name="rect"></param>
+        /// <param name="sf"></param>
+        public void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf)
+        {
+            // Draw the outline by offsetting the rectangle
+            rect.Offset(-1, -1);
+            g.DrawString(text, font, outline, rect, sf);
+            rect.Offset(2, 0);
+            g.DrawString(text, font, outline, rect, sf);
+            rect.Offset(0, 2);
+            g.DrawString(text, font, outline, rect, sf);
+            rect.Offset(-2, 0);
+            g.DrawString(text, font, outline, rect, sf);
+
+            // Return to the original position and draw the fill
+            rect.Offset(1, -1);
+            g.DrawString(text, font, fill, rect, sf);
         }
 
     }
