@@ -95,8 +95,8 @@ namespace Tibia.Objects
             packet[13] = Packet.Lo(onTile.Location.Y);
             packet[14] = Packet.Hi(onTile.Location.Y);
             packet[15] = Packet.Lo(onTile.Location.Z);
-            packet[16] = Packet.Lo(onTile.Id);
-            packet[17] = Packet.Hi(onTile.Id);
+            packet[16] = Packet.Lo(onTile.Object);
+            packet[17] = Packet.Hi(onTile.Object);
             packet[18] = 0x00;
 
             return client.Send(packet);

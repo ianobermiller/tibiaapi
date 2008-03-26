@@ -321,5 +321,26 @@ namespace Tibia.Objects
             }
             return false;
         }
+        
+        public List<Tile> GetTilesWithID(uint id)
+        {
+            List<Tile> tiles = new List<Tile>();
+
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+
+            uint squarePointer = mapBegin;
+
+            for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
+            {
+                if (client.ReadInt(squarePointer + 4) == id)
+                {
+                    Tile temp = new Tile(i);
+                    temp.Object = id;
+                    tiles.Add(temp);
+                }
+                squarePointer += Addresses.Map.Step_Square;
+            }
+            return tiles;
+        }
     }
 }

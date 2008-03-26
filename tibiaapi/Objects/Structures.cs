@@ -19,14 +19,16 @@ namespace Tibia.Objects
         public Location Location;
         public uint Id;
         public uint Address;
+        public uint Object;
 
         public Tile(uint i) : this(i, 0) { }
-        public Tile(uint i, uint a) : this(i, a, new Location()) { }
-        public Tile(uint i, uint a, Location l)
+        public Tile(uint i, uint a) : this(i, a, new Location(),0) { }
+        public Tile(uint i, uint a, Location l, uint o)
         {
             Location = l;
             Id = i;
             Address = a;
+            Object = o;
         }
     }
 }
