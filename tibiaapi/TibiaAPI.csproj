@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemList.cs" />
@@ -67,6 +68,7 @@
       <DependentUpon>ClientChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="Extras\MapViewer.cs" />
+    <Compile Include="Objects\Hotkey.cs" />
     <Compile Include="Objects\MapSquare.cs" />
     <Compile Include="Objects\Creature.cs" />
     <Compile Include="Objects\Inventory.cs" />

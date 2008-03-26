@@ -571,4 +571,15 @@ namespace Tibia.Constants
     }
 
     #endregion
+
+    #region Hotkeys
+
+    public enum HotkeyObjectUseType
+    {
+        WithCrosshairs = 0,
+        UseOnTarget = 1,
+        UseOnSelf = 2
+    }
+
+    #endregion
 }
