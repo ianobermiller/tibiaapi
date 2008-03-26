@@ -201,7 +201,7 @@ namespace Tibia.Objects
                             int playerId = client.ReadInt(Addresses.Player.Id);
                             if (objectId == playerId)
                             {
-                                playerLocation.Id = i;
+                                playerLocation.Number = i;
                                 Player player = client.GetPlayer();
                                 playerLocation.Location = new Location(player.X, player.Y, player.Z);
                                 return playerLocation;
@@ -240,7 +240,7 @@ namespace Tibia.Objects
         public Location GetAbsoluteLocation(uint squareNumber)
         {
             Tile player = GetPlayerSquare();
-            Location playerRelative = SquareNumberToLocation(player.Id);
+            Location playerRelative = SquareNumberToLocation(player.Number);
 
             int xAdjustment = player.Location.X - playerRelative.X;
             int yAdjustment = player.Location.Y - playerRelative.Y;
@@ -322,20 +322,27 @@ namespace Tibia.Objects
             return false;
         }
         
-        public List<Tile> GetTilesWithID(uint id)
+        /// <summary>
+        /// Get all tiles with the specified ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<Tile> GetTiles(uint id)
         {
             List<Tile> tiles = new List<Tile>();
 
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
 
-            uint squarePointer = mapBegin;
+            uint squarePointer = mapBegin
+                + Addresses.Map.Distance_Square_Objects
+                + Addresses.Map.Distance_Object_Id;
 
             for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
             {
-                if (client.ReadInt(squarePointer + 4) == id)
+                if (client.ReadInt(squarePointer) == id)
                 {
                     Tile temp = new Tile(i);
-                    temp.Object = id;
+                    temp.Id = id;
                     tiles.Add(temp);
                 }
                 squarePointer += Addresses.Map.Step_Square;

@@ -2,6 +2,9 @@ using System;
 
 namespace Tibia.Objects
 {
+    /// <summary>
+    /// A simple X, Y, Z location
+    /// </summary>
     public struct Location
     {
         public int X, Y, Z;
@@ -14,21 +17,24 @@ namespace Tibia.Objects
         }
     }
 
+    /// <summary>
+    /// Represents a tile in the map structure
+    /// </summary>
     public struct Tile
     {
         public Location Location;
-        public uint Id;
+        public uint Number;
         public uint Address;
-        public uint Object;
+        public uint Id;
 
-        public Tile(uint i) : this(i, 0) { }
-        public Tile(uint i, uint a) : this(i, a, new Location(),0) { }
-        public Tile(uint i, uint a, Location l, uint o)
+        public Tile(uint n) : this(n, 0) { }
+        public Tile(uint n, uint a) : this(n, a, new Location(), 0) { }
+        public Tile(uint n, uint a, Location l, uint i)
         {
             Location = l;
-            Id = i;
+            Number = n;
             Address = a;
-            Object = o;
+            Id = i;
         }
     }
 }

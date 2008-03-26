@@ -1,0 +1,7 @@
+Current:
+-Fix item using via hotkeys (should be static methods)
+-inventory.FindItem should have an option to check slots as well
+-map.GetTiles should have an option to only check on the current floor (optimized)
+
+Future:
+- Count items using hotkeys ("Using 1 of 297 gold coins.")
