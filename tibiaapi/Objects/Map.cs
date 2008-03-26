@@ -231,6 +231,13 @@ namespace Tibia.Objects
 
             return l;
         }
+        
+	public static uint LocationToSquareNumber(Location loc)
+	{
+	    uint i = 0;
+	    i = Convert.ToUInt32(loc.X + loc.Y * 18 + loc.Z * 14 * 18);
+	    return i;
+        }
 
         /// <summary>
         /// Get a squares absoulute coordinates by comparing its relative coordinates with that of the players known coordinates.
