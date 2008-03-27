@@ -1,14 +1,8 @@
-#summary Short Tutorial on how to use SVN to get the latest Sources of TibiaAPI.
+#summary Short Tutorial on how to use TortoiseSVN to get the latest sources of TibiaAPI
+#labels Featured,Phase-Implementation
 
-= Introduction =
-
-This little guide, tells you how to setup TortoiseSVN, to get the very latest version of TibiaAPI.
-
-
-= Details =
-
- * Download and install TortoiseSVN from http://tortoisesvn.net/downloads
- * Create an empty folder named TibiaAPI
- * Then Right-click that folder, and select SVN Checkout...
- * In the URL of Repository, enter http://tibiaapi.googlecode.com/svn/ and press OK
- * Wait 20 seconds and you will have all the Source Codes, and the latest Documentation!
+ # Download and install TortoiseSVN from [http://tortoisesvn.net/downloads]
+ # Create an empty folder named TibiaAPI
+ # Open the folder, right-click on a blank area, and select SVN Checkout...
+ # In the URL of Repository, enter http://tibiaapi.googlecode.com/svn/ and press OK
+ # Wait 20 seconds and you will have all the Source Codes and the latest Documentation!
