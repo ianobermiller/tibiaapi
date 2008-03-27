@@ -356,5 +356,39 @@ namespace Tibia.Objects
             }
             return tiles;
         }
+        /// <summary>
+        /// Get tiles on the same floor as the player. To speed things up!
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sameFloor"></param>
+        /// <returns></returns>
+        public List<Tile> GetTiles(uint id,bool sameFloor)
+        {
+            List<Tile> tiles = new List<Tile>();
+
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            Location tloc = new Location();
+            Tile ttile = new Tile();
+            uint squarePointer = mapBegin
+                + Addresses.Map.Distance_Square_Objects
+                + Addresses.Map.Distance_Object_Id;
+            ttile = GetPlayerSquare();
+            tloc.Z = Map.SquareNumberToLocation(ttile.Number).Z;
+            for (int y = 0; y < 14; y++)
+            {
+                tloc.Y = y;
+                for (int x = 0; x < 18; x++)
+                {
+                    tloc.X = x;
+                    if (client.ReadInt(squarePointer+LocationToSquareNumber(tloc)*Addresses.Map.Step_Square) == id)
+                    {
+                        Tile temp = new Tile(LocationToSquareNumber(tloc));
+                        temp.Id = id;
+                        tiles.Add(temp);
+                    }
+                }
+            }
+            return tiles;
+        }
     }
 }
