@@ -36,7 +36,7 @@ namespace Tibia
             List<Objects.Client> clients = Objects.Client.GetClients();
             if (clients.Count == 0)
                 return null;
-            else if (clients.Count == 1)
+            else if (smart && clients.Count == 1)
                 return clients[0];
             else
             {
