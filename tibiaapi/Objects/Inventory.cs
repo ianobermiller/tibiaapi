@@ -182,12 +182,13 @@ namespace Tibia.Objects
             else
                 return false;
         }
+
         /// <summary>
         /// If you just want to use an item, like eat a food, or check gp etc
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public bool UseItem(uint Id)
+        public bool UseItem(uint id)
         {
             if (client == null) return false;
 
@@ -200,19 +201,41 @@ namespace Tibia.Objects
             packet[05] = 0x00;
             packet[06] = 0x00;
             packet[07] = 0x00;
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
+            packet[08] = Packet.Lo(id);
+            packet[09] = Packet.Hi(id);
             packet[10] = 0x00;
             packet[11] = 0x0F;
             return client.Send(packet);
         }
+
         /// <summary>
-        /// Use a item on a creature, like uhing yourself.
+        /// Use a item on a creature, like sd'ing your enemy.
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <param name="onCreature"></param>
         /// <returns></returns>
-        public bool UseItem(uint Id, Creature onCreature)
+        public bool UseItem(uint id, Creature onCreature)
+        {
+            return UseItem(id, onCreature.Id);
+        }
+
+        /// <summary>
+        /// Use an item on your self
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool UseItemOnSelf(uint id)
+        {
+            return UseItem(id, client.ReadInt(Addresses.Player.Id));
+        }
+
+        /// <summary>
+        /// Use an item on a creature of the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="creatureId"></param>
+        /// <returns></returns>
+        public bool UseItem(uint id, int creatureId)
         {
             if (client == null) return false;
 
@@ -225,14 +248,20 @@ namespace Tibia.Objects
             packet[05] = 0x00;
             packet[06] = 0x00;
             packet[07] = 0x00;
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
+            packet[08] = Packet.Lo(id);
+            packet[09] = Packet.Hi(id);
             packet[10] = 0x00;
-            Array.Copy(BitConverter.GetBytes(onCreature.Id), 0, packet, 11, 4);
+            Array.Copy(BitConverter.GetBytes(creatureId), 0, packet, 11, 4);
             return client.Send(packet);
         }
 
-        public bool UseItem(uint Id, Tile onTile)
+        /// <summary>
+        /// Use an item on a tile (eg. fishing)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="onTile"></param>
+        /// <returns></returns>
+        public bool UseItem(uint id, Tile onTile)
         {
             if (client == null) return false;
 
@@ -245,8 +274,8 @@ namespace Tibia.Objects
             packet[05] = 0x00;
             packet[06] = 0x00;
             packet[07] = 0x00;
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
+            packet[08] = Packet.Lo(id);
+            packet[09] = Packet.Hi(id);
             packet[10] = 0x00;
             packet[11] = Packet.Lo(onTile.Location.X);
             packet[12] = Packet.Hi(onTile.Location.X);

@@ -127,73 +127,35 @@ namespace Tibia.Objects
         {
             if (client == null) return false;
 
-            byte[] packet;
+            byte[] packet = new byte[19];
+            packet[00] = 0x11;
+            packet[01] = 0x00;
+            packet[02] = 0x83;
 
-            switch (onCreature.Type)
-            {
+            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
 
-                case Constants.CreatureType.Player:
+            packet[08] = Packet.Lo(Id);
+            packet[09] = Packet.Hi(Id);
+            packet[10] = packet[07];
 
-                    packet = new byte[19];
-                    packet[00] = 0x11;
-                    packet[01] = 0x00;
-                    packet[02] = 0x83;
+            int x = onCreature.Location.X;
+            packet[11] = Packet.Lo(x);
+            packet[12] = Packet.Hi(x);
 
-                    Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+            int y = onCreature.Location.Y;
+            packet[13] = Packet.Lo(y);
+            packet[14] = Packet.Hi(y);
+            packet[15] = Convert.ToByte(onCreature.Location.Z);
 
-                    packet[08] = Packet.Lo(Id);
-                    packet[09] = Packet.Hi(Id);
-                    packet[10] = packet[07];
+            packet[16] = 0x63;
+            packet[17] = 0x00;
 
-                    int x = onCreature.Location.X;
-                    packet[11] = Packet.Lo(x);
-                    packet[12] = Packet.Hi(x);
+            if (Id == Constants.Items.Bottle.Vial)
+                packet[18] = Count;
+            else
+                packet[18] = 0x01;
 
-                    int y = onCreature.Location.Y;
-                    packet[13] = Packet.Lo(y);
-                    packet[14] = Packet.Hi(y);
-                    packet[15] = Convert.ToByte(onCreature.Location.Z);
-
-                    packet[16] = 0x63;
-                    packet[17] = 0x00;
-
-                    if (Id == Constants.Items.Bottle.Vial)
-                        packet[18] = Count;
-                    else
-                        packet[18] = 0x01;
-
-                    return client.Send(packet);
-
-                case Constants.CreatureType.Target:
-                case Constants.CreatureType.NPC:
-
-                    packet = new byte[15];
-                    packet[00] = 0x0D;
-                    packet[01] = 0x00;
-                    packet[02] = 0x84;
-
-                    packet[03] = 0xFF;
-                    packet[04] = 0xFF;
-                    packet[05] = 0x00;
-                    packet[06] = 0x00;
-                    packet[07] = 0x00;
-
-                    packet[08] = Packet.Lo(Id);
-                    packet[09] = Packet.Hi(Id);
-
-                    if (Id == Constants.Items.Bottle.Vial)
-                        packet[10] = Count;
-                    else
-                        packet[10] = 0x00;
-
-                    // 11 - 14
-                    Array.Copy(BitConverter.GetBytes(onCreature.Id), 0, packet, 11, 4);
-
-                    return client.Send(packet);
-
-                default:
-                    return false;
-            }
+            return client.Send(packet);
         }
 
         /// <summary>
