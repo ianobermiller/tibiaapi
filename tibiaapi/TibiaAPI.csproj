@@ -113,6 +113,5 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CurrentForumPost.txt" />
-    <Content Include="TODO.txt" />
   </ItemGroup>
 </Project>
