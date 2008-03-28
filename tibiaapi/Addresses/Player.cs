@@ -51,6 +51,11 @@ namespace Tibia.Addresses
         public static uint Slot_Ring = Slot_Head + 96;      //8.1
         public static uint Slot_Ammo = Slot_Head + 108;     //8.1
 
+        /// <summary>
+        /// Total number of equipment slots (accessed 0-10)
+        /// </summary>
+        public static int Max_Slots = 11;
+
         public static uint Distance_Slot_Count = 4;
 
         public static uint Slot_Right_Count = Slot_Right + 4; //8.1, 8.0 = 0x616FC8

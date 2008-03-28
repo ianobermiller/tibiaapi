@@ -37,14 +37,29 @@ namespace Tibia.Addresses
         public static uint Distance_Object_Data_Ex = 8;   //8.0
 
         /// <summary>
-        /// Maximum number of tiles.
-        /// </summary>
-        public static uint Max_Squares = 2016;
-
-        /// <summary>
         /// Maximum number of objects per tile.
         /// </summary>
         public static uint Max_Square_Objects = 13;
+
+        /// <summary>
+        /// Maximum number of tiles in the X direction
+        /// </summary>
+        public static uint Max_X = 18;
+
+        /// <summary>
+        /// Maximum number of tiles in the Y direction
+        /// </summary>
+        public static uint Max_Y = 14;
+
+        /// <summary>
+        /// Maximum number of tiles in the Z direction
+        /// </summary>
+        public static uint Max_Z = 8;
+
+        /// <summary>
+        /// Maximum number of tiles.
+        /// </summary>
+        public static uint Max_Squares = 2016; // Max_X * Max_Y * Max_Z
 
         /// <summary>
         /// The default (starting) Z axis value

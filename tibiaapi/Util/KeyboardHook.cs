@@ -114,7 +114,7 @@ namespace Tibia
                     Enabled = true;
                     return true;
                 }
-                catch (Exception ex)
+                catch
                 {
                     Enabled = false;
                     return false;
@@ -138,7 +138,7 @@ namespace Tibia
                     Enabled = false;
                     return true;
                 }
-                catch (Exception ex)
+                catch
                 {
                     Enabled = true;
                     return false;

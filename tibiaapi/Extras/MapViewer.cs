@@ -638,7 +638,7 @@ namespace Tibia
         /// <param name="markerOutline"></param>
         /// <param name="textFill"></param>
         /// <param name="textOutline"></param>
-        /// <param name="hpBar">if hpBar >= 0 && <= 100 draw an HP bar</param>
+        /// <param name="hpBar">if hpBar >= 0 &amp;&amp; &lt;= 100 draw an HP bar</param>
         public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar)
         {
             // Convert to Tibia coors

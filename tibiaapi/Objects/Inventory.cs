@@ -76,10 +76,24 @@ namespace Tibia.Objects
         /// Find an item in the player's inventory.
         /// </summary>
         /// <param name="match">A delegate that returns true when a matched item is found.</param>
+        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
         /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(Predicate<Item> match)
+        public Item FindItem(Predicate<Item> match, bool checkSlot)
         {
             Item item = null;
+
+            // Check slots first (if applicable)
+            if (checkSlot)
+            {
+                item = FindItemInSlot(match);
+                if (item.Found)
+                {
+                    lastFound = item;
+                    return lastFound;
+                }
+            }
+
+            // Then check containers
             List<Container> containers = GetContainers();
             foreach (Container c in containers)
             {
@@ -106,22 +120,48 @@ namespace Tibia.Objects
             return FindItem(delegate(Item i)
             {
                 return i.Id == itemId;
-            });
+            }, true);
         }
 
+        /// <summary>
+        /// Find an item in the player's inventory by its id.
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
+        /// <returns>Item object describing the item and its location.</returns>
+        public Item FindItem(uint itemId, bool checkSlot)
+        {
+            return FindItem(delegate(Item i)
+            {
+                return i.Id == itemId;
+            }, checkSlot);
+        }
 
         /// <summary>
         /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="second">If true, return the second item found.</param>
         public Item FindItem<T>(List<T> list) where T : Item
         {
             return FindItem(delegate(Item i)
             {
                 return i.IsInList(list);
-            });
+            }, true);
+        }
+
+        /// <summary>
+        /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
+        public Item FindItem<T>(List<T> list, bool checkSlot) where T : Item
+        {
+            return FindItem(delegate(Item i)
+            {
+                return i.IsInList(list);
+            }, checkSlot);
         }
 
         /// <summary>
@@ -135,7 +175,7 @@ namespace Tibia.Objects
         {
             if (location.type == Tibia.Constants.ItemLocationType.SLOT)
             {
-                return client.GetSlot(location.slot);
+                return GetSlot(location.slot);
             }
             else if (location.type == Tibia.Constants.ItemLocationType.CONTAINER)
             {
@@ -286,6 +326,54 @@ namespace Tibia.Objects
             packet[17] = Packet.Hi(onTile.Id);
             packet[18] = 0x00;
             return client.Send(packet);
+        }
+
+        /// <summary>
+        /// Get the item in the specified slot.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public Item GetSlot(Constants.SlotNumber s)
+        {
+            Item item;
+            uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
+            byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
+            uint id = (uint)client.ReadInt(address);
+            if (id > 0)
+            {
+                item = new Item(id, count, new ItemLocation(s), client, true);
+            }
+            else
+            {
+                item = new Item(client, false);
+            }
+            return item;
+        }
+
+        /// <summary>
+        /// Search the equipment slots for an item with the specified id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Item FindItemInSlot(Predicate<Item> match)
+        {
+            Item item = null;
+            uint address = Addresses.Player.Slot_Head;
+            for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
+            {
+                item = new Item(
+                    Convert.ToUInt32(client.ReadInt(address)), 
+                    client.ReadByte(address +  + Addresses.Player.Distance_Slot_Count), 
+                    new ItemLocation((Constants.SlotNumber) i), 
+                    client, 
+                    false);
+                if (match(item))
+                {
+                    item.Found = true;
+                    return item;
+                }
+            }
+            return item;
         }
     }
 }

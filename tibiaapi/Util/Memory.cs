@@ -110,6 +110,7 @@ namespace Tibia
         /// <param name="handle"></param>
         /// <param name="address"></param>
         /// <param name="bytes"></param>
+        /// <param name="length"></param>
         /// <returns></returns>
         public static bool WriteBytes(IntPtr handle, long address, byte[] bytes, uint length)
         {

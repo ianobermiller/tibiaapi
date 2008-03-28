@@ -232,11 +232,14 @@ namespace Tibia.Objects
             return l;
         }
         
-	public static uint LocationToSquareNumber(Location loc)
-	{
-	    uint i = 0;
-	    i = Convert.ToUInt32(loc.X + loc.Y * 18 + loc.Z * 14 * 18);
-	    return i;
+        /// <summary>
+        /// Convert a location to a square number
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
+        public static uint LocationToSquareNumber(Location l)
+        {
+            return Convert.ToUInt32(l.X + l.Y * 18 + l.Z * 14 * 18);
         }
 
         /// <summary>
@@ -246,12 +249,22 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Location GetAbsoluteLocation(uint squareNumber)
         {
-            Tile player = GetPlayerSquare();
-            Location playerRelative = SquareNumberToLocation(player.Number);
+            return GetAbsoluteLocation(squareNumber, GetPlayerSquare());
+        }
 
-            int xAdjustment = player.Location.X - playerRelative.X;
-            int yAdjustment = player.Location.Y - playerRelative.Y;
-            int zAdjustment = player.Location.Z - playerRelative.Z;
+        /// <summary>
+        /// Get a squares absoulute coordinates by comparing its relative coordinates with that of the players known coordinates (using an existing player tile location).
+        /// </summary>
+        /// <param name="squareNumber"></param>
+        /// <param name="playerTile"></param>
+        /// <returns></returns>
+        public Location GetAbsoluteLocation(uint squareNumber, Tile playerTile)
+        {
+            Location playerRelative = SquareNumberToLocation(playerTile.Number);
+
+            int xAdjustment = playerTile.Location.X - playerRelative.X;
+            int yAdjustment = playerTile.Location.Y - playerRelative.Y;
+            int zAdjustment = playerTile.Location.Z - playerRelative.Z;
 
             Location squareRelative = SquareNumberToLocation(squareNumber);
             return new Location(
@@ -330,65 +343,124 @@ namespace Tibia.Objects
         }
         
         /// <summary>
-        /// Get all tiles with the specified ID
+        /// Get tiles on the same floor as the player. Automatically gets the absolute location of each tile.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         public List<Tile> GetTiles(uint id)
         {
-            List<Tile> tiles = new List<Tile>();
-
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-
-            uint squarePointer = mapBegin
-                + Addresses.Map.Distance_Square_Objects
-                + Addresses.Map.Distance_Object_Id;
-
-            for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
-            {
-                if (client.ReadInt(squarePointer) == id)
-                {
-                    Tile temp = new Tile(i);
-                    temp.Id = id;
-                    tiles.Add(temp);
-                }
-                squarePointer += Addresses.Map.Step_Square;
-            }
-            return tiles;
+            return GetTiles(id, true);
         }
+
         /// <summary>
-        /// Get tiles on the same floor as the player. To speed things up!
+        /// Get tiles with specified id. Automatically gets the absolute location of each tile.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="sameFloor"></param>
         /// <returns></returns>
-        public List<Tile> GetTiles(uint id,bool sameFloor)
+        public List<Tile> GetTiles(uint id, bool sameFloor)
+        {
+            return GetTiles(delegate(uint i)
+            {
+                return i == id;
+            }, sameFloor);
+        }
+
+        /// <summary>
+        /// Get tiles whose id is in the specified list.
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <returns></returns>
+        public List<Tile> GetTiles(List<uint> idList)
+        {
+            return GetTiles(idList, true);
+        }
+
+        /// <summary>
+        /// Get tiles whose id is in the specified list.
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <param name="sameFloor"></param>
+        /// <returns></returns>
+        public List<Tile> GetTiles(List<uint> idList, bool sameFloor)
+        {
+            return GetTiles(delegate(uint i)
+            {
+                return idList.Contains(i);
+            }, sameFloor);
+        }
+
+        /// <summary>
+        /// Return a list of tiles that match the specified predicate.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <param name="sameFloor"></param>
+        /// <returns></returns>
+        public List<Tile> GetTiles(Predicate<uint> match, bool sameFloor)
         {
             List<Tile> tiles = new List<Tile>();
+            Location loc = new Location();
+            Tile playerTile = new Tile();
+            uint squareNumber;
 
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            Location tloc = new Location();
-            Tile ttile = new Tile();
+
             uint squarePointer = mapBegin
                 + Addresses.Map.Distance_Square_Objects
                 + Addresses.Map.Distance_Object_Id;
-            ttile = GetPlayerSquare();
-            tloc.Z = Map.SquareNumberToLocation(ttile.Number).Z;
-            for (int y = 0; y < 14; y++)
+
+            playerTile = GetPlayerSquare();
+
+            // Fast, only check the player z
+            if (sameFloor)
             {
-                tloc.Y = y;
-                for (int x = 0; x < 18; x++)
+                loc.Z = Map.SquareNumberToLocation(playerTile.Number).Z;
+
+                for (int y = 0; y < 14; y++)
                 {
-                    tloc.X = x;
-                    if (client.ReadInt(squarePointer+LocationToSquareNumber(tloc)*Addresses.Map.Step_Square) == id)
+                    loc.Y = y;
+                    for (int x = 0; x < 18; x++)
                     {
-                        Tile temp = new Tile(LocationToSquareNumber(tloc));
-                        temp.Id = id;
-                        tiles.Add(temp);
+                        loc.X = x;
+                        squareNumber = LocationToSquareNumber(loc);
+                        uint id = Convert.ToUInt32(client.ReadInt(squarePointer +
+                            squareNumber * Addresses.Map.Step_Square));
+                        if (match(id))
+                        {
+                            Tile temp = new Tile(squareNumber);
+                            temp.Id = id;
+                            temp.Location = GetAbsoluteLocation(squareNumber, playerTile);
+                            tiles.Add(temp);
+                        }
                     }
                 }
             }
+            else // Slow way
+            {
+                for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
+                {
+                    uint id = Convert.ToUInt32(client.ReadInt(squarePointer));
+                    if (match(id))
+                    {
+                        Tile temp = new Tile(i);
+                        temp.Id = id;
+                        temp.Location = GetAbsoluteLocation(i, playerTile);
+                        tiles.Add(temp);
+                    }
+                    squarePointer += Addresses.Map.Step_Square;
+                }
+            }
+
             return tiles;
+        }
+
+        /// <summary>
+        /// Get all the water tiles with fish.
+        /// </summary>
+        /// <returns></returns>
+        public List<Tile> GetFishTiles()
+        {
+            return GetTiles(Constants.Tiles.Water.GetFishIds(), true);
         }
     }
 }

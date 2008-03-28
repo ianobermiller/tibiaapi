@@ -387,6 +387,7 @@ namespace Tibia.Objects
         /// Create a new item location from a general location and stack order (Objects.Location, in the Structures file).
         /// </summary>
         /// <param name="l"></param>
+        /// <param name="stack"></param>
         public ItemLocation(Location l, byte stack)
         {
             type = Constants.ItemLocationType.GROUND;

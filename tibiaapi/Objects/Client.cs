@@ -262,17 +262,6 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Get the content of a player's slot.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public Item GetSlot(Constants.SlotNumber s)
-        {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
-            return new Slot(this).GetSlot(s);
-        }
-
-        /// <summary>
         /// Make a rune with the specified id. Wrapper for makeRune(Rune).
         /// </summary>
         /// <param name="id"></param>
@@ -406,16 +395,16 @@ namespace Tibia.Objects
                     ItemLocation newLocation;
 
                     // Determine the location to make the rune
-                    if (GetSlot(Tibia.Constants.SlotNumber.Left).Found)
+                    if (inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Left);
-                    else if (GetSlot(Tibia.Constants.SlotNumber.Right).Found)
+                    else if (inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                    else if (!GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
+                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
                     {
                         // If no hands are open, but the ammo slot is, 
                         // move the right hand item to clear the ammo slot
                         newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                        itemMovedToAmmo = GetSlot(Tibia.Constants.SlotNumber.Right);
+                        itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
                         itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
                     }
                     else

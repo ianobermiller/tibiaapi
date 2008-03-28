@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Tibia.Objects;
 
 namespace Tibia.Constants
 {
@@ -25,6 +27,22 @@ namespace Tibia.Constants
             /// </summary>
             public static uint NoFishStart = 4609;
             public static uint NoFishEnd = 4614;
+
+            /// <summary>
+            /// Get a list of all water tiles
+            /// </summary>
+            /// <returns></returns>
+            public static List<uint> GetFishIds()
+            {
+                List<uint> tileIds = new List<uint>();
+
+                for (uint i = FishStart; i <= FishEnd; i++)
+                {
+                    tileIds.Add(i);
+                }
+
+                return tileIds;
+            }
         }
     }
 }

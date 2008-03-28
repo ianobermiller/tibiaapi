@@ -38,7 +38,7 @@ namespace Tibia.Objects
         /// <summary>
         /// Say the words of a spell (wrapper for Say)
         /// </summary>
-        /// <param name="spell"></param>
+        /// <param name="s"></param>
         /// <returns></returns>
         public bool Spell(Objects.Spell s)
         {
@@ -49,7 +49,6 @@ namespace Tibia.Objects
         /// Send a message (generic).
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="type"></param>
         /// <returns>message packet</returns>
         public bool Say(Message message)
         {

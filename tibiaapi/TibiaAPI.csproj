@@ -78,7 +78,6 @@
     <Compile Include="Objects\BattleList.cs" />
     <Compile Include="Objects\Item.cs" />
     <Compile Include="Addresses\BattleList.cs" />
-    <Compile Include="Objects\Slot.cs" />
     <Compile Include="Addresses\Client.cs" />
     <Compile Include="Addresses\Container.cs" />
     <Compile Include="Addresses\Player.cs" />

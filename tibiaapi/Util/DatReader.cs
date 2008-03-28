@@ -163,10 +163,7 @@ namespace Tibia
                     Id++;
                 }
             }
-            catch (EndOfStreamException e)
-            {
-            }
-            catch (Exception e)
+            catch
             {
                 return null;
             }
