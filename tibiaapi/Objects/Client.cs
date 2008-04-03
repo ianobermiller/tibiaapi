@@ -159,7 +159,7 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Check whether or not the client is logged it
+        /// Check whether or not the client is logged in
         /// </summary>
         public bool LoggedIn
         {
@@ -176,6 +176,31 @@ namespace Tibia.Objects
         {
             get { return ReadString(Addresses.Client.Statusbar_Text); }
             set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+        }
+
+        /// <summary>
+        /// Gets the last seen item/tile id.
+        /// </summary>
+        public ushort LastSeenId
+        {
+            get
+            {
+                byte[] bytes = ReadBytes(Addresses.Client.See_Id, 2);
+                return BitConverter.ToUInt16(bytes, 0);
+            }
+        }
+
+        /// <summary>
+        /// Gets the amount of the last seen item/tile. Returns 0 if the item is not
+        /// stackable. Also gets the amount of charges in a rune starting at 1.
+        /// </summary>
+        public ushort LastSeenCount
+        {
+            get
+            {
+                byte[] bytes = ReadBytes(Addresses.Client.See_Count, 2);
+                return BitConverter.ToUInt16(bytes, 0);
+            }
         }
 
         /// <summary>
@@ -258,6 +283,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's battlelist.
+        /// </summary>
+        /// <returns></returns>
+        public BattleList GetBattleList()
+        {
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
+            return battleList;
+        }
+
+        /// <summary>
         /// Get the time the client was started.
         /// </summary>
         /// <returns></returns>
@@ -284,29 +319,6 @@ namespace Tibia.Objects
         public string GetVersion()
         {
             return process.MainModule.FileVersionInfo.FileVersion;
-        }
-
-        /// <summary>
-        /// Get the client's battlelist.
-        /// </summary>
-        /// <returns></returns>
-        public BattleList GetBattleList()
-        {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            return battleList;
-        }
-
-        /// <summary>
-        /// Make a rune with the specified id. Wrapper for makeRune(Rune).
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
-        public bool MakeRune(ushort id)
-        {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
-            if (rune == null) return false;
-            return MakeRune(rune);
         }
 
         /// <summary>
@@ -340,7 +352,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Get/Set the RSA key, wrapper for Memory.WriteRSA
         /// </summary>
-        /// <param name="newKey"></param>
         /// <returns></returns>
         public string RSA
         {
@@ -394,7 +405,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Get or set the FPS limit for the client (all credit go to Cameri from TProgramming)
         /// </summary>
-        /// <param name="fps"></param>
         /// <returns></returns>
         public double FPS
         {
@@ -408,6 +418,19 @@ namespace Tibia.Objects
                 int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
                 WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPSforMemory(value));
             }
+        }
+
+        /// <summary>
+        /// Make a rune with the specified id. Wrapper for makeRune(Rune).
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
+        public bool MakeRune(ushort id)
+        {
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
+            Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
+            if (rune == null) return false;
+            return MakeRune(rune);
         }
 
         /// <summary>

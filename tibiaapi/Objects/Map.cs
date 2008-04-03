@@ -455,6 +455,32 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Returns all of the tiles in a list of tiles that are within
+        /// viewing range of the centerTile.
+        /// </summary>
+        /// <param name="tiles">List to look through.</param>
+        /// <param name="centerTile">The center tile.</param>
+        /// <returns>The list that contains all of the tiles within viewing range.</returns>
+        public List<Tile> GetTilesWithinView(List<Tile> tiles, Tile centerTile)
+        {
+            List<Tile> newtiles = new List<Tile>();
+
+            for (int i = 0; i < tiles.Count; ++i)
+            {
+                //Not counting the center square we can see 7 squares to the
+                //right and left and 5 squares to the top and bottom.
+
+                int x = Math.Abs(tiles[i].Location.X - centerTile.Location.X);
+                int y = Math.Abs(tiles[i].Location.Y - centerTile.Location.Y);
+
+                if (x <= 7 && y <= 5)
+                    newtiles.Add(tiles[i]);
+            }
+
+            return newtiles;
+        }
+
+        /// <summary>
         /// Get all the water tiles with fish.
         /// </summary>
         /// <returns></returns>

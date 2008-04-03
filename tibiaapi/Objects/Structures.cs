@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Tibia.Objects
 {
@@ -14,6 +15,20 @@ namespace Tibia.Objects
             X = x;
             Y = y;
             Z = z;
+        }
+
+        /// <summary>
+        /// Returns the string representation of this struct.
+        /// </summary>
+        /// <returns>The string representation.</returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(16);
+            builder.AppendLine("X = " + X.ToString());
+            builder.AppendLine("Y = " + Y.ToString());
+            builder.AppendLine("Z = " + Z.ToString());
+
+            return builder.ToString();
         }
     }
 
@@ -35,6 +50,20 @@ namespace Tibia.Objects
             Number = n;
             Address = a;
             Id = i;
+        }
+
+        /// <summary>
+        /// Returns the string representation of this struct.
+        /// </summary>
+        /// <returns>The string representation.</returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(16);
+            builder.AppendLine("Number = " + Number.ToString());
+            builder.AppendLine("Address = " + Address.ToString());
+            builder.AppendLine("Id = " + Id.ToString());
+
+            return builder.ToString();
         }
     }
 }

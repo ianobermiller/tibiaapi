@@ -44,6 +44,9 @@ namespace Tibia
         // The handle to the hook (used for installing/uninstalling it).
         private static IntPtr hHook = IntPtr.Zero;
 
+        //Delegate that points to the filter function
+        private static HookProc hookproc = new HookProc(Filter);
+
         /// <summary>
         /// Check to see if either Control modifier is active.
         /// </summary>
@@ -110,7 +113,7 @@ namespace Tibia
                 {
                     using (Process curProcess = Process.GetCurrentProcess())
                     using (ProcessModule curModule = curProcess.MainModule)
-                        hHook = SetWindowsHookEx((int)HookType.WH_KEYBOARD_LL, Filter, GetModuleHandle(curModule.ModuleName), 0);
+                        hHook = SetWindowsHookEx((int)HookType.WH_KEYBOARD_LL, hookproc, GetModuleHandle(curModule.ModuleName), 0);
                     Enabled = true;
                     return true;
                 }

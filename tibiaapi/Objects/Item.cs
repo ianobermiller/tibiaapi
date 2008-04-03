@@ -48,6 +48,30 @@ namespace Tibia.Objects
         #region Packet Functions
 
         /// <summary>
+        /// Opens a container in the same window. Only works if the item is a container.
+        /// </summary>
+        /// <param name="container">Which container window to open in.</param>
+        /// <returns></returns>
+        public bool OpenContainer(byte container)
+        {
+            if (client == null) return false;
+
+            byte[] packet = new byte[12];
+            packet[00] = 0x0A;
+            packet[01] = 0x00;
+            packet[02] = 0x82;
+
+            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+
+            packet[08] = Packet.Lo(Id);
+            packet[09] = Packet.Hi(Id);
+            packet[10] = 0x00;
+            packet[11] = container; //Container to open in
+
+            return client.Send(packet);
+        }
+
+        /// <summary>
         /// Use the item (eg. eat food).
         /// </summary>
         /// <returns></returns>
@@ -81,14 +105,14 @@ namespace Tibia.Objects
             
             byte[] packet = new byte[19];
 
-            packet[00] = 0x11;
-            packet[01] = 0x00;
-            packet[02] = 0x83;
-
+            packet[0] = 0x11;
+            packet[1] = 0x00;
+            packet[2] = 0x83;
+            
             Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
+            
+            packet[8] = Packet.Lo(Id);
+            packet[9] = Packet.Hi(Id);
             packet[10] = 0x00;
             packet[11] = Packet.Lo(onTile.Location.X);
             packet[12] = Packet.Hi(onTile.Location.X);
@@ -98,7 +122,7 @@ namespace Tibia.Objects
             packet[16] = Packet.Lo(onTile.Id);
             packet[17] = Packet.Hi(onTile.Id);
             packet[18] = 0x00;
-
+            
             return client.Send(packet);
         }
 
@@ -111,7 +135,24 @@ namespace Tibia.Objects
         public bool Use(Objects.Item onItem)
         {
             if (client == null) return false;
-            byte[] packet = null;
+
+            byte[] packet = new byte[19];
+
+            packet[0] = 0x11;
+            packet[1] = 0x00;
+            packet[2] = 0x83;
+
+            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
+
+            packet[8] = Packet.Lo(Id);
+            packet[9] = Packet.Hi(Id);
+            packet[10] = 0x00;
+
+            Array.Copy(ItemLocationToBytes(onItem.Loc), 0, packet, 11, 5);
+
+            packet[16] = Packet.Lo(onItem.Id);
+            packet[17] = Packet.Hi(onItem.Id);
+            packet[18] = 0x00;
 
             return client.Send(packet);
         }

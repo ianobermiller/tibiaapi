@@ -76,32 +76,58 @@ namespace Tibia.Objects
             return client.Send(packet);
         }
 
+        /// <summary>
+        /// Closes the container.
+        /// </summary>
+        /// <returns>True if it succeeded or if the container is aleady closed</returns>
+        public bool Close()
+        {
+            //Return true if it is not open because there was no error
+            if (!IsOpen)
+            {
+                return true;
+            }
+
+            byte[] packet = new byte[4];
+
+            packet[0] = 0x02;
+            packet[1] = 0x00;
+            packet[2] = 0x87;
+            packet[3] = number;
+
+            return client.Send(packet);
+        }
+
         /** Get and set various aspects of the container **/
-        #region Get/Set Methods
+        #region Get/Set Properties
         public int Id
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Id); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Id, value); Id = value; }
+            set { client.WriteInt(address + Addresses.Container.Distance_Id, value); }
         }
         public bool IsOpen
         {
             get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Container.Distance_IsOpen)); }
-            set { client.WriteInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); IsOpen = value; }
+            set { client.WriteInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
         }
         public int Amount
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Amount); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Amount, value); Amount = value; }
+            set { client.WriteInt(address + Addresses.Container.Distance_Amount, value); }
         }
         public string Name
         {
             get { return client.ReadString(address + Addresses.Container.Distance_Name); }
-            set { client.WriteString(address + Addresses.Container.Distance_Name, value); Name = value; }
+            set { client.WriteString(address + Addresses.Container.Distance_Name, value); }
         }
         public int Volume
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Volume); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Volume, value); Volume = value; }
+            set { client.WriteInt(address + Addresses.Container.Distance_Volume, value); }
+        }
+        public byte Number
+        {
+            get { return number; }
         }
         #endregion
     }

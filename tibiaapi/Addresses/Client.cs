@@ -101,6 +101,7 @@ namespace Tibia.Addresses
         public static uint See_Id = Click_Id + 12;     //8.1, 8.0 = 0x766EA0
         public static uint See_Count = See_Id + 4;  //8.1, 8.0 = 0x766EA4
         public static uint See_Z = See_Id - 0x68;      //8.1, 8.0 = 0x766E00
+        public static uint See_Text = 0x76DB50;     //8.1
 
         // Login Server addresses
         public static uint LoginServerStart = 0x763BB8; //8.1, 8.0 = 0x75EAE8
@@ -122,5 +123,24 @@ namespace Tibia.Addresses
         /// Login character list selected character.
         /// </summary>
         public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
+
+
+        /// <summary>
+        /// Pointer to an address. When that address has 0x4E added to
+        /// it, it points to the Play Area struct.
+        /// </summary>
+        public static uint PointerToPlayAreaRect = 0x0012D624; //8.1
+        /*
+            Several notes are needed on this one.
+            1) This address is in the stack so it is very volitile. However it appears
+               that it does not change as long as the player stays logged in.
+            2) This address is always in the same place as long as the player
+               is logged in.
+            3) This address points to another address. Once you obtain that address
+               you must add 0x4E and that will point to the begining of the struct.
+         
+            Struct Layout (each 4 bytes):
+            X, Y, Width, Height
+        */
     }
 }

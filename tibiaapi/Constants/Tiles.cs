@@ -29,7 +29,7 @@ namespace Tibia.Constants
             public static uint NoFishEnd = 4614;
 
             /// <summary>
-            /// Get a list of all water tiles
+            /// Get a list of all water tiles containing fish
             /// </summary>
             /// <returns></returns>
             public static List<uint> GetFishIds()
@@ -37,6 +37,22 @@ namespace Tibia.Constants
                 List<uint> tileIds = new List<uint>();
 
                 for (uint i = FishStart; i <= FishEnd; i++)
+                {
+                    tileIds.Add(i);
+                }
+
+                return tileIds;
+            }
+
+            /// <summary>
+            /// Get a list of all water tiles not containing fish
+            /// </summary>
+            /// <returns></returns>
+            public static List<uint> GetNoFishIds()
+            {
+                List<uint> tileIds = new List<uint>();
+
+                for (uint i = NoFishStart; i <= NoFishEnd; i++)
                 {
                     tileIds.Add(i);
                 }
