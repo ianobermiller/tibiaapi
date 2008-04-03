@@ -23,11 +23,17 @@ namespace Tibia.Objects
         [DllImport("user32.dll")]
         private static extern void SetWindowText(IntPtr hwnd, string str);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsZoomed(IntPtr hWnd);
         #endregion
 
         private Process process;
         private IntPtr handle;
         private int startTime;
+        private bool wasMaximized;
 
         /// <summary>
         /// Keep a local copy of battleList to speed up GetPlayer()
@@ -97,6 +103,11 @@ namespace Tibia.Objects
             return Memory.ReadInt(handle, address);
         }
 
+        public double ReadDouble(long address)
+        {
+            return Memory.ReadDouble(handle, address);
+        }
+
         public byte ReadByte(long address)
         {
             return Memory.ReadByte(handle, address);
@@ -122,6 +133,11 @@ namespace Tibia.Objects
             return Memory.WriteInt(handle, address, value);
         }
 
+        public bool WriteDouble(long address, double value)
+        {
+            return Memory.WriteDouble(handle, address, value);
+        }
+
         public bool WriteByte(long address, byte value)
         {
             return Memory.WriteByte(handle, address, value);
@@ -143,12 +159,14 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Check whether or not the client is logged in.
+        /// Check whether or not the client is logged it
         /// </summary>
-        /// <returns></returns>
-        public bool LoggedIn()
+        public bool LoggedIn
         {
-            return Status() == Constants.LoginStatus.LoggedIn;
+            get
+            {
+                return Status() == Constants.LoginStatus.LoggedIn;
+            }
         }
 
         /// <summary>
@@ -171,21 +189,36 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Bring this Tibia window to the foreground. Wrapper for SetForegroundWindow.
+        /// Get if this client is the active window, or bring it to the foreground
         /// </summary>
-        /// <returns></returns>
-        public bool BringToFront()
+        public bool IsActive
         {
-            return SetForegroundWindow(process.MainWindowHandle);
+            get
+            {
+                return process.MainWindowHandle == GetForegroundWindow();
+            }
+            set
+            {
+                SetForegroundWindow(process.MainWindowHandle);
+            }
         }
 
         /// <summary>
-        /// Check if the client is the active (foreground) window.
+        /// Check if the client is minimized
         /// </summary>
         /// <returns></returns>
-        public bool IsActive()
+        public bool IsMinimized()
         {
-            return process.MainWindowHandle == GetForegroundWindow();
+            return IsIconic(process.MainWindowHandle);
+        }
+
+        /// <summary>
+        /// Check if the client is maximized
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMaximized()
+        {
+            return IsZoomed(process.MainWindowHandle);
         }
 
         /// <summary>
@@ -194,7 +227,7 @@ namespace Tibia.Objects
         /// <returns>Character name</returns>
         public override string ToString()
         {
-            if (!LoggedIn()) return "Not logged in.";
+            if (!LoggedIn) return "Not logged in.";
             return GetPlayer().Name;
         }
 
@@ -219,7 +252,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Player GetPlayer()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Creature creature = battleList.GetCreature(ReadInt(Addresses.Player.Id));
             return new Player(this, creature.Address);
         }
@@ -236,10 +269,12 @@ namespace Tibia.Objects
         /// <summary>
         /// Get the client's process.
         /// </summary>
-        /// <returns></returns>
-        public Process GetProcess()
+        public Process Process
         {
-            return process;
+            get
+            {
+                return process;
+            }
         }
 
         /// <summary>
@@ -257,7 +292,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public BattleList GetBattleList()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             return battleList;
         }
 
@@ -268,7 +303,7 @@ namespace Tibia.Objects
         /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
         public bool MakeRune(ushort id)
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
             if (rune == null) return false;
             return MakeRune(rune);
@@ -280,7 +315,7 @@ namespace Tibia.Objects
         /// <returns>True if eating succeeded, false if no food found or eating failed.</returns>
         public bool EatFood()
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Item food = inventory.FindItem(new Tibia.Constants.ItemList.Food());
             if (food.Found)
@@ -303,13 +338,20 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Set the RSA key, wrapper for Memory.WriteRSA
+        /// Get/Set the RSA key, wrapper for Memory.WriteRSA
         /// </summary>
         /// <param name="newKey"></param>
         /// <returns></returns>
-        public bool SetRSA(string newKey)
+        public string RSA
         {
-            return Memory.WriteRSA(handle, Addresses.Client.RSA, newKey);
+            get
+            {
+                return ReadString(Addresses.Client.RSA);
+            }
+            set
+            {
+                Memory.WriteRSA(handle, Addresses.Client.RSA, value);
+            }
         }
 
         /// <summary>
@@ -344,9 +386,28 @@ namespace Tibia.Objects
         {
             bool result = SetServer(ip, port);
             
-            result &= SetRSA(Constants.RSAKey.OpenTibia);
+            RSA = Constants.RSAKey.OpenTibia;
 
             return result;
+        }
+
+        /// <summary>
+        /// Get or set the FPS limit for the client (all credit go to Cameri from TProgramming)
+        /// </summary>
+        /// <param name="fps"></param>
+        /// <returns></returns>
+        public double FPS
+        {
+            get
+            {
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
+            }
+            set
+            {
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPSforMemory(value));
+            }
         }
 
         /// <summary>
@@ -368,7 +429,7 @@ namespace Tibia.Objects
         /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
         public bool MakeRune(Rune rune, bool checkSoulPoints)
         {
-            if (!LoggedIn()) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
             Console console = new Console(this);
             Player player = GetPlayer();

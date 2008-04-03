@@ -69,6 +69,17 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Read a 32-bit double from the process
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static double ReadDouble(IntPtr handle, long address)
+        {
+            return BitConverter.ToDouble(ReadBytes(handle, address, 8), 0);
+        }
+
+        /// <summary>
         /// Read a byte from memory.
         /// </summary>
         /// <param name="handle"></param>
@@ -134,6 +145,19 @@ namespace Tibia
         {
             byte[] bytes = BitConverter.GetBytes(value);
             return WriteBytes(handle, address, bytes, 4);
+        }
+
+        /// <summary>
+        /// Write a double value to memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool WriteDouble(IntPtr handle, long address, double value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            return WriteBytes(handle, address, bytes, 8);
         }
 
         /// <summary>

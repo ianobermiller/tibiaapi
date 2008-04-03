@@ -17,7 +17,7 @@ namespace Tibia
                 Addresses.BattleList.Max_Creatures = 100;
 
                 Addresses.Client.XTeaKey = 0x7637AC; 
-                Addresses.Client.FrameRate = 0x7661F4; 
+                //Addresses.Client.FrameRate = 0x7661F4; 
                 Addresses.Client.MultiClient = 0x4EFB71; 
                 Addresses.Client.MultiClientValue = 0xEB; 
                 Addresses.Client.Status = 0x766DF8;           
