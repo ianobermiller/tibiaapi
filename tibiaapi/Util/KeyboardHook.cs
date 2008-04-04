@@ -5,47 +5,16 @@ using System.Windows.Forms;
 
 namespace Tibia
 {
-    public class KeyboardHook
+    /// <summary>
+    /// The global keyboard hook. This can be used to globally capture keyboard input.
+    /// </summary>
+    public static class KeyboardHook
     {
-        #region Interop
-
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_KEYUP = 0x0101;
-        private const int WM_SYSKEYDOWN = 0x0104;
-        private const int WM_SYSKEYUP = 0x0105;
-
-        //This is the Import for the SetWindowsHookEx function.
-        //Use this function to install a thread-specific hook.
-        [DllImport("user32.dll", CharSet = CharSet.Auto,
-         CallingConvention = CallingConvention.StdCall)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn,
-        IntPtr hInstance, int threadId);
-
-        //This is the Import for the UnhookWindowsHookEx function.
-        //Call this function to uninstall the hook.
-        [DllImport("user32.dll", CharSet = CharSet.Auto,
-         CallingConvention = CallingConvention.StdCall)]
-        private static extern bool UnhookWindowsHookEx(IntPtr idHook);
-
-        //This is the Import for the CallNextHookEx function.
-        //Use this function to pass the hook information to the next hook procedure in chain.
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
-            IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        #endregion
-
-        // The type of method used as a handler (Filter)
-        private delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
-
         // The handle to the hook (used for installing/uninstalling it).
         private static IntPtr hHook = IntPtr.Zero;
 
         //Delegate that points to the filter function
-        private static HookProc hookproc = new HookProc(Filter);
+        private static Hooks.HookProc hookproc = new Hooks.HookProc(Filter);
 
         /// <summary>
         /// Check to see if either Control modifier is active.
@@ -71,35 +40,17 @@ namespace Tibia
         /// <returns>True if you want the key to pass through
         /// (be recognized for the app), False if you want it
         /// to be trapped (app never sees it).</returns>
-        public delegate bool HookHandler(Keys key);
+        public delegate bool KeyboardHookHandler(Keys key);
 
         /// <summary>
         /// Add a HookHandler delegate to this to activate hotkeys.
         /// </summary>
-        public static HookHandler KeyDown;
+        public static KeyboardHookHandler KeyDown;
 
         /// <summary>
         /// Keep track of the hook state.
         /// </summary>
-        public static bool Enabled;
-
-        // Different types of hooks.
-        private enum HookType : int
-        {
-            WH_KEYBOARD = 2,
-            WH_GETMESSAGE = 3,
-            WH_CALLWNDPROC = 4,
-            WH_CBT = 5,
-            WH_SYSMSGFILTER = 6,
-            WH_MOUSE = 7,
-            WH_HARDWARE = 8,
-            WH_DEBUG = 9,
-            WH_SHELL = 10,
-            WH_FOREGROUNDIDLE = 11,
-            WH_CALLWNDPROCRET = 12,
-            WH_KEYBOARD_LL = 13,
-            WH_MOUSE_LL = 14
-        }
+        private static bool Enabled;
 
         /// <summary>
         /// Start the keyboard hook.
@@ -113,7 +64,7 @@ namespace Tibia
                 {
                     using (Process curProcess = Process.GetCurrentProcess())
                     using (ProcessModule curModule = curProcess.MainModule)
-                        hHook = SetWindowsHookEx((int)HookType.WH_KEYBOARD_LL, hookproc, GetModuleHandle(curModule.ModuleName), 0);
+                        hHook = Hooks.SetWindowsHookEx((int)Hooks.HookType.WH_KEYBOARD_LL, hookproc, Hooks.GetModuleHandle(curModule.ModuleName), 0);
                     Enabled = true;
                     return true;
                 }
@@ -137,7 +88,7 @@ namespace Tibia
             {
                 try
                 {
-                    UnhookWindowsHookEx(hHook);
+                    Hooks.UnhookWindowsHookEx(hHook);
                     Enabled = false;
                     return true;
                 }
@@ -154,10 +105,11 @@ namespace Tibia
         private static IntPtr Filter(int nCode, IntPtr wParam, IntPtr lParam)
         {
             bool result = true;
+
             if (nCode >= 0)
             {
-                if (wParam == (IntPtr)WM_KEYDOWN 
-                    || wParam == (IntPtr)WM_SYSKEYDOWN)
+                if (wParam == (IntPtr)Hooks.WM_KEYDOWN
+                    || wParam == (IntPtr)Hooks.WM_SYSKEYDOWN)
                 {
                     int vkCode = Marshal.ReadInt32(lParam);
                     if ((Keys)vkCode == Keys.LControlKey || 
@@ -175,8 +127,8 @@ namespace Tibia
                     else
                         result = OnKeyDown((Keys)vkCode);
                 }
-                else if (wParam == (IntPtr)WM_KEYUP 
-                    || wParam == (IntPtr)WM_SYSKEYUP)
+                else if (wParam == (IntPtr)Hooks.WM_KEYUP
+                    || wParam == (IntPtr)Hooks.WM_SYSKEYUP)
                 {
                     int vkCode = Marshal.ReadInt32(lParam);
                     if ((Keys)vkCode == Keys.LControlKey ||
@@ -193,7 +145,8 @@ namespace Tibia
                         Win = false;
                 }
             }
-            return result ? CallNextHookEx(hHook, nCode, wParam, lParam) : new IntPtr(1);
+
+            return result ? Hooks.CallNextHookEx(hHook, nCode, wParam, lParam) : new IntPtr(1);
         }
 
         private static bool OnKeyDown(Keys key)
