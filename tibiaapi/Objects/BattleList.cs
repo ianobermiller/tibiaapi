@@ -19,6 +19,11 @@ namespace Tibia.Objects
             client = c;
         }
 
+        /// <summary>
+        /// Get a list of all the creatures on the battlelist that match with match.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
         public List<Creature> GetCreatures(Predicate<Creature> match)
         {
             List<Creature> creatures = new List<Creature>();

@@ -93,24 +93,24 @@ namespace Tibia
             {
                 if (wParam == (IntPtr)Hooks.WM_LBUTTONDOWN)
                 {
-                    OnMouseDown(MouseButtons.Left);
+                    result = OnMouseDown(MouseButtons.Left);
                 }
                 else if (wParam == (IntPtr)Hooks.WM_RBUTTONDOWN)
                 {
-                    OnMouseDown(MouseButtons.Right);
+                    result = OnMouseDown(MouseButtons.Right);
                 }
                 else if (wParam == (IntPtr)Hooks.WM_MBUTTONDOWN)
                 {
-                    OnMouseDown(MouseButtons.Middle);
+                    result = OnMouseDown(MouseButtons.Middle);
                 }
                 else if (wParam == (IntPtr)Hooks.WM_XBUTTONDOWN)
                 {
                     Hooks.MouseHookStruct stru = (Hooks.MouseHookStruct)Marshal.PtrToStructure(lParam, typeof(Hooks.MouseHookStruct));
 
                     if (stru.Data >> 16 == Hooks.XBUTTON1)
-                        OnMouseDown(MouseButtons.XButton1);
+                        result = OnMouseDown(MouseButtons.XButton1);
                     else if (stru.Data >> 16 == Hooks.XBUTTON2)
-                        OnMouseDown(MouseButtons.XButton2);
+                        result = OnMouseDown(MouseButtons.XButton2);
                 }
             }
 

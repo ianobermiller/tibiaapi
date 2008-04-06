@@ -167,17 +167,17 @@ namespace Tibia.Objects
         /// <summary>
         /// Get the item at the specified location.
         /// TODO: Add functionality for ItemLocationType.Ground 
-		  /// (would interface with map reading, which has yet to be completed)
+		/// (would interface with map reading, which has yet to be completed)
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
         public Item GetItem(ItemLocation location)
         {
-            if (location.type == Tibia.Constants.ItemLocationType.SLOT)
+            if (location.type == Tibia.Constants.ItemLocationType.Slot)
             {
                 return GetSlot(location.slot);
             }
-            else if (location.type == Tibia.Constants.ItemLocationType.CONTAINER)
+            else if (location.type == Tibia.Constants.ItemLocationType.Container)
             {
                 long address = Addresses.Container.Start +
                               Addresses.Container.Step_Container * (int)location.container +
@@ -192,11 +192,17 @@ namespace Tibia.Objects
             return null;
         }
 
+        /// <summary>
+        /// Stacks the first two items that are found and are stackable.
+        /// </summary>
+        /// <param name="itemId">Id of the items to be stacked.</param>
+        /// <returns>True if successful and if it stacked something.</returns>
         public bool Stack(uint itemId)
         {
             Item first = null;
             Item second = null;
             List<Container> containers = GetContainers();
+
             foreach (Container c in containers)
             {
                 foreach (Item i in c.GetItems())
@@ -213,6 +219,7 @@ namespace Tibia.Objects
                     }
                 }
             }
+
             if (first != null && second != null && first.Found && second.Found &&
                 !(first.Loc.container == second.Loc.container && second.Count == 100))
             {
@@ -353,7 +360,7 @@ namespace Tibia.Objects
         /// <summary>
         /// Search the equipment slots for an item with the specified id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="match"></param>
         /// <returns></returns>
         public Item FindItemInSlot(Predicate<Item> match)
         {

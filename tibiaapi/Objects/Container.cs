@@ -28,10 +28,9 @@ namespace Tibia.Objects
         /// <summary>
         /// Get the container's address.
         /// </summary>
-        /// <returns></returns>
-        public uint GetAddress()
+        public uint Address
         {
-            return address;
+            get { return address; }
         }
 
         /// <summary>

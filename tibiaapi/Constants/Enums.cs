@@ -32,9 +32,9 @@ namespace Tibia.Constants
     /// </summary>
     public enum ItemLocationType
     {
-        GROUND,
-        SLOT,
-        CONTAINER
+        Ground,
+        Slot,
+        Container
     }
 
     #endregion

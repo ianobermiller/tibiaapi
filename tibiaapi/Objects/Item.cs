@@ -105,14 +105,14 @@ namespace Tibia.Objects
             
             byte[] packet = new byte[19];
 
-            packet[0] = 0x11;
-            packet[1] = 0x00;
-            packet[2] = 0x83;
+            packet[00] = 0x11;
+            packet[01] = 0x00;
+            packet[02] = 0x83;
             
             Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
             
-            packet[8] = Packet.Lo(Id);
-            packet[9] = Packet.Hi(Id);
+            packet[08] = Packet.Lo(Id);
+            packet[09] = Packet.Hi(Id);
             packet[10] = 0x00;
             packet[11] = Packet.Lo(onTile.Location.X);
             packet[12] = Packet.Hi(onTile.Location.X);
@@ -138,14 +138,14 @@ namespace Tibia.Objects
 
             byte[] packet = new byte[19];
 
-            packet[0] = 0x11;
-            packet[1] = 0x00;
-            packet[2] = 0x83;
+            packet[00] = 0x11;
+            packet[01] = 0x00;
+            packet[02] = 0x83;
 
             Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
 
-            packet[8] = Packet.Lo(Id);
-            packet[9] = Packet.Hi(Id);
+            packet[08] = Packet.Lo(Id);
+            packet[09] = Packet.Hi(Id);
             packet[10] = 0x00;
 
             Array.Copy(ItemLocationToBytes(onItem.Loc), 0, packet, 11, 5);
@@ -282,21 +282,21 @@ namespace Tibia.Objects
 
             switch (location.type)
             {
-                case Constants.ItemLocationType.CONTAINER:
+                case Constants.ItemLocationType.Container:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
                     bytes[02] = Convert.ToByte(0x40 + location.container);
                     bytes[03] = 0x00;
                     bytes[04] = location.position;
                     break;
-                case Constants.ItemLocationType.SLOT:
+                case Constants.ItemLocationType.Slot:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
                     bytes[02] = Convert.ToByte(location.slot);
                     bytes[03] = 0x00;
                     bytes[04] = 0x00;
                     break;
-                case Constants.ItemLocationType.GROUND:
+                case Constants.ItemLocationType.Ground:
                     bytes[00] = Packet.Lo(location.groundLocation.X);
                     bytes[01] = Packet.Hi(location.groundLocation.X);
                     bytes[02] = Packet.Lo(location.groundLocation.Y);
@@ -407,7 +407,7 @@ namespace Tibia.Objects
         /// <param name="s">slot</param>
         public ItemLocation(Constants.SlotNumber s)
         {
-            type = Constants.ItemLocationType.SLOT;
+            type = Constants.ItemLocationType.Slot;
             slot = s;
         }
 
@@ -418,7 +418,7 @@ namespace Tibia.Objects
         /// <param name="p">position in container</param>
         public ItemLocation(byte c, byte p)
         {
-            type = Constants.ItemLocationType.CONTAINER;
+            type = Constants.ItemLocationType.Container;
             container = c;
             position = p;
             stackOrder = p;
@@ -431,7 +431,7 @@ namespace Tibia.Objects
         /// <param name="stack"></param>
         public ItemLocation(Location l, byte stack)
         {
-            type = Constants.ItemLocationType.GROUND;
+            type = Constants.ItemLocationType.Ground;
             groundLocation = l;
             stackOrder = stack;
         }

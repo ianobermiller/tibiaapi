@@ -204,6 +204,14 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets the text of the last seen item/tile.
+        /// </summary>
+        public string LastSeenText
+        {
+            get { return ReadString(Addresses.Client.See_Text); }
+        }
+
+        /// <summary>
         /// Wrapper method for Packets.Packet.SendPacket.
         /// </summary>
         /// <param name="packet"></param>

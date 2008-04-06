@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Tibia.Objects
 {
+    /// <summary>
+    /// Represents a vip entry.
+    /// </summary>
     public class Vip
     {
         protected Client client;
