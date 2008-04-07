@@ -58,6 +58,28 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Read a byte from memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static byte ReadByte(IntPtr handle, long address)
+        {
+            return ReadBytes(handle, address, 1)[0];
+        }
+
+        /// <summary>
+        /// Read a short from memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static short ReadShort(IntPtr handle, long address)
+        {
+            return BitConverter.ToInt16(ReadBytes(handle, address, 2), 0);
+        }
+
+        /// <summary>
         /// Read an integer from the process (actually a short because it is only 4 bytes)
         /// </summary>
         /// <param name="handle"></param>
@@ -77,17 +99,6 @@ namespace Tibia
         public static double ReadDouble(IntPtr handle, long address)
         {
             return BitConverter.ToDouble(ReadBytes(handle, address, 8), 0);
-        }
-
-        /// <summary>
-        /// Read a byte from memory.
-        /// </summary>
-        /// <param name="handle"></param>
-        /// <param name="address"></param>
-        /// <returns></returns>
-        public static byte ReadByte(IntPtr handle, long address)
-        {
-            return ReadBytes(handle, address, 1)[0];
         }
 
         /// <summary>

@@ -8,16 +8,16 @@ namespace Tibia.Objects
     /// </summary>
     public class Inventory
     {
-        private Client client;
-        private Item lastFound = null;
+        protected Client client;
+        protected Item lastFound = null;
 
         /// <summary>
         /// Create a new inventory object with the specified client.
         /// </summary>
-        /// <param name="c"></param>
-        public Inventory(Client c)
+        /// <param name="client">The client.</param>
+        public Inventory(Client client)
         {
-            client = c;
+            this.client = client;
         }
 
         /// <summary>
@@ -381,6 +381,14 @@ namespace Tibia.Objects
                 }
             }
             return item;
+        }
+
+        /// <summary>
+        /// Gets the client associated with this object.
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
         }
     }
 }

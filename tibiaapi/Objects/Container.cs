@@ -13,24 +13,28 @@ namespace Tibia.Objects
         protected byte number;
 
         /// <summary>
-        /// Create a new container object with the specified client, address, and number.
+        /// Create a new container object with the specified number.
         /// </summary>
-        /// <param name="c"></param>
-        /// <param name="a"></param>
-        /// <param name="n"></param>
-        public Container(Client c, uint a, byte n)
+        /// <param name="client">The client.</param>
+        /// <param name="number">The number of the container (0 based).</param>
+        public Container(Client client, byte number)
         {
-            client = c;
-            address = a;
-            number = n;
+            this.client = client;
+            this.number = number;
+            address = Addresses.Container.Start + (number * Addresses.Container.Step_Container);
         }
 
         /// <summary>
-        /// Get the container's address.
+        /// Create a new container object with the specified client, address, and number.
         /// </summary>
-        public uint Address
+        /// <param name="client">The client.</param>
+        /// <param name="address">The address of the container.</param>
+        /// <param name="number">The number of the container (0 based).</param>
+        public Container(Client client, uint address, byte number)
         {
-            get { return address; }
+            this.client = client;
+            this.address = address;
+            this.number = number;
         }
 
         /// <summary>
@@ -99,34 +103,68 @@ namespace Tibia.Objects
 
         /** Get and set various aspects of the container **/
         #region Get/Set Properties
+        /// <summary>
+        /// Gets the client this container is associated with.
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
+        }
+        /// <summary>
+        /// Gets the container's number.
+        /// </summary>
+        public byte Number
+        {
+            get { return number; }
+        }
+        /// <summary>
+        /// Get the container's address.
+        /// </summary>
+        public uint Address
+        {
+            get { return address; }
+        }
+        /// <summary>
+        /// Gets the container's id.
+        /// </summary>
         public int Id
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Id); }
             set { client.WriteInt(address + Addresses.Container.Distance_Id, value); }
         }
+        /// <summary>
+        /// Gets whether the container is open. Setting this value often times
+        /// crashes the Tibia client.
+        /// </summary>
         public bool IsOpen
         {
             get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Container.Distance_IsOpen)); }
             set { client.WriteInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
         }
+        /// <summary>
+        /// Gets the amount of items that are currently in the container.
+        /// </summary>
         public int Amount
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Amount); }
             set { client.WriteInt(address + Addresses.Container.Distance_Amount, value); }
         }
+        /// <summary>
+        /// Gets the name or caption of the container. Setting this value usually
+        /// does not update the UI immediately.
+        /// </summary>
         public string Name
         {
             get { return client.ReadString(address + Addresses.Container.Distance_Name); }
             set { client.WriteString(address + Addresses.Container.Distance_Name, value); }
         }
+        /// <summary>
+        /// The total amount of items this container can contain.
+        /// </summary>
         public int Volume
         {
             get { return client.ReadInt(address + Addresses.Container.Distance_Volume); }
             set { client.WriteInt(address + Addresses.Container.Distance_Volume, value); }
-        }
-        public byte Number
-        {
-            get { return number; }
         }
         #endregion
     }

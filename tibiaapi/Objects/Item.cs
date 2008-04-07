@@ -8,22 +8,21 @@ namespace Tibia.Objects
     /// </summary>
     public class Item
     {
-        public uint Id;
-        public string Name;
-        public byte Count;
-        public bool Stackable;
-        public ItemLocation Loc;
-        public bool Found;
-        public Client client;
+        protected Client client;
+        protected uint id;
+        protected string name;
+        protected byte count;
+        protected bool stackable;
+        protected ItemLocation loc;
+        protected bool found;
 
         #region Constructors
-        /** Many different constructors **/
         public Item() : this(0) { }
-        public Item(Client c, bool found) : this(0, "", 0, null, c, found) { }
+        public Item(Client client, bool found) : this(0, "", 0, null, client, found) { }
         public Item(uint id) : this(id, "") { }
         public Item(uint id, string name) : this(id, name, 0, null, null, false) { }
         public Item(ItemLocation loc) : this(0, "", 0, loc, null, false) { }
-        public Item(uint id, byte count, ItemLocation loc, Client c, bool found) : this(id, "", count, loc, c, found) { }
+        public Item(uint id, byte count, ItemLocation loc, Client client, bool found) : this(id, "", count, loc, client, found) { }
 
         /// <summary>
         /// Main constructor.
@@ -32,16 +31,16 @@ namespace Tibia.Objects
         /// <param name="name">item name (only used when representing an item type)</param>
         /// <param name="count">number of items in the stack (also charges on a rune)</param>
         /// <param name="loc">location in game</param>
-        /// <param name="c">client (used for sending packets)</param>
+        /// <param name="client">client (used for sending packets)</param>
         /// <param name="found">used when searching</param>
-        public Item(uint id, string name, byte count, ItemLocation loc, Client c, bool found)
+        public Item(uint id, string name, byte count, ItemLocation loc, Client client, bool found)
         {
             Id = id;
             Name = name;
             Count = count;
             Loc = loc;
             Found = found;
-            client = c;
+            this.client = client;
         }
         #endregion
 
@@ -65,7 +64,7 @@ namespace Tibia.Objects
 
             packet[08] = Packet.Lo(Id);
             packet[09] = Packet.Hi(Id);
-            packet[10] = 0x00;
+            packet[10] = Loc.stackOrder; //¿Only when the item is in a container?
             packet[11] = container; //Container to open in
 
             return client.Send(packet);
@@ -128,7 +127,7 @@ namespace Tibia.Objects
 
         /// <summary>
         /// Use an item on another item.
-        /// TODO
+        /// Not tested.
         /// </summary>
         /// <param name="onItem"></param>
         /// <returns></returns>
@@ -270,6 +269,64 @@ namespace Tibia.Objects
 
             return client.Send(packet);
         }
+
+        #region Get/Set Properties
+        /// <summary>
+        /// Gets the client associated with this item;
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
+        }
+        /// <summary>
+        /// Gets or sets the id of the item.
+        /// </summary>
+        public uint Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        /// <summary>
+        /// Gets or sets the name of the item.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        /// <summary>
+        /// Gets or sets the amount stacked of this item.
+        /// </summary>
+        public byte Count
+        {
+            get { return count; }
+            set { count = value; }
+        }
+        /// <summary>
+        /// Gets or sets whether this item is stackable.
+        /// </summary>
+        public bool Stackable
+        {
+            get { return stackable; }
+            set { stackable = value; }
+        }
+        /// <summary>
+        /// Gets or sets the location of this item.
+        /// </summary>
+        public ItemLocation Loc
+        {
+            get { return loc; }
+            set { loc = value; }
+        }
+        /// <summary>
+        /// Gets or sets whether this item is found.
+        /// </summary>
+        public bool Found
+        {
+            get { return found; }
+            set { found = value; }
+        }
+        #endregion
 
         /// <summary>
         /// Get the packet bytes for an item location.

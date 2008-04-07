@@ -98,6 +98,16 @@ namespace Tibia.Objects
             return Memory.ReadBytes(handle, address, bytesToRead);
         }
 
+        public byte ReadByte(long address)
+        {
+            return Memory.ReadByte(handle, address);
+        }
+
+        public short ReadShort(long address)
+        {
+            return Memory.ReadShort(handle, address);
+        }
+
         public int ReadInt(long address)
         {
             return Memory.ReadInt(handle, address);
@@ -106,11 +116,6 @@ namespace Tibia.Objects
         public double ReadDouble(long address)
         {
             return Memory.ReadDouble(handle, address);
-        }
-
-        public byte ReadByte(long address)
-        {
-            return Memory.ReadByte(handle, address);
         }
 
         public string ReadString(long address)

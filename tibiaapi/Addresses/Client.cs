@@ -102,6 +102,7 @@ namespace Tibia.Addresses
         public static uint See_Count = See_Id + 4;  //8.1, 8.0 = 0x766EA4
         public static uint See_Z = See_Id - 0x68;      //8.1, 8.0 = 0x766E00
         public static uint See_Text = 0x76DB50;     //8.1
+        
 
         // Login Server addresses
         public static uint LoginServerStart = 0x763BB8; //8.1, 8.0 = 0x75EAE8
@@ -117,12 +118,25 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list.
         /// </summary>
-        public static uint LoginCharList = 0x76C28C;        //8.1, 8.0 = 0x766DBC
+        public static uint LoginCharList = 0x764545;        //8.1, 8.0 = 0x766DBC
 
         /// <summary>
         /// Login character list selected character.
         /// </summary>
         public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
+
+        /* Character List Format
+        
+        2 bytes - Length of name
+        n bytes - Name
+        
+        2 bytes - Length of sever name
+        n bytes - Server name
+        
+        4 bytes - IP address
+        2 bytes - Port number
+        
+        */
 
 
         /// <summary>

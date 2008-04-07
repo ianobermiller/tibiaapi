@@ -13,12 +13,12 @@ namespace Tibia.Objects
         /// <summary>
         /// Create a new creature object with the given client and address.
         /// </summary>
-        /// <param name="c"></param>
-        /// <param name="a"></param>
-        public Creature(Client c, uint a)
+        /// <param name="client">The client.</param>
+        /// <param name="address">The address.</param>
+        public Creature(Client client, uint address)
         {
-            client = c;
-            address = a;
+            this.client = client;
+            this.address = address;
         }
 
         /// <summary>
@@ -98,6 +98,10 @@ namespace Tibia.Objects
         }
 
         #region Get/Set Methods
+        public Client Client
+        {
+            get { return client; }
+        }
         public int Id
         {
             get { return client.ReadInt(address + Addresses.Creature.Distance_Id); }
