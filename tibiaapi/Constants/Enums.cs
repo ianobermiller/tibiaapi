@@ -7,6 +7,9 @@ namespace Tibia.Constants
 {
     #region General
 
+    /// <summary>
+    /// The direction to walk in.
+    /// </summary>
     public enum WalkDirection
     {
         Up = 0,
@@ -19,6 +22,9 @@ namespace Tibia.Constants
         UpLeft = 8
     }
 
+    /// <summary>
+    /// The direction to turn.
+    /// </summary>
     public enum TurnDirection : byte
     {
         Up = 0,
@@ -35,6 +41,15 @@ namespace Tibia.Constants
         Ground,
         Slot,
         Container
+    }
+
+    /// <summary>
+    /// The type of server.
+    /// </summary>
+    public enum ServerType
+    {
+        Real,
+        OT
     }
 
     #endregion

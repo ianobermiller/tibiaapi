@@ -12,7 +12,7 @@ namespace Tibia.Addresses
         public static uint StartTime = 0x76D90C; //8.1
 
         /// <summary>
-        /// Address to the encryption key.
+        /// Address to the XTea encryption key.
         /// </summary>
         public static uint XTeaKey = 0x768C7C; //8.1, 8.0 = 7637AC
 
@@ -83,24 +83,42 @@ namespace Tibia.Addresses
         public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
 
         /// <summary>
-        /// Statusbar
+        /// The statusbar text to be displayed.
         /// </summary>
         public static uint Statusbar_Text = 0x0076D928; // 8.1, 8.0 = 0x00768458
+        /// <summary>
+        /// The time that the text will be displayed for in the statusbar.
+        /// </summary>
         public static uint Statusbar_Time = Statusbar_Text - 4; // 8.1, 8.0 = 0x00768454
 
         /// <summary>
-        /// Information on the last clicked item
+        /// The id of the last clicked item.
         /// </summary>
         public static uint Click_Id = 0x76C364;   //8.1, 8.0 = 0x766E94
+        /// <summary>
+        /// The amount of the last clicked item (eg. 52 fish)
+        /// </summary>
         public static uint Click_Count = Click_Id + 4;  //8.1, 8.0 = 0x766E98
+        /// <summary>
+        /// The floor that was clicked.
+        /// </summary>
         public static uint Click_Z = Click_Id - 0x68;      //8.1, 8.0 = 0x766E2C
 
         /// <summary>
-        /// See (inspect)
+        /// The id of the last item seen (looked at).
         /// </summary>
         public static uint See_Id = Click_Id + 12;     //8.1, 8.0 = 0x766EA0
+        /// <summary>
+        /// The amount of the last item seen (eg. 42 fish).
+        /// </summary>
         public static uint See_Count = See_Id + 4;  //8.1, 8.0 = 0x766EA4
+        /// <summary>
+        /// The floor that the last seen item is on.
+        /// </summary>
         public static uint See_Z = See_Id - 0x68;      //8.1, 8.0 = 0x766E00
+        /// <summary>
+        /// The text that came with the last seen item (eg. You see a fish).
+        /// </summary>
         public static uint See_Text = 0x76DB50;     //8.1
         
 
@@ -116,15 +134,30 @@ namespace Tibia.Addresses
         public static uint RSA = 0x597610;                  //8.1, 8.0 = 0x593610
 		  
         /// <summary>
-        /// Login character list.
+        /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x764545;        //8.1, 8.0 = 0x766DBC
+        public static uint LoginCharList = 0x76C28C;        //8.1, 8.0 = 0x766DBC
+
+        /* Character List Format
+        
+        30 bytes - Character name, null terminated string
+        30 bytes - Server name, null terminated string
+        4 bytes - Binary IP, the IP address in hex
+        16 bytes - IP string, null terminated string of the IP address
+        2 bytes - Port number
+        2 bytes - Padding
+        
+        */
 
         /// <summary>
-        /// Login character list selected character.
+        /// Login character list selected character. This address doesn't move.
         /// </summary>
         public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
 
+        //This format is for the character list that is stored at 0x76450D.
+        //This format is also how it comes in the packet.
+        //This list gets overwritten with different data when connected to the game world.
+        
         /* Character List Format
         
         2 bytes - Length of name
@@ -141,9 +174,9 @@ namespace Tibia.Addresses
 
         /// <summary>
         /// Pointer to an address. When that address has 0x4E added to
-        /// it, it points to the Play Area struct.
+        /// it, it points to the game window rect struct.
         /// </summary>
-        public static uint PointerToPlayAreaRect = 0x0012D624; //8.1
+        public static uint PointerToGameWindowRect = 0x0012D624; //8.1
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears

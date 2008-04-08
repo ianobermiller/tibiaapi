@@ -40,6 +40,7 @@ namespace Tibia.Util
         The string of text for the marker
         */
 
+
         /// <summary>
         /// Merges tibia maps together. The input files are only read from.
         /// </summary>
@@ -49,12 +50,19 @@ namespace Tibia.Util
         /// Returns true if successful. If it returns false the files in the output
         /// directory may be corrupted and incorrect.
         /// </returns>
-        public static bool Merge(string outputDirectory, params string[] inputDirectories)
+        public static bool Merge(Constants.ServerType serverType, string outputDirectory, params string[] inputDirectories)
         {
             if (inputDirectories.Length < 1)
                 return false;
 
-            string[] files = Directory.GetFiles(inputDirectories[0]);
+            string mask = null;
+
+            if (serverType == Tibia.Constants.ServerType.Real)
+                mask = "1??1????.map";
+            else
+                mask = "0??0????.map";
+
+            string[] files = Directory.GetFiles(inputDirectories[0], mask);
 
             try
             {
@@ -194,17 +202,17 @@ namespace Tibia.Util
                         }
                         finally
                         {
-                            if (sourcefile != null)
-                                sourcefile.Close();
-
-                            if (inputfile != null)
-                                inputfile.Close();
-
                             if (sourcebuffered != null)
                                 sourcebuffered.Close();
 
                             if (inputbuffered != null)
                                 inputbuffered.Close();
+
+                            if (sourcefile != null)
+                                sourcefile.Close();
+
+                            if (inputfile != null)
+                                inputfile.Close();
                         }
                     }
                 }

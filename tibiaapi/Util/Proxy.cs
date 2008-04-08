@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 using System.Windows.Forms;
 
 namespace Tibia.Util
 {
+
+    //The proxy seems to only work on the first character. Probably has to
+    //do with the SetCharacterListIp method.
+
     public class Proxy
     {
-        private byte[] xteaKey;
-
         private Socket socketClient;
-        private Socket socketGame;
 
         private NetworkStream netStreamClient;
         private NetworkStream netStreamServer;
@@ -28,24 +30,29 @@ namespace Tibia.Util
         private Objects.Client client;
 
 
+        private Thread clientthread;
+        private Thread gamethread;
+
+
+        public int ClientSent = 0;
+        public int ServerSent = 0;
+
+
         public void Initialize(Objects.Client c)
         {
             client = c;
             client.SetServer(Localhost, DefaultPort);
 
-
-            //Get the xtea key
-            xteaKey = client.ReadBytes(Addresses.Client.XTeaKey, 16);
-
-
+            //Listen for Tibia to connect to us.
             tcpClient = new TcpListener(IPAddress.Any, DefaultPort);
             tcpClient.Start();
             socketClient = tcpClient.AcceptSocket();
 
             if (socketClient.Connected)
             {
-                //Connect the proxy to the login server.
                 netStreamClient = new NetworkStream(socketClient);
+
+                //Connect the proxy to the login server.
                 TcpClient tcpRemote = new TcpClient("62.146.31.166", DefaultPort);
                 netStreamRemote = tcpRemote.GetStream();
 
@@ -56,9 +63,6 @@ namespace Tibia.Util
 
                 //The character list along with the ip's of the worlds
                 //are now being sent to the client.
-                //Here we should decrypt this, parse it into data structures
-                //and save them, change the ip addresses to 127.0.0.1,
-                //and than encrypt it and send it to the client like normal.
                 len = netStreamRemote.Read(data, 0, data.Length);
                 netStreamClient.Write(data, 0, len);
 
@@ -69,31 +73,71 @@ namespace Tibia.Util
 
 
                 //Here we are looking at the character list in memory and
-                //modifing the ip addresses. However this doesn't work.
+                //modifing the ip addresses.
                 string oldip = SetCharacterListIp();
 
-                //Wait for the client to connect to the proxy. Doesn't work.
-                socketGame = tcpClient.AcceptSocket();
-                netStreamClient = new NetworkStream(socketGame);
+                //Wait for the client to connect to the proxy.
+                socketClient = tcpClient.AcceptSocket();
+                netStreamClient = new NetworkStream(socketClient);
 
-                //Client will send some data to the game world, relay it.
-                len = netStreamClient.Read(data, 0, data.Length);
-
-                //We connect to the game world and send the first
-                //bit of data to the game world.
+                //We connect to the game world.
                 tcpServer = new TcpClient(oldip, DefaultPort);
                 netStreamServer = tcpServer.GetStream();
-                netStreamServer.Write(data, 0, len);
+
+                clientthread = new Thread(new ThreadStart(ClientThread));
+                gamethread = new Thread(new ThreadStart(GameThread));
+
+                //These threads will be killed when the application
+                //running these threads quits.
+                clientthread.IsBackground = true;
+                gamethread.IsBackground = true;
+
+                clientthread.Start();
+                gamethread.Start();
             }
         }
 
-        //Doesn't work, we need to work directly with the packets.
-        //This code can easily be transformed to work with the packet data.
+        private void ClientThread()
+        {
+            byte[] data = new byte[4096];
+            int len = 0;
+
+            while (socketClient.Connected)
+            {
+                len = netStreamClient.Read(data, 0, data.Length);
+
+                if (len > 0)
+                {
+                    netStreamServer.Write(data, 0, len);
+
+                    ClientSent += len;
+                }
+            }
+        }
+
+        private void GameThread()
+        {
+            byte[] data = new byte[4096];
+            int len = 0;
+
+            while (tcpServer.Connected)
+            {
+                len = netStreamServer.Read(data, 0, data.Length);
+
+                if (len > 0)
+                {
+                    netStreamClient.Write(data, 0, len);
+
+                    ServerSent += len;
+                }
+            }
+        }
+
         private string SetCharacterListIp()
         {
             byte selectedchar = client.ReadByte(Addresses.Client.LoginSelectedChar);
-            uint address = Addresses.Client.LoginCharList;
-
+            uint address = (uint)client.ReadInt(Addresses.Client.LoginCharList);
+            
             string name;
             string servername;
             uint ipaddress = 0;
@@ -102,23 +146,21 @@ namespace Tibia.Util
 
             for (int i = 0; i < selectedchar + 1; ++i)
             {
-                short namelength = client.ReadShort(address);
-                address += 2;
+                name = client.ReadString(address);
+                address += 30;
 
-                name = client.ReadString(address, (uint)namelength);
-                address += (uint)namelength;
-
-                short servernamelength = client.ReadShort(address);
-                address += 2;
-
-                servername = client.ReadString(address, (uint)servernamelength);
-                address += (uint)servernamelength;
+                servername = client.ReadString(address);
+                address += 30;
 
                 ipaddress = address;
                 ip = client.ReadBytes(address, 4);
                 address += 4;
 
+                address += 16;
+
                 port = client.ReadShort(address);
+                address += 2;
+
                 address += 2;
             }
 
@@ -140,6 +182,8 @@ namespace Tibia.Util
             newip[3] = 1;
 
             client.WriteBytes(ipaddress, newip, 4);
+            client.WriteString(ipaddress + 4, "127.0.0.1");
+            client.WriteByte(ipaddress + 4 + 10, 0);
 
             return oldip;
         }

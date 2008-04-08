@@ -17,15 +17,21 @@ namespace Tibia.Constants
         public static class Water
         {
             /// <summary>
-            /// Range of the water tiles with fish in them
+            /// The start of the tile ids that contain fish.
             /// </summary>
             public static uint FishStart = 4597;
+            /// <summary>
+            /// The end of the tile ids that contain fish.
+            /// </summary>
             public static uint FishEnd = 4602;
 
             /// <summary>
-            /// Range of the water tiles with no fish
+            /// The start of the tile ids that are water but do not contain fish.
             /// </summary>
             public static uint NoFishStart = 4609;
+            /// <summary>
+            /// The end of the tile ids that are water but do not contain fish.
+            /// </summary>
             public static uint NoFishEnd = 4614;
 
             /// <summary>

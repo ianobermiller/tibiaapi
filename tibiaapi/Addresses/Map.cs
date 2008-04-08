@@ -32,8 +32,17 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint Distance_Square_Objects = 4;
 
+        /// <summary>
+        /// Distance to the id of the object that is on a square.
+        /// </summary>
         public static uint Distance_Object_Id = 0;        //8.0
+        /// <summary>
+        /// Distance to the data of the object that is on a square.
+        /// </summary>
         public static uint Distance_Object_Data = 4;      //8.0
+        /// <summary>
+        /// Distance to the ExData (extra data) of the object that is on a square.
+        /// </summary>
         public static uint Distance_Object_Data_Ex = 8;   //8.0
 
         /// <summary>
@@ -72,30 +81,51 @@ namespace Tibia.Addresses
         public static byte[] Nops = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
         /// <summary>
-        /// NameSpy Adresses
+        /// NameSpy address 1.
         /// </summary>
         public static uint NameSpy1 = 0x4DF469; // 8.1
+        /// <summary>
+        /// NameSpy address 2.
+        /// </summary>
         public static uint NameSpy2 = 0x004DF473; // 8.1
 
         /// <summary>
-        /// Default Values for Namespy1
+        /// Default value for Namespy1.
         /// </summary>
         public static uint NameSpy1Default = 19061;
+        /// <summary>
+        /// Default value for Namespy2.
+        /// </summary>
         public static uint NameSpy2Default = 16501;
 
         /// <summary>
-        /// Level spy addresses
+        /// Level spy address 1.
         /// </summary>
         public static uint LevelSpy1 = 0x4E115A;
+        /// <summary>
+        /// Level spy address 2.
+        /// </summary>
         public static uint LevelSpy2 = 0x4E125F;
+        /// <summary>
+        /// Level spy address 3.
+        /// </summary>
         public static uint LevelSpy3 = 0x4E12E0;
+        /// <summary>
+        /// Level spy pointer.
+        /// </summary>
         public static uint LevelSpyPtr = 0x61B608;
 
         /// <summary>
-        /// Defaults and constants for level spy
+        /// Defaults for level spy.
         /// </summary>
         public static byte[] LevelSpyDefault = { 0x89, 0x86, 0xD8, 0x25, 0x00, 0x00 };
+        /// <summary>
+        /// Level spy add 1.
+        /// </summary>
         public static byte LevelSpyAdd1 = 28;
+        /// <summary>
+        /// Level spy add 2.
+        /// </summary>
         public static uint LevelSpyAdd2 = 0x25D8;
     }
 }

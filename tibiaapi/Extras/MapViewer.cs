@@ -21,6 +21,8 @@ namespace Tibia
         public delegate void MapFloorToImageCallback(int percentageComplete);
 
         // Public Settings
+        public bool CanDrawPercentBar = false;
+        private int percent = 0;
         public bool DrawCrosshair = true;
         public bool DrawCoors = true;
         public bool OTMaps = false;
@@ -28,7 +30,6 @@ namespace Tibia
 
         // Private Variables
         private PictureBox pictureBox;
-        private Graphics g;
         private Rectangle mapBoundary;
         private int currentZ = 7;
         private Bitmap[] floorImages = new Bitmap[FloorMax + 1];
@@ -41,7 +42,6 @@ namespace Tibia
         public MapViewer(PictureBox p)
         {
             pictureBox = p;
-            g = p.CreateGraphics();
             pictureBox.MouseDown += pictureBox_MouseDown;
             pictureBox.MouseMove += pictureBox_MouseMove;
             pictureBox.Paint += pictureBox_Paint;
@@ -78,18 +78,20 @@ namespace Tibia
                 imagePos.Y += e.Y - startingPos.Y;
                 startingPos.X = e.X;
                 startingPos.Y = e.Y;
-                RedrawMap();
+
+                pictureBox.Invalidate();
             }
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
-            RedrawMap();
+            RedrawMap(e.Graphics);
         }
 
         private void pictureBox_Resize(object sender, EventArgs e)
         {
-            RedrawMap(true);
+            //RedrawMap(true);
+            pictureBox.Invalidate();
         }
         #endregion
 
@@ -293,10 +295,15 @@ namespace Tibia
                 }
                 else
                 {
+                    CanDrawPercentBar = true;
+
                     image = MapFloorToImage(dir, currentZ, delegate(int percentage)
                     {
-                        DrawPercentBar(percentage);
+                        this.percent = percentage;
+                        pictureBox.Refresh();
                     });
+
+                    CanDrawPercentBar = false;
 
                     // Save the image to speed up processing next time
                     image.Save(imageFileName, ImageFormat.Png);
@@ -308,7 +315,8 @@ namespace Tibia
             if (imageSize.Width == 0)
                 imageSize = image.Size;
             mapImage = image;
-            RedrawMap();
+
+            pictureBox.Invalidate();
         }
 
         /// <summary>
@@ -416,25 +424,36 @@ namespace Tibia
         /// <summary>
         /// Redraw the map (no background redraw)
         /// </summary>
-        private void RedrawMap()
+        private void RedrawMap(Graphics g)
         {
-            RedrawMap(false);
+            RedrawMap(false, g);
         }
 
         /// <summary>
         /// Redraw the map
         /// </summary>
         /// <param name="clear">if true clears the background first (produces a flicker)</param>
-        private void RedrawMap(bool clear)
+        private void RedrawMap(bool clear, Graphics g)
         {
-            if (mapImage == null) return;
+            if (CanDrawPercentBar)
+            {
+                DrawPercentBar(percent, g);
+                return;
+            }
+
+            if (mapImage == null)
+                return;
+
             if (clear)
                 g.Clear(Color.Black);
+
             g.DrawImage(mapImage, new Rectangle(imagePos, imageSize));
+
             if (DrawCrosshair)
-                DrawCrosshairs();
+                DrawCrosshairs(g);
+
             if (DrawCoors)
-                DrawCoordinates();
+                DrawCoordinates(g);
         }
 
         /// <summary>
@@ -502,7 +521,7 @@ namespace Tibia
             imagePos.X = newX;
             imagePos.Y = newY;
 
-            RedrawMap();
+            pictureBox.Invalidate();
         }
 
         /// <summary>
@@ -515,43 +534,10 @@ namespace Tibia
         }
 
         /// <summary>
-        /// Draw crosshairs in the middle of the map
-        /// </summary>
-        public void DrawCrosshairs()
-        {
-            DrawCrosshairs(GetMapCenterPoint());
-        }
-
-        /// <summary>
-        /// Draw crosshairs at the specified point
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        public void DrawCrosshairs(int x, int y)
-        {
-            DrawCrosshairs(new Point(x, y));
-        }
-
-        /// <summary>
-        /// Draw crosshairs at the specified point
-        /// </summary>
-        /// <param name="p"></param>
-        public void DrawCrosshairs(Point p)
-        {
-            int x = p.X;
-            int y = p.Y;
-
-            // Draw the vertical line
-            g.DrawLine(new Pen(Color.White, 1), new Point(x - 5, y), new Point(x + 5, y));
-            // Draw the horizontal line
-            g.DrawLine(new Pen(Color.White, 1), new Point(x, y - 5), new Point(x, y + 5));
-        }
-
-        /// <summary>
         /// Draw a percentage bar on the map
         /// </summary>
         /// <param name="percent"></param>
-        public void DrawPercentBar(int percent)
+        public void DrawPercentBar(int percent, Graphics g)
         {
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
             StringFormat sf = new StringFormat();
@@ -572,9 +558,42 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Draw crosshairs in the middle of the map
+        /// </summary>
+        public void DrawCrosshairs(Graphics g)
+        {
+            DrawCrosshairs(GetMapCenterPoint(), g);
+        }
+
+        /// <summary>
+        /// Draw crosshairs at the specified point
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void DrawCrosshairs(int x, int y, Graphics g)
+        {
+            DrawCrosshairs(new Point(x, y), g);
+        }
+
+        /// <summary>
+        /// Draw crosshairs at the specified point
+        /// </summary>
+        /// <param name="p"></param>
+        public void DrawCrosshairs(Point p, Graphics g)
+        {
+            int x = p.X;
+            int y = p.Y;
+
+            // Draw the vertical line
+            g.DrawLine(new Pen(Color.White, 1), new Point(x - 5, y), new Point(x + 5, y));
+            // Draw the horizontal line
+            g.DrawLine(new Pen(Color.White, 1), new Point(x, y - 5), new Point(x, y + 5));
+        }
+
+        /// <summary>
         /// Draw the current coordinates of the center point in the upper right corner
         /// </summary>
-        public void DrawCoordinates()
+        public void DrawCoordinates(Graphics g)
         {
             Location l = GetMapCenter();
 
@@ -594,12 +613,12 @@ namespace Tibia
         /// </summary>
         /// <param name="c"></param>
         /// <param name="hpBar">if true the color of the name will be based on the creatures hp bar</param>
-        public void DrawCreatureMarker(Creature c, bool hpBar)
+        public void DrawCreatureMarker(Creature c, bool hpBar, Graphics g)
         {
             if (hpBar)
-                DrawMarker(c.Location, c.Name, Color.Yellow, Color.Black, Color.White, Color.Black, c.HPBar);
+                DrawMarker(c.Location, c.Name, Color.Yellow, Color.Black, Color.White, Color.Black, c.HPBar, g);
             else
-                DrawMarker(c.Location, c.Name);
+                DrawMarker(c.Location, c.Name, g);
         }
 
         /// <summary>
@@ -607,9 +626,9 @@ namespace Tibia
         /// </summary>
         /// <param name="l"></param>
         /// <param name="text"></param>
-        public void DrawMarker(Location l, string text)
+        public void DrawMarker(Location l, string text, Graphics g)
         {
-            DrawMarker(l, text, Color.Yellow, Color.Black);
+            DrawMarker(l, text, Color.Yellow, Color.Black, g);
         }
 
         /// <summary>
@@ -619,14 +638,14 @@ namespace Tibia
         /// <param name="text"></param>
         /// <param name="markerFill"></param>
         /// <param name="markerOutline"></param>
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline)
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Graphics g)
         {
-            DrawMarker(l, text, markerFill, markerOutline, Color.White, Color.Black);
+            DrawMarker(l, text, markerFill, markerOutline, Color.White, Color.Black, g);
         }
 
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline)
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, Graphics g)
         {
-            DrawMarker(l, text, markerFill, markerOutline, textFill, textOutline, -1);
+            DrawMarker(l, text, markerFill, markerOutline, textFill, textOutline, -1, g);
         }
 
         /// <summary>
@@ -639,7 +658,7 @@ namespace Tibia
         /// <param name="textFill"></param>
         /// <param name="textOutline"></param>
         /// <param name="hpBar">if hpBar >= 0 &amp;&amp; &lt;= 100 draw an HP bar</param>
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar)
+        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar, Graphics g)
         {
             // Convert to Tibia coors
             Point p = MapCoorsToPoint(l);
@@ -679,7 +698,7 @@ namespace Tibia
                 text += " (" + (currentZ - l.Z > 0 ? "+" : "") + (currentZ - l.Z) + ")";
 
             // Draw the outlined text
-            DrawOutlinedText(text, font, new SolidBrush(textFill), new SolidBrush(textOutline), rect, sf);
+            DrawOutlinedText(text, font, new SolidBrush(textFill), new SolidBrush(textOutline), rect, sf, g);
 
             // Draw HP bar if needed
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
@@ -702,7 +721,7 @@ namespace Tibia
         /// <param name="outline"></param>
         /// <param name="rect"></param>
         /// <param name="sf"></param>
-        public void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf)
+        public void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf, Graphics g)
         {
             // Draw the outline by offsetting the rectangle
             rect.Offset(-1, -1);
