@@ -25,10 +25,13 @@ namespace Tibia.Util
         private static TcpClient tcpServer;
 
         private const string Localhost = "127.0.0.1";
+        private byte[] LocalhostBytes = new byte[]{ 127, 0, 0, 1 };
         private const int DefaultPort = 7171;
+        private byte[] DefaultPortBytes = BitConverter.GetBytes((short)7171);
 
         private Objects.Client client;
-
+        private CharListPacket charList;
+        private byte selectedChar;
 
         private Thread clientthread;
         private Thread gamethread;
@@ -64,25 +67,33 @@ namespace Tibia.Util
                 //The character list along with the ip's of the worlds
                 //are now being sent to the client.
                 len = netStreamRemote.Read(data, 0, data.Length);
+
+                //Process the charlist packet, changing IP's to localhost
+                ProcessCharListPacket(data, len);
+
+                //MessageBox.Show(charList.ToString());
+
+                // Write the packet back
                 netStreamClient.Write(data, 0, len);
 
-                //The character has been selected. The client lets the
-                //login server know of it's selection.
+                //The character has been selected
                 len = netStreamClient.Read(data, 0, data.Length);
-                netStreamRemote.Write(data, 0, len);
 
-
-                //Here we are looking at the character list in memory and
-                //modifing the ip addresses.
-                string oldip = SetCharacterListIp();
-
-                //Wait for the client to connect to the proxy.
-                socketClient = tcpClient.AcceptSocket();
-                netStreamClient = new NetworkStream(socketClient);
-
-                //We connect to the game world.
-                tcpServer = new TcpClient(oldip, DefaultPort);
+                // Read the selection index from memory
+                selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
+                
+                //We connect to the selected game world
+                tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
+                MessageBox.Show("" + tcpServer.Connected);
                 netStreamServer = tcpServer.GetStream();
+
+                //MessageBox.Show(Packet.ByteArrayToHexString(data));
+
+                // TODO: Everything below is not working! Sending to the game server
+                // appears to get no response, and doesn't even show up on WPE
+
+                // Write the login data to the game server
+                netStreamServer.Write(data, 0, len);
 
                 clientthread = new Thread(new ThreadStart(ClientThread));
                 gamethread = new Thread(new ThreadStart(GameThread));
@@ -92,8 +103,8 @@ namespace Tibia.Util
                 clientthread.IsBackground = true;
                 gamethread.IsBackground = true;
 
-                clientthread.Start();
                 gamethread.Start();
+                clientthread.Start();
             }
         }
 
@@ -133,59 +144,97 @@ namespace Tibia.Util
             }
         }
 
-        private string SetCharacterListIp()
+        private void ProcessCharListPacket(byte[] data, int length)
         {
-            byte selectedchar = client.ReadByte(Addresses.Client.LoginSelectedChar);
-            uint address = (uint)client.ReadInt(Addresses.Client.LoginCharList);
-            
-            string name;
-            string servername;
-            uint ipaddress = 0;
-            byte[] ip = null;
-            short port = 0;
+            byte[] packet = new byte[length];
+            byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
 
-            for (int i = 0; i < selectedchar + 1; ++i)
+            Array.Copy(data, packet, length);
+            packet = XTEA.Decrypt(packet, key);
+
+            // Make sure this is a login packet, not invalid login
+            if (packet[2] == 0x14)
             {
-                name = client.ReadString(address);
-                address += 30;
+                // Initialize the character list
+                charList = new CharListPacket();
+                int index = 0;
 
-                servername = client.ReadString(address);
-                address += 30;
+                charList.type = packet[2];
+                
+                index = 3; // MOTD length
+                charList.lenMotd = BitConverter.ToInt16(packet, index);
+                index += 2; // MOTD text
+                charList.motd = Encoding.ASCII.GetString(packet, index, charList.lenMotd);
+                index += charList.lenMotd + 1; // Number of chars (add one for the mysterious 0x64 byte)
+                charList.numChars = packet[index];
+                charList.chars = new CharListChar[charList.numChars];
+                index += 1; // Length of first character's name
 
-                ipaddress = address;
-                ip = client.ReadBytes(address, 4);
-                address += 4;
+                for (int i = 0; i < charList.numChars; i++)
+                {
+                    charList.chars[i].lenCharName = BitConverter.ToInt16(packet, index);
+                    index += 2; // Character name text
+                    charList.chars[i].charName = Encoding.ASCII.GetString(packet, index, charList.chars[i].lenCharName);
+                    index += charList.chars[i].lenCharName; // Length of world name
+                    charList.chars[i].lenWorldName = BitConverter.ToInt16(packet, index);
+                    index += 2; // World name text
+                    charList.chars[i].worldName = Encoding.ASCII.GetString(packet, index, charList.chars[i].lenWorldName);
+                    index += charList.chars[i].lenWorldName; // World IP Address
+                    charList.chars[i].worldIP = IPBytesToString(packet, index);
+                    Array.Copy(LocalhostBytes, 0, packet, index, 4);
+                    index += 4; // World Port
+                    charList.chars[i].worldPort = BitConverter.ToInt16(packet, index);
+                    Array.Copy(DefaultPortBytes, 0, packet, index, 2);
+                    index += 2; // Premium days or next chars name length
+                }
 
-                address += 16;
-
-                port = client.ReadShort(address);
-                address += 2;
-
-                address += 2;
+                charList.premiumDays = BitConverter.ToInt16(packet, index);
             }
 
-            StringBuilder ipbuilder = new StringBuilder(15);
-            ipbuilder.Append(ip[0].ToString());
-            ipbuilder.Append('.');
-            ipbuilder.Append(ip[1].ToString());
-            ipbuilder.Append('.');
-            ipbuilder.Append(ip[2].ToString());
-            ipbuilder.Append('.');
-            ipbuilder.Append(ip[3].ToString());
-
-            string oldip = ipbuilder.ToString();
-
-            byte[] newip = new byte[4];
-            newip[0] = 127;
-            newip[1] = 0;
-            newip[2] = 0;
-            newip[3] = 1;
-
-            client.WriteBytes(ipaddress, newip, 4);
-            client.WriteString(ipaddress + 4, "127.0.0.1");
-            client.WriteByte(ipaddress + 4 + 10, 0);
-
-            return oldip;
+            packet = XTEA.Encrypt(packet, key);
+            Array.Copy(packet, data, length);
         }
+
+        public static string IPBytesToString(byte[] data, int index)
+        {
+            return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
+        }
+    }
+
+    public struct CharListPacket
+    {
+        public byte type;
+        public short lenMotd;
+        public string motd;
+        public byte numChars;
+        public CharListChar[] chars;
+        public short premiumDays;
+
+        public override string ToString()
+        {
+            StringBuilder s = new StringBuilder();
+            s.Append("Type: " + type + "\n\r");
+            s.Append("MOTD [" + lenMotd + "]: " + motd + "\n\r");
+            s.Append("Characters: " + numChars + "\n\r");
+            for(int i = 0; i < numChars; i++)
+            {
+                s.Append("Character " + i + "\n\r");
+                s.Append("Name [" + chars[i].lenCharName + "]: " + chars[i].charName + "\n\r");
+                s.Append("World Name [" + chars[i].lenWorldName + "]: " + chars[i].worldName + "\n\r");
+                s.Append("World IP: " + chars[i].worldIP + "\n\r");
+                s.Append("World Port: " + chars[i].worldPort + "\n\r");
+            }
+            return s.ToString();
+        }
+    }
+
+    public struct CharListChar
+    {
+        public short lenCharName;
+        public string charName;
+        public short lenWorldName;
+        public string worldName;
+        public string worldIP;
+        public short worldPort;
     }
 }
