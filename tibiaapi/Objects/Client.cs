@@ -429,7 +429,7 @@ namespace Tibia.Objects
             set
             {
                 int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
-                WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPSforMemory(value));
+                WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
             }
         }
 

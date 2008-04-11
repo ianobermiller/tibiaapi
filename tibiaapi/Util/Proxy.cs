@@ -25,7 +25,7 @@ namespace Tibia.Util
         private static TcpClient tcpServer;
 
         private const string Localhost = "127.0.0.1";
-        private byte[] LocalhostBytes = new byte[]{ 127, 0, 0, 1 };
+        private byte[] LocalhostBytes = new byte[] { 127, 0, 0, 1 };
         private const int DefaultPort = 7171;
         private byte[] DefaultPortBytes = BitConverter.GetBytes((short)7171);
 
@@ -86,7 +86,7 @@ namespace Tibia.Util
 
                 // Read the selection index from memory
                 selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
-                
+
                 //We connect to the selected game world
                 tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
                 netStreamServer = tcpServer.GetStream();
@@ -95,9 +95,35 @@ namespace Tibia.Util
                 netStreamServer.Write(data, 0, len);
 
                 // Start asynchronous reading
-                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null); 
+                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
                 netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
             }
+        }
+        /// <summary>
+        /// Sends a packet to the server
+        /// </summary>
+        /// <param name="packet"></param>
+        public void SendToServer(byte[] packet)
+        {
+            int length = BitConverter.ToInt16(packet, 0);
+            int extraByte = 8 - ((length + 2) % 8);
+            if (extraByte<8){ length+=extraByte; }
+            byte[] newPacket = new byte[length + 4];
+            newPacket = XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+            netStreamServer.Write(newPacket, 0, newPacket.Length);
+        }
+        /// <summary>
+        /// Sends a packet to the client
+        /// </summary>
+        /// <param name="packet"></param>
+        public void SendToClient(byte[] packet)
+        {
+            int length = BitConverter.ToInt16(packet, 0);
+            int extraByte = 8 - ((length + 2) % 8);
+            if (extraByte < 8) { length += extraByte; }
+            byte[] newPacket = new byte[length + 4];
+            newPacket = XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+            netStreamClient.Write(newPacket, 0, newPacket.Length);
         }
 
         private void ServerRecieve(IAsyncResult ar)
@@ -136,7 +162,7 @@ namespace Tibia.Util
                 int index = 0;
 
                 charList.type = packet[2];
-                
+
                 index = 3; // MOTD length
                 charList.lenMotd = BitConverter.ToInt16(packet, index);
                 index += 2; // MOTD text
@@ -182,7 +208,6 @@ namespace Tibia.Util
             return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
         }
     }
-
     /// <summary>
     /// Stores the data from the server's character list packet.
     /// </summary>
