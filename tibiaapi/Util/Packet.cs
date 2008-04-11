@@ -76,13 +76,22 @@ namespace Tibia
 
         /// <summary>Converts an array of bytes into a formatted string of hex digits (ex: E4 CA B2)</summary>
         /// <param name="data">The array of bytes to be translated into a string of hex digits.</param>
+        /// <param name="length">The length of data to convert</param>
+        /// <returns>Returns a well formatted string of hex digits with spacing.</returns>
+        public static string ByteArrayToHexString(byte[] data, int length)
+        {
+            StringBuilder sb = new StringBuilder(data.Length * 3);
+            for (int i = 0; i < length; i++)
+                sb.Append(Convert.ToString(data[i], 16).PadLeft(2, '0').PadRight(3, ' '));
+            return sb.ToString().ToUpper();
+        }
+
+        /// <summary>Converts an array of bytes into a formatted string of hex digits (ex: E4 CA B2)</summary>
+        /// <param name="data">The array of bytes to be translated into a string of hex digits.</param>
         /// <returns>Returns a well formatted string of hex digits with spacing.</returns>
         public static string ByteArrayToHexString(byte[] data)
         {
-            StringBuilder sb = new StringBuilder(data.Length * 3);
-            foreach (byte b in data)
-                sb.Append(Convert.ToString(b, 16).PadLeft(2, '0').PadRight(3, ' '));
-            return sb.ToString().ToUpper();
+            return ByteArrayToHexString(data, data.Length);
         }
     }
 }

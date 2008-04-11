@@ -36,6 +36,7 @@ namespace Tibia.Util
         private Thread clientthread;
         private Thread gamethread;
 
+        byte[] data = new byte[4096];
 
         public int ClientSent = 0;
         public int ServerSent = 0;
@@ -60,7 +61,6 @@ namespace Tibia.Util
                 netStreamRemote = tcpRemote.GetStream();
 
                 //The client is requesting the character list.
-                Byte[] data = new byte[4096];
                 int len = netStreamClient.Read(data, 0, data.Length);
                 netStreamRemote.Write(data, 0, len);
 
@@ -71,12 +71,17 @@ namespace Tibia.Util
                 //Process the charlist packet, changing IP's to localhost
                 ProcessCharListPacket(data, len);
 
-                //MessageBox.Show(charList.ToString());
-
                 // Write the packet back
                 netStreamClient.Write(data, 0, len);
 
                 //The character has been selected
+                //Here we have to restart the listener because the client changes ports
+                tcpClient.Stop();
+                tcpClient.Start();
+                socketClient = tcpClient.AcceptSocket();
+                netStreamClient = new NetworkStream(socketClient);
+
+                // Get the clients login info packet
                 len = netStreamClient.Read(data, 0, data.Length);
 
                 // Read the selection index from memory
@@ -84,64 +89,35 @@ namespace Tibia.Util
                 
                 //We connect to the selected game world
                 tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
-                MessageBox.Show("" + tcpServer.Connected);
                 netStreamServer = tcpServer.GetStream();
-
-                //MessageBox.Show(Packet.ByteArrayToHexString(data));
-
-                // TODO: Everything below is not working! Sending to the game server
-                // appears to get no response, and doesn't even show up on WPE
 
                 // Write the login data to the game server
                 netStreamServer.Write(data, 0, len);
 
-                clientthread = new Thread(new ThreadStart(ClientThread));
-                gamethread = new Thread(new ThreadStart(GameThread));
-
-                //These threads will be killed when the application
-                //running these threads quits.
-                clientthread.IsBackground = true;
-                gamethread.IsBackground = true;
-
-                gamethread.Start();
-                clientthread.Start();
+                // Start asynchronous reading
+                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null); 
+                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
             }
         }
 
-        private void ClientThread()
+        private void ServerRecieve(IAsyncResult ar)
         {
-            byte[] data = new byte[4096];
-            int len = 0;
-
-            while (socketClient.Connected)
+            int bytesRead = netStreamServer.EndRead(ar);
+            if (bytesRead > 0)
             {
-                len = netStreamClient.Read(data, 0, data.Length);
-
-                if (len > 0)
-                {
-                    netStreamServer.Write(data, 0, len);
-
-                    ClientSent += len;
-                }
+                netStreamClient.Write(data, 0, bytesRead);
             }
+            netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
         }
 
-        private void GameThread()
+        private void ClientRecieve(IAsyncResult ar)
         {
-            byte[] data = new byte[4096];
-            int len = 0;
-
-            while (tcpServer.Connected)
+            int bytesRead = netStreamClient.EndRead(ar);
+            if (bytesRead > 0)
             {
-                len = netStreamServer.Read(data, 0, data.Length);
-
-                if (len > 0)
-                {
-                    netStreamClient.Write(data, 0, len);
-
-                    ServerSent += len;
-                }
+                netStreamServer.Write(data, 0, bytesRead);
             }
+            netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
         }
 
         private void ProcessCharListPacket(byte[] data, int length)
@@ -195,12 +171,21 @@ namespace Tibia.Util
             Array.Copy(packet, data, length);
         }
 
+        /// <summary>
+        /// Convert a 4 byte IP Address to a string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public static string IPBytesToString(byte[] data, int index)
         {
             return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
         }
     }
 
+    /// <summary>
+    /// Stores the data from the server's character list packet.
+    /// </summary>
     public struct CharListPacket
     {
         public byte type;
@@ -228,6 +213,9 @@ namespace Tibia.Util
         }
     }
 
+    /// <summary>
+    /// Represents one character in the server's character list packet.
+    /// </summary>
     public struct CharListChar
     {
         public short lenCharName;
