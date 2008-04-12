@@ -4,8 +4,8 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
 using System.Windows.Forms;
+using Tibia.Objects;
 
 namespace Tibia.Util
 {
@@ -19,131 +19,306 @@ namespace Tibia.Util
 
         private NetworkStream netStreamClient;
         private NetworkStream netStreamServer;
-        private NetworkStream netStreamRemote;
+        private NetworkStream netStreamLogin;
 
-        private static TcpListener tcpClient;
-        private static TcpClient tcpServer;
+        private TcpListener tcpClient;
+        private TcpClient   tcpServer;
+        private TcpClient   tcpLogin;
 
         private const string Localhost = "127.0.0.1";
-        private byte[] LocalhostBytes = new byte[] { 127, 0, 0, 1 };
-        private const int DefaultPort = 7171;
-        private byte[] DefaultPortBytes = BitConverter.GetBytes((short)7171);
+        private byte[]       LocalhostBytes = new byte[] { 127, 0, 0, 1 };
+        private const int    DefaultPort = 7171;
+        private byte[]       DefaultPortBytes = BitConverter.GetBytes((short)7171);
 
-        private Objects.Client client;
-        private CharListPacket charList;
-        private byte selectedChar;
+        private Client        client;
+        private CharListPacket        charList;
+        private byte                  selectedChar;
+        private byte[]                data = new byte[4096];
+        private LoginServer[] loginServers = new LoginServer[] {
+            new LoginServer("login01.tibia.com", 7171),
+            new LoginServer("login02.tibia.com", 7171),
+            new LoginServer("login03.tibia.com", 7171),
+            new LoginServer("login04.tibia.com", 7171),
+            new LoginServer("login05.tibia.com", 7171),
+            new LoginServer("tibia01.cipsoft.com", 7171),
+            new LoginServer("tibia02.cipsoft.com", 7171),
+            new LoginServer("tibia03.cipsoft.com", 7171),
+            new LoginServer("tibia04.cipsoft.com", 7171),
+            new LoginServer("tibia05.cipsoft.com", 7171)
+        };
 
-        private Thread clientthread;
-        private Thread gamethread;
+        #region Events
+        /// <summary>
+        /// A generic function prototype for packet events.
+        /// </summary>
+        /// <param name="packet">The unencrypted packet that was recieved.</param>
+        /// <returns>The unencrypted packet to be forwarded. If null, the packet will not be forwarded.</returns>
+        public delegate byte[] PacketListener(byte[] packet);
 
-        byte[] data = new byte[4096];
+        public delegate byte[] ProxyNotification();
 
-        public int ClientSent = 0;
-        public int ServerSent = 0;
+        /// <summary>
+        /// Called when the client has logged in.
+        /// </summary>
+        public ProxyNotification LoggedIn;
 
+        /// <summary>
+        /// Called when the client has logged out.
+        /// </summary>
+        public ProxyNotification LoggedOut;
 
-        public void Initialize(Objects.Client c)
+        /// <summary>
+        /// Called when a packet is recieved from the server.
+        /// </summary>
+        public PacketListener PacketFromServer;
+
+        /// <summary>
+        /// Called when a packet is recieved from the client.
+        /// </summary>
+        public PacketListener PacketFromClient;
+        #endregion
+
+        /// <summary>
+        /// Create a new proxy and start listening for the client to connect.
+        /// </summary>
+        /// <param name="c"></param>
+        public Proxy(Client c)
         {
             client = c;
             client.SetServer(Localhost, DefaultPort);
+            StartClientListener();
+        }
 
-            //Listen for Tibia to connect to us.
+        /// <summary>
+        /// Create a new proxy that connects to the specified server and the default port (7171).
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="serverIP"></param>
+        public Proxy(Client c, string serverIP) : this(c, serverIP, DefaultPort) { }
+
+        /// <summary>
+        /// Create a new proxy that connects to the specified server and port.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="serverIP"></param>
+        /// <param name="serverPort"></param>
+        public Proxy(Client c, string serverIP, short serverPort)
+        {
+            client = c;
+            loginServers = new LoginServer[] {
+                new LoginServer(serverIP, serverPort)    
+            };
+            client.SetServer(Localhost, DefaultPort);
+            StartClientListener();
+        }
+
+        /// <summary>
+        /// Restart the proxy.
+        /// </summary>
+        public void Restart()
+        {
+            StartClientListener();
+        }
+
+        private void StartClientListener()
+        {
             tcpClient = new TcpListener(IPAddress.Any, DefaultPort);
             tcpClient.Start();
-            socketClient = tcpClient.AcceptSocket();
+            tcpClient.BeginAcceptSocket((AsyncCallback)ClientConnected, null);
+        }
+
+        private void ClientConnected(IAsyncResult ar)
+        {
+            socketClient = tcpClient.EndAcceptSocket(ar);
 
             if (socketClient.Connected)
             {
                 netStreamClient = new NetworkStream(socketClient);
 
                 //Connect the proxy to the login server.
-                TcpClient tcpRemote = new TcpClient("62.146.31.166", DefaultPort);
-                netStreamRemote = tcpRemote.GetStream();
+                tcpLogin = new TcpClient(loginServers[0].Server, loginServers[0].Port);
+                netStreamLogin = tcpLogin.GetStream();
 
-                //The client is requesting the character list.
-                int len = netStreamClient.Read(data, 0, data.Length);
-                netStreamRemote.Write(data, 0, len);
+                //Listen for the client to request the character list
+                netStreamClient.BeginRead(data, 0, data.Length, ClientLoginRecieved, null);
+            }
+        }
 
-                //The character list along with the ip's of the worlds
-                //are now being sent to the client.
-                len = netStreamRemote.Read(data, 0, data.Length);
+        private void ClientLoginRecieved(IAsyncResult ar)
+        {
+            int bytesRead = netStreamClient.EndRead(ar);
 
-                //Process the charlist packet, changing IP's to localhost
-                ProcessCharListPacket(data, len);
+            if (bytesRead > 0)
+            {
+                // Relay the login details to the Login Server
+                netStreamLogin.BeginWrite(data, 0, bytesRead, null, null);
 
-                // Write the packet back
-                netStreamClient.Write(data, 0, len);
+                // Begin read for the character list
+                netStreamLogin.BeginRead(data, 0, data.Length, CharListRecieved, null);
+            }
+        }
 
-                //The character has been selected
-                //Here we have to restart the listener because the client changes ports
-                tcpClient.Stop();
-                tcpClient.Start();
-                socketClient = tcpClient.AcceptSocket();
+        private void CharListRecieved(IAsyncResult ar)
+        {
+            int bytesRead = netStreamLogin.EndRead(ar);
+
+            if (bytesRead > 0)
+            {
+                // Process the character list
+                ProcessCharListPacket(data, bytesRead);
+
+                // Send the modified char list to the client
+                netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
+
+                // Refresh the client listener because the client reconnects on a
+                // different port with the game server
+                RefreshClientListener();
+            }
+        }
+
+        private void RefreshClientListener()
+        {
+            // Refresh the client listener
+            tcpClient.Stop();
+            tcpClient.Start();
+            tcpClient.BeginAcceptSocket((AsyncCallback)ClientReconnected, null);
+        }
+
+        private void ClientReconnected(IAsyncResult ar)
+        {
+            socketClient = tcpClient.EndAcceptSocket(ar);
+
+            if (socketClient.Connected)
+            {
+                // The client has successfully reconnected
                 netStreamClient = new NetworkStream(socketClient);
 
-                // Get the clients login info packet
-                len = netStreamClient.Read(data, 0, data.Length);
+                // Begint to read the game login packet from the client
+                netStreamClient.BeginRead(data, 0, data.Length, ClientGameLoginRecieved, null);
+            }
+        }
 
+        private void ClientGameLoginRecieved(IAsyncResult ar)
+        {
+            int bytesRead = netStreamClient.EndRead(ar);
+
+            if (bytesRead > 0)
+            {
                 // Read the selection index from memory
                 selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
 
-                //We connect to the selected game world
+                // Connect to the selected game world
                 tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
                 netStreamServer = tcpServer.GetStream();
 
-                // Write the login data to the game server
-                netStreamServer.Write(data, 0, len);
+                // Begin to write the login data to the game server
+                netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
 
                 // Start asynchronous reading
                 netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
                 netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
+
+                // Notify that the client has logged in
+                if (LoggedIn != null)
+                    LoggedIn();
             }
-        }
-        /// <summary>
-        /// Sends a packet to the server
-        /// </summary>
-        /// <param name="packet"></param>
-        public void SendToServer(byte[] packet)
-        {
-            int length = BitConverter.ToInt16(packet, 0);
-            int extraByte = 8 - ((length + 2) % 8);
-            if (extraByte<8){ length+=extraByte; }
-            byte[] newPacket = new byte[length + 4];
-            newPacket = XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
-            netStreamServer.Write(newPacket, 0, newPacket.Length);
-        }
-        /// <summary>
-        /// Sends a packet to the client
-        /// </summary>
-        /// <param name="packet"></param>
-        public void SendToClient(byte[] packet)
-        {
-            int length = BitConverter.ToInt16(packet, 0);
-            int extraByte = 8 - ((length + 2) % 8);
-            if (extraByte < 8) { length += extraByte; }
-            byte[] newPacket = new byte[length + 4];
-            newPacket = XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
-            netStreamClient.Write(newPacket, 0, newPacket.Length);
         }
 
         private void ServerRecieve(IAsyncResult ar)
         {
-            int bytesRead = netStreamServer.EndRead(ar);
-            if (bytesRead > 0)
-            {
-                netStreamClient.Write(data, 0, bytesRead);
-            }
-            netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
+            //try
+            //{
+                if (!netStreamServer.CanRead)
+                    return;
+                int bytesRead = netStreamServer.EndRead(ar);
+                if (bytesRead > 0)
+                {
+                    // Get the packet length
+                    long packetlength = BitConverter.ToInt16(data, 0);
+
+                    // Only send it to the application if the length is correct
+                    // if it isn't, that means it is one of the beginning map messages,
+                    // which doesn't decrypt/encrypt correctly.
+                    if (PacketFromServer != null && packetlength == bytesRead - 2)
+                    {
+                        byte[] packet = new byte[bytesRead];
+                        Array.Copy(data, packet, bytesRead);
+                        byte[] newPacket = EncryptPacket(PacketFromServer(DecryptPacket(packet)));
+                        //byte[] newPacket = PacketFromServer(packet);
+                        if (newPacket != null)
+                        {
+                            // Packet editing not supported yet, something goes wrong in 
+                            // Encrypting or decrypting, usually get an error when saying "hi"
+                            netStreamClient.BeginWrite(packet, 0, packet.Length, null, null);
+                            //netStreamClient.BeginWrite(newPacket, 0, newPacket.Length, null, null);
+                        }
+                    }
+                    else
+                    {
+                        netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
+                    }
+                }
+                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
+            //}
+            //catch
+            //{
+
+            //}
         }
 
         private void ClientRecieve(IAsyncResult ar)
         {
             int bytesRead = netStreamClient.EndRead(ar);
-            if (bytesRead > 0)
+
+            if (GetPacketType(data) == 0x14)
             {
-                netStreamServer.Write(data, 0, bytesRead);
+                Stop();
+                Restart();
+                // Notify that the client has logged out
+                if (LoggedOut != null)
+                    LoggedOut();
+                return;
             }
-            netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
+            //try
+            //{
+                if (bytesRead > 0)
+                {
+                    if (PacketFromClient != null)
+                    {
+                        byte[] packet = new byte[bytesRead];
+                        Array.Copy(data, packet, bytesRead);
+
+                        byte[] newPacket = EncryptPacket(PacketFromClient(DecryptPacket(packet)));
+                        //byte[] newPacket = PacketFromClient(packet);
+
+                        if (newPacket != null)
+                        {
+                            netStreamServer.BeginWrite(packet, 0, packet.Length, null, null);
+                            //netStreamServer.BeginWrite(newPacket, 0, newPacket.Length, null, null);
+                        }
+                    }
+                    else
+                    {
+                        netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
+                    }
+                }
+                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
+            //}
+            //catch
+            //{
+
+            //}
+        }
+
+        private void Stop()
+        {
+            netStreamClient.Close();
+            netStreamServer.Close();
+            netStreamLogin.Close();
+            tcpClient.Stop();
+            tcpServer.Close();
+            tcpLogin.Close();
+            socketClient.Close();
         }
 
         private void ProcessCharListPacket(byte[] data, int length)
@@ -195,6 +370,55 @@ namespace Tibia.Util
 
             packet = XTEA.Encrypt(packet, key);
             Array.Copy(packet, data, length);
+        }
+
+        /// <summary>
+        /// Sends a packet to the server
+        /// </summary>
+        /// <param name="packet"></param>
+        public void SendToServer(byte[] packet)
+        {
+            byte[] encrypted = EncryptPacket(packet);
+            netStreamServer.Write(encrypted, 0, encrypted.Length);
+        }
+        /// <summary>
+        /// Sends a packet to the client
+        /// </summary>
+        /// <param name="packet"></param>
+        public void SendToClient(byte[] packet)
+        {
+            byte[] encrypted = EncryptPacket(packet);
+            netStreamClient.Write(encrypted, 0, encrypted.Length);
+        }
+
+        /// <summary>
+        /// Wrapper for XTEA.Encrypt
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public byte[] EncryptPacket(byte[] packet)
+        {
+            return XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+        }
+
+        /// <summary>
+        /// Wrapper for XTEA.Decrypt
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public byte[] DecryptPacket(byte[] packet)
+        {
+            return XTEA.Decrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+        }
+
+        /// <summary>
+        /// Get the type of an encrypted packet
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        private byte GetPacketType(byte[] packet)
+        {
+            return XTEA.DecryptType(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
         }
 
         /// <summary>

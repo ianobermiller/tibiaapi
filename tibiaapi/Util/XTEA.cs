@@ -13,6 +13,24 @@ namespace Tibia.Util
          * Encode/Decode routines from: http://www.codeproject.com/KB/mobile/teaencryption.aspx
          * */
 
+        public static byte DecryptType(byte[] packet, byte[] key)
+        {
+            if (packet.Length == 0)
+                return 0;
+            
+            uint[] keyprep = ByteArrayToUintArray(key);
+
+            byte[] start = new byte[8];
+            Array.Copy(packet, 2, start, 0, 8);
+            uint[] startprep = ByteArrayToUintArray(start);
+
+            Decode(startprep, 0, keyprep);
+
+            start = UintArrayToByteArray(startprep);
+
+            return start[2];
+        }
+
         /// <summary>
         /// Decrypte a packet using XTEA.
         /// </summary>
@@ -20,6 +38,9 @@ namespace Tibia.Util
         /// <param name="key"></param>
         public static byte[] Decrypt(byte[] packet, byte[] key)
         {
+            if (packet.Length == 0)
+                return packet;
+
             // The first two bytes are the length
             byte[] payload = new byte[packet.Length - 2];
 
@@ -40,6 +61,7 @@ namespace Tibia.Util
             Array.Copy(decrypted, decryptedprep, length);
 
             return decryptedprep;
+            //return decrypted;
         }
 
         /// <summary>
@@ -49,10 +71,13 @@ namespace Tibia.Util
         /// <param name="key"></param>
         public static byte[] Encrypt(byte[] packet, byte[] key)
         {
+            if (packet.Length == 0)
+                return packet;
+
             uint[] keyprep = ByteArrayToUintArray(key);
 
+            // Pad the packet with extra bytes for encryption
             int pad = packet.Length % 8;
-
             byte[] packetprep = new byte[packet.Length + (8 - pad)];
             Array.Copy(packet, packetprep, packet.Length);
 
@@ -93,24 +118,30 @@ namespace Tibia.Util
 
         private static void Decode(uint[] v, int index, uint[] k)
         {
-
-            uint n = 32;
-            uint sum;
-            uint y = v[index];
-            uint z = v[index + 1];
-            uint delta = 0x9e3779b9;
-
-            sum = delta << 5;
-
-            while (n-- > 0)
+            try
             {
-                z -= (y << 4 ^ y >> 5) + y ^ sum + k[sum >> 11 & 3];
-                sum -= delta;
-                y -= (z << 4 ^ z >> 5) + z ^ sum + k[sum & 3];
-            }
+                uint n = 32;
+                uint sum;
+                uint y = v[index];
+                uint z = v[index + 1];
+                uint delta = 0x9e3779b9;
 
-            v[index] = y;
-            v[index + 1] = z;
+                sum = delta << 5;
+
+                while (n-- > 0)
+                {
+                    z -= (y << 4 ^ y >> 5) + y ^ sum + k[sum >> 11 & 3];
+                    sum -= delta;
+                    y -= (z << 4 ^ z >> 5) + z ^ sum + k[sum & 3];
+                }
+
+                v[index] = y;
+                v[index + 1] = z;
+            }
+            catch
+            {
+
+            }
         }
 
         private static uint[] ByteArrayToUintArray(byte[] bytes)

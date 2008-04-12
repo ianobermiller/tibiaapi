@@ -379,12 +379,59 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get/Set the Login Servers
+        /// </summary>
+        public LoginServer[] LoginServers
+        {
+            get
+            {
+                LoginServer[] servers = new LoginServer[Addresses.Client.Max_LoginServers];
+                long address = Addresses.Client.LoginServerStart;
+
+                for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+                {
+                    servers[i] = new LoginServer(
+                        ReadString(address),
+                        (short)ReadInt(address + Addresses.Client.Distance_Port)
+                    );
+                    address += Addresses.Client.Step_LoginServer;
+                }
+                return servers;
+            }
+            set
+            {
+                long address = Addresses.Client.LoginServerStart;
+                if (value.Length == 1)
+                {
+                    string server = value[0].Server + (char)0;
+                    for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+                    {
+                        WriteString(address, value[0].Server);
+                        WriteInt(address + Addresses.Client.Distance_Port, value[0].Port);
+                        address += Addresses.Client.Step_LoginServer;
+                    }
+                }
+                else if (value.Length > 1 && value.Length <= Addresses.Client.Max_LoginServers)
+                {
+                    string server = string.Empty;
+                    for (int i = 0; i < value.Length; i++)
+                    {
+                        server = value[i].Server + (char)0;
+                        WriteString(address, server);
+                        WriteInt(address + Addresses.Client.Distance_Port, value[0].Port);
+                        address += Addresses.Client.Step_LoginServer;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Set the client to connect to a different server and port.
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool SetServer(string ip, int port)
+        public bool SetServer(string ip, short port)
         {
             bool result = true;
             long pointer = Addresses.Client.LoginServerStart;
@@ -406,7 +453,7 @@ namespace Tibia.Objects
         /// <param name="ip"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public bool SetOT(string ip, int port)
+        public bool SetOT(string ip, short port)
         {
             bool result = SetServer(ip, port);
             

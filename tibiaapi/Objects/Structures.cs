@@ -66,4 +66,24 @@ namespace Tibia.Objects
             return builder.ToString();
         }
     }
+
+    /// <summary>
+    /// Represents a Login Server
+    /// </summary>
+    public struct LoginServer
+    {
+        public string Server;
+        public short Port;
+
+        public LoginServer(string server, short port)
+        {
+            Server = server;
+            Port = port;
+        }
+
+        public override string ToString()
+        {
+            return Server + ":" + Port;
+        }
+    }
 }
