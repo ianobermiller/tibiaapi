@@ -82,12 +82,9 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_console.html#c121cf08f0b9252d9d6a4b0e96818e74">Say</a> (<a class="el" href="struct_tibia_1_1_objects_1_1_message.html">Message</a> message)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Send a message (generic).  <a href="#c121cf08f0b9252d9d6a4b0e96818e74"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_console.html#14bfae8d67f348595c43c25ef8f31a30">Send</a> (string message, string recipient)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_console.html#b6fd63a338b18dab5008cb85fe634791">Say</a> (string message, string recipient)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Send a private message.  <a href="#14bfae8d67f348595c43c25ef8f31a30"></a><br></td></tr>
-<tr><td colspan="2"><br><h2>Private Attributes</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_console.html#bdeafb7ad8f6efd2598758f6472be019">client</a></td></tr>
-
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Send a private message.  <a href="#b6fd63a338b18dab5008cb85fe634791"></a><br></td></tr>
 </table>
 <hr><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" name="c92f1735ba3d43aadcb78443e192c1be"></a><!-- doxytag: member="Tibia::Objects::Console::Console" ref="c92f1735ba3d43aadcb78443e192c1be" args="(Client c)" -->
@@ -195,7 +192,7 @@ Say the words of a spell (wrapper for Say).
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>spell</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>s</em>&nbsp;</td><td></td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
@@ -224,19 +221,18 @@ Send a message (generic).
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>message</em>&nbsp;</td><td></td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>type</em>&nbsp;</td><td></td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>message packet</dd></dl>
 
 </div>
 </div><p>
-<a class="anchor" name="14bfae8d67f348595c43c25ef8f31a30"></a><!-- doxytag: member="Tibia::Objects::Console::Send" ref="14bfae8d67f348595c43c25ef8f31a30" args="(string message, string recipient)" -->
+<a class="anchor" name="b6fd63a338b18dab5008cb85fe634791"></a><!-- doxytag: member="Tibia::Objects::Console::Say" ref="b6fd63a338b18dab5008cb85fe634791" args="(string message, string recipient)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Tibia.Objects.Console.Send           </td>
+          <td class="memname">bool Tibia.Objects.Console.Say           </td>
           <td>(</td>
           <td class="paramtype">string&nbsp;</td>
           <td class="paramname"> <em>message</em>, </td>
@@ -269,25 +265,9 @@ Send a private message.
 
 </div>
 </div><p>
-<hr><h2>Member Data Documentation</h2>
-<a class="anchor" name="bdeafb7ad8f6efd2598758f6472be019"></a><!-- doxytag: member="Tibia::Objects::Console::client" ref="bdeafb7ad8f6efd2598758f6472be019" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a> <a class="el" href="class_tibia_1_1_objects_1_1_console.html#bdeafb7ad8f6efd2598758f6472be019">Tibia.Objects.Console.client</a><code> [private]</code>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-
-</div>
-</div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Objects/<a class="el" href="_console_8cs.html">Console.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:45 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Apr 12 23:47:32 2008 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>

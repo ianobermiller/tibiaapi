@@ -72,9 +72,9 @@ Inherited by <a class="el" href="class_tibia_1_1_objects_1_1_player.html">Tibia.
 <a href="class_tibia_1_1_objects_1_1_creature-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#7a38f771d4bb12b20d5f84c7eed25cea">Creature</a> (<a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a> c, uint a)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#56998b565039fa8bd32cc3105c365863">Creature</a> (<a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a> <a class="el" href="class_tibia_1_1_objects_1_1_creature.html#f7ab328e9a15aa75a4d4bab9e3cacbd0">client</a>, uint <a class="el" href="class_tibia_1_1_objects_1_1_creature.html#d0d2f0d88207bdd26b6d25f0c4a22d24">address</a>)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create a new creature object with the given client and address.  <a href="#7a38f771d4bb12b20d5f84c7eed25cea"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create a new creature object with the given client and address.  <a href="#56998b565039fa8bd32cc3105c365863"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#8ad90e1ecd2dfc7cba0a6e3b6071576d">InParty</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if a player (creature) is in your party.  <a href="#8ad90e1ecd2dfc7cba0a6e3b6071576d"></a><br></td></tr>
@@ -94,6 +94,8 @@ Inherited by <a class="el" href="class_tibia_1_1_objects_1_1_player.html">Tibia.
 
 <tr><td colspan="2"><br><h2>Properties</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#8bbb57a28b508ae223d96f9d98d85689">Address</a><code> [get, set]</code></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#721b24869ec9adf574aa6dade55ed693">Client</a><code> [get]</code></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_objects_1_1_creature.html#37794736bd5193898d7fe49937010979">Id</a><code> [get, set]</code></td></tr>
 
@@ -150,7 +152,7 @@ Inherited by <a class="el" href="class_tibia_1_1_objects_1_1_player.html">Tibia.
 <a class="el" href="class_tibia_1_1_objects_1_1_creature.html" title="Creature object.">Creature</a> object. 
 <p>
 <hr><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" name="7a38f771d4bb12b20d5f84c7eed25cea"></a><!-- doxytag: member="Tibia::Objects::Creature::Creature" ref="7a38f771d4bb12b20d5f84c7eed25cea" args="(Client c, uint a)" -->
+<a class="anchor" name="56998b565039fa8bd32cc3105c365863"></a><!-- doxytag: member="Tibia::Objects::Creature::Creature" ref="56998b565039fa8bd32cc3105c365863" args="(Client client, uint address)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -158,13 +160,13 @@ Inherited by <a class="el" href="class_tibia_1_1_objects_1_1_player.html">Tibia.
           <td class="memname">Tibia.Objects.Creature.Creature           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a>&nbsp;</td>
-          <td class="paramname"> <em>c</em>, </td>
+          <td class="paramname"> <em>client</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint&nbsp;</td>
-          <td class="paramname"> <em>a</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>address</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -180,8 +182,8 @@ Create a new creature object with the given client and address.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>c</em>&nbsp;</td><td></td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>a</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>client</em>&nbsp;</td><td>The client.</td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>address</em>&nbsp;</td><td>The address.</td></tr>
   </table>
 </dl>
 
@@ -314,6 +316,21 @@ Look at the creature / player. Sends a packet to the server with the same effect
       <table class="memname">
         <tr>
           <td class="memname">uint Tibia.Objects.Creature.Address<code> [get, set]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="721b24869ec9adf574aa6dade55ed693"></a><!-- doxytag: member="Tibia::Objects::Creature::Client" ref="721b24869ec9adf574aa6dade55ed693" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_tibia_1_1_objects_1_1_client.html">Client</a> Tibia.Objects.Creature.Client<code> [get]</code>          </td>
         </tr>
       </table>
 </div>
@@ -702,7 +719,7 @@ Look at the creature / player. Sends a packet to the server with the same effect
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Objects/<a class="el" href="_objects_2_creature_8cs.html">Creature.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:45 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Apr 12 23:47:32 2008 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>

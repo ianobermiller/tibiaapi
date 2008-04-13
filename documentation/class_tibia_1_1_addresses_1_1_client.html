@@ -75,11 +75,17 @@ window.onload = initDynSections;
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The system time in ms when the client was started. Used for Creatures.Distance_BlackSquare calculations.  <a href="#534b4e739104d68074c972a5f30ddab8"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#c1891eedb529efe1bbe895ddde1c3077">XTeaKey</a> = 0x768C7C</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Address to the encryption key.  <a href="#c1891eedb529efe1bbe895ddde1c3077"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#9c7463520847fcc21cd138de1c9eab57">FrameRate</a> = 0x76CE0C</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Address to the XTea encryption key.  <a href="#c1891eedb529efe1bbe895ddde1c3077"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#7c1af2231f3935ecbd6aa82510534463">FrameRatePointer</a> = 0x76793C</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">FPS (Frames Per Second) Limit.  <a href="#9c7463520847fcc21cd138de1c9eab57"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#8ba94d23c0b35d3349b467450112430d">MultiClient</a> = 0xF8961</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">FPS (Frames Per Second) Pointer.  <a href="#7c1af2231f3935ecbd6aa82510534463"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4d85b1b765d6aeaf233f7dd7d6ee9fec">FrameRateCurrentOffset</a> = 0x60</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current fps offset.  <a href="#4d85b1b765d6aeaf233f7dd7d6ee9fec"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ded726a45554468c378689b9bdd0235d">FrameRateLimitOffset</a> = 0x58</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">FPS limit offset.  <a href="#ded726a45554468c378689b9bdd0235d"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#8ba94d23c0b35d3349b467450112430d">MultiClient</a> = 0xF8944</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Address to activate multiclient.  <a href="#8ba94d23c0b35d3349b467450112430d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#0cb5b023fb1d0ff1c1347478bf4f8526">MultiClientValue</a> = 0xEB</td></tr>
@@ -111,23 +117,31 @@ window.onload = initDynSections;
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The text of the last message sent to the default channel.  <a href="#830e9deb8bc09cb6e36afb64aa3b4dba"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#749c2ae461d85999a65a30f3e35050dd">Statusbar_Text</a> = 0x0076D928</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Statusbar.  <a href="#749c2ae461d85999a65a30f3e35050dd"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The statusbar text to be displayed.  <a href="#749c2ae461d85999a65a30f3e35050dd"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#73833ea71c28f05ddada74bd116f5675">Statusbar_Time</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#749c2ae461d85999a65a30f3e35050dd">Statusbar_Text</a> - 4</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The time that the text will be displayed for in the statusbar.  <a href="#73833ea71c28f05ddada74bd116f5675"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#a1bdad7f422f82df3c5237b1165a4a3d">Click_Id</a> = 0x76C364</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Information on the last clicked item.  <a href="#a1bdad7f422f82df3c5237b1165a4a3d"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The id of the last clicked item.  <a href="#a1bdad7f422f82df3c5237b1165a4a3d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ea9b893d1669c3a3cf8fe331eab1cc20">Click_Count</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#a1bdad7f422f82df3c5237b1165a4a3d">Click_Id</a> + 4</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The amount of the last clicked item (eg. 52 fish).  <a href="#ea9b893d1669c3a3cf8fe331eab1cc20"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#f8dc78c024b0b53004b7987ef75fc6e7">Click_Z</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#a1bdad7f422f82df3c5237b1165a4a3d">Click_Id</a> - 0x68</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The floor that was clicked.  <a href="#f8dc78c024b0b53004b7987ef75fc6e7"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ccfb9b4b2033bafe56ca9b0aace3136a">See_Id</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#a1bdad7f422f82df3c5237b1165a4a3d">Click_Id</a> + 12</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">See (inspect).  <a href="#ccfb9b4b2033bafe56ca9b0aace3136a"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The id of the last item seen (looked at).  <a href="#ccfb9b4b2033bafe56ca9b0aace3136a"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#62def7d5c952190ba64663f666a7cf0a">See_Count</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ccfb9b4b2033bafe56ca9b0aace3136a">See_Id</a> + 4</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The amount of the last item seen (eg. 42 fish).  <a href="#62def7d5c952190ba64663f666a7cf0a"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#09d3543c4a5e066b7f81ce7b9868d400">See_Z</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ccfb9b4b2033bafe56ca9b0aace3136a">See_Id</a> - 0x68</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The floor that the last seen item is on.  <a href="#09d3543c4a5e066b7f81ce7b9868d400"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#e6eb97163d6271af71aa875048441d35">See_Text</a> = 0x76DB50</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The text that came with the last seen item (eg. You see a fish).  <a href="#e6eb97163d6271af71aa875048441d35"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#bb24674f053b69705593405a3215042c">LoginServerStart</a> = 0x763BB8</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#39add635be155b5ea43a10831e1ae6ae">Step_LoginServer</a> = 112</td></tr>
@@ -136,15 +150,18 @@ window.onload = initDynSections;
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#95757a6ec390a6661945479b41d199f6">Max_LoginServers</a> = 10</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#c9051553f2b40d23512b40dc6b46d34b">RSA</a> = 0x593610</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#c9051553f2b40d23512b40dc6b46d34b">RSA</a> = 0x597610</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">RSA Key Adress.  <a href="#c9051553f2b40d23512b40dc6b46d34b"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#5015040300bbd6d8e51bd170ce311eff">LoginCharList</a> = 0x766DBC</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#5015040300bbd6d8e51bd170ce311eff">LoginCharList</a> = 0x76C28C</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Login character list.  <a href="#5015040300bbd6d8e51bd170ce311eff"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4dec6381f3e2292536e16a0f59ab535c">LoginSelectedChar</a> = 0x766DB8</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Login character list. This points to the character list.  <a href="#5015040300bbd6d8e51bd170ce311eff"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4dec6381f3e2292536e16a0f59ab535c">LoginSelectedChar</a> = 0x76C288</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Login character list selected character.  <a href="#4dec6381f3e2292536e16a0f59ab535c"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Login character list selected character. This address doesn't move.  <a href="#4dec6381f3e2292536e16a0f59ab535c"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_client.html#6041fd400f29b824add29292ba5bdeb5">PointerToGameWindowRect</a> = 0x0012D624</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Pointer to an address. When that address has 0x4E added to it, it points to the game window rect struct.  <a href="#6041fd400f29b824add29292ba5bdeb5"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <a class="el" href="class_tibia_1_1_addresses_1_1_client.html" title="Client addresses not specific to a player.">Client</a> addresses not specific to a player. 
@@ -179,24 +196,58 @@ The system time in ms when the client was started. Used for Creatures.Distance_B
 <div class="memdoc">
 
 <p>
-Address to the encryption key. 
+Address to the XTea encryption key. 
 <p>
 
 </div>
 </div><p>
-<a class="anchor" name="9c7463520847fcc21cd138de1c9eab57"></a><!-- doxytag: member="Tibia::Addresses::Client::FrameRate" ref="9c7463520847fcc21cd138de1c9eab57" args="" -->
+<a class="anchor" name="7c1af2231f3935ecbd6aa82510534463"></a><!-- doxytag: member="Tibia::Addresses::Client::FrameRatePointer" ref="7c1af2231f3935ecbd6aa82510534463" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#9c7463520847fcc21cd138de1c9eab57">Tibia.Addresses.Client.FrameRate</a> = 0x76CE0C<code> [static]</code>          </td>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#7c1af2231f3935ecbd6aa82510534463">Tibia.Addresses.Client.FrameRatePointer</a> = 0x76793C<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-FPS (Frames Per Second) Limit. 
+FPS (Frames Per Second) Pointer. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="4d85b1b765d6aeaf233f7dd7d6ee9fec"></a><!-- doxytag: member="Tibia::Addresses::Client::FrameRateCurrentOffset" ref="4d85b1b765d6aeaf233f7dd7d6ee9fec" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4d85b1b765d6aeaf233f7dd7d6ee9fec">Tibia.Addresses.Client.FrameRateCurrentOffset</a> = 0x60<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Current fps offset. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="ded726a45554468c378689b9bdd0235d"></a><!-- doxytag: member="Tibia::Addresses::Client::FrameRateLimitOffset" ref="ded726a45554468c378689b9bdd0235d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#ded726a45554468c378689b9bdd0235d">Tibia.Addresses.Client.FrameRateLimitOffset</a> = 0x58<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+FPS limit offset. 
 <p>
 
 </div>
@@ -206,7 +257,7 @@ FPS (Frames Per Second) Limit.
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#8ba94d23c0b35d3349b467450112430d">Tibia.Addresses.Client.MultiClient</a> = 0xF8961<code> [static]</code>          </td>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#8ba94d23c0b35d3349b467450112430d">Tibia.Addresses.Client.MultiClient</a> = 0xF8944<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
@@ -383,7 +434,7 @@ The text of the last message sent to the default channel.
 <div class="memdoc">
 
 <p>
-Statusbar. 
+The statusbar text to be displayed. 
 <p>
 
 </div>
@@ -400,6 +451,8 @@ Statusbar.
 <div class="memdoc">
 
 <p>
+The time that the text will be displayed for in the statusbar. 
+<p>
 
 </div>
 </div><p>
@@ -415,7 +468,7 @@ Statusbar.
 <div class="memdoc">
 
 <p>
-Information on the last clicked item. 
+The id of the last clicked item. 
 <p>
 
 </div>
@@ -432,6 +485,8 @@ Information on the last clicked item.
 <div class="memdoc">
 
 <p>
+The amount of the last clicked item (eg. 52 fish). 
+<p>
 
 </div>
 </div><p>
@@ -446,6 +501,8 @@ Information on the last clicked item.
 </div>
 <div class="memdoc">
 
+<p>
+The floor that was clicked. 
 <p>
 
 </div>
@@ -462,7 +519,7 @@ Information on the last clicked item.
 <div class="memdoc">
 
 <p>
-See (inspect). 
+The id of the last item seen (looked at). 
 <p>
 
 </div>
@@ -479,6 +536,8 @@ See (inspect).
 <div class="memdoc">
 
 <p>
+The amount of the last item seen (eg. 42 fish). 
+<p>
 
 </div>
 </div><p>
@@ -493,6 +552,25 @@ See (inspect).
 </div>
 <div class="memdoc">
 
+<p>
+The floor that the last seen item is on. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="e6eb97163d6271af71aa875048441d35"></a><!-- doxytag: member="Tibia::Addresses::Client::See_Text" ref="e6eb97163d6271af71aa875048441d35" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#e6eb97163d6271af71aa875048441d35">Tibia.Addresses.Client.See_Text</a> = 0x76DB50<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+The text that came with the last seen item (eg. You see a fish). 
 <p>
 
 </div>
@@ -562,7 +640,7 @@ See (inspect).
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#c9051553f2b40d23512b40dc6b46d34b">Tibia.Addresses.Client.RSA</a> = 0x593610<code> [static]</code>          </td>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#c9051553f2b40d23512b40dc6b46d34b">Tibia.Addresses.Client.RSA</a> = 0x597610<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
@@ -579,14 +657,14 @@ RSA Key Adress.
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#5015040300bbd6d8e51bd170ce311eff">Tibia.Addresses.Client.LoginCharList</a> = 0x766DBC<code> [static]</code>          </td>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#5015040300bbd6d8e51bd170ce311eff">Tibia.Addresses.Client.LoginCharList</a> = 0x76C28C<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Login character list. 
+Login character list. This points to the character list. 
 <p>
 
 </div>
@@ -596,21 +674,38 @@ Login character list.
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4dec6381f3e2292536e16a0f59ab535c">Tibia.Addresses.Client.LoginSelectedChar</a> = 0x766DB8<code> [static]</code>          </td>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#4dec6381f3e2292536e16a0f59ab535c">Tibia.Addresses.Client.LoginSelectedChar</a> = 0x76C288<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Login character list selected character. 
+Login character list selected character. This address doesn't move. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="6041fd400f29b824add29292ba5bdeb5"></a><!-- doxytag: member="Tibia::Addresses::Client::PointerToGameWindowRect" ref="6041fd400f29b824add29292ba5bdeb5" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_client.html#6041fd400f29b824add29292ba5bdeb5">Tibia.Addresses.Client.PointerToGameWindowRect</a> = 0x0012D624<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Pointer to an address. When that address has 0x4E added to it, it points to the game window rect struct. 
 <p>
 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Addresses/<a class="el" href="_addresses_2_client_8cs.html">Client.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:41 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Apr 12 23:47:31 2008 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>

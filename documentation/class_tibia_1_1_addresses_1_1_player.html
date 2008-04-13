@@ -146,6 +146,9 @@ window.onload = initDynSections;
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#b3c1605fac1bb755019a92aec2e86e0d">Slot_Ammo</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_player.html#ee61cefea16fad5b886611c04fddd502">Slot_Head</a> + 108</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#9c2a87f85f35c1a9d92edc59996e4095">Max_Slots</a> = 11</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Total number of equipment slots (accessed 0-10).  <a href="#9c2a87f85f35c1a9d92edc59996e4095"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#72f669f7dde0bfec738aab468f7a7295">Distance_Slot_Count</a> = 4</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#c3fd1d91bb2d522d803c72bd4c8e5d17">Slot_Right_Count</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_player.html#b2a1537129f52267b5301adf2b2d1c4a">Slot_Right</a> + 4</td></tr>
@@ -182,6 +185,9 @@ window.onload = initDynSections;
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#a931ee23994817ae99ee441a33ea10e0">Target_Type</a> = <a class="el" href="class_tibia_1_1_addresses_1_1_player.html#506a43e19b84db07def16de6718d52f4">Target_ID</a> + 3</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static uint&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tibia_1_1_addresses_1_1_player.html#9e6c77bfc1e5414f190ef17806df9b39">Z</a> = 0x61E9C0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Static address for player Z, used for level spy.  <a href="#9e6c77bfc1e5414f190ef17806df9b39"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <a class="el" href="class_tibia_1_1_addresses_1_1_player.html" title="Player memory addresses.">Player</a> memory addresses. 
@@ -757,6 +763,23 @@ window.onload = initDynSections;
 
 </div>
 </div><p>
+<a class="anchor" name="9c2a87f85f35c1a9d92edc59996e4095"></a><!-- doxytag: member="Tibia::Addresses::Player::Max_Slots" ref="9c2a87f85f35c1a9d92edc59996e4095" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="class_tibia_1_1_addresses_1_1_player.html#9c2a87f85f35c1a9d92edc59996e4095">Tibia.Addresses.Player.Max_Slots</a> = 11<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Total number of equipment slots (accessed 0-10). 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="72f669f7dde0bfec738aab468f7a7295"></a><!-- doxytag: member="Tibia::Addresses::Player::Distance_Slot_Count" ref="72f669f7dde0bfec738aab468f7a7295" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -1027,9 +1050,26 @@ window.onload = initDynSections;
 
 </div>
 </div><p>
+<a class="anchor" name="9e6c77bfc1e5414f190ef17806df9b39"></a><!-- doxytag: member="Tibia::Addresses::Player::Z" ref="9e6c77bfc1e5414f190ef17806df9b39" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint <a class="el" href="class_tibia_1_1_addresses_1_1_player.html#9e6c77bfc1e5414f190ef17806df9b39">Tibia.Addresses.Player.Z</a> = 0x61E9C0<code> [static]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Static address for player Z, used for level spy. 
+<p>
+
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>E:/programs/tibia/_c# programs/TibiaAPI/tibiaapi/Addresses/<a class="el" href="_addresses_2_player_8cs.html">Player.cs</a></ul>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Dec 30 09:12:42 2007 for TibiaAPI by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Apr 12 23:47:31 2008 for TibiaAPI by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.3 </small></address>
 </body>
