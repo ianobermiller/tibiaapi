@@ -19,7 +19,7 @@ namespace Tibia
         /// <summary>
         /// Delegate for handling mouse input.
         /// </summary>
-        /// <param name="key">The key that was pressed. Check Control, Shift, Alt, and Win for modifiers.</param>
+        /// <param name="button">The mouse button that was pressed.</param>
         /// <returns>True if you want the key to pass through
         /// (be recognized for the app), False if you want it
         /// to be trapped (app never sees it).</returns>

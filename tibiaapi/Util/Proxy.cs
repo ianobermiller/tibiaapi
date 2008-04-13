@@ -15,6 +15,7 @@ namespace Tibia.Util
 
     public class Proxy
     {
+        #region Variables
         private Socket socketClient;
 
         private NetworkStream netStreamClient;
@@ -46,6 +47,7 @@ namespace Tibia.Util
             new LoginServer("tibia04.cipsoft.com", 7171),
             new LoginServer("tibia05.cipsoft.com", 7171)
         };
+        #endregion
 
         #region Events
         /// <summary>
@@ -55,6 +57,10 @@ namespace Tibia.Util
         /// <returns>The unencrypted packet to be forwarded. If null, the packet will not be forwarded.</returns>
         public delegate byte[] PacketListener(byte[] packet);
 
+        /// <summary>
+        /// A function prototype for proxy notifications.
+        /// </summary>
+        /// <returns></returns>
         public delegate byte[] ProxyNotification();
 
         /// <summary>
@@ -78,16 +84,12 @@ namespace Tibia.Util
         public PacketListener PacketFromClient;
         #endregion
 
+        #region Constructors
         /// <summary>
         /// Create a new proxy and start listening for the client to connect.
         /// </summary>
         /// <param name="c"></param>
-        public Proxy(Client c)
-        {
-            client = c;
-            client.SetServer(Localhost, DefaultPort);
-            StartClientListener();
-        }
+        public Proxy(Client c) : this(c, new LoginServer(string.Empty, 0)) { }
 
         /// <summary>
         /// Create a new proxy that connects to the specified server and the default port (7171).
@@ -102,15 +104,24 @@ namespace Tibia.Util
         /// <param name="c"></param>
         /// <param name="serverIP"></param>
         /// <param name="serverPort"></param>
-        public Proxy(Client c, string serverIP, short serverPort)
+        public Proxy(Client c, string serverIP, short serverPort) : this (c, new LoginServer(serverIP, serverPort)) { }
+
+        /// <summary>
+        /// Create a new proxy with the specified login server.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="ls"></param>
+        public Proxy(Client c, LoginServer ls)
         {
             client = c;
-            loginServers = new LoginServer[] {
-                new LoginServer(serverIP, serverPort)    
-            };
+            if (!ls.Server.Equals(string.Empty))
+            {
+                loginServers = new LoginServer[] { ls };
+            }
             client.SetServer(Localhost, DefaultPort);
             StartClientListener();
         }
+        #endregion
 
         /// <summary>
         /// Restart the proxy.

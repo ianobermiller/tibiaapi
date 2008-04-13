@@ -433,6 +433,7 @@ namespace Tibia
         /// Redraw the map
         /// </summary>
         /// <param name="clear">if true clears the background first (produces a flicker)</param>
+        /// <param name="g"></param>
         private void RedrawMap(bool clear, Graphics g)
         {
             if (CanDrawPercentBar)
@@ -537,6 +538,7 @@ namespace Tibia
         /// Draw a percentage bar on the map
         /// </summary>
         /// <param name="percent"></param>
+        /// <param name="g"></param>
         public void DrawPercentBar(int percent, Graphics g)
         {
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
@@ -570,6 +572,7 @@ namespace Tibia
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// <param name="g"></param>
         public void DrawCrosshairs(int x, int y, Graphics g)
         {
             DrawCrosshairs(new Point(x, y), g);
@@ -579,6 +582,7 @@ namespace Tibia
         /// Draw crosshairs at the specified point
         /// </summary>
         /// <param name="p"></param>
+        /// <param name="g"></param>
         public void DrawCrosshairs(Point p, Graphics g)
         {
             int x = p.X;
@@ -613,6 +617,7 @@ namespace Tibia
         /// </summary>
         /// <param name="c"></param>
         /// <param name="hpBar">if true the color of the name will be based on the creatures hp bar</param>
+        /// <param name="g"></param>
         public void DrawCreatureMarker(Creature c, bool hpBar, Graphics g)
         {
             if (hpBar)
@@ -626,6 +631,7 @@ namespace Tibia
         /// </summary>
         /// <param name="l"></param>
         /// <param name="text"></param>
+        /// <param name="g"></param>
         public void DrawMarker(Location l, string text, Graphics g)
         {
             DrawMarker(l, text, Color.Yellow, Color.Black, g);
@@ -638,6 +644,7 @@ namespace Tibia
         /// <param name="text"></param>
         /// <param name="markerFill"></param>
         /// <param name="markerOutline"></param>
+        /// <param name="g"></param>
         public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Graphics g)
         {
             DrawMarker(l, text, markerFill, markerOutline, Color.White, Color.Black, g);
@@ -658,6 +665,7 @@ namespace Tibia
         /// <param name="textFill"></param>
         /// <param name="textOutline"></param>
         /// <param name="hpBar">if hpBar >= 0 &amp;&amp; &lt;= 100 draw an HP bar</param>
+        /// <param name="g"></param>
         public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar, Graphics g)
         {
             // Convert to Tibia coors
@@ -721,6 +729,7 @@ namespace Tibia
         /// <param name="outline"></param>
         /// <param name="rect"></param>
         /// <param name="sf"></param>
+        /// <param name="g"></param>
         public void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf, Graphics g)
         {
             // Draw the outline by offsetting the rectangle

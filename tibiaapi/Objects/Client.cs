@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Tibia.Objects
 {
@@ -21,7 +22,10 @@ namespace Tibia.Objects
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        private static extern void SetWindowText(IntPtr hwnd, string str);
+        private static extern void SetWindowText(IntPtr hWnd, string str);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count); 
 
         [DllImport("user32.dll")]
         private static extern bool IsIconic(IntPtr hWnd);
@@ -34,6 +38,8 @@ namespace Tibia.Objects
         private IntPtr handle;
         private int startTime;
         private bool wasMaximized;
+        private bool usingProxy = false;
+        private Util.Proxy proxy;
 
         /// <summary>
         /// Keep a local copy of battleList to speed up GetPlayer()
@@ -237,7 +243,8 @@ namespace Tibia.Objects
             }
             set
             {
-                SetForegroundWindow(process.MainWindowHandle);
+                if (value)
+                    SetForegroundWindow(process.MainWindowHandle);
             }
         }
 
@@ -593,12 +600,48 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Sets the Title of the Client
+        /// Get or set the title of the client.
         /// </summary>
-        /// <param name="Text"></param>
-        public void SetTitle(String Text)
+        public string Title
         {
-            SetWindowText(process.MainWindowHandle, Text);
+            get
+            {
+                StringBuilder buff = new StringBuilder(256);
+
+                GetWindowText(process.MainWindowHandle, buff, buff.MaxCapacity);
+
+                return buff.ToString();
+            }
+            set
+            {
+                SetWindowText(process.MainWindowHandle, value);
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the client is connected using a proxy.
+        /// </summary>
+        public bool UsingProxy
+        {
+            get { return usingProxy; }
+            set { usingProxy = value; }
+        }
+
+        /// <summary>
+        /// Start the proxy associated with this client.
+        /// </summary>
+        public void StartProxy()
+        {
+            proxy = new Util.Proxy(this);
+        }
+
+        /// <summary>
+        /// Get the proxy object associated with this client. 
+        /// Will ruturn null unless StartProxy() is called first
+        /// </summary>
+        public Util.Proxy Proxy
+        {
+            get { return proxy; }
         }
     }
 }

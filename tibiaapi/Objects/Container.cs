@@ -101,7 +101,6 @@ namespace Tibia.Objects
             return client.Send(packet);
         }
 
-        /** Get and set various aspects of the container **/
         #region Get/Set Properties
         /// <summary>
         /// Gets the client this container is associated with.

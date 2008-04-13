@@ -44,6 +44,7 @@ namespace Tibia.Util
         /// <summary>
         /// Merges tibia maps together. The input files are only read from.
         /// </summary>
+        /// <param name="serverType">The type of server (Real or OT)</param>
         /// <param name="outputDirectory">The directory where the merged maps will go.</param>
         /// <param name="inputDirectories">A list of directories that contain the tibia maps to be merged together.</param>
         /// <returns>
