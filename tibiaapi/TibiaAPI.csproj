@@ -61,6 +61,9 @@
     <Compile Include="Constants\ItemList.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Packets\CharListPacket.cs" />
+    <Compile Include="Packets\Enums.cs" />
+    <Compile Include="Packets\StatusMessagePacket.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
     </Compile>

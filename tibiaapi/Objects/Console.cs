@@ -59,9 +59,9 @@ namespace Tibia.Objects
 
             switch (message.type)
             {
-                case Constants.SpeechType.Normal:
-                case Constants.SpeechType.Whisper:
-                case Constants.SpeechType.Yell:
+                case Packets.SpeechType.Normal:
+                case Packets.SpeechType.Whisper:
+                case Packets.SpeechType.Yell:
                     packetLength = 6 + message.text.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -76,7 +76,7 @@ namespace Tibia.Objects
                     // Copy the message to the rest of the bytes
                     Array.Copy(enc.GetBytes(message.text), 0, packet, 6, message.text.Length);
                     break;
-                case Constants.SpeechType.Channel:
+                case Packets.SpeechType.Channel:
                     packetLength = 8 + message.text.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -93,7 +93,7 @@ namespace Tibia.Objects
                     // Copy the message to the rest of the bytes
                     Array.Copy(enc.GetBytes(message.text), 0, packet, 8, message.text.Length);
                     break;
-                case Constants.SpeechType.PrivateMessage:
+                case Packets.SpeechType.PrivateMessage:
                     packetLength = 8 + message.text.Length + message.recipient.Length;
                     payloadLength = packetLength - 2;
                     packet = new byte[packetLength];
@@ -141,8 +141,8 @@ namespace Tibia.Objects
     {
         public string text;
         public string recipient;
-        public Constants.SpeechChannel channel;
-        public Constants.SpeechType type;
+        public Packets.SpeechChannel channel;
+        public Packets.SpeechType type;
 
         /// <summary>
         /// Create a default message.
@@ -152,8 +152,8 @@ namespace Tibia.Objects
         {
             this.text = text;
             this.recipient = "";
-            this.channel = Constants.SpeechChannel.None;
-            this.type = Constants.SpeechType.Normal;
+            this.channel = Packets.SpeechChannel.None;
+            this.type = Packets.SpeechType.Normal;
         }
 
         /// <summary>
@@ -165,8 +165,8 @@ namespace Tibia.Objects
         {
             this.text = text;
             this.recipient = recipient;
-            this.channel = Constants.SpeechChannel.None;
-            this.type = Constants.SpeechType.PrivateMessage;
+            this.channel = Packets.SpeechChannel.None;
+            this.type = Packets.SpeechType.PrivateMessage;
         }
 
         /// <summary>
@@ -174,12 +174,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public Message(string text, Constants.SpeechChannel channel)
+        public Message(string text, Packets.SpeechChannel channel)
         {
             this.text = text;
             this.recipient = "";
             this.channel = channel;
-            this.type = Constants.SpeechType.Channel;
+            this.type = Packets.SpeechType.Channel;
         }
 
         /// <summary>
@@ -187,11 +187,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public Message(string text, Constants.SpeechType type)
+        public Message(string text, Packets.SpeechType type)
         {
             this.text = text;
             this.recipient = "";
-            this.channel = Constants.SpeechChannel.None;
+            this.channel = Packets.SpeechChannel.None;
             this.type = type;
         }
     }

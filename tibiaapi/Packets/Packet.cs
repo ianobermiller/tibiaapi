@@ -10,9 +10,10 @@ namespace Tibia.Packets
     /// </summary>
     public class Packet
     {
-        private byte[] data;
-        private byte id;
-        private short specifiedLength;
+        protected byte[] data;
+        protected PacketType type;
+        protected PacketDestination destination;
+        protected short specifiedLength;
 
         /// <summary>
         /// Default constructor.
@@ -36,13 +37,14 @@ namespace Tibia.Packets
         /// <summary>
         /// Parse the given data packet to create this object.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="packet"></param>
         /// <returns></returns>
-        public bool ParseData(byte[] data)
+        public bool ParseData(byte[] packet)
         {
+            data = packet;
             if (data.Length > 3)
             {
-                id = data[2];
+                type = (PacketType)data[2];
                 specifiedLength = BitConverter.ToInt16(data, 0);
                 return true;
             }
@@ -55,23 +57,24 @@ namespace Tibia.Packets
         /// <summary>
         /// Get/Set the unencrypted bytes associated with this packet object.
         /// </summary>
-        public byte[] Bytes
+        public byte[] Data
         {
             get { return data; }
             set { data = value; }
         }
 
         /// <summary>
-        /// Get/Set the ID of the packet (specified in the third byte of the data).
+        /// Get/Set the type of the packet (specified in the third byte of the data).
         /// </summary>
-        public byte Id
+        public PacketType Type
         {
-            get { return id; }
+            get { return type; }
             set
             {
+                type = value;
                 if (data != null && data.Length > 3)
                 {
-                    data[2] = id = value;
+                    data[2] = (byte)type;
                 }
             }
         }
@@ -87,12 +90,21 @@ namespace Tibia.Packets
             }
             set
             {
+                specifiedLength = value;
                 if (data != null && data.Length > 3)
                 {
-                    specifiedLength = value;
                     Array.Copy(BitConverter.GetBytes(value), data, 2);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get/Set the packet destination
+        /// </summary>
+        public PacketDestination Destination
+        {
+            get { return destination; }
+            set { destination = value; }
         }
 
         #region Sending Packets with packet.dll
@@ -181,6 +193,17 @@ namespace Tibia.Packets
         public static string ByteArrayToHexString(byte[] data)
         {
             return ByteArrayToHexString(data, data.Length);
+        }
+
+        /// <summary>
+        /// Convert a 4 byte IP Address to a string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static string IPBytesToString(byte[] data, int index)
+        {
+            return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
         }
         #endregion
     }

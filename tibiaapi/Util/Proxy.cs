@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
 using Tibia.Objects;
+using Tibia.Packets;
 
 namespace Tibia.Util
 {
@@ -249,17 +250,20 @@ namespace Tibia.Util
                 int bytesRead = netStreamServer.EndRead(ar);
                 if (bytesRead > 0)
                 {
+                    // Use a temporary copy to make sure it is thread safe
+                    PacketListener handler = PacketFromServer;
+
                     // Get the packet length
                     long packetlength = BitConverter.ToInt16(data, 0);
 
                     // Only send it to the application if the length is correct
                     // if it isn't, that means it is one of the beginning map messages,
                     // which doesn't decrypt/encrypt correctly.
-                    if (PacketFromServer != null && packetlength == bytesRead - 2)
+                    if (handler != null && packetlength == bytesRead - 2)
                     {
                         byte[] packet = new byte[bytesRead];
                         Array.Copy(data, packet, bytesRead);
-                        byte[] newPacket = PacketFromServer(DecryptPacket(packet));
+                        byte[] newPacket = handler(DecryptPacket(packet));
                         //byte[] newPacket = PacketFromServer(packet);
                         if (newPacket != null)
                         {
@@ -299,12 +303,14 @@ namespace Tibia.Util
             //{
                 if (bytesRead > 0)
                 {
-                    if (PacketFromClient != null)
+                    // Use a temporary copy to make sure it is thread safe
+                    PacketListener handler = PacketFromClient;
+                    if (handler != null)
                     {
                         byte[] packet = new byte[bytesRead];
                         Array.Copy(data, packet, bytesRead);
 
-                        byte[] newPacket = PacketFromClient(DecryptPacket(packet));
+                        byte[] newPacket = handler(DecryptPacket(packet));
                         //byte[] newPacket = PacketFromClient(packet);
 
                         if (newPacket != null)
@@ -346,46 +352,10 @@ namespace Tibia.Util
             Array.Copy(data, packet, length);
             packet = XTEA.Decrypt(packet, key);
 
-            // Make sure this is a login packet, not invalid login
-            if (packet[2] == 0x14)
-            {
-                // Initialize the character list
-                charList = new CharListPacket();
-                int index = 0;
+            charList = new CharListPacket();
+            charList.ParseData(packet, LocalhostBytes, DefaultPortBytes);
 
-                charList.type = packet[2];
-
-                index = 3; // MOTD length
-                charList.lenMotd = BitConverter.ToInt16(packet, index);
-                index += 2; // MOTD text
-                charList.motd = Encoding.ASCII.GetString(packet, index, charList.lenMotd);
-                index += charList.lenMotd + 1; // Number of chars (add one for the mysterious 0x64 byte)
-                charList.numChars = packet[index];
-                charList.chars = new CharListChar[charList.numChars];
-                index += 1; // Length of first character's name
-
-                for (int i = 0; i < charList.numChars; i++)
-                {
-                    charList.chars[i].lenCharName = BitConverter.ToInt16(packet, index);
-                    index += 2; // Character name text
-                    charList.chars[i].charName = Encoding.ASCII.GetString(packet, index, charList.chars[i].lenCharName);
-                    index += charList.chars[i].lenCharName; // Length of world name
-                    charList.chars[i].lenWorldName = BitConverter.ToInt16(packet, index);
-                    index += 2; // World name text
-                    charList.chars[i].worldName = Encoding.ASCII.GetString(packet, index, charList.chars[i].lenWorldName);
-                    index += charList.chars[i].lenWorldName; // World IP Address
-                    charList.chars[i].worldIP = IPBytesToString(packet, index);
-                    Array.Copy(LocalhostBytes, 0, packet, index, 4);
-                    index += 4; // World Port
-                    charList.chars[i].worldPort = BitConverter.ToInt16(packet, index);
-                    Array.Copy(DefaultPortBytes, 0, packet, index, 2);
-                    index += 2; // Premium days or next chars name length
-                }
-
-                charList.premiumDays = BitConverter.ToInt16(packet, index);
-            }
-
-            packet = XTEA.Encrypt(packet, key);
+            packet = XTEA.Encrypt(charList.Data, key);
             Array.Copy(packet, data, length);
         }
 
@@ -439,64 +409,11 @@ namespace Tibia.Util
         }
 
         /// <summary>
-        /// Convert a 4 byte IP Address to a string
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static string IPBytesToString(byte[] data, int index)
-        {
-            return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
-        }
-
-        /// <summary>
         /// Returns true if the proxy is connected
         /// </summary>
         public bool Connected
         {
             get { return connected; }
         }
-    }
-    /// <summary>
-    /// Stores the data from the server's character list packet.
-    /// </summary>
-    public struct CharListPacket
-    {
-        public byte type;
-        public short lenMotd;
-        public string motd;
-        public byte numChars;
-        public CharListChar[] chars;
-        public short premiumDays;
-
-        public override string ToString()
-        {
-            StringBuilder s = new StringBuilder();
-            s.Append("Type: " + type + "\n\r");
-            s.Append("MOTD [" + lenMotd + "]: " + motd + "\n\r");
-            s.Append("Characters: " + numChars + "\n\r");
-            for(int i = 0; i < numChars; i++)
-            {
-                s.Append("Character " + i + "\n\r");
-                s.Append("Name [" + chars[i].lenCharName + "]: " + chars[i].charName + "\n\r");
-                s.Append("World Name [" + chars[i].lenWorldName + "]: " + chars[i].worldName + "\n\r");
-                s.Append("World IP: " + chars[i].worldIP + "\n\r");
-                s.Append("World Port: " + chars[i].worldPort + "\n\r");
-            }
-            return s.ToString();
-        }
-    }
-
-    /// <summary>
-    /// Represents one character in the server's character list packet.
-    /// </summary>
-    public struct CharListChar
-    {
-        public short lenCharName;
-        public string charName;
-        public short lenWorldName;
-        public string worldName;
-        public string worldIP;
-        public short worldPort;
     }
 }

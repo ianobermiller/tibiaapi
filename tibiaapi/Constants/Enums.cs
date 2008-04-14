@@ -518,31 +518,6 @@ namespace Tibia.Constants
 
     #endregion
 
-    #region Speech
-
-    public enum SpeechChannel
-    {
-        None = -1,
-        Guild = 0,
-        Game = 4,
-        Trade = 5,
-        RealLife = 6,
-        Help = 7,
-        OwnPrivate = 14,
-        Private1 = 17
-    }
-
-    public enum SpeechType
-    {
-        Normal = 1,
-        Whisper = 2,
-        Yell = 3,
-        PrivateMessage = 4,
-        Channel = 5
-    }
-
-    #endregion
-
     #region Spells
 
     public enum SpellCategory
