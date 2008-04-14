@@ -8,7 +8,8 @@ namespace Tibia.Packets
     public enum PacketType : byte
     {
         CharList = 0x14,
-        StatusMessage = 0xB4
+        StatusMessage = 0xB4,
+        ChatMessage = 0xAA
     }
 
     /// <summary>
@@ -57,4 +58,14 @@ namespace Tibia.Packets
         GreenYouSee   = 0x16,
         BlueSentPM    = 0x18
     }
+
+    public enum ChatMessageType : byte
+    {
+        Normal = 0x01,
+        Whisper = 0x02,
+        Yell = 0x03,
+        PM = 0x04,
+        GM = 0x09
+    }
+
 }
