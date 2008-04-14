@@ -173,6 +173,13 @@ namespace Tibia.Constants
             public Bottle()
             {
                 this.Add(new Objects.Item(Items.Bottle.Vial, "Vial"));
+                this.Add(new Objects.Item(Items.Bottle.HealthPotion, "Health Potion"));
+                this.Add(new Objects.Item(Items.Bottle.ManaPotion, "Mana Potion"));
+                this.Add(new Objects.Item(Items.Bottle.StrongHealthPotion, "Strong Health Potion"));
+                this.Add(new Objects.Item(Items.Bottle.StrongManaPotion, "Strong Mana Potion"));
+                this.Add(new Objects.Item(Items.Bottle.GreatHealthPotion, "Great Health Potion"));
+                this.Add(new Objects.Item(Items.Bottle.GreatManaPotion, "Great Mana Potion"));
+                this.Add(new Objects.Item(Items.Bottle.UltimateHealthPotion, "Ultimate Health Potion"));
             }
         }
     }

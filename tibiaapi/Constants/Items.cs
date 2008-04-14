@@ -149,12 +149,19 @@ namespace Tibia.Constants
         public static class Bottle
         {
             public static ushort Vial = 2874;
+            public static ushort HealthPotion = 266;
+            public static ushort ManaPotion = 268;
+            public static ushort StrongHealthPotion = 236;
+            public static ushort StrongManaPotion = 237;
+            public static ushort GreatHealthPotion = 239;
+            public static ushort GreatManaPotion = 239;
+            public static ushort UltimateHealthPotion = 7643;
         }
 
         public static class Fluid
         {
             public static byte Empty = 0;
-            public static byte Mana = 5; // 7
+            public static byte Mana = 10; // 7
             public static byte Life = 2; // 10
         }
     }
