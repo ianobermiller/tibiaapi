@@ -5,11 +5,11 @@ namespace Tibia.Packets
 {
     public class StatusMessagePacket : Packet
     {
-        private StatusMessageColor color;
+        private StatusMessageType color;
         private short lenMessage;
         private string message;
 
-        public StatusMessageColor Color
+        public StatusMessageType Color
         {
             get { return color; }
         }
@@ -37,7 +37,7 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.StatusMessage) return false;
                 int index = 3; // Color
-                color = (StatusMessageColor)packet[index];
+                color = (StatusMessageType)packet[index];
                 index += 1; // Message length
                 lenMessage = BitConverter.ToInt16(packet, index);
                 index += 2; // Begin message
@@ -50,13 +50,14 @@ namespace Tibia.Packets
             }
         }
 
-        public static StatusMessagePacket Create(StatusMessageColor color, string message)
+        public static StatusMessagePacket Create(StatusMessageType color, string message)
         {
             byte[] packet = new byte[message.Length + 6];
             Array.Copy(BitConverter.GetBytes((short)(message.Length + 4)), packet, 2);
             packet[2] = (byte)PacketType.StatusMessage;
             packet[3] = (byte)color;
-            Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 4, message.Length);
+            Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 4, 2);
+            Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 6, message.Length);
             StatusMessagePacket smp = new StatusMessagePacket(packet);
             return smp;
         }

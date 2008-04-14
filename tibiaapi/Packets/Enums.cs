@@ -46,15 +46,15 @@ namespace Tibia.Packets
 
     #endregion
 
-    public enum StatusMessageColor : byte
+    public enum StatusMessageType : byte
     {
-        Yellow       = 0x01,
-        BlueReceive  = 0x04,
-        Red          = 0x09,
-        Orange       = 0x10,
-        WhiteAdvance = 0x13,
-        WhiteStatus  = 0x15,
-        GreenYouSee  = 0x16,
-        BlueSent     = 0x18
+        YellowDefault = 0x01,
+        BlueReceivePM = 0x04,
+        Red           = 0x09,
+        OrangeCM      = 0x10,
+        WhiteAdvance  = 0x13,
+        WhiteStatus   = 0x15,
+        GreenYouSee   = 0x16,
+        BlueSentPM    = 0x18
     }
 }
