@@ -95,7 +95,7 @@ namespace Tibia.Packets
             if (messagetype == ChatMessageType.Normal || messagetype == ChatMessageType.Whisper || messagetype == ChatMessageType.Yell)
             {
                 packet = new byte[message.Length + from.Length + 19];
-                Array.Copy(BitConverter.GetBytes((short)(from.Length + message.Length + 12)), packet, 2);
+                Array.Copy(BitConverter.GetBytes((short)(from.Length + message.Length + 17)), packet, 2);
                 packet[2] = (byte)PacketType.ChatMessage;
                 Array.Copy(BitConverter.GetBytes((short)(from.Length)), 0, packet, 7, 2);
                 Array.Copy(Encoding.ASCII.GetBytes(from), 0, packet, 9, from.Length);
