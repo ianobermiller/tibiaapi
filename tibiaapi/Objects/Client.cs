@@ -224,7 +224,17 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Wrapper method for sending a packet to the server.
+        /// Send a packet to the server.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool Send(Packet packet)
+        {
+            return Send(packet.Data);
+        }
+
+        /// <summary>
+        /// Send a packet to the server.
         /// Uses the proxy if UsingProxy is true, and the dll otherwise.
         /// </summary>
         /// <param name="packet"></param>
@@ -245,6 +255,16 @@ namespace Tibia.Objects
             {
                 return Packet.SendPacketWithDLL(this, packet);
             }
+        }
+
+        /// <summary>
+        /// Send the specified packet to the client using the proxy.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool SendToClient(Packet packet)
+        {
+            return SendToClient(packet.Data);
         }
 
         /// <summary>
