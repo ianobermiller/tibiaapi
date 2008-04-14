@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Tibia
+namespace Tibia.Util
 {
     public partial class ClientChooser : Form
     {

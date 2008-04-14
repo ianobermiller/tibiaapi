@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using Tibia;
 using Tibia.Objects;
 
-namespace Tibia
+namespace Tibia.Util
 {
     public class MapViewer
     {

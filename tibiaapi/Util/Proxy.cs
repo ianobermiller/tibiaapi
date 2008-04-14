@@ -31,11 +31,12 @@ namespace Tibia.Util
         private const int    DefaultPort = 7171;
         private byte[]       DefaultPortBytes = BitConverter.GetBytes((short)7171);
 
-        private Client        client;
-        private CharListPacket        charList;
-        private byte                  selectedChar;
-        private byte[]                data = new byte[4096];
-        private LoginServer[] loginServers = new LoginServer[] {
+        private Client         client;
+        private CharListPacket charList;
+        private byte           selectedChar;
+        private bool           connected;
+        private byte[]         data = new byte[4096];
+        private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
             new LoginServer("login02.tibia.com", 7171),
             new LoginServer("login03.tibia.com", 7171),
@@ -53,7 +54,7 @@ namespace Tibia.Util
         /// <summary>
         /// A generic function prototype for packet events.
         /// </summary>
-        /// <param name="packet">The unencrypted packet that was recieved.</param>
+        /// <param name="packet">The unencrypted packet that was received.</param>
         /// <returns>The unencrypted packet to be forwarded. If null, the packet will not be forwarded.</returns>
         public delegate byte[] PacketListener(byte[] packet);
 
@@ -74,12 +75,12 @@ namespace Tibia.Util
         public ProxyNotification LoggedOut;
 
         /// <summary>
-        /// Called when a packet is recieved from the server.
+        /// Called when a packet is received from the server.
         /// </summary>
         public PacketListener PacketFromServer;
 
         /// <summary>
-        /// Called when a packet is recieved from the client.
+        /// Called when a packet is received from the client.
         /// </summary>
         public PacketListener PacketFromClient;
         #endregion
@@ -114,6 +115,7 @@ namespace Tibia.Util
         public Proxy(Client c, LoginServer ls)
         {
             client = c;
+            c.UsingProxy = true;
             if (!ls.Server.Equals(string.Empty))
             {
                 loginServers = new LoginServer[] { ls };
@@ -151,11 +153,11 @@ namespace Tibia.Util
                 netStreamLogin = tcpLogin.GetStream();
 
                 //Listen for the client to request the character list
-                netStreamClient.BeginRead(data, 0, data.Length, ClientLoginRecieved, null);
+                netStreamClient.BeginRead(data, 0, data.Length, ClientLoginReceived, null);
             }
         }
 
-        private void ClientLoginRecieved(IAsyncResult ar)
+        private void ClientLoginReceived(IAsyncResult ar)
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
@@ -165,11 +167,11 @@ namespace Tibia.Util
                 netStreamLogin.BeginWrite(data, 0, bytesRead, null, null);
 
                 // Begin read for the character list
-                netStreamLogin.BeginRead(data, 0, data.Length, CharListRecieved, null);
+                netStreamLogin.BeginRead(data, 0, data.Length, CharListReceived, null);
             }
         }
 
-        private void CharListRecieved(IAsyncResult ar)
+        private void CharListReceived(IAsyncResult ar)
         {
             int bytesRead = netStreamLogin.EndRead(ar);
 
@@ -205,11 +207,11 @@ namespace Tibia.Util
                 netStreamClient = new NetworkStream(socketClient);
 
                 // Begint to read the game login packet from the client
-                netStreamClient.BeginRead(data, 0, data.Length, ClientGameLoginRecieved, null);
+                netStreamClient.BeginRead(data, 0, data.Length, ClientGameLoginReceived, null);
             }
         }
 
-        private void ClientGameLoginRecieved(IAsyncResult ar)
+        private void ClientGameLoginReceived(IAsyncResult ar)
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
@@ -226,8 +228,11 @@ namespace Tibia.Util
                 netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
 
                 // Start asynchronous reading
-                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
-                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
+                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
+                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromClient, null);
+
+                // The proxy is now connected
+                connected = true;
 
                 // Notify that the client has logged in
                 if (LoggedIn != null)
@@ -235,7 +240,7 @@ namespace Tibia.Util
             }
         }
 
-        private void ServerRecieve(IAsyncResult ar)
+        private void ReceiveFromServer(IAsyncResult ar)
         {
             //try
             //{
@@ -254,14 +259,14 @@ namespace Tibia.Util
                     {
                         byte[] packet = new byte[bytesRead];
                         Array.Copy(data, packet, bytesRead);
-                        byte[] newPacket = EncryptPacket(PacketFromServer(DecryptPacket(packet)));
+                        byte[] newPacket = PacketFromServer(DecryptPacket(packet));
                         //byte[] newPacket = PacketFromServer(packet);
                         if (newPacket != null)
                         {
                             // Packet editing not supported yet, something goes wrong in 
                             // Encrypting or decrypting, usually get an error when saying "hi"
                             netStreamClient.BeginWrite(packet, 0, packet.Length, null, null);
-                            //netStreamClient.BeginWrite(newPacket, 0, newPacket.Length, null, null);
+                            //SendToClient(newPacket);
                         }
                     }
                     else
@@ -269,7 +274,7 @@ namespace Tibia.Util
                         netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
                     }
                 }
-                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ServerRecieve, null);
+                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
             //}
             //catch
             //{
@@ -277,7 +282,7 @@ namespace Tibia.Util
             //}
         }
 
-        private void ClientRecieve(IAsyncResult ar)
+        private void ReceiveFromClient(IAsyncResult ar)
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
@@ -299,13 +304,13 @@ namespace Tibia.Util
                         byte[] packet = new byte[bytesRead];
                         Array.Copy(data, packet, bytesRead);
 
-                        byte[] newPacket = EncryptPacket(PacketFromClient(DecryptPacket(packet)));
+                        byte[] newPacket = PacketFromClient(DecryptPacket(packet));
                         //byte[] newPacket = PacketFromClient(packet);
 
                         if (newPacket != null)
                         {
                             netStreamServer.BeginWrite(packet, 0, packet.Length, null, null);
-                            //netStreamServer.BeginWrite(newPacket, 0, newPacket.Length, null, null);
+                            //SendToServer(newPacket);
                         }
                     }
                     else
@@ -313,7 +318,7 @@ namespace Tibia.Util
                         netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
                     }
                 }
-                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ClientRecieve, null);
+                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromClient, null);
             //}
             //catch
             //{
@@ -323,6 +328,7 @@ namespace Tibia.Util
 
         private void Stop()
         {
+            connected = false;
             netStreamClient.Close();
             netStreamServer.Close();
             netStreamLogin.Close();
@@ -384,22 +390,22 @@ namespace Tibia.Util
         }
 
         /// <summary>
-        /// Sends a packet to the server
+        /// Encrypts and sends a packet to the server
         /// </summary>
         /// <param name="packet"></param>
         public void SendToServer(byte[] packet)
         {
             byte[] encrypted = EncryptPacket(packet);
-            netStreamServer.Write(encrypted, 0, encrypted.Length);
+            netStreamServer.BeginWrite(encrypted, 0, encrypted.Length, null, null);
         }
         /// <summary>
-        /// Sends a packet to the client
+        /// Encrypts and sends a packet to the client
         /// </summary>
         /// <param name="packet"></param>
         public void SendToClient(byte[] packet)
         {
             byte[] encrypted = EncryptPacket(packet);
-            netStreamClient.Write(encrypted, 0, encrypted.Length);
+            netStreamClient.BeginWrite(encrypted, 0, encrypted.Length, null, null);
         }
 
         /// <summary>
@@ -441,6 +447,14 @@ namespace Tibia.Util
         public static string IPBytesToString(byte[] data, int index)
         {
             return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
+        }
+
+        /// <summary>
+        /// Returns true if the proxy is connected
+        /// </summary>
+        public bool Connected
+        {
+            get { return connected; }
         }
     }
     /// <summary>

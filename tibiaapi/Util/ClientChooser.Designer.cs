@@ -1,4 +1,4 @@
-namespace Tibia
+namespace Tibia.Util
 {
     partial class ClientChooser
     {

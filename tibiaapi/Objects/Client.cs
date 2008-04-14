@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using System.Text;
+using Tibia.Packets;
 
 namespace Tibia.Objects
 {
@@ -223,13 +224,43 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Wrapper method for Packets.Packet.SendPacket.
+        /// Wrapper method for sending a packet to the server.
+        /// Uses the proxy if UsingProxy is true, and the dll otherwise.
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
         public bool Send(byte[] packet)
         {
-            return Packet.SendPacket(this, packet);
+            if (UsingProxy)
+            {
+                if (proxy.Connected)
+                {
+                    proxy.SendToServer(packet);
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+            {
+                return Packet.SendPacketWithDLL(this, packet);
+            }
+        }
+
+        /// <summary>
+        /// Sends a packet to the client using the proxy (not available if not using proxy).
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool SendToClient(byte[] packet)
+        {
+            if (proxy.Connected)
+            {
+                proxy.SendToClient(packet);
+                return true;
+            }
+            else
+                return false;
         }
 
         /// <summary>
@@ -630,9 +661,11 @@ namespace Tibia.Objects
         /// <summary>
         /// Start the proxy associated with this client.
         /// </summary>
-        public void StartProxy()
+        /// <returns>True if the proxy initialized correctly.</returns>
+        public bool StartProxy()
         {
             proxy = new Util.Proxy(this);
+            return UsingProxy;
         }
 
         /// <summary>
@@ -642,6 +675,16 @@ namespace Tibia.Objects
         public Util.Proxy Proxy
         {
             get { return proxy; }
+        }
+
+        /// <summary>
+        /// Inject a DLL into the process
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public bool InjectDLL(string filename)
+        {
+            return false;
         }
     }
 }

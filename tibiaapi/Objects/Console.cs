@@ -1,4 +1,5 @@
 using System;
+using Tibia.Packets;
 
 namespace Tibia.Objects
 {
