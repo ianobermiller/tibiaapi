@@ -54,6 +54,7 @@ namespace Tibia.Packets
         BlueReceivePM = 0x04,
         Red           = 0x09,
         OrangeCM      = 0x10,
+        RedOnScreen   = 0x12,
         WhiteAdvance  = 0x13,
         WhiteStatus   = 0x15,
         GreenYouSee   = 0x16,
@@ -96,6 +97,6 @@ namespace Tibia.Packets
         Orange = 198,
         Gold = 210,
         White = 215,
-        None = 255
+        Purple = 255
     }
 }
