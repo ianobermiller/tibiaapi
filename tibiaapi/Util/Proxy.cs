@@ -57,7 +57,7 @@ namespace Tibia.Util
         /// </summary>
         /// <param name="packet">The unencrypted packet that was received.</param>
         /// <returns>The unencrypted packet to be forwarded. If null, the packet will not be forwarded.</returns>
-        public delegate byte[] PacketListener(byte[] packet);
+        public delegate Packet PacketListener(Packet packet);
 
         /// <summary>
         /// A function prototype for proxy notifications.
@@ -78,12 +78,17 @@ namespace Tibia.Util
         /// <summary>
         /// Called when a packet is received from the server.
         /// </summary>
-        public PacketListener PacketFromServer;
+        public PacketListener ReceivedPacketFromServer;
 
         /// <summary>
         /// Called when a packet is received from the client.
         /// </summary>
-        public PacketListener PacketFromClient;
+        public PacketListener ReceivedPacketFromClient;
+
+        public PacketListener ReceivedAnimatedTextPacket;
+        public PacketListener ReceivedChatMessagePacket;
+        public PacketListener ReceivedStatusMessagePacket;
+
         #endregion
 
         #region Constructors
@@ -250,8 +255,14 @@ namespace Tibia.Util
                 int bytesRead = netStreamServer.EndRead(ar);
                 if (bytesRead > 0)
                 {
-                    // Use a temporary copy to make sure it is thread safe
-                    PacketListener handler = PacketFromServer;
+                    // Parse the data into a single packet
+                    byte[] packet = new byte[bytesRead];
+                    Array.Copy(data, packet, bytesRead);
+                    packet = DecryptPacket(packet);
+
+                    // Always call the default (if attached to)
+                    if (ReceivedPacketFromServer != null)
+                        ReceivedPacketFromServer(new Packet(packet));
 
                     // Get the packet length
                     long packetlength = BitConverter.ToInt16(data, 0);
@@ -259,18 +270,15 @@ namespace Tibia.Util
                     // Only send it to the application if the length is correct
                     // if it isn't, that means it is one of the beginning map messages,
                     // which doesn't decrypt/encrypt correctly.
-                    if (handler != null && packetlength == bytesRead - 2)
+                    if (packetlength == bytesRead - 2)
                     {
-                        byte[] packet = new byte[bytesRead];
-                        Array.Copy(data, packet, bytesRead);
-                        byte[] newPacket = handler(DecryptPacket(packet));
-                        //byte[] newPacket = PacketFromServer(packet);
-                        if (newPacket != null)
+                        Packet packetobj = RaiseEvents(packet);
+                        if (packetobj != null)
                         {
                             // Packet editing not supported yet, something goes wrong in 
                             // Encrypting or decrypting, usually get an error when saying "hi"
                             netStreamClient.BeginWrite(packet, 0, packet.Length, null, null);
-                            //SendToClient(newPacket);
+                            //SendToClient(packetobj.Data);
                         }
                     }
                     else
@@ -303,21 +311,21 @@ namespace Tibia.Util
             //{
                 if (bytesRead > 0)
                 {
-                    // Use a temporary copy to make sure it is thread safe
-                    PacketListener handler = PacketFromClient;
-                    if (handler != null)
-                    {
-                        byte[] packet = new byte[bytesRead];
-                        Array.Copy(data, packet, bytesRead);
+                    // Parse the data into a single packet
+                    byte[] packet = new byte[bytesRead];
+                    Array.Copy(data, packet, bytesRead);
+                    packet = DecryptPacket(packet);
 
-                        byte[] newPacket = handler(DecryptPacket(packet));
-                        //byte[] newPacket = PacketFromClient(packet);
+                    // Always call the default (if attached to)
+                    if (ReceivedPacketFromClient != null)
+                        ReceivedPacketFromClient(new Packet(packet));
 
-                        if (newPacket != null)
-                        {
-                            netStreamServer.BeginWrite(packet, 0, packet.Length, null, null);
-                            //SendToServer(newPacket);
-                        }
+                    Packet packetobj = RaiseEvents(packet);
+
+                    if (packetobj != null)
+                    {                        
+                        netStreamServer.BeginWrite(packet, 0, packet.Length, null, null);
+                        //SendToServer(packetobj.Data);
                     }
                     else
                     {
@@ -357,6 +365,26 @@ namespace Tibia.Util
 
             packet = XTEA.Encrypt(charList.Data, key);
             Array.Copy(packet, data, length);
+        }
+
+        private Packet RaiseEvents(byte[] packet)
+        {
+            switch ((PacketType)packet[3])
+            {
+                case PacketType.AnimatedText:
+                    if (ReceivedAnimatedTextPacket != null)
+                        return ReceivedAnimatedTextPacket(new AnimatedTextPacket(packet));
+                    break;
+                case PacketType.ChatMessage:
+                    if (ReceivedChatMessagePacket != null)
+                        return ReceivedChatMessagePacket(new ChatMessagePacket(packet));
+                    break;
+                case PacketType.StatusMessage:
+                    if (ReceivedStatusMessagePacket != null)
+                        return ReceivedStatusMessagePacket(new StatusMessagePacket(packet));
+                    break;
+            }
+            return new Packet(packet);
         }
 
         /// <summary>
