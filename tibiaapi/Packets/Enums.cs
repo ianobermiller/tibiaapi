@@ -9,7 +9,8 @@ namespace Tibia.Packets
     {
         CharList = 0x14,
         StatusMessage = 0xB4,
-        ChatMessage = 0xAA
+        ChatMessage = 0xAA,
+        AnimatedText = 0x84
     }
 
     /// <summary>
@@ -65,7 +66,36 @@ namespace Tibia.Packets
         Whisper = 0x02,
         Yell = 0x03,
         PM = 0x04,
-        GM = 0x09
+        GM = 0x09,
+        Monster = 0x10,
+        MonsterYell = 0x11,
+        ChannelNormal = 0x05,
+        ChannelGM = 0x0A,
+        ChannelTutor = 0x0C
     }
 
+    public enum ChatChannel : int
+    {
+        Guild = 0,
+        Game = 4,
+        Trade = 5,
+        RL = 6,
+        Help = 7,
+        Private = 0xFFFF
+    }
+
+    public enum TextColor : byte
+    {
+        Blue = 5,
+        Green = 30,
+        LightBlue = 35,
+        Crystal = 65,
+        Platinum = 89,
+        LightGrey = 129,
+        Red = 180,
+        Orange = 198,
+        Gold = 210,
+        White = 215,
+        None = 255
+    }
 }

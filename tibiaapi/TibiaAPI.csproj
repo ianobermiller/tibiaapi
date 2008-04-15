@@ -61,6 +61,7 @@
     <Compile Include="Constants\ItemList.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Packets\AnimatedTextPacket.cs" />
     <Compile Include="Packets\CharListPacket.cs" />
     <Compile Include="Packets\ChatMessagePacket.cs" />
     <Compile Include="Packets\Enums.cs" />
