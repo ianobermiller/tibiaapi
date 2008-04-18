@@ -174,7 +174,16 @@ namespace Tibia.Packets
                 buffer[i / 2] = (byte)Convert.ToByte(s.Substring(i, 2), 16);
             return buffer;
         }
-
+        public static string HexStringToASCII(string value)
+        {
+            byte[] temp = HexStringToByteArray(value);
+            string loc="";
+            for (int i = 0; i < temp.Length; i++)
+            {
+                loc+=Tibia.Packets.Packet.HexByteToChar(temp[i]);
+            }
+            return loc;
+        }
         /// <summary>
         /// Convert a byte to a char
         /// </summary>
