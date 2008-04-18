@@ -180,7 +180,13 @@ namespace Tibia.Objects
         /// Find player on local map
         /// </summary>
         /// <returns></returns>
+
         public Tile GetPlayerSquare()
+        {
+            int playerId = client.ReadInt(Addresses.Player.Id);
+            return GetCreatureSquare(playerId);
+        }
+        public Tile GetCreatureSquare(int Id)
         {
             Tile playerLocation = new Tile();
 
@@ -198,12 +204,11 @@ namespace Tibia.Objects
                         if (client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
                         {
                             int objectId = client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Data);
-                            int playerId = client.ReadInt(Addresses.Player.Id);
-                            if (objectId == playerId)
+                            
+                            if (objectId == Id)
                             {
                                 playerLocation.Number = i;
-                                Player player = client.GetPlayer();
-                                playerLocation.Location = new Location(player.X, player.Y, player.Z);
+                                playerLocation.Location = SquareNumberToLocation(playerLocation.Number);
                                 return playerLocation;
                             }
                         }
@@ -271,6 +276,29 @@ namespace Tibia.Objects
                 squareRelative.X + xAdjustment,
                 squareRelative.Y + yAdjustment,
                 squareRelative.Z + zAdjustment);
+        }
+
+        public Location GetRelativeLocation(Creature creature, int relX, int relY)
+        {
+            Tile loc = GetCreatureSquare(creature.Id);
+            Location newLoc = new Location();
+            newLoc.X = loc.Location.X + relX;
+            if (newLoc.X < 0) { newLoc.X += 18; }
+            if (newLoc.X > 17) { newLoc.X -= 18; }
+            newLoc.Y = loc.Location.Y + relY;
+            if (newLoc.Y < 0) { newLoc.Y += 14; }
+            if (newLoc.Y > 13) { newLoc.Y -= 14; }
+            newLoc.Z = loc.Location.Z;
+            return newLoc;
+        }
+
+        public Tile GetTileInfo(Location loc)
+        {
+            Tile temp = new Tile();
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            temp.Number = LocationToSquareNumber(loc);
+            temp.Id = (uint)client.ReadInt((mapBegin + (Addresses.Map.Step_Square * temp.Number) + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id));
+            return temp;
         }
 
         /// <summary>
