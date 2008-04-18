@@ -175,6 +175,55 @@ namespace Tibia.Packets
             return buffer;
         }
 
+        /// <summary>
+        /// Convert a byte to a char
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public static char HexByteToChar(byte value)
+        {
+            if (value < 32 || value == 127 || value == 141 || value == 143 || value == 144 || value == 157)
+            {
+                return (char)'.';
+            }
+            else
+            {
+                return (char)value;
+            }
+        }
+        
+        /// <summary>
+        /// Converts a char to a hex byte
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public static byte CharToHexByte(char value)
+        {
+            return (byte)value;
+        }
+
+        /// <summary>
+        /// Converts a integer to a hex string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string IntToHexString(int value)
+        {
+            byte[] temp = BitConverter.GetBytes(value);
+            return ByteArrayToHexString(temp,temp.Length);
+        }
+
+        /// <summary>
+        /// Converts a hex string to a integer
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int HexStringToInt(string value)
+        {
+            byte[] temp = HexStringToByteArray(value);
+            return Convert.ToInt32(temp);
+        }
+
         /// <summary>Converts an array of bytes into a formatted string of hex digits (ex: E4 CA B2)</summary>
         /// <param name="data">The array of bytes to be translated into a string of hex digits.</param>
         /// <param name="length">The length of data to convert</param>
