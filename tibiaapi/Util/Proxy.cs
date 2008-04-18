@@ -253,25 +253,27 @@ namespace Tibia.Util
                 if (!netStreamServer.CanRead)
                     return;
                 int bytesRead = netStreamServer.EndRead(ar);
+
+                // Get the packet length
+                long packetlength = BitConverter.ToInt16(data, 0);
+
                 if (bytesRead > 0)
                 {
-                    // Parse the data into a single packet
-                    byte[] packet = new byte[bytesRead];
-                    Array.Copy(data, packet, bytesRead);
-                    packet = DecryptPacket(packet);
-
-                    // Always call the default (if attached to)
-                    if (ReceivedPacketFromServer != null)
-                        ReceivedPacketFromServer(new Packet(packet));
-
-                    // Get the packet length
-                    long packetlength = BitConverter.ToInt16(data, 0);
-
                     // Only send it to the application if the length is correct
                     // if it isn't, that means it is one of the beginning map messages,
                     // which doesn't decrypt/encrypt correctly.
                     if (packetlength == bytesRead - 2)
                     {
+                        // Parse the data into a single packet
+                        byte[] packet = new byte[bytesRead];
+                        Array.Copy(data, packet, bytesRead);
+                        packet = DecryptPacket(packet);
+
+                        // Always call the default (if attached to)
+                        if (ReceivedPacketFromServer != null)
+                            ReceivedPacketFromServer(new Packet(packet));
+
+
                         Packet packetobj = RaiseEvents(packet);
                         if (packetobj != null)
                         {
