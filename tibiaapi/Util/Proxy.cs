@@ -277,7 +277,7 @@ namespace Tibia.Util
                         {
                             // Packet editing not supported yet, something goes wrong in 
                             // Encrypting or decrypting, usually get an error when saying "hi"
-                            netStreamClient.BeginWrite(packet, 0, packet.Length, null, null);
+                            netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
                             //SendToClient(packetobj.Data);
                         }
                     }
@@ -324,7 +324,7 @@ namespace Tibia.Util
 
                     if (packetobj != null)
                     {                        
-                        netStreamServer.BeginWrite(packet, 0, packet.Length, null, null);
+                        netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
                         //SendToServer(packetobj.Data);
                     }
                     else
@@ -369,7 +369,8 @@ namespace Tibia.Util
 
         private Packet RaiseEvents(byte[] packet)
         {
-            switch ((PacketType)packet[3])
+            if (packet.Length < 3) return new Packet(packet);
+            switch ((PacketType)packet[2])
             {
                 case PacketType.AnimatedText:
                     if (ReceivedAnimatedTextPacket != null)
