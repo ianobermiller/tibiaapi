@@ -90,6 +90,7 @@ namespace Tibia.Util
         public PacketListener ReceivedStatusMessagePacket;
         public PacketListener ReceivedProjectilePacket;
         public PacketListener RecievedCreatureHealthPacket;
+        public PacketListener RecievedVipLoginPacket;
 
         #endregion
 
@@ -395,6 +396,10 @@ namespace Tibia.Util
                 case PacketType.CreatureHealth:
                     if (RecievedCreatureHealthPacket != null)
                         return RecievedCreatureHealthPacket(new CreatureHealthPacket(packet));
+                    break;
+                case PacketType.VipLogin:
+                    if (RecievedVipLoginPacket != null)
+                        return RecievedVipLoginPacket(new VipLoginPacket(packet));
                     break;
             }
             return new Packet(packet);

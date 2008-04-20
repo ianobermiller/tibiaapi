@@ -12,7 +12,8 @@ namespace Tibia.Packets
         ChatMessage = 0xAA,
         AnimatedText = 0x84,
         Projectile = 0x85,
-        CreatureHealth = 0x8C
+        CreatureHealth = 0x8C,
+        VipLogin = 0xD3
     }
 
     /// <summary>
