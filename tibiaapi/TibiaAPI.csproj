@@ -68,6 +68,7 @@
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\ProjectilePacket.cs" />
     <Compile Include="Packets\StatusMessagePacket.cs" />
+    <Compile Include="Packets\VipLoginPacket.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
     </Compile>
