@@ -47,7 +47,7 @@ namespace Tibia.Packets
             byte[] idBytes = BitConverter.GetBytes(creature.Id);
             Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
             VipLoginPacket vlp = new VipLoginPacket(packet);
-            return packet;
+            return new VipLoginPacket(packet);
         }
     }
 }

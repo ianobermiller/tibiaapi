@@ -320,7 +320,8 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Enable or disable level spy for the given floor
+        /// Enable or disable level spy for the given floor. The floor parameter
+        /// is relative to the floor the player is currently on.
         /// </summary>
         /// <param name="floor"></param>
         /// <param name="enable"></param>

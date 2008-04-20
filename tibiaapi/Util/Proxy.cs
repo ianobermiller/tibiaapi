@@ -36,7 +36,10 @@ namespace Tibia.Util
         private CharListPacket charList;
         private byte           selectedChar;
         private bool           connected;
-        private byte[]         data = new byte[4096];
+        private byte[]         data = new byte[8192];
+        private byte[] dataclient = new byte[8192];
+        private byte[] dataserver = new byte[8192];
+
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
             new LoginServer("login02.tibia.com", 7171),
@@ -162,7 +165,7 @@ namespace Tibia.Util
                 netStreamLogin = tcpLogin.GetStream();
 
                 //Listen for the client to request the character list
-                netStreamClient.BeginRead(data, 0, data.Length, ClientLoginReceived, null);
+                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, ClientLoginReceived, null);
             }
         }
 
@@ -173,7 +176,7 @@ namespace Tibia.Util
             if (bytesRead > 0)
             {
                 // Relay the login details to the Login Server
-                netStreamLogin.BeginWrite(data, 0, bytesRead, null, null);
+                netStreamLogin.BeginWrite(dataclient, 0, bytesRead, null, null);
 
                 // Begin read for the character list
                 netStreamLogin.BeginRead(data, 0, data.Length, CharListReceived, null);
@@ -216,7 +219,7 @@ namespace Tibia.Util
                 netStreamClient = new NetworkStream(socketClient);
 
                 // Begint to read the game login packet from the client
-                netStreamClient.BeginRead(data, 0, data.Length, ClientGameLoginReceived, null);
+                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, ClientGameLoginReceived, null);
             }
         }
 
@@ -234,11 +237,11 @@ namespace Tibia.Util
                 netStreamServer = tcpServer.GetStream();
 
                 // Begin to write the login data to the game server
-                netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
+                netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
 
                 // Start asynchronous reading
                 netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
-                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromClient, null);
+                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, (AsyncCallback)ReceiveFromClient, null);
 
                 // The proxy is now connected
                 connected = true;
@@ -256,20 +259,21 @@ namespace Tibia.Util
                 if (!netStreamServer.CanRead)
                     return;
                 int bytesRead = netStreamServer.EndRead(ar);
+                int offset = 0;
 
-                // Get the packet length
-                long packetlength = BitConverter.ToInt16(data, 0);
-
-                if (bytesRead > 0)
+                while (bytesRead - offset > 0)
                 {
+                    // Get the packet length
+                    int packetlength = BitConverter.ToInt16(data, offset) + 2;
+
                     // Only send it to the application if the length is correct
                     // if it isn't, that means it is one of the beginning map messages,
                     // which doesn't decrypt/encrypt correctly.
-                    if (packetlength == bytesRead - 2)
-                    {
+                    //if (packetlength > bytesRead - offset)
+                    //{
                         // Parse the data into a single packet
-                        byte[] packet = new byte[bytesRead];
-                        Array.Copy(data, packet, bytesRead);
+                        byte[] packet = new byte[packetlength];
+                        Array.Copy(data, offset, packet, 0, packetlength);
                         packet = DecryptPacket(packet);
 
                         // Always call the default (if attached to)
@@ -282,14 +286,16 @@ namespace Tibia.Util
                         {
                             // Packet editing not supported yet, something goes wrong in 
                             // Encrypting or decrypting, usually get an error when saying "hi"
-                            netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
+                            netStreamClient.BeginWrite(data, offset, packetlength, null, null);
                             //SendToClient(packetobj.Data);
                         }
-                    }
-                    else
-                    {
-                        netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    netStreamClient.BeginWrite(data, offset, packetlength, null, null);
+                    //}
+
+                    offset += packetlength;
                 }
                 netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
             //}
@@ -303,7 +309,7 @@ namespace Tibia.Util
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
-            if (GetPacketType(data) == 0x14)
+            if (GetPacketType(dataclient) == 0x14)
             {
                 Stop();
                 Restart();
@@ -318,7 +324,7 @@ namespace Tibia.Util
                 {
                     // Parse the data into a single packet
                     byte[] packet = new byte[bytesRead];
-                    Array.Copy(data, packet, bytesRead);
+                    Array.Copy(dataclient, packet, bytesRead);
                     packet = DecryptPacket(packet);
 
                     // Always call the default (if attached to)
@@ -328,16 +334,16 @@ namespace Tibia.Util
                     Packet packetobj = RaiseEvents(packet);
 
                     if (packetobj != null)
-                    {                        
-                        netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
+                    {
+                        netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
                         //SendToServer(packetobj.Data);
                     }
                     else
                     {
-                        netStreamServer.BeginWrite(data, 0, bytesRead, null, null);
+                        netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
                     }
                 }
-                netStreamClient.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromClient, null);
+                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, (AsyncCallback)ReceiveFromClient, null);
             //}
             //catch
             //{
