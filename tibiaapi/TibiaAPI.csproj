@@ -65,6 +65,7 @@
     <Compile Include="Packets\CharListPacket.cs" />
     <Compile Include="Packets\ChatMessagePacket.cs" />
     <Compile Include="Packets\Enums.cs" />
+    <Compile Include="Packets\ProjectilePacket.cs" />
     <Compile Include="Packets\StatusMessagePacket.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>

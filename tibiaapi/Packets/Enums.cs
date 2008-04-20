@@ -10,7 +10,8 @@ namespace Tibia.Packets
         CharList = 0x14,
         StatusMessage = 0xB4,
         ChatMessage = 0xAA,
-        AnimatedText = 0x84
+        AnimatedText = 0x84,
+        Projectile = 0x85
     }
 
     /// <summary>
@@ -98,5 +99,50 @@ namespace Tibia.Packets
         Gold = 210,
         White = 215,
         Purple = 255
+    }
+    public enum ProjectileType : byte
+    {
+        Spear = 0x01,
+        Bolt = 0x02,
+        Arrow = 0x03,
+        Fire = 0x04,
+        Energy = 0x05,
+        PoisonArrow = 0x06,
+        BurstArrow = 0x07,
+        ThrowingStar = 0x08,
+        ThrowingKnife = 0x09,
+        SmallStone = 0x0A,
+        Skull = 0x0B,
+        BigStone = 0x0C,
+        SnowBall = 0x0D,
+        PowerBolt = 0x0E,
+        SmallPoison = 0x0F,
+        InfernalBolt = 0x10,
+        HuntingSpear = 0x11,
+        EnchantedSpear = 0x12,
+        AssassinStar = 0x13,
+        ViperStar = 0x14,
+        RoyalSpear = 0x15,
+        SniperArrow = 0x16,
+        OnyxArrow = 0x17,
+        EarthArrow = 0x18,
+        NormalSword = 0x19,
+        NormalAxe = 0x1A,
+        NormalClub = 0x1B,
+        IceProjectile = 0x1C,
+        IceProjectile2 = 0x1D,
+        EarthProjectile = 0x1E,
+        FireProjectile = 0x1F,
+        DeathProjectile = 0x20,
+        FlashArrow = 0x21,
+        FlamingArrow = 0x22,
+        ShiverArrow = 0x23,
+        EnergyProjectile = 0x24,
+        IceProjectile3 = 0x25,
+        FireProjectile2 = 0x26,
+        DeathProjectile2 = 0x27,
+        EarthArrow2 = 0x28,
+        SmallRedProjectile = 0x29,
+        CakeProjectile = 0x2A
     }
 }
