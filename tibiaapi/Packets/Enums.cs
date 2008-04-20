@@ -11,7 +11,8 @@ namespace Tibia.Packets
         StatusMessage = 0xB4,
         ChatMessage = 0xAA,
         AnimatedText = 0x84,
-        Projectile = 0x85
+        Projectile = 0x85,
+        CreatureHealth = 0x8C
     }
 
     /// <summary>
