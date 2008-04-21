@@ -2,15 +2,15 @@
 #labels Featured,Phase-Implementation
 
 == Table of Contents ==
-* [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
-* [CodeSamples#Using_the_proxy Using the proxy]
-* [CodeSamples#Perform_name_spy_or_level_spy Perform name spy or level spy]
-* [CodeSamples#Setup_a_global_keyboard_hook Setup a global keyboard hook
-* [CodeSamples#Connect_to_an_OT_Server Connect to an OT Server]
-* [CodeSamples#Eat_a_mushroom_in_your_inventory Eat a mushroom in your inventory]
-* [CodeSamples#Attack_the_first_rat_found_in_the_battelist Attack the first rat found in the battelist]
-* [CodeSamples#Change_your_players_outfit_type_and_addon Change your players outfit type and addon]
-* [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
+ * [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
+ * [CodeSamples#Using_the_proxy Using the proxy]
+ * [CodeSamples#Perform_name_spy_or_level_spy Perform name spy or level spy]
+ * [CodeSamples#Setup_a_global_keyboard_hook Setup a global keyboard hook]
+ * [CodeSamples#Connect_to_an_OT_Server Connect to an OT Server]
+ * [CodeSamples#Eat_a_mushroom_in_your_inventory Eat a mushroom in your inventory]
+ * [CodeSamples#Attack_the_first_rat_found_in_the_battelist Attack the first rat found in the battelist]
+ * [CodeSamples#Change_your_players_outfit_type_and_addon Change your players outfit type and addon]
+ * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
 
 == Get a client object to work with ==
 {{{
