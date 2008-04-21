@@ -1,7 +1,7 @@
 #summary Snippets of code to get you started with TibiaAPI.
 #labels Featured,Phase-Implementation
 
-== Table of Contents ==
+=== Table of Contents ===
  * [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
  * [CodeSamples#Using_the_proxy Using the proxy]
  * [CodeSamples#Perform_name_spy_or_level_spy Perform name spy or level spy]
