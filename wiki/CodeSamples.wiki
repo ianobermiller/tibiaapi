@@ -1,12 +1,12 @@
 #summary Snippets of code to get you started with TibiaAPI.
 #labels Featured,Phase-Implementation
 
-* Get a client object to work with
+== Get a client object to work with ==
 {{{
 Client client = Util.ClientChooser.ShowBox();
 }}}
 
-* Using the proxy
+== Using the proxy ==
 {{{
 // Start the proxy and attach event handlers
 // Put this in Form_Load
@@ -37,7 +37,7 @@ private void LogPacket(byte[] packet, string from)
 }
 }}}
 
-* Perform name spy or level spy
+== Perform name spy or level spy ==
 {{{
 // Create a new map object
 Map map = new Map(client);
@@ -49,7 +49,8 @@ map.ShowNames(true);
 map.ShowFloor(-1, true);
 }}}
 
-* Setup a global keyboard hook. Put the following in a button's click event. This example captures the hotkey Ctrl + Alt + A in the Tibia client only (doesn't let it go to the client). All other keypresses, client or otherwise, are ignored.
+== Setup a global keyboard hook. ==
+Put the following in a button's click event. This example captures the hotkey Ctrl + Alt + A in the Tibia client only (doesn't let it go to the client). All other keypresses, client or otherwise, are ignored.
 {{{
 if (!KeyboardHook.Enabled)
 {
@@ -77,12 +78,12 @@ else
 }
 }}}
 
-* Connect to an OT Server
+== Connect to an OT Server ==
 {{{
 client.SetOT("radonia.net", 7171);
 }}}
 
-* Eat a mushroom in your inventory
+== Eat a mushroom in your inventory ==
 {{{
 Inventory inventory = new Inventory(client);
 inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use();
@@ -93,20 +94,20 @@ Inventory inventory = new Inventory(client);
 inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom);
 }}}
 
-* Attack the first rat found in the battelist
+== Attack the first rat found in the battelist ==
 {{{
 BattleList blist = client.getBattleList();
 blist.getCreature("rat").attack();
 }}}
 
-* Change your players outfit type and addon.
+== Change your players outfit type and addon. ==
 {{{
 Player player = client.getPlayer();
 player.Outfit = Tibia.Constants.OutfitType.BeggarMale;
 player.Addon = Tibia.Constants.OutfitAddon.Both;
 }}}
 
-* Replace all the trees with small fir trees.
+== Replace all the trees with small fir trees. ==
 {{{
 Map map = new Map(client);
 map.replaceTrees();
