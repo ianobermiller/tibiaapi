@@ -2,7 +2,7 @@
 #labels Featured,Phase-Implementation
 
 == Table of Contents ==
-[WikiSyntax#Get_a_client_object_to_work_with Get a client object to work with]
+[CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
 
 == Get a client object to work with ==
 {{{
