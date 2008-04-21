@@ -14,23 +14,22 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x768C7C; //8.1, 8.0 = 7637AC
+        public static uint XTeaKey = 0x768C7C; //8.11, 8.0 = 7637AC
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x76793C; //8.1
+        public static uint FrameRatePointer = 0x12DFA0; //8.11
 
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static uint FrameRateCurrentOffset = 0x60; // 8.1
+        public static int FrameRateCurrentOffset = -32; // 8.11
 
         /// <summary>
         /// FPS limit offset
         /// </summary>
-        public static uint FrameRateLimitOffset = 0x58; // 8.1
-
+        public static int FrameRateLimitOffset = -40; // 8.11
 
         /// <summary>
         /// Address to activate multiclient.

@@ -8,9 +8,9 @@ namespace Tibia.Packets
     {
         private ChatMessageType messageType;
         private ChatChannel channel;
-        private short lenFrom;
-        private string from;
-        private byte fromLvl;
+        private short lenSenderName;
+        private string senderName;
+        private byte senderLevel;
         private short lenMessage;
         private string message;
         private Tibia.Objects.Location location;
@@ -23,14 +23,14 @@ namespace Tibia.Packets
         {
             get { return channel; }
         }
-        public string From
+        public string SenderName
         {
-            get { return from; }
+            get { return senderName; }
         }
 
-        public byte FromLevel
+        public byte SenderLevel
         {
-            get { return fromLvl; }
+            get { return senderLevel; }
         }
         public Objects.Location Location 
         {
@@ -57,41 +57,49 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.ChatMessage) return false;
                 int index = 7;
-                lenFrom = BitConverter.ToInt16(packet, index);
+                lenSenderName = BitConverter.ToInt16(packet, index);
                 index += 2;
-                from = Encoding.ASCII.GetString(packet, index, lenFrom);
-                index += lenFrom;
-                fromLvl = packet[index];
+                senderName = Encoding.ASCII.GetString(packet, index, lenSenderName);
+                index += lenSenderName;
+                senderLevel = packet[index];
                 index += 2;
                 messageType = (ChatMessageType)packet[index];
-                if (messageType == ChatMessageType.Normal || messageType == ChatMessageType.Whisper || messageType == ChatMessageType.Yell || messageType == ChatMessageType.Monster || messageType == ChatMessageType.MonsterYell)
+                switch (messageType)
                 {
-                    index += 1;
-                    location = new Objects.Location();
-                    location.X = BitConverter.ToInt16(packet, index);
-                    index += 2;
-                    location.Y = BitConverter.ToInt16(packet, index);
-                    index += 2;
-                    location.Z = packet[index];
-                    index += 1;
-                    lenMessage = packet[index];
-                    index += 2;
-                    message = Encoding.ASCII.GetString(packet, index, lenMessage);
-                }
-                else if (messageType == ChatMessageType.ChannelNormal || messageType == ChatMessageType.ChannelTutor || messageType == ChatMessageType.ChannelGM)
-                {
-                    channel = (ChatChannel)BitConverter.ToInt16(packet,index);
-                    index += 3;
-                    lenMessage = packet[index];
-                    index += 2;
-                    message = Encoding.ASCII.GetString(packet, index, lenMessage);
-                }
-                else
-                {
-                    index += 1;
-                    lenMessage = packet[index];
-                    index += 2;
-                    message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                    case ChatMessageType.Normal:
+                    case ChatMessageType.Whisper:
+                    case ChatMessageType.Yell:
+                    case ChatMessageType.Monster:
+                    case ChatMessageType.MonsterYell:
+                        index += 1;
+                        location = new Objects.Location();
+                        location.X = BitConverter.ToInt16(packet, index);
+                        index += 2;
+                        location.Y = BitConverter.ToInt16(packet, index);
+                        index += 2;
+                        location.Z = packet[index];
+                        index += 1;
+                        lenMessage = packet[index];
+                        index += 2;
+                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        break;
+                
+                    case ChatMessageType.ChannelNormal:
+                    case ChatMessageType.ChannelTutor:
+                    case ChatMessageType.ChannelGM:
+                        channel = (ChatChannel)BitConverter.ToInt16(packet,index);
+                        index += 3;
+                        lenMessage = packet[index];
+                        index += 2;
+                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        break;
+
+                    default:
+                        index += 1;
+                        lenMessage = packet[index];
+                        index += 2;
+                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        break;
                 }
                 
                 return true;
@@ -102,63 +110,137 @@ namespace Tibia.Packets
             }
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messagetype, string from, int level, string message, Objects.Location loc, ChatChannel chan)
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message)
         {
-            byte[] packet;
-            if (messagetype == ChatMessageType.Normal || messagetype == ChatMessageType.Whisper || messagetype == ChatMessageType.Yell || messagetype == ChatMessageType.Monster || messagetype == ChatMessageType.MonsterYell)
-            {
-                packet = new byte[message.Length + from.Length + 19];
-                Array.Copy(BitConverter.GetBytes((short)(from.Length + message.Length + 17)), packet, 2);
-                packet[2] = (byte)PacketType.ChatMessage;
-                Array.Copy(BitConverter.GetBytes((short)(from.Length)), 0, packet, 7, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(from), 0, packet, 9, from.Length);
-                packet[9 + from.Length] = (byte)level;
-                packet[9 + from.Length + 2] = (byte)messagetype;
-                Array.Copy(BitConverter.GetBytes((short)(loc.X)), 0, packet, 9 + from.Length + 3, 2);
-                Array.Copy(BitConverter.GetBytes((short)(loc.Y)), 0, packet, 9 + from.Length + 5, 2);
-                packet[9 + from.Length + 7] = (byte)loc.Z;
-                Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + from.Length + 8, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + from.Length + 10, message.Length);
-            }
-            else if (messagetype == ChatMessageType.ChannelNormal || messagetype == ChatMessageType.ChannelTutor || messagetype == ChatMessageType.ChannelGM)
-            {
-                packet = new byte[message.Length + from.Length + 16];
-                Array.Copy(BitConverter.GetBytes((short)(from.Length + message.Length + 14)), packet, 2);
-                packet[2] = (byte)PacketType.ChatMessage;
-                Array.Copy(BitConverter.GetBytes((short)(from.Length)), 0, packet, 7, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(from), 0, packet, 9, from.Length);
-                packet[9 + from.Length] = (byte)level;
-                packet[9 + from.Length + 2] = (byte)messagetype;
-                Array.Copy(BitConverter.GetBytes((short)(chan)),0,packet,9+from.Length+3,2);
-                Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + from.Length + 5, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + from.Length + 7, message.Length);
-            }
-            else
-            {
-                packet = new byte[message.Length + from.Length + 14];
-                Array.Copy(BitConverter.GetBytes((short)(from.Length + message.Length + 12)), packet, 2);
-                packet[2] = (byte)PacketType.ChatMessage;
-                Array.Copy(BitConverter.GetBytes((short)(from.Length)), 0, packet, 7, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(from), 0, packet, 9, from.Length);
-                packet[9 + from.Length] = (byte)level;
-                packet[9 + from.Length + 2] = (byte)messagetype;
-                Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + from.Length + 3, 2);
-                Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + from.Length + 5, message.Length);
-            }
-            ChatMessagePacket cmp = new ChatMessagePacket(packet);
-            return cmp;
+            return Create(messageType, senderName, message, 0);
         }
-        public static ChatMessagePacket Create(ChatMessageType messagetype, string from, int level, string message)
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level)
         {
-            return Create(messagetype,from,level,message,new Objects.Location(0,0,0),ChatChannel.Game);
+            return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
         }
-        public static ChatMessagePacket Create(ChatMessageType messagetype, string from, int level, string message, ChatChannel chan)
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, ChatChannel chan)
         {
-            return Create(messagetype, from, level, message, new Objects.Location(0, 0, 0), chan);
+            return Create(messageType, senderName, message, 0, chan);
         }
-        public static ChatMessagePacket Create(ChatMessageType messagetype, string from, string message)
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, ChatChannel chan)
         {
-            return Create(messagetype, from, 255, message);
+            return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), chan);
+        }
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, Objects.Location loc)
+        {
+            return Create(messageType, senderName, message, 0, loc);
+        }
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, Objects.Location loc)
+        {
+            return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
+        }
+
+        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
+        {
+            try
+            {
+                if (level < 0) throw new ArgumentOutOfRangeException("level", "Level must be non-negative.");
+                if (senderName.Length < 1) throw new ArgumentException("Sender name length but be at least 1.", "senderName");
+                if (message.Length < 1) throw new ArgumentException("Message length must be at least 1.", "message");
+
+                byte[] packet;
+                switch (messageType)
+                {
+                    case ChatMessageType.Normal:
+                    case ChatMessageType.Whisper:
+                    case ChatMessageType.Yell:
+                    case ChatMessageType.Monster:
+                    case ChatMessageType.MonsterYell:
+
+                        if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
+
+                        // Initialize packet
+                        packet = new byte[message.Length + senderName.Length + 19];
+
+                        // Packet length
+                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 17)), packet, 2);
+
+                        // Comment elements handled after the switch
+
+                        // Location
+                        Array.Copy(loc.ToBytes(), 0, packet, 9 + senderName.Length + 3, 5);
+
+                        // Message length
+                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 8, 2);
+
+                        // Message
+                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 10, message.Length);
+                        break;
+
+                    case ChatMessageType.ChannelNormal:
+                    case ChatMessageType.ChannelTutor:
+                    case ChatMessageType.ChannelGM:
+
+                        if (chan == ChatChannel.None) throw new ArgumentException("You must supply a valid chat channel for this message type.", "chan");
+
+                        // Initialize packet
+                        packet = new byte[message.Length + senderName.Length + 16];
+
+                        // Packet length
+                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 14)), packet, 2);
+
+                        // Comment elements handled after the switch
+
+                        // Channel
+                        Array.Copy(BitConverter.GetBytes((short)(chan)), 0, packet, 9 + senderName.Length + 3, 2);
+
+                        // Message length
+                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 5, 2);
+
+                        // Message
+                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 7, message.Length);
+                        break;
+
+                    default:
+                        // Initialize packet
+                        packet = new byte[message.Length + senderName.Length + 14];
+
+                        // Packet length
+                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 12)), packet, 2);
+
+                        // Comment elements handled after the switch
+
+                        // Message length
+                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 3, 2);
+
+                        // Message
+                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 5, message.Length);
+                        break;
+                }
+
+                // Packet type
+                packet[2] = (byte)PacketType.ChatMessage;
+
+                // Sender length
+                Array.Copy(BitConverter.GetBytes((short)(senderName.Length)), 0, packet, 7, 2);
+
+                // Sender name
+                Array.Copy(Encoding.ASCII.GetBytes(senderName), 0, packet, 9, senderName.Length);
+
+                // Sender level
+                packet[9 + senderName.Length] = (byte)level;
+
+                // Message type
+                packet[9 + senderName.Length + 2] = (byte)messageType;
+
+                ChatMessagePacket cmp = new ChatMessagePacket(packet);
+                return cmp;
+            }
+            catch (Exception e)
+            {
+                Exceptions.Handler.Handle(e);
+                return null;
+            }
         }
     }
 }

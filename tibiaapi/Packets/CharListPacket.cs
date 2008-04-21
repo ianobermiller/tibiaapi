@@ -26,7 +26,7 @@ namespace Tibia.Packets
             ParseData(data);
         }
 
-        public new bool ParseData(byte[] packet, byte[] newServer, byte[] newPort)
+        public bool ParseData(byte[] packet, byte[] newServer, byte[] newPort)
         {
             if (base.ParseData(packet))
             {

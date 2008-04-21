@@ -80,6 +80,7 @@ namespace Tibia.Packets
 
     public enum ChatChannel : int
     {
+        None = -1,
         Guild = 0,
         Game = 4,
         Trade = 5,

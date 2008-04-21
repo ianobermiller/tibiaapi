@@ -10,10 +10,6 @@ using Tibia.Packets;
 
 namespace Tibia.Util
 {
-
-    //The proxy seems to only work on the first character. Probably has to
-    //do with the SetCharacterListIp method.
-
     public class Proxy
     {
         #region Variables
@@ -36,9 +32,8 @@ namespace Tibia.Util
         private CharListPacket charList;
         private byte           selectedChar;
         private bool           connected;
-        private byte[]         data = new byte[8192];
-        private byte[] dataclient = new byte[8192];
-        private byte[] dataserver = new byte[8192];
+        private byte[]         dataServer = new byte[8192];
+        private byte[]         dataClient = new byte[8192];
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -165,7 +160,7 @@ namespace Tibia.Util
                 netStreamLogin = tcpLogin.GetStream();
 
                 //Listen for the client to request the character list
-                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, ClientLoginReceived, null);
+                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, ClientLoginReceived, null);
             }
         }
 
@@ -176,10 +171,10 @@ namespace Tibia.Util
             if (bytesRead > 0)
             {
                 // Relay the login details to the Login Server
-                netStreamLogin.BeginWrite(dataclient, 0, bytesRead, null, null);
+                netStreamLogin.BeginWrite(dataClient, 0, bytesRead, null, null);
 
                 // Begin read for the character list
-                netStreamLogin.BeginRead(data, 0, data.Length, CharListReceived, null);
+                netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
             }
         }
 
@@ -190,10 +185,10 @@ namespace Tibia.Util
             if (bytesRead > 0)
             {
                 // Process the character list
-                ProcessCharListPacket(data, bytesRead);
+                ProcessCharListPacket(dataServer, bytesRead);
 
                 // Send the modified char list to the client
-                netStreamClient.BeginWrite(data, 0, bytesRead, null, null);
+                netStreamClient.BeginWrite(dataServer, 0, bytesRead, null, null);
 
                 // Refresh the client listener because the client reconnects on a
                 // different port with the game server
@@ -219,7 +214,7 @@ namespace Tibia.Util
                 netStreamClient = new NetworkStream(socketClient);
 
                 // Begint to read the game login packet from the client
-                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, ClientGameLoginReceived, null);
+                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, ClientGameLoginReceived, null);
             }
         }
 
@@ -237,11 +232,11 @@ namespace Tibia.Util
                 netStreamServer = tcpServer.GetStream();
 
                 // Begin to write the login data to the game server
-                netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
+                netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
 
                 // Start asynchronous reading
-                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
-                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, (AsyncCallback)ReceiveFromClient, null);
+                netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
+                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
 
                 // The proxy is now connected
                 connected = true;
@@ -264,7 +259,7 @@ namespace Tibia.Util
                 while (bytesRead - offset > 0)
                 {
                     // Get the packet length
-                    int packetlength = BitConverter.ToInt16(data, offset) + 2;
+                    int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
 
                     // Only send it to the application if the length is correct
                     // if it isn't, that means it is one of the beginning map messages,
@@ -273,7 +268,7 @@ namespace Tibia.Util
                     //{
                         // Parse the data into a single packet
                         byte[] packet = new byte[packetlength];
-                        Array.Copy(data, offset, packet, 0, packetlength);
+                        Array.Copy(dataServer, offset, packet, 0, packetlength);
                         packet = DecryptPacket(packet);
 
                         // Always call the default (if attached to)
@@ -286,7 +281,7 @@ namespace Tibia.Util
                         {
                             // Packet editing not supported yet, something goes wrong in 
                             // Encrypting or decrypting, usually get an error when saying "hi"
-                            netStreamClient.BeginWrite(data, offset, packetlength, null, null);
+                            netStreamClient.BeginWrite(dataServer, offset, packetlength, null, null);
                             //SendToClient(packetobj.Data);
                         }
                     //}
@@ -297,7 +292,7 @@ namespace Tibia.Util
 
                     offset += packetlength;
                 }
-                netStreamServer.BeginRead(data, 0, data.Length, (AsyncCallback)ReceiveFromServer, null);
+                netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
             //}
             //catch
             //{
@@ -309,7 +304,7 @@ namespace Tibia.Util
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
-            if (GetPacketType(dataclient) == 0x14)
+            if (GetPacketType(dataClient) == 0x14)
             {
                 Stop();
                 Restart();
@@ -324,7 +319,7 @@ namespace Tibia.Util
                 {
                     // Parse the data into a single packet
                     byte[] packet = new byte[bytesRead];
-                    Array.Copy(dataclient, packet, bytesRead);
+                    Array.Copy(dataClient, packet, bytesRead);
                     packet = DecryptPacket(packet);
 
                     // Always call the default (if attached to)
@@ -335,15 +330,15 @@ namespace Tibia.Util
 
                     if (packetobj != null)
                     {
-                        netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
+                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
                         //SendToServer(packetobj.Data);
                     }
                     else
                     {
-                        netStreamServer.BeginWrite(dataclient, 0, bytesRead, null, null);
+                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
                     }
                 }
-                netStreamClient.BeginRead(dataclient, 0, dataclient.Length, (AsyncCallback)ReceiveFromClient, null);
+                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
             //}
             //catch
             //{

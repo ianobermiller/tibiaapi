@@ -66,15 +66,13 @@ namespace Tibia.Packets
         public static ProjectilePacket Create(Objects.Location from, Objects.Location to, byte projectile)
         {
             byte[] packet = new byte[14];
+
             packet[0] = 0x0C;
             packet[2] = (byte)PacketType.Projectile;
-            Array.Copy(BitConverter.GetBytes((short)(from.X)), 0, packet, 3, 2);
-            Array.Copy(BitConverter.GetBytes((short)(from.Y)), 0, packet, 5, 2);
-            packet[7] = (byte)from.Z;
-            Array.Copy(BitConverter.GetBytes((short)(to.X)), 0, packet, 8, 2);
-            Array.Copy(BitConverter.GetBytes((short)(to.Y)), 0, packet, 10, 2);
-            packet[12] = (byte)to.Z;
+            Array.Copy(from.ToBytes(), 0, packet, 3, 5);
+            Array.Copy(to.ToBytes(), 0, packet, 8, 5);
             packet[13] = projectile;
+
             ProjectilePacket pp = new ProjectilePacket(packet);
             return pp;
         }

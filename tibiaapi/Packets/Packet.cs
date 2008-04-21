@@ -187,7 +187,7 @@ namespace Tibia.Packets
         /// <summary>
         /// Convert a byte to a char
         /// </summary>
-        /// <param name="hex"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
         public static char HexByteToChar(byte value)
         {
@@ -204,7 +204,7 @@ namespace Tibia.Packets
         /// <summary>
         /// Converts a char to a hex byte
         /// </summary>
-        /// <param name="hex"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
         public static byte CharToHexByte(char value)
         {

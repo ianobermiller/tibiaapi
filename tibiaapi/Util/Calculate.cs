@@ -15,7 +15,7 @@ namespace Tibia
         }
 
         /// <summary>
-        /// Convert an fps value to the value needed to be written to memory (all credit go to Cameri from TProgramming)
+        /// Convert an fps value to the value needed to be written to memory (thanks to Stiju at tpforums.org for the formula)
         /// </summary>
         /// <param name="fps"></param>
         /// <returns></returns>

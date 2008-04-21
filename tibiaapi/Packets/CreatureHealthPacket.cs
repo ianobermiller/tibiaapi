@@ -6,15 +6,15 @@ namespace Tibia.Packets
 {
     public class CreatureHealthPacket : Packet
     {
-        private int id;
-        private byte hp;
-        public int Id
+        private int creatureId;
+        private byte creatureHP;
+        public int CreatureId
         {
-            get { return id; }
+            get { return creatureId; }
         }
-        public byte HP
+        public byte CreatureHP
         {
-            get { return hp; }
+            get { return creatureHP; }
         }
         public CreatureHealthPacket()
         {
@@ -32,9 +32,9 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.CreatureHealth) return false;
                 int index = 3;
-                id = BitConverter.ToInt32(packet, index);
+                creatureId = BitConverter.ToInt32(packet, index);
                 index += 4;
-                hp = packet[index];
+                creatureHP = packet[index];
                 return true;
             }
             else
@@ -45,12 +45,16 @@ namespace Tibia.Packets
 
         public static CreatureHealthPacket Create(Objects.Creature creature, byte hp)
         {
+            return Create(creature.Id, hp);
+        }
+
+        public static CreatureHealthPacket Create(int id, byte hp)
+        {
             byte[] packet = new byte[8];
             packet[0] = 0x06;
             packet[2] = (byte)PacketType.CreatureHealth;
-            byte[] idBytes = BitConverter.GetBytes(creature.Id);
-            Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
-            packet[7]=hp;
+            Array.Copy(BitConverter.GetBytes(id), 0, packet, 3, 4);
+            packet[7] = hp;
             CreatureHealthPacket chp = new CreatureHealthPacket(packet);
             return chp;
         }

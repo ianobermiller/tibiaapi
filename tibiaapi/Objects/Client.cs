@@ -249,7 +249,7 @@ namespace Tibia.Objects
                     return true;
                 }
                 else
-                    return false;
+                    throw new Exceptions.ProxyDisconnectedException();
             }
             else
             {
@@ -280,7 +280,7 @@ namespace Tibia.Objects
                 return true;
             }
             else
-                return false;
+                throw new Exceptions.ProxyRequiredException();
         }
 
         /// <summary>
@@ -521,10 +521,22 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Get or set the FPS limit for the client (all credit go to Cameri from TProgramming)
+        /// Get the current FPS of the client.
+        /// </summary>
+        public double FPSCurrent
+        {
+            get
+            {
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateCurrentOffset);
+            }
+        }
+
+        /// <summary>
+        /// Get or set the FPS limit for the client.
         /// </summary>
         /// <returns></returns>
-        public double FPS
+        public double FPSLimit
         {
             get
             {
@@ -533,6 +545,7 @@ namespace Tibia.Objects
             }
             set
             {
+                if (value <= 0) value = 1;
                 int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
                 WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
             }

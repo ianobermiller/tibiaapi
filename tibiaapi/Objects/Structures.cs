@@ -10,11 +10,50 @@ namespace Tibia.Objects
     {
         public int X, Y, Z;
 
+        /// <summary>
+        /// Create a new location given the coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public Location(int x, int y, int z)
         {
             X = x;
             Y = y;
             Z = z;
+        }
+
+        /// <summary>
+        /// Convert the location to bytes to be placed into a packet.
+        /// </summary>
+        /// <returns>A byte array of length 5 containing the coordinates.</returns>
+        public byte[] ToBytes()
+        {
+            byte[] bytes = new byte[5];
+            Array.Copy(BitConverter.GetBytes((short)X), 0, bytes, 0, 2);
+            Array.Copy(BitConverter.GetBytes((short)Y), 0, bytes, 2, 2);
+            bytes[4] = (byte)Z;
+            return bytes;
+        }
+
+        /// <summary>
+        /// Get and invalid instance of this struct. Used for function overloading.
+        /// </summary>
+        /// <returns></returns>
+        public static Location GetInvalid()
+        {
+            return new Location(-1, -1, -1);
+        }
+
+        /// <summary>
+        /// Checks if this struct is valid (all coordinates non-negative).
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValid()
+        {
+            return X >= 0 &&
+                Y >= 0 &&
+                Z >= 0;
         }
 
         /// <summary>
@@ -29,6 +68,18 @@ namespace Tibia.Objects
             builder.AppendLine("Z = " + Z.ToString());
 
             return builder.ToString();
+        }
+
+        public override bool  Equals(object other)
+        {
+            return other is Location && Equals((Location)other);
+        }
+
+        public bool Equals(Location other)
+        {
+            return other.X == X && 
+                other.Y == Y && 
+                other.Z == Z;
         }
     }
 

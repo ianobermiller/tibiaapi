@@ -6,10 +6,10 @@ namespace Tibia.Packets
 {
     public class VipLoginPacket: Packet
     {
-        private int id;
-        public int Id
+        private int playerId;
+        public int PlayerId
         {
-            get { return id; }
+            get { return playerId; }
         }
         
         public VipLoginPacket()
@@ -30,7 +30,7 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.VipLogin) return false;
                 int index = 3;
-                BitConverter.ToInt32(packet, index);
+                playerId = BitConverter.ToInt32(packet, index);
                 return true;
             }
             else
@@ -44,10 +44,9 @@ namespace Tibia.Packets
             byte[] packet = new byte[7];
             packet[0] = 0x05;
             packet[2] = (byte)PacketType.VipLogin;
-            byte[] idBytes = BitConverter.GetBytes(creature.Id);
-            Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
+            Array.Copy(BitConverter.GetBytes(creature.Id), 0, packet, 3, 4);
             VipLoginPacket vlp = new VipLoginPacket(packet);
-            return new VipLoginPacket(packet);
+            return vlp;
         }
     }
 }
