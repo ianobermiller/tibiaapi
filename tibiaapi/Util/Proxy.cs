@@ -249,101 +249,83 @@ namespace Tibia.Util
 
         private void ReceiveFromServer(IAsyncResult ar)
         {
-            //try
-            //{
-                if (!netStreamServer.CanRead)
-                    return;
-                int bytesRead = netStreamServer.EndRead(ar);
-                int offset = 0;
+            if (!netStreamServer.CanRead) return;
+                
+            int bytesRead = netStreamServer.EndRead(ar);
+            int offset = 0;
 
-                while (bytesRead - offset > 0)
+            while (bytesRead - offset > 0)
+            {
+                // Get the packet length
+                int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
+
+                // Parse the data into a single packet
+                byte[] packet = new byte[packetlength];
+                Array.Copy(dataServer, offset, packet, 0, packetlength);
+                packet = DecryptPacket(packet);
+
+                // Always call the default (if attached to)
+                if (ReceivedPacketFromServer != null)
+                    ReceivedPacketFromServer(new Packet(packet));
+
+
+                Packet packetobj = RaiseEvents(packet);
+                if (packetobj != null)
                 {
-                    // Get the packet length
-                    int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
-
-                    // Only send it to the application if the length is correct
-                    // if it isn't, that means it is one of the beginning map messages,
-                    // which doesn't decrypt/encrypt correctly.
-                    //if (packetlength > bytesRead - offset)
-                    //{
-                        // Parse the data into a single packet
-                        byte[] packet = new byte[packetlength];
-                        Array.Copy(dataServer, offset, packet, 0, packetlength);
-                        packet = DecryptPacket(packet);
-
-                        // Always call the default (if attached to)
-                        if (ReceivedPacketFromServer != null)
-                            ReceivedPacketFromServer(new Packet(packet));
-
-
-                        Packet packetobj = RaiseEvents(packet);
-                        if (packetobj != null)
-                        {
-                            // Packet editing not supported yet, something goes wrong in 
-                            // Encrypting or decrypting, usually get an error when saying "hi"
-                            netStreamClient.BeginWrite(dataServer, offset, packetlength, null, null);
-                            //SendToClient(packetobj.Data);
-                        }
-                    //}
-                    //else
-                    //{
-                    //    netStreamClient.BeginWrite(data, offset, packetlength, null, null);
-                    //}
-
-                    offset += packetlength;
+                    // Packet editing not supported yet, something goes wrong in 
+                    // Encrypting or decrypting, usually get an error when saying "hi"
+                    netStreamClient.BeginWrite(dataServer, offset, packetlength, null, null);
+                    //SendToClient(packetobj.Data);
                 }
-                netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
-            //}
-            //catch
-            //{
 
-            //}
+                offset += packetlength;
+            }
+
+            netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
         }
 
         private void ReceiveFromClient(IAsyncResult ar)
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
-            if (GetPacketType(dataClient) == 0x14)
+            if (GetPacketType(dataClient) == PacketType.Logout)
             {
                 Stop();
                 Restart();
+
                 // Notify that the client has logged out
                 if (LoggedOut != null)
+                {
                     LoggedOut();
+                }
+                    
                 return;
             }
-            //try
-            //{
-                if (bytesRead > 0)
+
+            if (bytesRead > 0)
+            {
+                // Parse the data into a single packet
+                byte[] packet = new byte[bytesRead];
+                Array.Copy(dataClient, packet, bytesRead);
+                packet = DecryptPacket(packet);
+
+                // Always call the default (if attached to)
+                if (ReceivedPacketFromClient != null)
+                    ReceivedPacketFromClient(new Packet(packet));
+
+                Packet packetobj = RaiseEvents(packet);
+
+                if (packetobj != null)
                 {
-                    // Parse the data into a single packet
-                    byte[] packet = new byte[bytesRead];
-                    Array.Copy(dataClient, packet, bytesRead);
-                    packet = DecryptPacket(packet);
-
-                    // Always call the default (if attached to)
-                    if (ReceivedPacketFromClient != null)
-                        ReceivedPacketFromClient(new Packet(packet));
-
-                    Packet packetobj = RaiseEvents(packet);
-
-                    if (packetobj != null)
-                    {
-                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-                        //SendToServer(packetobj.Data);
-                    }
-                    else
-                    {
-                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-                    }
+                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
+                    //SendToServer(packetobj.Data);
                 }
-                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
-            //}
-            //catch
-            //{
-
-            //}
+                else
+                {
+                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
+                }
+            }
+            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
         }
 
         private void Stop()
