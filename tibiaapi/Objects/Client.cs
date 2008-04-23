@@ -663,6 +663,28 @@ namespace Tibia.Objects
             }
         }
 
+        public bool Fish()
+        {
+            Map map = new Map(this);
+            List<Tile> fishes = map.GetFishTiles();
+            Random ran = new Random();
+            if (fishes.Count > 0)
+            {
+                int tilenr = ran.Next(fishes.Count - 1);
+                Tile tilen = new Tile((uint)tilenr);
+                tilen.Location = map.GetAbsoluteLocation(fishes[tilenr].Number);
+                tilen.Id = fishes[tilenr].Id;
+                if (tilen.Location.X - GetPlayer().Location.X < -7 || tilen.Location.X - GetPlayer().Location.X > 7) return false;
+                if (tilen.Location.Y - GetPlayer().Location.Y < -5 || tilen.Location.Y - GetPlayer().Location.Y > 5) return false;
+                if (tilen.Location.Z - GetPlayer().Location.Z != 0) return false;
+                Packets.AnimatedTextPacket pkt = AnimatedTextPacket.Create("HÄR", TextColor.Blue, tilen.Location);
+                SendToClient(pkt);
+                Inventory i = new Inventory(this);
+                return i.UseItem(Tibia.Constants.Items.Tool.FishingRod, tilen);
+            }
+            return false;
+        }
+
         /// <summary>
         /// Get or set the title of the client.
         /// </summary>

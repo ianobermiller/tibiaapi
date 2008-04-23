@@ -269,7 +269,7 @@ namespace Tibia.Util
                     ReceivedPacketFromServer(new Packet(packet));
 
 
-                Packet packetobj = RaiseEvents(packet);
+                Packet packetobj = RaiseIncomingEvents(packet);
                 if (packetobj != null)
                 {
                     // Packet editing not supported yet, something goes wrong in 
@@ -313,7 +313,7 @@ namespace Tibia.Util
                 if (ReceivedPacketFromClient != null)
                     ReceivedPacketFromClient(new Packet(packet));
 
-                Packet packetobj = RaiseEvents(packet);
+                Packet packetobj = RaiseOutgoingEvents(packet);
 
                 if (packetobj != null)
                 {
@@ -354,8 +354,12 @@ namespace Tibia.Util
             packet = XTEA.Encrypt(charList.Data, key);
             Array.Copy(packet, data, length);
         }
+        private Packet RaiseOutgoingEvents(byte[] packet)
+        {
+            return new Packet(packet);
 
-        private Packet RaiseEvents(byte[] packet)
+        }
+        private Packet RaiseIncomingEvents(byte[] packet)
         {
             if (packet.Length < 3) return new Packet(packet);
             switch ((PacketType)packet[2])

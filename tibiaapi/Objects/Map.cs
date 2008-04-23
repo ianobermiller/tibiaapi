@@ -267,9 +267,9 @@ namespace Tibia.Objects
         {
             Location playerRelative = SquareNumberToLocation(playerTile.Number);
 
-            int xAdjustment = playerTile.Location.X - playerRelative.X;
-            int yAdjustment = playerTile.Location.Y - playerRelative.Y;
-            int zAdjustment = playerTile.Location.Z - playerRelative.Z;
+            int xAdjustment = client.GetPlayer().Location.X - playerRelative.X;
+            int yAdjustment = client.GetPlayer().Location.Y - playerRelative.Y;
+            int zAdjustment = client.GetPlayer().Location.Z - playerRelative.Z;
 
             Location squareRelative = SquareNumberToLocation(squareNumber);
             return new Location(
