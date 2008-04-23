@@ -288,7 +288,7 @@ namespace Tibia.Util
         {
             int bytesRead = netStreamClient.EndRead(ar);
 
-            if (GetPacketType(dataClient) == PacketType.Logout)
+            if (GetPacketType(dataClient) == (byte)PacketType.Logout)
             {
                 Stop();
                 Restart();

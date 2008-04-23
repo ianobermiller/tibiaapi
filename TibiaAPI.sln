@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TibiaAPI", "tibiaapi\TibiaAPI.csproj", "{4D132EB7-B97D-461D-85CF-949FF5A7BA96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartPacketAnalyzer", "apps\Packet Analyzer\SmartPacketAnalyzer.csproj", "{2A009948-2971-4527-B16C-03C2D73855F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D132EB7-B97D-461D-85CF-949FF5A7BA96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D132EB7-B97D-461D-85CF-949FF5A7BA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D132EB7-B97D-461D-85CF-949FF5A7BA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D132EB7-B97D-461D-85CF-949FF5A7BA96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A009948-2971-4527-B16C-03C2D73855F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A009948-2971-4527-B16C-03C2D73855F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A009948-2971-4527-B16C-03C2D73855F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A009948-2971-4527-B16C-03C2D73855F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
