@@ -62,6 +62,14 @@ namespace Tibia.Objects
             return GetCreatures(creatureName, false);
         }
 
+        public List<Creature> GetCreaturesOnLoc(Location loc)
+        {
+            return GetCreatures().FindAll(delegate(Creature c)
+            {
+                return c.Location.Equals(loc);
+            });
+        }
+
         /// <summary>
         /// Get a list of all the creatures with the specified name.
         /// </summary>

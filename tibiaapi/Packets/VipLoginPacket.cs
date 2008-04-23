@@ -39,7 +39,7 @@ namespace Tibia.Packets
             }
         }
 
-        public static VipLoginPacket Create(Objects.Creature creature)
+        public static VipLoginPacket Create(Objects.Vip creature)
         {
             byte[] packet = new byte[7];
             packet[0] = 0x05;

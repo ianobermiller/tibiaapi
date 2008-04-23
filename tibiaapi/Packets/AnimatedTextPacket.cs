@@ -19,6 +19,10 @@ namespace Tibia.Packets
         {
             get { return color; }
         }
+        public Objects.Location Loc
+        {
+            get { return loc; }
+        }
 
         public AnimatedTextPacket()
         {
