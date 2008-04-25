@@ -110,14 +110,16 @@ namespace SmartPacketAnalyzer
             {
                 uxPacketList.Invoke(new EventHandler(delegate
                 {
-                    CapturedPacket cp = new CapturedPacket(packet, from, to);
+                    CapturedPacket cp = new CapturedPacket(packet, from, packet.Length, to);
                     packetList.Add(cp);
                     uxPacketList.Items.Add(new ListViewItem(new string[]{
                         cp.Time,
                         cp.Source,
                         cp.Destination,
+                        cp.Length.ToString(),
                         Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper()
                     }));
+                    uxPacketList.EnsureVisible(uxPacketList.Items.Count - 1);
                 }));
             }
         }
@@ -136,20 +138,23 @@ namespace SmartPacketAnalyzer
             }
         }
 
-        private void uxClear_Click(object sender, EventArgs e)
+        private void uxClearPackets_Click(object sender, EventArgs e)
         {
-            uxPacketList.Items.Clear();
             packetList.Clear();
+            uxPacketList.Items.Clear();
+            uxPacketDisplay.Clear();
         }
 
-        private void MenToInt_Click(object sender, EventArgs e)
+        private void ConvertToInt_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Tibia.Packets.Packet.HexStringToInt(uxPacketDisplay.SelectedText).ToString());
+            if (uxPacketDisplay.SelectedText.Length >= 5)
+                MessageBox.Show(Tibia.Packets.Packet.HexStringToInt(uxPacketDisplay.SelectedText).ToString());
         }
 
-        private void convertToStringToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ConvertToString_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Tibia.Packets.Packet.HexStringToASCII(uxPacketDisplay.SelectedText));
+            if (uxPacketDisplay.SelectedText.Length >= 1)
+                MessageBox.Show(Tibia.Packets.Packet.HexStringToASCII(uxPacketDisplay.SelectedText));
         }
 
         private void uxTimerShort_Tick(object sender, EventArgs e)
@@ -171,7 +176,10 @@ namespace SmartPacketAnalyzer
                             item.SubItems[2].Text = client.ReadDouble(address).ToString();
                             break;
                         case DataTypes.String:
-                            item.SubItems[2].Text = client.ReadString(address).ToString();
+                            item.SubItems[2].Text = client.ReadString(address, 255).ToString();
+                            break;
+                        case DataTypes.Pointer:
+                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt(address), 16).ToUpper();
                             break;
                     }
                 }
@@ -184,17 +192,19 @@ namespace SmartPacketAnalyzer
 
         private void uxSendToClient_Click(object sender, EventArgs e)
         {
-            client.SendToClient(Tibia.Packets.Packet.HexStringToByteArray(tbPkt.Text));
+            client.SendToClient(Tibia.Packets.Packet.HexStringToByteArray(uxSend.Text));
         }
 
         private void uxSendToServer_Click(object sender, EventArgs e)
         {
-            client.Send(Tibia.Packets.Packet.HexStringToByteArray(tbPkt.Text));
+            client.Send(Tibia.Packets.Packet.HexStringToByteArray(uxSend.Text));
         }
 
         private void uxAddAddress_Click(object sender, EventArgs e)
         {
-            uxMemoryList.Items.Add(new ListViewItem(uxNewMemory.ShowBox()));
+            string[] s = uxMemory.ShowNew();
+            if (s != null)
+                uxMemoryList.Items.Add(new ListViewItem(s));
         }
 
         private void uxMemoryDelete_Click(object sender, EventArgs e)
@@ -204,22 +214,45 @@ namespace SmartPacketAnalyzer
                 uxMemoryList.Items.RemoveAt(uxMemoryList.SelectedIndices[0]);
             }
         }
+
+        private void uxMemoryEdit_Click(object sender, EventArgs e)
+        {
+            if (uxMemoryList.SelectedIndices.Count > 0)
+            {
+                int index = uxMemoryList.SelectedIndices[0];
+                string[] s = uxMemory.ShowEdit(new string[]{
+                    uxMemoryList.Items[index].SubItems[0].Text,
+                    uxMemoryList.Items[index].SubItems[1].Text,
+                    uxMemoryList.Items[index].SubItems[2].Text,
+                    uxMemoryList.Items[index].SubItems[3].Text
+                });
+                if (s != null)
+                    uxMemoryList.Items[index] = new ListViewItem(s);
+            }
+        }
+
+        private void uxClearAddresses_Click(object sender, EventArgs e)
+        {
+            uxMemoryList.Items.Clear();
+        }
     }
 
     public struct CapturedPacket
     {
         public byte[] Data;
+        public string Time;
         public string Source;
         public string Destination;
-        public string Time;
+        public int Length;
         public byte Type;
 
-        public CapturedPacket(byte[] data, string source, string destination)
+        public CapturedPacket(byte[] data, string source, int length, string destination)
         {
             Data = data;
+            Time = DateTime.Now.ToString();
             Source = source;
             Destination = destination;
-            Time = DateTime.Now.ToString();
+            Length = length;
             Type = data[2];
         }
 
@@ -234,6 +267,7 @@ namespace SmartPacketAnalyzer
         Byte,
         Integer,
         Double,
-        String
+        String,
+        Pointer
     }
 }

@@ -13,6 +13,11 @@ namespace Tibia.Util
     public class Proxy
     {
         #region Variables
+        /// <summary>
+        /// Static client for checking open ports.
+        /// </summary>
+        private static TcpListener tcpScan;
+
         private Socket socketClient;
 
         private NetworkStream netStreamClient;
@@ -25,13 +30,13 @@ namespace Tibia.Util
 
         private const string Localhost = "127.0.0.1";
         private byte[]       LocalhostBytes = new byte[] { 127, 0, 0, 1 };
-        private const int    DefaultPort = 7171;
-        private byte[]       DefaultPortBytes = BitConverter.GetBytes((short)7171);
+        private const short  DefaultPort = 7171;
 
         private Client         client;
         private CharListPacket charList;
         private byte           selectedChar;
         private bool           connected;
+        private short          localPort;
         private byte[]         dataServer = new byte[8192];
         private byte[]         dataClient = new byte[8192];
 
@@ -127,7 +132,8 @@ namespace Tibia.Util
             {
                 loginServers = new LoginServer[] { ls };
             }
-            client.SetServer(Localhost, DefaultPort);
+            localPort = (short)GetFreePort();
+            client.SetServer(Localhost, localPort);
             StartClientListener();
         }
         #endregion
@@ -142,7 +148,7 @@ namespace Tibia.Util
 
         private void StartClientListener()
         {
-            tcpClient = new TcpListener(IPAddress.Any, DefaultPort);
+            tcpClient = new TcpListener(IPAddress.Any, localPort);
             tcpClient.Start();
             tcpClient.BeginAcceptSocket((AsyncCallback)ClientConnected, null);
         }
@@ -349,7 +355,7 @@ namespace Tibia.Util
             packet = XTEA.Decrypt(packet, key);
 
             charList = new CharListPacket();
-            charList.ParseData(packet, LocalhostBytes, DefaultPortBytes);
+            charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
 
             packet = XTEA.Encrypt(charList.Data, key);
             Array.Copy(packet, data, length);
@@ -447,6 +453,49 @@ namespace Tibia.Util
         public bool Connected
         {
             get { return connected; }
+        }
+
+        /// <summary>
+        /// Check if a port is open on localhost
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public static bool CheckPort(int port)
+        {
+            try
+            {
+                tcpScan = new TcpListener(IPAddress.Any, port);
+                tcpScan.Start();
+                tcpScan.Stop();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost starting at the default 7171
+        /// </summary>
+        /// <returns></returns>
+        public static short GetFreePort()
+        {
+            return GetFreePort(DefaultPort);
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost beginning at start
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public static short GetFreePort(short start)
+        {
+            while (!CheckPort(start))
+            {
+                start++;
+            }
+            return start;
         }
     }
 }

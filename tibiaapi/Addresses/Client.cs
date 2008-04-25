@@ -47,19 +47,19 @@ namespace Tibia.Addresses
         public static uint Status = 0x76C2C8;           //8.1, 8.0 = 0x766DF8
 
         /// <summary>
-        /// Attack type (Full attack, half and half, full defense)
+        /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint AttackMode = 0x7690A4; //8.1, 8.0 = 0x763BD4
+        public static uint SafeMode = 0x76909C; //8.1, 8.0 = 0x763BCC
 
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
-        public static uint FollowMode = 0x7690A0; //8.1, 8.0 = 0x763BD0
+        public static uint FollowMode = SafeMode + 4; //8.1, 8.0 = 0x763BD0
 
         /// <summary>
-        /// Safe mode (don't attack other players)
+        /// Attack type (Full attack, half and half, full defense)
         /// </summary>
-        public static uint SafeMode = 0x76909C; //8.1, 8.0 = 0x763BCC
+        public static uint AttackMode = FollowMode + 4; //8.1, 8.0 = 0x763BD4
 
         /// <summary>
         /// Action state (formerly MouseCursor icon)
@@ -175,7 +175,7 @@ namespace Tibia.Addresses
         /// Pointer to an address. When that address has 0x4E added to
         /// it, it points to the game window rect struct.
         /// </summary>
-        public static uint PointerToGameWindowRect = 0x0012D624; //8.1
+        public static uint GameWindowRectPointer = 0x0012D624; //8.1
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears

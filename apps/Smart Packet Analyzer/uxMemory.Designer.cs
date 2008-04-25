@@ -1,6 +1,6 @@
 namespace SmartPacketAnalyzer
 {
-    partial class uxNewMemory
+    partial class uxMemory
     {
         /// <summary>
         /// Required designer variable.
@@ -54,13 +54,15 @@ namespace SmartPacketAnalyzer
             this.uxDescription.Name = "uxDescription";
             this.uxDescription.Size = new System.Drawing.Size(208, 20);
             this.uxDescription.TabIndex = 1;
+            this.uxDescription.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
             // 
             // uxAddress
             // 
             this.uxAddress.Location = new System.Drawing.Point(78, 32);
             this.uxAddress.Name = "uxAddress";
             this.uxAddress.Size = new System.Drawing.Size(100, 20);
-            this.uxAddress.TabIndex = 3;
+            this.uxAddress.TabIndex = 2;
+            this.uxAddress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
             // 
             // label2
             // 
@@ -89,14 +91,15 @@ namespace SmartPacketAnalyzer
             this.uxType.Location = new System.Drawing.Point(78, 58);
             this.uxType.Name = "uxType";
             this.uxType.Size = new System.Drawing.Size(100, 21);
-            this.uxType.TabIndex = 6;
+            this.uxType.TabIndex = 3;
+            this.uxType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
             // 
             // uxAdd
             // 
             this.uxAdd.Location = new System.Drawing.Point(130, 85);
             this.uxAdd.Name = "uxAdd";
             this.uxAdd.Size = new System.Drawing.Size(75, 23);
-            this.uxAdd.TabIndex = 7;
+            this.uxAdd.TabIndex = 4;
             this.uxAdd.Text = "Add";
             this.uxAdd.UseVisualStyleBackColor = true;
             this.uxAdd.Click += new System.EventHandler(this.uxAdd_Click);
@@ -106,12 +109,12 @@ namespace SmartPacketAnalyzer
             this.uxCancel.Location = new System.Drawing.Point(211, 85);
             this.uxCancel.Name = "uxCancel";
             this.uxCancel.Size = new System.Drawing.Size(75, 23);
-            this.uxCancel.TabIndex = 8;
+            this.uxCancel.TabIndex = 5;
             this.uxCancel.Text = "Cancel";
             this.uxCancel.UseVisualStyleBackColor = true;
             this.uxCancel.Click += new System.EventHandler(this.uxCancel_Click);
             // 
-            // uxNewMemory
+            // uxMemory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -125,7 +128,7 @@ namespace SmartPacketAnalyzer
             this.Controls.Add(this.uxDescription);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "uxNewMemory";
+            this.Name = "uxMemory";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New memory address";
