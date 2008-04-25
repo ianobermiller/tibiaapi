@@ -62,9 +62,9 @@ namespace SmartPacketAnalyzer
             newMemory.Dispose();
         }
 
-        private void AllControls_KeyPress(object sender, KeyPressEventArgs e)
+        private void AllControls_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
                 uxAdd_Click(null, null);
         }
     }

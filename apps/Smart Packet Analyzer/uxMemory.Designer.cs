@@ -54,7 +54,7 @@ namespace SmartPacketAnalyzer
             this.uxDescription.Name = "uxDescription";
             this.uxDescription.Size = new System.Drawing.Size(208, 20);
             this.uxDescription.TabIndex = 1;
-            this.uxDescription.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
+            this.uxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
             // 
             // uxAddress
             // 
@@ -62,7 +62,7 @@ namespace SmartPacketAnalyzer
             this.uxAddress.Name = "uxAddress";
             this.uxAddress.Size = new System.Drawing.Size(100, 20);
             this.uxAddress.TabIndex = 2;
-            this.uxAddress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
+            this.uxAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
             // 
             // label2
             // 
@@ -92,7 +92,7 @@ namespace SmartPacketAnalyzer
             this.uxType.Name = "uxType";
             this.uxType.Size = new System.Drawing.Size(100, 21);
             this.uxType.TabIndex = 3;
-            this.uxType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllControls_KeyPress);
+            this.uxType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
             // 
             // uxAdd
             // 
