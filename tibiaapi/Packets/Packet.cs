@@ -229,7 +229,11 @@ namespace Tibia.Packets
         /// <returns></returns>
         public static int HexStringToInt(string value)
         {
-            return Int32.Parse(value, System.Globalization.NumberStyles.AllowHexSpecifier);
+            byte[] bytes = HexStringToByteArray(value);
+            if (bytes.Length >= 2)
+                return BitConverter.ToInt16(bytes, 0);
+            else
+                return int.MinValue;
         }
 
         /// <summary>Converts an array of bytes into a formatted string of hex digits (ex: E4 CA B2)</summary>

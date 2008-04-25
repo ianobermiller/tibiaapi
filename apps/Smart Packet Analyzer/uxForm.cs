@@ -8,14 +8,17 @@ using System.Windows.Forms;
 using Tibia;
 using Tibia.Objects;
 using Tibia.Util;
+using Tibia.Packets;
 
 namespace SmartPacketAnalyzer
 {
     public partial class uxForm : Form
     {
         bool LogPackets = true;
+        List<CapturedPacket> packetList = new List<CapturedPacket>();
 
         Client client;
+
 
         public uxForm()
         {
@@ -50,23 +53,32 @@ namespace SmartPacketAnalyzer
                 client.StartProxy();
                 client.Proxy.ReceivedPacketFromClient += (Proxy.PacketListener)PacketFromClient;
                 client.Proxy.ReceivedPacketFromServer += (Proxy.PacketListener)PacketFromServer;
-                timer1.Enabled = true;
+                uxTimerShort.Enabled = true;
             }
+
+            uxMemoryList.Items.Add(new ListViewItem(new string[]{
+                "Current See ID",
+                Convert.ToString(Tibia.Addresses.Client.See_Id, 16).ToUpper(),
+                String.Empty,
+                DataTypes.Integer.ToString()
+            }));
         }
+
         private Tibia.Packets.Packet PacketFromClient(Tibia.Packets.Packet packet)
         {
-            if (lbLog.CheckedItems.Contains("Outgoing"))
+            if (uxLogClient.Checked)
             {
-                if (cbOHead.Checked)
+                if (uxLogHeader.Checked)
                 {
-                    if (packet.Data[2] == Tibia.Packets.Packet.HexStringToByteArray(tbHead.Text)[0])
+                    if (uxHeaderByte.Text.Length == 2 && 
+                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
                     {
-                        LogPacket(packet.Data, "CLIENT");
+                        LogPacket(packet.Data, "CLIENT", "SERVER");
                     }
                 }
                 else
                 {
-                    LogPacket(packet.Data, "CLIENT");
+                    LogPacket(packet.Data, "CLIENT", "SERVER");
                 }
             }
             return packet;
@@ -74,45 +86,60 @@ namespace SmartPacketAnalyzer
 
         private Tibia.Packets.Packet PacketFromServer(Tibia.Packets.Packet packet)
         {
-            if (lbLog.CheckedItems.Contains("Incoming"))
+            if (uxLogServer.Checked)
             {
-                if (cbOHead.Checked)
+                if (uxLogHeader.Checked)
                 {
-                    if (packet.Data[2] == Tibia.Packets.Packet.HexStringToByteArray(tbHead.Text)[0])
+                    if (uxHeaderByte.Text.Length == 2 &&
+                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
                     {
-                        LogPacket(packet.Data, "SERVER");
+                        LogPacket(packet.Data, "SERVER", "CLIENT");
                     }
                 }
                 else
                 {
-                    LogPacket(packet.Data, "SERVER");
+                    LogPacket(packet.Data, "SERVER", "CLIENT");
                 }
             }
             return packet;
         }
 
-        private void LogPacket(byte[] packet, string from)
+        private void LogPacket(byte[] packet, string from, string to)
         {
             if (LogPackets)
             {
-                uxPackets.Invoke(new EventHandler(delegate
+                uxPacketList.Invoke(new EventHandler(delegate
                 {
-                    CapturedPacket cp = new CapturedPacket(packet, from);
-                    uxPackets.Items.Add(cp);
+                    CapturedPacket cp = new CapturedPacket(packet, from, to);
+                    packetList.Add(cp);
+                    uxPacketList.Items.Add(new ListViewItem(new string[]{
+                        cp.Time,
+                        cp.Source,
+                        cp.Destination,
+                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper()
+                    }));
                 }));
             }
         }
 
-        private void uxPackets_SelectedIndexChanged(object sender, EventArgs e)
+        private void uxPacketList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CapturedPacket cp = (CapturedPacket) uxPackets.SelectedItem;
-            string hex = Tibia.Packets.Packet.ByteArrayToHexString(cp.Data);
-            uxPacketDisplay.Text = hex;
+            if (uxPacketList.SelectedIndices.Count > 0)
+            {
+                CapturedPacket cp = packetList[uxPacketList.SelectedIndices[0]];
+                string hex = Tibia.Packets.Packet.ByteArrayToHexString(cp.Data);
+                uxPacketDisplay.Text = hex;
+            }
+            else
+            {
+                uxPacketDisplay.Text = String.Empty;
+            }
         }
 
-        private void btnClr_Click(object sender, EventArgs e)
+        private void uxClear_Click(object sender, EventArgs e)
         {
-            uxPackets.Items.Clear() ;
+            uxPacketList.Items.Clear();
+            packetList.Clear();
         }
 
         private void MenToInt_Click(object sender, EventArgs e)
@@ -120,74 +147,93 @@ namespace SmartPacketAnalyzer
             MessageBox.Show(Tibia.Packets.Packet.HexStringToInt(uxPacketDisplay.SelectedText).ToString());
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show(Tibia.Packets.Packet.HexStringToByteArray(tbHead.Text)[0].ToString());
-            MessageBox.Show(client.ReadShort(Tibia.Addresses.Client.See_Id).ToString());
-        }
-
         private void convertToStringToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(Tibia.Packets.Packet.HexStringToASCII(uxPacketDisplay.SelectedText));
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void uxTimerShort_Tick(object sender, EventArgs e)
         {
-            tbSee.Text = client.ReadShort(Tibia.Addresses.Client.See_Id).ToString();
+            foreach(ListViewItem item in uxMemoryList.Items)
+            {
+                try
+                {
+                    long address = Int32.Parse(item.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber);
+                    switch ((DataTypes)Enum.Parse(typeof(DataTypes), item.SubItems[3].Text))
+                    {
+                        case DataTypes.Byte:
+                            item.SubItems[2].Text = client.ReadByte(address).ToString();
+                            break;
+                        case DataTypes.Integer:
+                            item.SubItems[2].Text = client.ReadInt(address).ToString();
+                            break;
+                        case DataTypes.Double:
+                            item.SubItems[2].Text = client.ReadDouble(address).ToString();
+                            break;
+                        case DataTypes.String:
+                            item.SubItems[2].Text = client.ReadString(address).ToString();
+                            break;
+                    }
+                }
+                catch
+                {
+                    item.SubItems[2].Text = "N/A";
+                }
+            }
         }
 
-        private void btMem_Click(object sender, EventArgs e)
-        {
-            int temp = Int32.Parse(tbMem.Text, System.Globalization.NumberStyles.AllowHexSpecifier);
-            if (rbMem1.Checked)
-            {
-                MessageBox.Show(client.ReadString(temp));
-            }
-            else if (rbMem2.Checked)
-            {
-                MessageBox.Show(client.ReadInt(temp).ToString());
-            }
-        }
-
-        private void btCln_Click(object sender, EventArgs e)
+        private void uxSendToClient_Click(object sender, EventArgs e)
         {
             client.SendToClient(Tibia.Packets.Packet.HexStringToByteArray(tbPkt.Text));
         }
 
-        private void btSrv_Click(object sender, EventArgs e)
+        private void uxSendToServer_Click(object sender, EventArgs e)
         {
             client.Send(Tibia.Packets.Packet.HexStringToByteArray(tbPkt.Text));
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void uxAddAddress_Click(object sender, EventArgs e)
         {
-            VipList vip = new VipList(client);
-            Vip teMP = vip.GetPlayer("Bubble");
-            Tibia.Packets.VipLoginPacket tmp = Tibia.Packets.VipLoginPacket.Create(teMP);
-            client.SendToClient(tmp);           
+            uxMemoryList.Items.Add(new ListViewItem(uxNewMemory.ShowBox()));
+        }
 
-            MessageBox.Show("NU");
-            tmp.Data[2] = 0xD4;
-            client.SendToClient(tmp);           
+        private void uxMemoryDelete_Click(object sender, EventArgs e)
+        {
+            if (uxMemoryList.SelectedIndices.Count > 0)
+            {
+                uxMemoryList.Items.RemoveAt(uxMemoryList.SelectedIndices[0]);
+            }
         }
     }
 
     public struct CapturedPacket
     {
         public byte[] Data;
-        public string From;
+        public string Source;
+        public string Destination;
         public string Time;
+        public byte Type;
 
-        public CapturedPacket(byte[] data, string from)
+        public CapturedPacket(byte[] data, string source, string destination)
         {
             Data = data;
-            From = from;
+            Source = source;
+            Destination = destination;
             Time = DateTime.Now.ToString();
+            Type = data[2];
         }
 
         public override string ToString()
         {
-            return Time + "\t from " + From;
+            return Time + "\t from " + Source;
         }
+    }
+
+    public enum DataTypes
+    {
+        Byte,
+        Integer,
+        Double,
+        String
     }
 }
