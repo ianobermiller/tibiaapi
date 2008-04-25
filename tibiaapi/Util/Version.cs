@@ -24,7 +24,7 @@ namespace Tibia
                 Addresses.Client.FollowMode = 0x763BD0; 
                 Addresses.Client.AttackMode = 0x763BD4; 
                 Addresses.Client.SafeMode = 0x763BCC; 
-                Addresses.Client.MouseCursor = 0x751BD8;
+                Addresses.Client.ActionState = 0x751BD8;
                 Addresses.Client.CurrentWindow = 0x6198B4;    
                 Addresses.Client.LastMSGAuthor = 0x768680; 
                 Addresses.Client.LastMSGText = 0x7686A8; 

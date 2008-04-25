@@ -55,7 +55,10 @@ namespace Tibia.Constants
     #endregion
 
     #region Client
-    public enum Cursor : byte
+    /// <summary>
+    /// Formerly Cursor
+    /// </summary>
+    public enum ActionState : byte
     {
         None = 0,
         Left = 1,    // walk etc
@@ -63,7 +66,9 @@ namespace Tibia.Constants
         Inspect = 3,
         Drag = 6,
         Using = 7,   // in-use fishing shooting rune
-        Help = 10   // client help
+        Trade = 9,
+        Help = 10,   // client help
+        PopupMenu = 12
     }
 
     public enum Window

@@ -62,9 +62,9 @@ namespace Tibia.Addresses
         public static uint SafeMode = 0x76909C; //8.1, 8.0 = 0x763BCC
 
         /// <summary>
-        /// Cursor icon
+        /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint MouseCursor = 0x0076C328; //8.1, 8.0 = 0x751BD8
+        public static uint ActionState = 0x76C328; //8.1, 8.0 = 0x751BD8
 
         /// <summary>
         /// The window that is foremost
