@@ -7,8 +7,10 @@ namespace Tibia.Packets
     /// </summary>
     public enum PacketType : byte
     {
+        CharListLoginData = 0x01,
         CharList = 0x14,
         Logout = 0x14,
+        GameWorldLoginData = 0x0A,
         StatusMessage = 0xB4,
         ChatMessage = 0xAA,
         AnimatedText = 0x84,

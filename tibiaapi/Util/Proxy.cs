@@ -176,11 +176,19 @@ namespace Tibia.Util
 
             if (bytesRead > 0)
             {
-                // Relay the login details to the Login Server
-                netStreamLogin.BeginWrite(dataClient, 0, bytesRead, null, null);
+                // Check whether this is a char list request or game server login
+                if (dataClient[2] == (byte)PacketType.GameWorldLoginData)
+                {
+                    ConnectClientToGameWorld(bytesRead);
+                }
+                else if (dataClient[2] == (byte)PacketType.CharListLoginData)
+                {
+                    // Relay the login details to the Login Server
+                    netStreamLogin.BeginWrite(dataClient, 0, bytesRead, null, null);
 
-                // Begin read for the character list
-                netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
+                    // Begin read for the character list
+                    netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
+                }
             }
         }
 
@@ -230,27 +238,32 @@ namespace Tibia.Util
 
             if (bytesRead > 0)
             {
-                // Read the selection index from memory
-                selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
-
-                // Connect to the selected game world
-                tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
-                netStreamServer = tcpServer.GetStream();
-
-                // Begin to write the login data to the game server
-                netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-                // Start asynchronous reading
-                netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
-                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
-
-                // The proxy is now connected
-                connected = true;
-
-                // Notify that the client has logged in
-                if (LoggedIn != null)
-                    LoggedIn();
+                ConnectClientToGameWorld(bytesRead);
             }
+        }
+
+        private void ConnectClientToGameWorld(int bytesRead)
+        {
+            // Read the selection index from memory
+            selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
+
+            // Connect to the selected game world
+            tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
+            netStreamServer = tcpServer.GetStream();
+
+            // Begin to write the login data to the game server
+            netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
+
+            // Start asynchronous reading
+            netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
+            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
+
+            // The proxy is now connected
+            connected = true;
+
+            // Notify that the client has logged in
+            if (LoggedIn != null)
+                LoggedIn();
         }
 
         private void ReceiveFromServer(IAsyncResult ar)
