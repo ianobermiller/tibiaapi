@@ -19,17 +19,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x12DFA0; //8.11
+        public static uint FrameRatePointer = 0x76CE0C; //8.11
 
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static int FrameRateCurrentOffset = -32; // 8.11
+        public static int FrameRateCurrentOffset = 0x0; // 8.11 unknown
 
         /// <summary>
         /// FPS limit offset
         /// </summary>
-        public static int FrameRateLimitOffset = -40; // 8.11
+        public static int FrameRateLimitOffset = 0x58; // 8.11
 
         /// <summary>
         /// Address to activate multiclient.
