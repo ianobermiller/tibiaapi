@@ -1,4 +1,4 @@
-#summary Explaination of the proxy's inner workings.
+#summary Explanation of the proxy's inner workings.
 #labels Featured,Phase-Implementation
 
 == Overview ==
