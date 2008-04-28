@@ -62,12 +62,38 @@ namespace Tibia.Objects
         /// <returns>The string representation.</returns>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder(16);
-            builder.AppendLine("X = " + X.ToString());
-            builder.AppendLine("Y = " + Y.ToString());
-            builder.AppendLine("Z = " + Z.ToString());
+            return "(" + X + ", " + Y + ", " + Z + ")";
+        }
 
-            return builder.ToString();
+        /// <summary>
+        /// Return a Location structure from a string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static Location Parse(string s)
+        {
+            try
+            {
+                string replace = "~!@#$%^&*()_+`-={}|:\"<>?[]\\;',./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+                foreach (char c in replace)
+                {
+                    s = s.Replace(c, ' ');
+                }
+                s = s.Trim();
+                while (s.IndexOf("  ") != -1)
+                    s = s.Replace("  ", " ");
+                string[] split = s.Split(" ".ToCharArray());
+                Location loc = new Location(
+                    int.Parse(split[0]),
+                    int.Parse(split[1]),
+                    int.Parse(split[2])
+                );
+                return loc;
+            }
+            catch
+            {
+                return Location.GetInvalid();
+            }
         }
 
         public override bool  Equals(object other)
