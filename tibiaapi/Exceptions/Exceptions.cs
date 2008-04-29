@@ -11,6 +11,11 @@ namespace Tibia.Exceptions
     public class NotLoggedInException : InvalidOperationException { }
 
     /// <summary>
+    /// Thrown when the proxy is not enabled, packet.dll is not found and a method tries to use packet.dll to send a packet.
+    /// </summary>
+    public class PacketDllNotFoundException : InvalidOperationException { }
+
+    /// <summary>
     /// Thrown when a method requires the client to be using a proxy, ie. sending a packet to the client.
     /// </summary>
     public class ProxyRequiredException : InvalidOperationException { }

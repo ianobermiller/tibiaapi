@@ -137,7 +137,7 @@ namespace Tibia.Packets
             }
             catch
             {
-                return false;
+                throw new Exceptions.PacketDllNotFoundException();
             }
         }
         #endregion

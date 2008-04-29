@@ -76,16 +76,23 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public bool GoTo(Objects.Location location)
+        public Location GoTo
         {
-            bool result = true;
-
-            result &= client.WriteInt(Addresses.Player.GoTo_X, location.X);
-            result &= client.WriteInt(Addresses.Player.GoTo_Y, location.Y);
-            result &= client.WriteInt(Addresses.Player.GoTo_Z, location.Z);
-            IsWalking = true;
-
-            return result;
+            set
+            {
+                client.WriteInt(Addresses.Player.GoTo_X, value.X);
+                client.WriteInt(Addresses.Player.GoTo_Y, value.Y);
+                client.WriteInt(Addresses.Player.GoTo_Z, value.Z);
+                IsWalking = true;
+            }
+            get
+            {
+                return new Location(
+                    client.ReadInt(Addresses.Player.GoTo_X),
+                    client.ReadInt(Addresses.Player.GoTo_Y),
+                    client.ReadInt(Addresses.Player.GoTo_Z)
+                );
+            }
         }
 
         /// <summary>
@@ -95,9 +102,15 @@ namespace Tibia.Objects
         public bool Stop()
         {
             byte[] packet = new byte[3];
+
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = 0xBE;
+
+            // Make sure the client stops walking 
+            // if a destination has been chosen
+            GoTo_X = 0;
+
             return client.Send(packet);
         }
 
