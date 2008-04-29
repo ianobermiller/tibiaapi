@@ -16,6 +16,7 @@ namespace SmartPacketAnalyzer
     {
         bool LogPackets = true;
         List<CapturedPacket> packetList = new List<CapturedPacket>();
+        byte[] displayedPacket = null;
 
         Client client;
 
@@ -129,12 +130,41 @@ namespace SmartPacketAnalyzer
             if (uxPacketList.SelectedIndices.Count > 0)
             {
                 CapturedPacket cp = packetList[uxPacketList.SelectedIndices[0]];
-                string hex = Tibia.Packets.Packet.ByteArrayToHexString(cp.Data);
-                uxPacketDisplay.Text = hex;
+                displayedPacket = cp.Data;
             }
             else
             {
-                uxPacketDisplay.Text = String.Empty;
+                displayedPacket = null;
+            }
+            DisplayPacket();
+        }
+
+        private void DisplayPacket()
+        {
+            if (displayedPacket != null)
+            {
+                int charWidth = TextRenderer.MeasureText("0", uxPacketDisplay.Font).Width / 2;
+                int widthInChars = uxPacketDisplay.Width / charWidth - 2;
+                int bytesPerLine = (widthInChars - 1) / 4;
+                string s = string.Empty;
+                int index = 0;
+                int left = displayedPacket.Length;
+
+                while (index < displayedPacket.Length)
+                {
+                    int byteCount = (bytesPerLine < left) ? bytesPerLine : left;
+                    string line = Packet.ByteArrayToHexString(displayedPacket, index, byteCount);
+                    s += line.PadRight(bytesPerLine * 3);
+                    s += " " + Packet.ByteArrayToASCII(displayedPacket, index, byteCount) + Environment.NewLine;
+                    index += bytesPerLine;
+                    left -= bytesPerLine;
+                }
+
+                uxPacketDisplay.Text = s;
+            }
+            else
+            {
+                uxPacketDisplay.Clear();
             }
         }
 
@@ -151,10 +181,9 @@ namespace SmartPacketAnalyzer
                 MessageBox.Show(Tibia.Packets.Packet.HexStringToInt(uxPacketDisplay.SelectedText).ToString());
         }
 
-        private void ConvertToString_Click(object sender, EventArgs e)
+        private void CopyAllBytes_Click(object sender, EventArgs e)
         {
-            if (uxPacketDisplay.SelectedText.Length >= 1)
-                MessageBox.Show(Tibia.Packets.Packet.HexStringToASCII(uxPacketDisplay.SelectedText));
+            Clipboard.SetText(Packet.ByteArrayToHexString(displayedPacket));
         }
 
         private void uxTimerShort_Tick(object sender, EventArgs e)
@@ -234,6 +263,11 @@ namespace SmartPacketAnalyzer
         private void uxClearAddresses_Click(object sender, EventArgs e)
         {
             uxMemoryList.Items.Clear();
+        }
+
+        private void uxPacketDisplay_Resize(object sender, EventArgs e)
+        {
+            DisplayPacket();
         }
     }
 

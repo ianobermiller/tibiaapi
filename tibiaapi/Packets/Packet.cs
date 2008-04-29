@@ -180,18 +180,29 @@ namespace Tibia.Packets
             string loc="";
             for (int i = 0; i < temp.Length; i++)
             {
-                loc+=Tibia.Packets.Packet.HexByteToChar(temp[i]);
+                loc+=Tibia.Packets.Packet.ByteToChar(temp[i]);
             }
             return loc;
         }
+
+        public static string ByteArrayToASCII(byte[] bytes, int start, int length)
+        {
+            string text = string.Empty;
+            for (int i = start; i < start + length; i++)
+            {
+                text += Tibia.Packets.Packet.ByteToChar(bytes[i]);
+            }
+            return text;
+        }
+
         /// <summary>
         /// Convert a byte to a char
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static char HexByteToChar(byte value)
+        public static char ByteToChar(byte value)
         {
-            if (value < 32 || value == 127 || value == 141 || value == 143 || value == 144 || value == 157)
+            if (value < 32 || value > 126)
             {
                 return (char)'.';
             }
@@ -219,7 +230,7 @@ namespace Tibia.Packets
         public static string IntToHexString(int value)
         {
             byte[] temp = BitConverter.GetBytes(value);
-            return ByteArrayToHexString(temp,temp.Length);
+            return ByteArrayToHexString(temp, 0, temp.Length);
         }
 
         /// <summary>
@@ -240,10 +251,10 @@ namespace Tibia.Packets
         /// <param name="data">The array of bytes to be translated into a string of hex digits.</param>
         /// <param name="length">The length of data to convert</param>
         /// <returns>Returns a well formatted string of hex digits with spacing.</returns>
-        public static string ByteArrayToHexString(byte[] data, int length)
+        public static string ByteArrayToHexString(byte[] data, int start, int length)
         {
             StringBuilder sb = new StringBuilder(data.Length * 3);
-            for (int i = 0; i < length; i++)
+            for (int i = start; i < start + length; i++)
                 sb.Append(Convert.ToString(data[i], 16).PadLeft(2, '0').PadRight(3, ' '));
             return sb.ToString().ToUpper();
         }
@@ -253,7 +264,7 @@ namespace Tibia.Packets
         /// <returns>Returns a well formatted string of hex digits with spacing.</returns>
         public static string ByteArrayToHexString(byte[] data)
         {
-            return ByteArrayToHexString(data, data.Length);
+            return ByteArrayToHexString(data, 0, data.Length);
         }
 
         /// <summary>

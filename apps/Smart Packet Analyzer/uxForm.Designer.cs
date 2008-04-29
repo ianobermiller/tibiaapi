@@ -31,7 +31,7 @@ namespace SmartPacketAnalyzer
             this.components = new System.ComponentModel.Container();
             this.uxPacketMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ConvertToInt = new System.Windows.Forms.ToolStripMenuItem();
-            this.ConvertToString = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyAllBytes = new System.Windows.Forms.ToolStripMenuItem();
             this.uxTimerShort = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.uxLogClient = new System.Windows.Forms.CheckBox();
@@ -60,10 +60,10 @@ namespace SmartPacketAnalyzer
             this.TimeCol = new System.Windows.Forms.ColumnHeader();
             this.SourceCol = new System.Windows.Forms.ColumnHeader();
             this.DestinationCol = new System.Windows.Forms.ColumnHeader();
+            this.LengthCol = new System.Windows.Forms.ColumnHeader();
             this.PacketTypeCol = new System.Windows.Forms.ColumnHeader();
             this.uxPacketDisplay = new System.Windows.Forms.TextBox();
             this.uxStart = new System.Windows.Forms.Button();
-            this.LengthCol = new System.Windows.Forms.ColumnHeader();
             this.uxPacketMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -78,23 +78,23 @@ namespace SmartPacketAnalyzer
             // 
             this.uxPacketMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ConvertToInt,
-            this.ConvertToString});
+            this.CopyAllBytes});
             this.uxPacketMenu.Name = "ctxMenuPacket";
-            this.uxPacketMenu.Size = new System.Drawing.Size(168, 48);
+            this.uxPacketMenu.Size = new System.Drawing.Size(153, 70);
             // 
             // ConvertToInt
             // 
             this.ConvertToInt.Name = "ConvertToInt";
-            this.ConvertToInt.Size = new System.Drawing.Size(167, 22);
+            this.ConvertToInt.Size = new System.Drawing.Size(152, 22);
             this.ConvertToInt.Text = "Convert To Int";
             this.ConvertToInt.Click += new System.EventHandler(this.ConvertToInt_Click);
             // 
-            // ConvertToString
+            // CopyAllBytes
             // 
-            this.ConvertToString.Name = "ConvertToString";
-            this.ConvertToString.Size = new System.Drawing.Size(167, 22);
-            this.ConvertToString.Text = "Convert To String";
-            this.ConvertToString.Click += new System.EventHandler(this.ConvertToString_Click);
+            this.CopyAllBytes.Name = "CopyAllBytes";
+            this.CopyAllBytes.Size = new System.Drawing.Size(152, 22);
+            this.CopyAllBytes.Text = "Copy All Bytes";
+            this.CopyAllBytes.Click += new System.EventHandler(this.CopyAllBytes_Click);
             // 
             // uxTimerShort
             // 
@@ -378,6 +378,11 @@ namespace SmartPacketAnalyzer
             this.DestinationCol.Text = "Destination";
             this.DestinationCol.Width = 72;
             // 
+            // LengthCol
+            // 
+            this.LengthCol.Text = "Length";
+            this.LengthCol.Width = 49;
+            // 
             // PacketTypeCol
             // 
             this.PacketTypeCol.Text = "PacketType";
@@ -394,6 +399,7 @@ namespace SmartPacketAnalyzer
             this.uxPacketDisplay.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.uxPacketDisplay.Size = new System.Drawing.Size(402, 220);
             this.uxPacketDisplay.TabIndex = 7;
+            this.uxPacketDisplay.Resize += new System.EventHandler(this.uxPacketDisplay_Resize);
             // 
             // uxStart
             // 
@@ -405,11 +411,6 @@ namespace SmartPacketAnalyzer
             this.uxStart.Text = "Stop Packet Logging";
             this.uxStart.UseVisualStyleBackColor = true;
             this.uxStart.Click += new System.EventHandler(this.uxStart_Click);
-            // 
-            // LengthCol
-            // 
-            this.LengthCol.Text = "Length";
-            this.LengthCol.Width = 49;
             // 
             // uxForm
             // 
@@ -440,7 +441,7 @@ namespace SmartPacketAnalyzer
 
         private System.Windows.Forms.ContextMenuStrip uxPacketMenu;
         private System.Windows.Forms.ToolStripMenuItem ConvertToInt;
-        private System.Windows.Forms.ToolStripMenuItem ConvertToString;
+        private System.Windows.Forms.ToolStripMenuItem CopyAllBytes;
         private System.Windows.Forms.Timer uxTimerShort;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox uxLogClient;
