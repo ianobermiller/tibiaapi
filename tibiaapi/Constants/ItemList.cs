@@ -10,7 +10,7 @@ namespace Tibia.Constants
     public static class ItemList
     {
         public class Ammunition : List<Objects.Ammunition>
-        { 
+        {
             public Ammunition()
             {
                 this.Add(new Objects.Ammunition(Items.Ammunition.Spear, "Spear", true));
@@ -112,32 +112,36 @@ namespace Tibia.Constants
         {
             public Rune()
             {
-                this.Add(new Objects.Rune(Items.Rune.AnimateDead, "Animate Dead", "adana mort", 600, 0, Constants.SpellCategory.Summon));
+                this.Add(new Objects.Rune(Items.Rune.AnimateDead, "Animate Dead", "adana mort", 600, 5, Constants.SpellCategory.Summon));
                 this.Add(new Objects.Rune(Items.Rune.Antidote, "Antidote", "adana pox", 200, 1, Constants.SpellCategory.Healing));
-                this.Add(new Objects.Rune(Items.Rune.Chameleon, "Chameleon", "adevo ina", 600, 0, Constants.SpellCategory.Support));
-                this.Add(new Objects.Rune(Items.Rune.ConvinceCreature, "Convince Creature", "adeta sio", 200, 0, Constants.SpellCategory.Summon));
-                this.Add(new Objects.Rune(Items.Rune.Desintegrate, "Desintegrate", "adito tera", 200, 0, Constants.SpellCategory.Support));
+                this.Add(new Objects.Rune(Items.Rune.Avalanche, "Avalanche", "adori mas frigo", 530, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Chameleon, "Chameleon", "adevo ina", 600, 2, Constants.SpellCategory.Support));
+                this.Add(new Objects.Rune(Items.Rune.ConvinceCreature, "Convince Creature", "adeta sio", 200, 3, Constants.SpellCategory.Summon));
+                this.Add(new Objects.Rune(Items.Rune.Desintegrate, "Desintegrate", "adito tera", 200, 3, Constants.SpellCategory.Support));
                 this.Add(new Objects.Rune(Items.Rune.DestroyField, "Destroy Field", "adito grav", 120, 2, Constants.SpellCategory.Support));
+                this.Add(new Objects.Rune(Items.Rune.EnergyBomb, "Energy Bomb", "adevo mas vis", 880, 5, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.EnergyField, "Energy Field", "adevo grav vis", 320, 2, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.EnergyWall, "Energy Wall", "adevo mas grav vis", 1000, 5, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.EnergyBomb, "Energy Bomb", "adevo mas vis", 880, 5, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.Envenom, "Envenom", "adevo res pox", 400, 0, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.Explosion, "Explosion", "adevo mas hur", 720, 4, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Explosion, "Explosion", "adevo mas hur", 570, 4, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.FireBomb, "Fire Bomb", "adevo mas flam", 600, 4, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.FireField, "Fire Field", "adevo grav flam", 240, 1, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.FireWall, "Fire Wall", "adevo mas grav flam", 780, 4, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.Fireball, "Fireball", "adori flam", 160, 2, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.FireBomb, "Fire Bomb", "adevo mas flam", 600, 4, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.GreatFireball, "Great Fireball", "adori gran flam", 480, 3, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.HeavyMagicMissile, "Heavy Magic Missile", "adori gran", 280, 2, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.IntenseHealing, "Intense Healing Rune", "adura gran", 240, 2, Constants.SpellCategory.Healing));
-                this.Add(new Objects.Rune(Items.Rune.LightMagicMissile, "Light Magic Missile", "adori", 120, 1, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Fireball, "Fireball", "adori flam", 460, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.GreatFireball, "Great Fireball", "adori gran flam", 530, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.HeavyMagicMissile, "Heavy Magic Missile", "adori vis", 350, 2, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Icicle, "Icicle", "adori frigo", 460, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.IntenseHealing, "Intense Healing Rune", "adura gran", 120, 2, Constants.SpellCategory.Healing));
+                this.Add(new Objects.Rune(Items.Rune.LightMagicMissile, "Light Magic Missile", "adori min vis", 120, 1, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.MagicWall, "Magic Wall", "adevo grav tera", 750, 5, Constants.SpellCategory.Support));
-                this.Add(new Objects.Rune(Items.Rune.Paralyze, "Paralyze", "adana ani", 1400, 0, Constants.SpellCategory.Support));
+                this.Add(new Objects.Rune(Items.Rune.Paralyze, "Paralyze", "adana ani", 1400, 3, Constants.SpellCategory.Support));
                 this.Add(new Objects.Rune(Items.Rune.PoisonBomb, "Poison Bomb", "adevo mas pox", 520, 2, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.PoisonField, "Poison Field", "adevo grav pox", 200, 0, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.PoisonWall, "Poison Wall", "adevo mas grav pox", 640, 0, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.Soulfire, "Soulfire", "adevo res flam", 600, 0, Constants.SpellCategory.Attack));
-                this.Add(new Objects.Rune(Items.Rune.SuddenDeath, "Sudden Death", "adori vita vis", 880, 5, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.PoisonField, "Poison Field", "adevo grav pox", 200, 1, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.PoisonWall, "Poison Wall", "adevo mas grav pox", 640, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Soulfire, "Soulfire", "adevo res flam", 420, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Stalagmite, "Stalagmite", "adori tera", 350, 2, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.StoneShower, "Stone Shower", "adori mas tera", 430, 3, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.SuddenDeath, "Sudden Death", "adori gran mort", 985, 5, Constants.SpellCategory.Attack));
+                this.Add(new Objects.Rune(Items.Rune.Thunderstorm, "Thunderstorm", "adori mas vis", 430, 3, Constants.SpellCategory.Attack));
                 this.Add(new Objects.Rune(Items.Rune.UltimateHealing, "Ultimate Healing Rune", "adura vita", 400, 3, Constants.SpellCategory.Healing));
             }
         }

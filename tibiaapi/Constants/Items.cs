@@ -96,17 +96,17 @@ namespace Tibia.Constants
 
         public static class Rune
         {
-            public static ushort AnimateDead = 0;
+            public static ushort AnimateDead = 3203;
             public static ushort Antidote = 3153;
+            public static ushort Avalanche = 3161;
             public static ushort Blank = 3147;
             public static ushort Chameleon = 3178;
             public static ushort ConvinceCreature = 3177;
-            public static ushort Desintegrate = 0;
+            public static ushort Desintegrate = 3197;
             public static ushort DestroyField = 3148;
             public static ushort EnergyBomb = 3149;
             public static ushort EnergyField = 3164;
             public static ushort EnergyWall = 3166;
-            public static ushort Envenom = 3179;
             public static ushort Explosion = 3200;
             public static ushort FireBomb = 3192;
             public static ushort FireField = 3188;
@@ -114,15 +114,19 @@ namespace Tibia.Constants
             public static ushort Fireball = 3189;
             public static ushort GreatFireball = 3191;
             public static ushort HeavyMagicMissile = 3198;
+            public static ushort Icicle = 3158;
             public static ushort IntenseHealing = 3152;
             public static ushort LightMagicMissile = 3174;
             public static ushort MagicWall = 3180;
-            public static ushort Paralyze = 0;
+            public static ushort Paralyze = 3165;
             public static ushort PoisonBomb = 3173;
-            public static ushort PoisonWall = 3176;
             public static ushort PoisonField = 3172;
+            public static ushort PoisonWall = 3176;
             public static ushort Soulfire = 3195;
+            public static ushort Stalagmite = 3179;
+            public static ushort StoneShower = 3175;
             public static ushort SuddenDeath = 3155;
+            public static ushort Thunderstorm = 3202;
             public static ushort UltimateHealing = 3160;
         }
 
