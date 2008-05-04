@@ -37,8 +37,14 @@ namespace Tibia.Util
         private byte           selectedChar;
         private bool           connected;
         private short          localPort;
+        private Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
+        private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
+        private Queue<byte[]>  clientSendQueue = new Queue<byte[]>();
+        private Queue<byte[]>  serverSendQueue = new Queue<byte[]>();
         private byte[]         dataServer = new byte[8192];
         private byte[]         dataClient = new byte[8192];
+        private bool           writingToClient = false;
+        private bool           writingToServer = false;
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -266,6 +272,7 @@ namespace Tibia.Util
                 LoggedIn();
         }
 
+        #region Server -> Client
         private void ReceiveFromServer(IAsyncResult ar)
         {
             if (!netStreamServer.CanRead) return;
@@ -281,33 +288,73 @@ namespace Tibia.Util
                 // Parse the data into a single packet
                 byte[] packet = new byte[packetlength];
                 Array.Copy(dataServer, offset, packet, 0, packetlength);
-                packet = DecryptPacket(packet);
-
-                // Always call the default (if attached to)
-                if (ReceivedPacketFromServer != null)
-                    ReceivedPacketFromServer(new Packet(packet));
-
-
-                Packet packetobj = RaiseIncomingEvents(packet);
-                if (packetobj != null)
-                {
-                    // Packet editing not supported yet, something goes wrong in 
-                    // Encrypting or decrypting, usually get an error when saying "hi"
-                    netStreamClient.BeginWrite(dataServer, offset, packetlength, null, null);
-                    //SendToClient(packetobj.Data);
-                }
+                
+                // Enqueue the packet for processing
+                serverReceiveQueue.Enqueue(packet);
 
                 offset += packetlength;
             }
 
+            ProcessServerReceiveQueue();
+
             netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
         }
 
+        private void ProcessServerReceiveQueue()
+        {
+            if (serverReceiveQueue.Count > 0)
+            {
+                byte[] original = serverReceiveQueue.Dequeue();
+                byte[] decrypted = DecryptPacket(original);
+
+                // Always call the default (if attached to)
+                if (ReceivedPacketFromServer != null)
+                    ReceivedPacketFromServer(new Packet(decrypted));
+
+
+                Packet packetobj = RaiseIncomingEvents(decrypted);
+                if (packetobj != null)
+                {
+                    // Packet editing not supported yet, something goes wrong in 
+                    // Encrypting or decrypting, usually get an error when saying "hi"
+                    //clientSendQueue.Enqueue(packetobj.Data);
+                    clientSendQueue.Enqueue(original);
+                    ProcessClientSendQueue();
+                }
+
+                if (serverReceiveQueue.Count > 0)
+                    ProcessServerReceiveQueue();
+            }
+        }
+
+        private void ProcessClientSendQueue()
+        {
+            if (clientSendQueue.Count > 0 && !writingToClient)
+            {
+                byte[] packet = clientSendQueue.Dequeue();
+                writingToClient = true;
+                netStreamClient.BeginWrite(packet, 0, packet.Length, ClientWriteDone, null);
+            }
+        }
+
+        private void ClientWriteDone(IAsyncResult ar)
+        {
+            netStreamClient.EndWrite(ar);
+            writingToClient = false;
+            ProcessClientSendQueue();
+        }
+        #endregion
+
+        #region Client -> Server
         private void ReceiveFromClient(IAsyncResult ar)
         {
+            if (!netStreamClient.CanRead) return;
+
             int bytesRead = netStreamClient.EndRead(ar);
 
-            if (GetPacketType(dataClient) == (byte)PacketType.Logout)
+            // Special case, client is logging out
+            if (GetPacketType(dataClient) == (byte)PacketType.Logout &&
+                !client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
             {
                 Stop();
                 Restart();
@@ -326,25 +373,60 @@ namespace Tibia.Util
                 // Parse the data into a single packet
                 byte[] packet = new byte[bytesRead];
                 Array.Copy(dataClient, packet, bytesRead);
-                packet = DecryptPacket(packet);
+
+                // Enqueue the packet for processing
+                clientReceiveQueue.Enqueue(packet);
+            }
+
+            ProcessClientReceiveQueue();
+
+            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
+        }
+
+        private void ProcessClientReceiveQueue()
+        {
+            if (clientReceiveQueue.Count > 0)
+            {
+                byte[] original = clientReceiveQueue.Dequeue();
+                byte[] decrypted = DecryptPacket(original);
 
                 // Always call the default (if attached to)
                 if (ReceivedPacketFromClient != null)
-                    ReceivedPacketFromClient(new Packet(packet));
+                    ReceivedPacketFromClient(new Packet(decrypted));
 
-                Packet packetobj = RaiseOutgoingEvents(packet);
 
+                Packet packetobj = RaiseOutgoingEvents(decrypted);
                 if (packetobj != null)
                 {
-                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-                    //SendToServer(packetobj.Data);
+                    // Packet editing not supported yet, something goes wrong in 
+                    // Encrypting or decrypting, usually get an error when saying "hi"
+                    //serverSendQueue.Enqueue(packetobj.Data);
+                    serverSendQueue.Enqueue(original);
+                    ProcessServerSendQueue();
                 }
-                else
-                {
-                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-                }
+
+                if (clientReceiveQueue.Count > 0)
+                    ProcessClientReceiveQueue();
             }
-            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
+        }
+
+        private void ProcessServerSendQueue()
+        {
+            /// TODO: 125 ms delay between packets sent to the server
+            if (serverSendQueue.Count > 0 && !writingToServer)
+            {
+                byte[] packet = serverSendQueue.Dequeue();
+                writingToServer = true;
+                netStreamServer.BeginWrite(packet, 0, packet.Length, ServerWriteDone, null);
+            }
+        }
+        #endregion
+
+        private void ServerWriteDone(IAsyncResult ar)
+        {
+            netStreamServer.EndWrite(ar);
+            writingToServer = false;
+            ProcessServerSendQueue();
         }
 
         private void Stop()
