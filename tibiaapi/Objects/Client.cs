@@ -521,6 +521,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Set the client to use the given OT server
+        /// </summary>
+        /// <param name="ls"></param>
+        /// <returns></returns>
+        public bool SetOT(LoginServer ls)
+        {
+            return SetOT(ls.Server, ls.Port);
+        }
+
+        /// <summary>
         /// Get the current FPS of the client.
         /// </summary>
         public double FPSCurrent
@@ -704,6 +714,7 @@ namespace Tibia.Objects
             }
         }
 
+        #region Proxy wrappers
         /// <summary>
         /// Whether or not the client is connected using a proxy.
         /// </summary>
@@ -724,6 +735,40 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Start the proxy using the given server and default prot.
+        /// </summary>
+        /// <param name="serverIP"></param>
+        /// <returns></returns>
+        public bool StartProxy(string serverIP)
+        {
+            proxy = new Util.Proxy(this, serverIP);
+            return UsingProxy;
+        }
+
+        /// <summary>
+        /// Start the proxy using the given server and port.
+        /// </summary>
+        /// <param name="serverIP"></param>
+        /// <param name="serverPort"></param>
+        /// <returns></returns>
+        public bool StartProxy(string serverIP, short serverPort)
+        {
+            proxy = new Util.Proxy(this, serverIP, serverPort);
+            return UsingProxy;
+        }
+
+        /// <summary>
+        /// Start the proxy using the given login server.
+        /// </summary>
+        /// <param name="ls"></param>
+        /// <returns></returns>
+        public bool StartProxy(LoginServer ls)
+        {
+            proxy = new Util.Proxy(this, ls);
+            return UsingProxy;
+        }
+
+        /// <summary>
         /// Get the proxy object associated with this client. 
         /// Will ruturn null unless StartProxy() is called first
         /// </summary>
@@ -731,6 +776,7 @@ namespace Tibia.Objects
         {
             get { return proxy; }
         }
+        #endregion
 
         /// <summary>
         /// Inject a DLL into the process
