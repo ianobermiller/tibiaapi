@@ -157,8 +157,8 @@ namespace Tibia.Constants
             public static ushort ManaPotion = 268;
             public static ushort StrongHealthPotion = 236;
             public static ushort StrongManaPotion = 237;
+            public static ushort GreatManaPotion = 238;
             public static ushort GreatHealthPotion = 239;
-            public static ushort GreatManaPotion = 239;
             public static ushort UltimateHealthPotion = 7643;
         }
 

@@ -45,6 +45,7 @@ namespace Tibia.Util
         private byte[]         dataClient = new byte[8192];
         private bool           writingToClient = false;
         private bool           writingToServer = false;
+        private DateTime       lastServerWrite = DateTime.UtcNow;
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -149,6 +150,7 @@ namespace Tibia.Util
         /// </summary>
         public void Restart()
         {
+            System.Threading.Thread.Sleep(500);
             StartClientListener();
         }
 
@@ -278,6 +280,7 @@ namespace Tibia.Util
             if (!netStreamServer.CanRead) return;
                 
             int bytesRead = netStreamServer.EndRead(ar);
+            if (bytesRead == 0) return;
             int offset = 0;
 
             while (bytesRead - offset > 0)
@@ -296,6 +299,8 @@ namespace Tibia.Util
             }
 
             ProcessServerReceiveQueue();
+
+            if (!netStreamServer.CanRead) return;
 
             netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
         }
@@ -356,6 +361,9 @@ namespace Tibia.Util
             if (GetPacketType(dataClient) == (byte)PacketType.Logout &&
                 !client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
             {
+                // Notify the server
+                netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
+
                 Stop();
                 Restart();
 
@@ -379,6 +387,8 @@ namespace Tibia.Util
             }
 
             ProcessClientReceiveQueue();
+
+            if (!netStreamClient.CanRead) return;
 
             netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
         }
@@ -412,22 +422,25 @@ namespace Tibia.Util
 
         private void ProcessServerSendQueue()
         {
-            /// TODO: 125 ms delay between packets sent to the server
             if (serverSendQueue.Count > 0 && !writingToServer)
             {
+                TimeSpan diff = DateTime.UtcNow - lastServerWrite;
+                if (diff.TotalMilliseconds < 125)
+                    Thread.Sleep((int)diff.TotalMilliseconds);
                 byte[] packet = serverSendQueue.Dequeue();
                 writingToServer = true;
                 netStreamServer.BeginWrite(packet, 0, packet.Length, ServerWriteDone, null);
             }
         }
-        #endregion
 
         private void ServerWriteDone(IAsyncResult ar)
         {
             netStreamServer.EndWrite(ar);
+            lastServerWrite = DateTime.UtcNow;
             writingToServer = false;
             ProcessServerSendQueue();
         }
+        #endregion
 
         private void Stop()
         {
@@ -500,7 +513,8 @@ namespace Tibia.Util
         public void SendToServer(byte[] packet)
         {
             byte[] encrypted = EncryptPacket(packet);
-            netStreamServer.BeginWrite(encrypted, 0, encrypted.Length, null, null);
+            serverSendQueue.Enqueue(encrypted);
+            ProcessServerSendQueue();
         }
         /// <summary>
         /// Encrypts and sends a packet to the client
@@ -509,7 +523,8 @@ namespace Tibia.Util
         public void SendToClient(byte[] packet)
         {
             byte[] encrypted = EncryptPacket(packet);
-            netStreamClient.BeginWrite(encrypted, 0, encrypted.Length, null, null);
+            clientSendQueue.Enqueue(encrypted);
+            ProcessClientSendQueue();
         }
 
         /// <summary>

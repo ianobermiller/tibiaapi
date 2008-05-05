@@ -52,21 +52,6 @@ namespace Tibia.Packets
         Channel = 5
     }
 
-    #endregion
-
-    public enum StatusMessageType : byte
-    {
-        YellowDefault = 0x01,
-        BlueReceivePM = 0x04,
-        Red           = 0x09,
-        OrangeCM      = 0x10,
-        RedOnScreen   = 0x12,
-        WhiteAdvance  = 0x13,
-        WhiteStatus   = 0x15,
-        GreenYouSee   = 0x16,
-        BlueSentPM    = 0x18
-    }
-
     public enum ChatMessageType : byte
     {
         Normal = 0x01,
@@ -90,6 +75,21 @@ namespace Tibia.Packets
         RL = 6,
         Help = 7,
         Private = 0xFFFF
+    }
+
+    #endregion
+
+    public enum StatusMessageType : byte
+    {
+        YellowDefault = 0x01,
+        BlueReceivePM = 0x04,
+        Red           = 0x09,
+        OrangeCM      = 0x10,
+        RedOnScreen   = 0x12,
+        WhiteAdvance  = 0x13,
+        WhiteStatus   = 0x15,
+        GreenYouSee   = 0x16,
+        BlueSentPM    = 0x18
     }
 
     public enum TextColor : byte
