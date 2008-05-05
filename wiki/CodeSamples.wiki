@@ -3,6 +3,8 @@
 
 === Table of Contents ===
  * [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
+ * [CodeSamples#Getting_player_information_from_the_Tibia_website Getting player information from the Tibia website]
+ * [CodeSamples#Parsing_commands_from_the_player Parsing commands from the player]
  * [CodeSamples#Using_the_proxy Using the proxy]
  * [CodeSamples#Perform_name_spy_or_level_spy Perform name spy or level spy]
  * [CodeSamples#Setup_a_global_keyboard_hook Setup a global keyboard hook]
@@ -11,8 +13,6 @@
  * [CodeSamples#Attack_the_first_rat_found_in_the_battelist Attack the first rat found in the battelist]
  * [CodeSamples#Change_your_players_outfit_type_and_addon Change your players outfit type and addon]
  * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
- * [CodeSamples#Getting_player_information_from_the_Tibia_website Getting player information from the Tibia website]
- * [CodeSamples#Parsing_commands_from_the_player Parsing commands from the player]
 
 == Get a client object to work with ==
 {{{
