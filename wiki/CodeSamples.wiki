@@ -22,19 +22,19 @@ Client client = Util.ClientChooser.ShowBox();
 // Start the proxy and attach event handlers
 // Put this in Form_Load
 client.StartProxy();
-client.Proxy.PacketFromClient += (Proxy.PacketListener)PacketFromClient;
-client.Proxy.PacketFromServer += (Proxy.PacketListener)PacketFromServer;
+client.Proxy.ReceivedFromClient += (Proxy.PacketListener)PacketFromClient;
+client.Proxy.ReceivedFromServer += (Proxy.PacketListener)PacketFromServer;
 
 // Sample event handlers
-private byte[] PacketFromClient(byte[] packet)
+private Packet PacketFromClient(Packet packet)
 {
-	LogPacket(packet, "CLIENT");
+	LogPacket(packet.Data, "CLIENT");
 	return packet;
 }
 
-private byte[] PacketFromServer(byte[] packet)
+private Packet PacketFromServer(Packet packet)
 {
-	LogPacket(packet, "SERVER");
+	LogPacket(packet.Data, "SERVER");
 	return packet;
 }
 
