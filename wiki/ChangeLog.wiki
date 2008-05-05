@@ -1,6 +1,50 @@
 #summary Complete change log of TibiaAPI.
 #labels Featured,Phase-Implementation
 
+= v2.1 =
+
+== Renamed ==
+ * Proxy.ServerRecieve -> Proxy.ReceiveFromServer
+ * Proxy.ClientRecieve -> Proxy.ReceiveFromClient
+ * Tibia.ClientChooser -> Tibia.Util.ClientChooser
+ * Tibia.MapViewer -> Tibia.Util.MapViewer
+ * Constants.SpeechChannel -> Packets.ChatChannel
+ * Constants.SpeechType -> Packets.ChatType
+ * Constants.MouseCursor -> Constants.ActionState (thanks adnimo)
+ * Player.GoTo(x) -> Player.GoTo = x
+
+== Added ==
+ * Added the following packet objects and their corresponding listeners in Proxy
+   * CharListPacket (no listener, for proxy connections)
+   * StatusMessagePacket
+   * ChatMessagePacket
+   * AnimatedTextPacket
+   * ProjectilePacket
+   * CreatureHealthPacket
+   * VipLoginPacket
+   * PlayerSpeechPacket
+ * Added Website class with function LookupPlayer for accessing the Tibia website (incomplete)
+ * Added StartProxy and SetOT overloads to Client for connecting to OT's.
+ * Added Proxy.Connected, Proxy.SendToClient, Proxy.SendToServer
+ * Added functions to Location: Parse, ToString, Equals, IsValid, GetInvalid, and ToBytes.
+ * Added GetCreatureOnLoc to BattleList.
+ * Added Smart Packet Analyzer, Smart IPChanger, and Smart Runemaker to the svn in the apps/ directory.
+ * Added Client.Fish() function.
+ * Added potions to the item lists.
+ * Added functions to Packet for converting bytes to ASCII.
+ * Added GetRelativeLocation and GetTileInfo to Map.
+ 
+== Fixed ==
+ * Fixed Client to use the proxy if it is enabled.
+ * Fixed the Proxy to handle multiple packets in one receive call.
+ * Fixed the Proxy to be thread safe and use queues for processing and sending packets.
+ * Fixed the Proxy to handle logging out correctly and also relogging in.
+ * Fixed the Proxy to use the first open port, allows for using multiple clients.
+ * Fixed FPS.
+ * Fixed Player.Stop() to stop even when map walking.
+ * Fixed rune list with the latest spells.
+ * Fixed GreatManaPotion id.
+
 = v2.0 =
 
  * Added Proxy with sending, recieving, and blocking of packets. It is completely asynchronous and multi-client compatible.(see example code below)
