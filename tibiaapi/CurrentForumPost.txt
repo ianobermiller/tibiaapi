@@ -1,12 +1,11 @@
 =================================================
-[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.0 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.11 (and 8.10)[/I][/SIZE]
+[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.1 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.11 (and 8.10)[/I][/SIZE]
 =================================================
 
 [SIZE=3][COLOR=Orange]About this Release[/COLOR][/SIZE][LIST]
-[*]This release marks a history in Tibia programming. Never before has an open source library offered a proxy, allowing you complete control over the data coming in and out of the client. We decided to skip straight to v2.0 because of this huge update.
-[*]TibiaAPI's proxy is easy to use, and has very little overhead; everything is implemented asynchronously, so your GUI won't hang.
-[*]Hope you enjoy this welcome addition that will make TibiaAPI one of the best tools a Tibia programmer can have!
-[*]We also added a MapViewer control to the API a while ago, and this is the first official release that it is included in. I can't wait for someone to build a Allies/Friends map using this control.
+[*]We have worked a lot over the past few weeks to increase the functionality of the proxy dramatically. You can now hook your methods to proxy events such as the projectile packet and when any chats are received. We have made the proxy more stable and efficient through the use of queues and the new ability to ctrl+g and switch characters.
+[*]In this release we have added several example programs to the source that you can check out and explore. See Downloads below.
+[*]Please note the list of renamed objects/properties/methods so you can update your code faster. [[URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/ChangeLog[/COLOR][/URL]]
 [/LIST]
 
 [SIZE=3][COLOR=Orange]About TibiaAPI[/COLOR][/SIZE][LIST]
@@ -16,17 +15,15 @@
 [*]Authors: Ian and ame, with special thanks to the [URL="http://www.codeplex.com/ktibiax"]KTibiaX[/URL] project and [URL="http://sourceforge.net/projects/evrebot/"]Evremonde[/URL].[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Documentation[/COLOR][/SIZE][LIST]
-[*]You can find a current version of the documentation in html form at my personal website: [URL="http://ianobermiller.com/tibiaapi/doc/namespace_tibia.html"][COLOR=DeepSkyBlue]http://ianobermiller.com/tibiaapi/doc[/COLOR][/URL]
 [*]You can also view a list of the most important TibiaAPI objects and methods at Google Code:  [URL="http://code.google.com/p/tibiaapi/wiki/Features"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/Features[/COLOR][/URL]
 [*]In order to view the most recent documentation properly, it must be checked out of the SVN. See [URL="http://code.google.com/p/tibiaapi/source"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/source[/COLOR][/URL] for more information.
 [*]The best way to find out what TibiaAPI offers is to download it yourself and check out the autocompletion in Visual Studio (or your IDE of choice).[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Downloads [/COLOR][/SIZE][[URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Complete Listing[/COLOR][/URL]]
 [LIST]
-[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.0_04-13-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.0 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio and the latest Packet.dll
-[*][URL="http://tibiaapi.googlecode.com/files/Example_SmartRunemaker.zip"][COLOR=DeepSkyBlue]Example 1 - Smart Runemaker[/COLOR][/URL] - a fully functional, easy to use runemaker using TibiaAPI, by Ian [this is the descendant of a long line of TPR's and TibIan Runemakers....]
-[*][URL="http://tibiaapi.googlecode.com/files/Example_Healbot.zip"][COLOR=DeepSkyBlue]Example 2 - Healbot[/COLOR][/URL] - a sample program showing healing, by ame
-[*]You can find many more examples at the [URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Google Code download page[/COLOR][/URL].
+[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.1_05-05-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.1 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio and the latest Packet.dll
+[*]If you check out the [URL="http://code.google.com/p/tibiaapi/source/checkout"][COLOR=DeepSkyBlue]source code[/COLOR][/URL] you will find three new example programs that will be updated with TibiaAPI, Smart Runemaker, Smart IPChanger, and Smart Packet Analyzer
+[*]You can find many examples at the [URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Google Code download page[/COLOR][/URL].
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Issues and Ideas[/COLOR][/SIZE]
@@ -36,83 +33,37 @@
 
 [SIZE=3][COLOR=DarkOrange]Upcoming[/COLOR][/SIZE]
 [LIST]
-[*]We want your suggestions on what to include now that we have a proxy! See here: [URL="http://tpforums.org/forum/showthread.php?t=1499"][COLOR=DeepSkyBlue]TibiaAPI has a working Proxy! Ideas?[/COLOR][/URL]
-[*]One of our top priorities is building a database of all the packets, in a nice OO manner.
-[*]We will also be adding many more events to the proxy based on the packet library.
-[*]The documentation is already uploaded, but the page on the wiki is a bit old. We'll get to that soon.
+[*]We still want your suggestions on what to include in the proxy, see here: [URL="http://tpforums.org/forum/showthread.php?t=1499"][COLOR=DeepSkyBlue]TibiaAPI has a working Proxy! Ideas?[/COLOR][/URL]
+[*]We are working on extending the Packet database.
+[*]We are also preparing the API for the possible immigration of TibiaTekBot to TibiaAPI.
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE][LIST]
-[*]2.0
+[*]2.1
 	[LIST]
-		[*]Added Proxy with sending, recieving, and blocking of packets. It is completely asynchronous and multi-client compatible.(see example code below)
-		[*]Added MapViewer
-		[*]Added GetTiles function to the Map object. Has the option to scan only the current floor. Useful for a fisher.
-		[*]Added getting/setting of client FPS
-		[*]Added a mouse hook
-		[*]Added GetTilesWithinView method to Map
-		[*]Added Map Merger utility
-		[*]Fixed: MapViewer no longer flickers
-		[*]Fixed: item.OpenContainer
-		[*]Fixed: Changed several Client methods to properties (LoggedIn, FPS, RSA, IsActive, Title, see documentation for all of them)
-		[*]Fixed: inventory.FindItem now has the option to check slots.
-		[*]Fixed: Merged Slot object with Inventory, moved GetSlot from client to inventory
-		[*]Fixed: Moved hotkey functions to inventory.UseItem, UseItemOnSelf, and UseItem(id, creatureId)
-		[*]Fixed: Renamed item.Id to Item.Number, item.Id is now the tile id
-		[*]Fixed using an Item on the ground (ex. fishing)
-		[*]Fixed: ClientChooser smart option was not being recognized.
+	[*]Added the following packet objects and their corresponding listeners in Proxy
+		[LIST]
+		[*]CharListPacket (no listener, for proxy connections)
+		[*]StatusMessagePacket
+		[*]ChatMessagePacket
+		[*]AnimatedTextPacket
+		[*]ProjectilePacket
+		[*]CreatureHealthPacket
+		[*]VipLoginPacket
+		[*]PlayerSpeechPacket
+		[/LIST]
+	[*]Added Website class with function LookupPlayer for accessing the Tibia website (incomplete)
+	[*]Added functions to Location: Parse, ToString, Equals, IsValid, GetInvalid, and ToBytes.
+	[*]Added Smart Packet Analyzer, Smart IPChanger, and Smart Runemaker to the svn in the apps/ directory.
+	[*]Added Client.Fish() function.
+	[*]Added potions to the item lists.
+	[*]Fixed the Proxy to handle logging out correctly and also relogging in.
+	[*]Fixed the Proxy to use the first open port, allows for using multiple clients.
+	[*]Fixed FPS.
+	[*]Fixed Player.Stop() to stop even when map walking.
+	[*]Fixed rune list with the latest spells.
 	[/LIST]
-[*]1.4
-	[LIST]
-		[*]Added name and floor spy functions to Map (ShowNames and ShowFloor)
-		[*]Added UseOnSelf function to Item
-		[*]Added GetPartyMembers to Battlelist, including a function that gets all party members with HP bar less than or equal to the specified percentage
-		[*]Added ExpLeft function to Player
-		[*]Fixed Use functions in Item to work with fluids
-		[*]Added SetTitle to Client
-		[*]Fixed the RSA and LoginCharList values to 8.1
-		[*]Added OutfitTypes from the update (thanks TTB)
-		[*]Added a Calculate class to utility, containing methods for calculating statistics. At the moment it calculates the exp needed for a level
-		[*]Fixed ability to read long strings
-		[*]Fixed read/write of IsWalking and IsVisible (they were read/writing integers when it should be bytes
-	[/LIST]
-[*]v1.3
-	[LIST]
-		[*]Finished updating addresses to 8.10 (thanks TibiaAuto!)
-		[*]Added IsActive method to Client.
-		[*]Added IsAttacking() method to Objects/Creature.cs.
-		[*]Added Stack method to Inventory.
-		[*]Added option to change the ClientChooser title.
-		[*]Added some tiles to Constants/Tiles.cs.
-		[*]Fixed GetContainers and GetItems to reverse the list so it is read in the correct direction; (0,0) is first.
-		[*]Fixed KeyboardHook and made it user friendly (see example code below).
-		[*]Fixed read/write function names in Objects/Client.cs to PascalCase.
-		[*]Fixed using/moving items (client wasn't getting set).[/LIST] 
-[*]v1.2
-	[LIST]
-		[*]Added support for Tibia 8.10
-		[*]Added GoTo a location (similar to clicking a square)
-		[*]Added VipList objects and methods
-		[*]Added functions to Objects.Battlelist for finding creatures by name while ignoring spaces
-		[*]Added getVersion to Objects.Client
-		[*]Added support for multiple Tibia versions (currently 8.10 and 8.00) via Tibia.Version.Set(string version)
-		[*]Added support for the Target CreatureType
-		[*]Fixed SetServer and SetOT
-		[*]Fixed makeRune to check hands better and move around items, as welll as making the soul point check optional.
-		[*]Fixed memory read/write for client to only open the handle once (when the client object is created)
-		[*]Fixed use item on ground packet structure
-	[/LIST] 
-[*]v1.1
-	[LIST]
-		[*]Added server/port changer to connect to OT servers
-		[*]Added ability to change the RSA key
-		[*]Fixed outfit addon and type to use enum
-		[*]Added function map.replaceTrees();
-	[/LIST] 
-[*]v1.0
-	[LIST]
-		[*]Initial release
-	[/LIST]
+[*][URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]View complete change log[/COLOR][/URL]
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Code Samples[/COLOR][/SIZE]
@@ -122,98 +73,84 @@
 Client client = ClientChooser.ShowBox();
 [/code]
 
+[*]Getting player information from the Tibia website
+[code]
+// Set the textbox uxText to equal the profession of the player Bubble
+// This method is asynchronous, that is why we have to supply a 
+// callback to get the data. It does not block your GUI if the 
+// request take a while.
+private void uxButton_Click(object sender, EventArgs e)
+{
+	Website.LookupPlayer("Bubble", delegate(Website.CharInfo i)
+	{
+		uxText.Invoke(new EventHandler(delegate
+		{
+			uxText.Text = i.Profession;
+		}));
+	});
+}
+[/code]
+
+[*]Parsing commands from the player without sending them to the server
+[code]
+// Put this after you start the proxy
+client.Proxy.ReceivedPlayerSpeechPacket += (Proxy.PacketListener)ReceivedPlayerSpeechPacket;
+[/code]
+[code]
+// This simple example assumes you have a textbox named uxText, 
+// to which it will append the command your client sent
+private Packet ReceivedPlayerSpeechPacket(Packet packet)
+{
+	PlayerSpeechPacket p = (PlayerSpeechPacket)packet;
+	if (p.Message.StartsWith("/"))
+	{
+		uxText.Invoke(new EventHandler(delegate
+			{
+				uxText.AppendText("Command: " + p.Message.Substring(1));
+				uxText.AppendText(Environment.NewLine);
+				
+				// Scroll to the bottom of the text box
+				uxText.SelectionStart = uxText.Text.Length;
+				uxText.ScrollToCaret();
+			}));
+			
+		// Don't send the command to the server
+		return null;
+	}
+	else
+		return packet;
+}
+[/code]
+
 [*]Using the proxy
 [code]
 // Start the proxy and attach event handlers
 // Put this in Form_Load
 client.StartProxy();
-client.Proxy.PacketFromClient += (Proxy.PacketListener)PacketFromClient;
-client.Proxy.PacketFromServer += (Proxy.PacketListener)PacketFromServer;
+client.Proxy.ReceivedFromClient += (Proxy.PacketListener)PacketFromClient;
+client.Proxy.ReceivedFromServer += (Proxy.PacketListener)PacketFromServer;
 
 // Sample event handlers
-private byte[] PacketFromClient(byte[] packet)
+private Packet PacketFromClient(Packet packet)
 {
-    LogPacket(packet, "CLIENT");
-    return packet;
+        LogPacket(packet.Data, "CLIENT");
+        return packet;
 }
 
-private byte[] PacketFromServer(byte[] packet)
+private Packet PacketFromServer(Packet packet)
 {
-    LogPacket(packet, "SERVER");
-    return packet;
+        LogPacket(packet.Data, "SERVER");
+        return packet;
 }
 
 private void LogPacket(byte[] packet, string from)
 {
-    uxPackets.Invoke(new EventHandler(delegate
-    {
-        string s = "from " + from + Environment.NewLine;
-s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
-    }));
+        uxPackets.Invoke(new EventHandler(delegate
+        {
+                string s = "from " + from + Environment.NewLine;
+                s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
+        }));
 }
 [/code]
 
-[*]Perform name spy or level spy
-[code]
-// Create a new map object
-Map map = new Map(client);
-
-// Show names on other floors
-map.ShowNames(true);
-
-// Move the screen to the floor below
-map.ShowFloor(-1, true);
-[/code]
-
-[*]Setup a global keyboard hook. Put the following in a button's click event. This example captures the hotkey Ctrl + Alt + A in the Tibia client only (doesn't let it go to the client). All other keypresses, client or otherwise, are ignored. 
-[code]
-if (!KeyboardHook.Enabled)
-{
-     KeyboardHook.Enable();
-     KeyboardHook.KeyDown = null;
-     KeyboardHook.KeyDown += new KeyboardHook.HookHandler(delegate(Keys key)
-     {
-          if (client.IsActive())
-          {
-                if (KeyboardHook.Control && KeyboardHook.Alt && key == Keys.A)
-                {
-                     string text = "You want to capture the hotkey " +
-                          KeyboardHook.KeyToString(key) + " in Tibia!";
-                     MessageBox.Show(text);
-                     return false;
-                }
-          }
-          return true;
-     });
-     KeyboardHook.KeyDown += null;
-}
-else
-{
-     KeyboardHook.Disable();
-}
-[/code]
-[*]Connect to an OT Server
-[code]
-client.SetOT("radonia.net", 7171);
-[/code]
-[*]Eat a mushroom in your inventory
-[code]
-Inventory inventory = new Inventory(client);
-inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use();
-[/code]
-[*]Attack the first rat found in the battelist
-[code]
-BattleList blist = client.getBattleList();
-blist.getCreature("rat").attack();
-[/code]
-[*]Change your players outfit type and addon.
-[code]
-Player player = client.getPlayer();
-player.Outfit = Tibia.Constants.OutfitType.BeggarMale;
-player.Addon = Tibia.Constants.OutfitAddon.Both;
-[/code]
-[*]Replace all the trees with small fir trees.
-[code]
-Map map = new Map(client);
-map.replaceTrees();
-[/code][/LIST]
+[*][URL="http://code.google.com/p/tibiaapi/wiki/CodeSamples"][COLOR=DeepSkyBlue]More code samples[/COLOR][/URL][/LIST]
