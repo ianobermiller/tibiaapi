@@ -13,6 +13,7 @@ namespace Tibia.Packets
         GameWorldLoginData = 0x0A,
         StatusMessage = 0xB4,
         ChatMessage = 0xAA,
+        PlayerSpeech = 0x96,
         AnimatedText = 0x84,
         Projectile = 0x85,
         CreatureHealth = 0x8C,
@@ -30,40 +31,18 @@ namespace Tibia.Packets
     }
 
     #region Speech
-
-    public enum SpeechChannel
-    {
-        None = -1,
-        Guild = 0,
-        Game = 4,
-        Trade = 5,
-        RealLife = 6,
-        Help = 7,
-        OwnPrivate = 14,
-        Private1 = 17
-    }
-
-    public enum SpeechType
-    {
-        Normal = 1,
-        Whisper = 2,
-        Yell = 3,
-        PrivateMessage = 4,
-        Channel = 5
-    }
-
-    public enum ChatMessageType : byte
+    public enum ChatType : byte
     {
         Normal = 0x01,
         Whisper = 0x02,
         Yell = 0x03,
-        PM = 0x04,
-        GM = 0x09,
-        Monster = 0x10,
-        MonsterYell = 0x11,
+        PrivateMessage = 0x04,
         ChannelNormal = 0x05,
+        GM = 0x09,
         ChannelGM = 0x0A,
-        ChannelTutor = 0x0C
+        ChannelTutor = 0x0C,
+        Monster = 0x10,
+        MonsterYell = 0x11
     }
 
     public enum ChatChannel : int
@@ -74,6 +53,8 @@ namespace Tibia.Packets
         Trade = 5,
         RL = 6,
         Help = 7,
+        OwnPrivate = 14,
+        Private1 = 17,
         Private = 0xFFFF
     }
 

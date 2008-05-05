@@ -23,7 +23,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Say(string text)
         {
-            return Say(new Message(text));
+            return Say(new ChatMessage(text));
         }
 
         /// <summary>
@@ -51,73 +51,9 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="message"></param>
         /// <returns>message packet</returns>
-        public bool Say(Message message)
+        public bool Say(ChatMessage message)
         {
-            byte[] packet = { };
-            int packetLength, payloadLength;
-            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
-
-            switch (message.type)
-            {
-                case Packets.SpeechType.Normal:
-                case Packets.SpeechType.Whisper:
-                case Packets.SpeechType.Yell:
-                    packetLength = 6 + message.text.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = Packet.Lo(message.text.Length);
-                    packet[05] = Packet.Hi(message.text.Length);
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, 6, message.text.Length);
-                    break;
-                case Packets.SpeechType.Channel:
-                    packetLength = 8 + message.text.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = (byte)message.channel;
-                    packet[05] = 0x0;
-                    packet[06] = Packet.Lo(message.text.Length);
-                    packet[07] = Packet.Hi(message.text.Length);
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, 8, message.text.Length);
-                    break;
-                case Packets.SpeechType.PrivateMessage:
-                    packetLength = 8 + message.text.Length + message.recipient.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = Packet.Lo(message.recipient.Length);
-                    packet[05] = Packet.Hi(message.recipient.Length);
-
-                    // Insert the recipient's name
-                    Array.Copy(enc.GetBytes(message.recipient), 0, packet, 6, message.recipient.Length);
-
-                    // Skip the index ahead, past the recipient's name
-                    int i = 6 + message.recipient.Length;
-
-                    packet[i] = Packet.Lo(message.text.Length);
-                    packet[i + 1] = Packet.Hi(message.text.Length); 
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, i + 2, message.text.Length);
-                    break;
-            }
+            PlayerSpeechPacket packet = PlayerSpeechPacket.Create(message);
 
             return client.Send(packet);
         }
@@ -130,30 +66,30 @@ namespace Tibia.Objects
         /// <returns>message packet</returns>
         public bool Say(string message, string recipient)
         {
-            return Say(new Message(message, recipient));
+            return Say(new ChatMessage(message, recipient));
         }
     }
 
     /// <summary>
     /// A message in Tibia.
     /// </summary>
-    public struct Message
+    public struct ChatMessage
     {
         public string text;
         public string recipient;
-        public Packets.SpeechChannel channel;
-        public Packets.SpeechType type;
+        public Packets.ChatChannel channel;
+        public Packets.ChatType type;
 
         /// <summary>
         /// Create a default message.
         /// </summary>
         /// <param name="text"></param>
-        public Message(string text)
+        public ChatMessage(string text)
         {
             this.text = text;
             this.recipient = "";
-            this.channel = Packets.SpeechChannel.None;
-            this.type = Packets.SpeechType.Normal;
+            this.channel = Packets.ChatChannel.None;
+            this.type = Packets.ChatType.Normal;
         }
 
         /// <summary>
@@ -161,12 +97,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="recipient"></param>
-        public Message(string text, string recipient)
+        public ChatMessage(string text, string recipient)
         {
             this.text = text;
             this.recipient = recipient;
-            this.channel = Packets.SpeechChannel.None;
-            this.type = Packets.SpeechType.PrivateMessage;
+            this.channel = Packets.ChatChannel.None;
+            this.type = Packets.ChatType.PrivateMessage;
         }
 
         /// <summary>
@@ -174,12 +110,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public Message(string text, Packets.SpeechChannel channel)
+        public ChatMessage(string text, Packets.ChatChannel channel)
         {
             this.text = text;
             this.recipient = "";
             this.channel = channel;
-            this.type = Packets.SpeechType.Channel;
+            this.type = Packets.ChatType.ChannelNormal;
         }
 
         /// <summary>
@@ -187,11 +123,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public Message(string text, Packets.SpeechType type)
+        public ChatMessage(string text, Packets.ChatType type)
         {
             this.text = text;
             this.recipient = "";
-            this.channel = Packets.SpeechChannel.None;
+            this.channel = Packets.ChatChannel.None;
             this.type = type;
         }
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -64,6 +65,7 @@
     <Compile Include="Packets\AnimatedTextPacket.cs" />
     <Compile Include="Packets\CharListPacket.cs" />
     <Compile Include="Packets\ChatMessagePacket.cs" />
+    <Compile Include="Packets\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\CreatureHealthPacket.cs" />
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\ProjectilePacket.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Util\Proxy.cs" />
     <Compile Include="Util\Version.cs" />
     <Compile Include="Util\XTEA.cs" />
+    <Compile Include="Website\LookupPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Util\ClientChooser.resx">

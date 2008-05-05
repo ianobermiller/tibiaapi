@@ -6,7 +6,7 @@ namespace Tibia.Packets
 {
     public class ChatMessagePacket : Packet
     {
-        private ChatMessageType messageType;
+        private ChatType messageType;
         private ChatChannel channel;
         private short lenSenderName;
         private string senderName;
@@ -15,7 +15,7 @@ namespace Tibia.Packets
         private string message;
         private Tibia.Objects.Location location;
 
-        public ChatMessageType MessageType
+        public ChatType MessageType
         {
             get { return messageType; }
         }
@@ -63,14 +63,14 @@ namespace Tibia.Packets
                 index += lenSenderName;
                 senderLevel = packet[index];
                 index += 2;
-                messageType = (ChatMessageType)packet[index];
+                messageType = (ChatType)packet[index];
                 switch (messageType)
                 {
-                    case ChatMessageType.Normal:
-                    case ChatMessageType.Whisper:
-                    case ChatMessageType.Yell:
-                    case ChatMessageType.Monster:
-                    case ChatMessageType.MonsterYell:
+                    case ChatType.Normal:
+                    case ChatType.Whisper:
+                    case ChatType.Yell:
+                    case ChatType.Monster:
+                    case ChatType.MonsterYell:
                         index += 1;
                         location = new Objects.Location();
                         location.X = BitConverter.ToInt16(packet, index);
@@ -84,9 +84,9 @@ namespace Tibia.Packets
                         message = Encoding.ASCII.GetString(packet, index, lenMessage);
                         break;
                 
-                    case ChatMessageType.ChannelNormal:
-                    case ChatMessageType.ChannelTutor:
-                    case ChatMessageType.ChannelGM:
+                    case ChatType.ChannelNormal:
+                    case ChatType.ChannelTutor:
+                    case ChatType.ChannelGM:
                         channel = (ChatChannel)BitConverter.ToInt16(packet,index);
                         index += 3;
                         lenMessage = packet[index];
@@ -110,37 +110,37 @@ namespace Tibia.Packets
             }
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message)
         {
             return Create(messageType, senderName, message, 0);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, ChatChannel chan)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, ChatChannel chan)
         {
             return Create(messageType, senderName, message, 0, chan);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, ChatChannel chan)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, ChatChannel chan)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), chan);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, Objects.Location loc)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, Objects.Location loc)
         {
             return Create(messageType, senderName, message, 0, loc);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, Objects.Location loc)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, Objects.Location loc)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
         }
 
-        public static ChatMessagePacket Create(ChatMessageType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
+        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
         {
             try
             {
@@ -151,11 +151,11 @@ namespace Tibia.Packets
                 byte[] packet;
                 switch (messageType)
                 {
-                    case ChatMessageType.Normal:
-                    case ChatMessageType.Whisper:
-                    case ChatMessageType.Yell:
-                    case ChatMessageType.Monster:
-                    case ChatMessageType.MonsterYell:
+                    case ChatType.Normal:
+                    case ChatType.Whisper:
+                    case ChatType.Yell:
+                    case ChatType.Monster:
+                    case ChatType.MonsterYell:
 
                         if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
 
@@ -177,9 +177,9 @@ namespace Tibia.Packets
                         Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 10, message.Length);
                         break;
 
-                    case ChatMessageType.ChannelNormal:
-                    case ChatMessageType.ChannelTutor:
-                    case ChatMessageType.ChannelGM:
+                    case ChatType.ChannelNormal:
+                    case ChatType.ChannelTutor:
+                    case ChatType.ChannelGM:
 
                         if (chan == ChatChannel.None) throw new ArgumentException("You must supply a valid chat channel for this message type.", "chan");
 

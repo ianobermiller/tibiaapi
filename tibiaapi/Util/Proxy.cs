@@ -99,6 +99,7 @@ namespace Tibia.Util
         public PacketListener ReceivedChatMessagePacket;
         public PacketListener ReceivedStatusMessagePacket;
         public PacketListener ReceivedProjectilePacket;
+        public PacketListener ReceivedPlayerSpeechPacket;
         public PacketListener RecievedCreatureHealthPacket;
         public PacketListener RecievedVipLoginPacket;
 
@@ -470,8 +471,15 @@ namespace Tibia.Util
         }
         private Packet RaiseOutgoingEvents(byte[] packet)
         {
+            if (packet.Length < 3) return new Packet(packet);
+            switch ((PacketType)packet[2])
+            {
+                case PacketType.PlayerSpeech:
+                    if (ReceivedPlayerSpeechPacket != null)
+                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(packet));
+                    break;
+            }
             return new Packet(packet);
-
         }
         private Packet RaiseIncomingEvents(byte[] packet)
         {
