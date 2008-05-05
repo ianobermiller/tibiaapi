@@ -400,8 +400,8 @@ namespace Tibia.Constants
         NightmareKnightMale = 268,
         NightmareKnightFemale = 269,
 
+        JesterFemale = 270,
         JesterMale = 273,
-        JesterFemale=274,
 
         CarrionWorm = 192,
 
@@ -473,7 +473,12 @@ namespace Tibia.Constants
         IceGolem = 261,
         SilverRabbit = 262,
         FrostGiantess = 265,
-        CommunityManager = 266
+        CommunityManager = 266,
+        DragonSmallGreen = 271,
+        DragonSmallRed = 272,
+        SquirrelLarge = 274,
+        WaterMonster = 275,
+        Cat = 276
 
         
     }
