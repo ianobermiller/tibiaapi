@@ -115,6 +115,8 @@
     <Compile Include="Util\Version.cs" />
     <Compile Include="Util\XTEA.cs" />
     <Compile Include="Website\LookupPlayer.cs" />
+    <Compile Include="Website\Website.cs" />
+    <Compile Include="Website\WhoIsOnline.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Util\ClientChooser.resx">
