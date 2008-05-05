@@ -17,6 +17,55 @@
 Client client = Util.ClientChooser.ShowBox();
 }}}
 
+== Getting player information from the Tibia website ==
+{{{
+// Set the textbox uxText to equal the profession of the player Bubble
+// This method is asynchronous, that is why we have to supply a 
+// callback to get the data. It does not block your GUI if the 
+// request take a while.
+private void uxButton_Click(object sender, EventArgs e)
+{
+	Website.LookupPlayer("Bubble", delegate(Website.CharInfo i)
+	{
+		uxText.Invoke(new EventHandler(delegate
+		{
+			uxText.Text = i.Profession;
+		}));
+	});
+}
+}}}
+
+== Parsing commands from the player without sending them to the server ==
+{{{
+// Put this after you start the proxy
+client.Proxy.ReceivedPlayerSpeechPacket += (Proxy.PacketListener)ReceivedPlayerSpeechPacket;
+}}}
+{{{
+// This simple example assumes you have a textbox named uxText, 
+// to which it will append the command your client sent
+private Packet ReceivedPlayerSpeechPacket(Packet packet)
+{
+	PlayerSpeechPacket p = (PlayerSpeechPacket)packet;
+	if (p.Message.StartsWith("/"))
+	{
+		uxText.Invoke(new EventHandler(delegate
+			{
+				uxText.AppendText("Command: " + p.Message.Substring(1));
+				uxText.AppendText(Environment.NewLine);
+				
+				// Scroll to the bottom of the text box
+				uxText.SelectionStart = uxText.Text.Length;
+				uxText.ScrollToCaret();
+			}));
+			
+		// Don't send the command to the server
+		return null;
+	}
+	else
+		return packet;
+}
+}}}
+
 == Using the proxy ==
 {{{
 // Start the proxy and attach event handlers
