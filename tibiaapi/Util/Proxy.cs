@@ -95,13 +95,18 @@ namespace Tibia.Util
         /// </summary>
         public PacketListener ReceivedPacketFromClient;
 
+        // Incoming
         public PacketListener ReceivedAnimatedTextPacket;
+        public PacketListener ReceivedChannelListPacket;
+        public PacketListener ReceivedChannelOpenPacket;
         public PacketListener ReceivedChatMessagePacket;
-        public PacketListener ReceivedStatusMessagePacket;
-        public PacketListener ReceivedProjectilePacket;
-        public PacketListener ReceivedPlayerSpeechPacket;
         public PacketListener RecievedCreatureHealthPacket;
+        public PacketListener ReceivedProjectilePacket;
+        public PacketListener ReceivedStatusMessagePacket;
         public PacketListener RecievedVipLoginPacket;
+
+        // Outgoing
+        public PacketListener ReceivedPlayerSpeechPacket;
 
         #endregion
 
@@ -510,6 +515,14 @@ namespace Tibia.Util
                 case PacketType.VipLogin:
                     if (RecievedVipLoginPacket != null)
                         return RecievedVipLoginPacket(new VipLoginPacket(packet));
+                    break;
+                case PacketType.ChannelList:
+                    if (ReceivedChannelListPacket != null)
+                        return ReceivedChannelListPacket(new VipLoginPacket(packet));
+                    break;
+                case PacketType.ChannelOpen:
+                    if (ReceivedChannelOpenPacket != null)
+                        return ReceivedChannelOpenPacket(new VipLoginPacket(packet));
                     break;
             }
             return new Packet(packet);

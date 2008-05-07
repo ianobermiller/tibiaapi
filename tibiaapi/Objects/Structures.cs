@@ -163,4 +163,16 @@ namespace Tibia.Objects
             return Server + ":" + Port;
         }
     }
+
+    public struct Channel
+    {
+        public short Id;
+        public string Name;
+
+        public Channel(short id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+    }
 }
