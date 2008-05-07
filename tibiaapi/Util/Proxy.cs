@@ -35,7 +35,9 @@ namespace Tibia.Util
         private Client         client;
         private CharListPacket charList;
         private byte           selectedChar;
-        private bool           connected;
+        private bool           connected = false;
+        private bool           isLoggedIn = false;
+        private int            loginDelay = 250;
         private short          localPort;
         private Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
@@ -73,17 +75,17 @@ namespace Tibia.Util
         /// A function prototype for proxy notifications.
         /// </summary>
         /// <returns></returns>
-        public delegate byte[] ProxyNotification();
+        public delegate void ProxyNotification();
 
         /// <summary>
         /// Called when the client has logged in.
         /// </summary>
-        public ProxyNotification LoggedIn;
+        public ProxyNotification OnLogIn;
 
         /// <summary>
         /// Called when the client has logged out.
         /// </summary>
-        public ProxyNotification LoggedOut;
+        public ProxyNotification OnLogOut;
 
         /// <summary>
         /// Called when a packet is received from the server.
@@ -274,11 +276,6 @@ namespace Tibia.Util
 
             // The proxy is now connected
             connected = true;
-
-            // Notify that the client has logged in
-            // TODO: should this actually happen when the client receives the first packet from the server? or even when the client replies to the first packet from the server?
-            if (LoggedIn != null)
-                LoggedIn();
         }
 
         #region Server -> Client
@@ -374,10 +371,14 @@ namespace Tibia.Util
                 Stop();
                 Restart();
 
+                isLoggedIn = false;
+
                 // Notify that the client has logged out
-                if (LoggedOut != null)
+                if (OnLogOut != null)
                 {
-                    LoggedOut();
+                    // We don't care about the return to this
+                    MethodInvoker invoker = new MethodInvoker(OnLogOut);
+                    invoker.BeginInvoke(null, null);
                 }
                     
                 return;
@@ -484,6 +485,19 @@ namespace Tibia.Util
                     if (ReceivedPlayerSpeechPacket != null)
                         return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(packet));
                     break;
+                case PacketType.ClientLoggedIn:
+                    if (!isLoggedIn)
+                    {
+                        isLoggedIn = true;
+                        if (OnLogIn != null)
+                        {
+                            // Call OnLogIn on a seperate thread after 1 second to make sure
+                            // the client has initialized the GUI
+                            MethodInvoker invoker = new MethodInvoker(BeginOnLogIn);
+                            invoker.BeginInvoke(null, null);
+                        }
+                    }
+                    break;
             }
             return new Packet(packet);
         }
@@ -518,14 +532,20 @@ namespace Tibia.Util
                     break;
                 case PacketType.ChannelList:
                     if (ReceivedChannelListPacket != null)
-                        return ReceivedChannelListPacket(new VipLoginPacket(packet));
+                        return ReceivedChannelListPacket(new ChannelListPacket(packet));
                     break;
                 case PacketType.ChannelOpen:
                     if (ReceivedChannelOpenPacket != null)
-                        return ReceivedChannelOpenPacket(new VipLoginPacket(packet));
+                        return ReceivedChannelOpenPacket(new ChannelOpenPacket(packet));
                     break;
             }
             return new Packet(packet);
+        }
+
+        private void BeginOnLogIn()
+        {
+            Thread.Sleep(loginDelay);
+            OnLogIn();
         }
 
         /// <summary>
@@ -585,6 +605,14 @@ namespace Tibia.Util
         public bool Connected
         {
             get { return connected; }
+        }
+
+        /// <summary>
+        /// Returns true if the client is logged in.
+        /// </summary>
+        public bool IsLoggedIn
+        {
+            get { return isLoggedIn; }
         }
 
         /// <summary>

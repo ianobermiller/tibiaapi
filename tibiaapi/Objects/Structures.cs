@@ -166,10 +166,10 @@ namespace Tibia.Objects
 
     public struct Channel
     {
-        public short Id;
+        public Packets.ChatChannel Id;
         public string Name;
 
-        public Channel(short id, string name)
+        public Channel(Packets.ChatChannel id, string name)
         {
             Id = id;
             Name = name;

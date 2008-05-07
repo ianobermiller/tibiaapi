@@ -49,7 +49,12 @@ namespace Tibia.Packets
             }
         }
 
-        public static ChannelOpenPacket Create(string channelName, int channelId)
+        public static ChannelOpenPacket Create(Tibia.Objects.Channel channel)
+        {
+            return Create(channel.Id, channel.Name);
+        }
+
+        public static ChannelOpenPacket Create(ChatChannel channelId, string channelName)
         {
             // 0E 00 AC 04 00 09 00 47 61 6D 65 2D 43 68 61 74 
             byte[] packet = new byte[7 + channelName.Length];

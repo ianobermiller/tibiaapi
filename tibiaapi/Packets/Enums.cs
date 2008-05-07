@@ -13,6 +13,7 @@ namespace Tibia.Packets
         CharListLoginData = 0x01,
         CharList = 0x14,
         ChatMessage = 0xAA,
+        ClientLoggedIn = 0xA0,
         CreatureHealth = 0x8C,
         GameWorldLoginData = 0x0A,
         Logout = 0x14,
@@ -47,9 +48,8 @@ namespace Tibia.Packets
         MonsterYell = 0x11
     }
 
-    public enum ChatChannel : int
+    public enum ChatChannel : ushort
     {
-        None = -1,
         Guild = 0,
         Game = 4,
         Trade = 5,
@@ -58,7 +58,17 @@ namespace Tibia.Packets
         OwnPrivate = 14,
         Private1 = 17,
         Private = 0xFFFF,
-        Custom = 0xAA
+        Custom = 0xA0,
+        Custom1 = 0xA1,
+        Custom2 = 0xA2,
+        Custom3 = 0xA3,
+        Custom4 = 0xA4,
+        Custom5 = 0xA5,
+        Custom6 = 0xA6,
+        Custom7 = 0xA7,
+        Custom8 = 0xA8,
+        Custom9 = 0xA9,
+        None = 0xAAAA
     }
 
     #endregion
