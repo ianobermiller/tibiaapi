@@ -359,7 +359,6 @@ namespace Tibia.Objects
         /// <returns></returns>
         public BattleList GetBattleList()
         {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             return battleList;
         }
 

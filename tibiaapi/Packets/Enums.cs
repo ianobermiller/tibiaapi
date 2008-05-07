@@ -17,7 +17,8 @@ namespace Tibia.Packets
         AnimatedText = 0x84,
         Projectile = 0x85,
         CreatureHealth = 0x8C,
-        VipLogin = 0xD3
+        VipLogin = 0xD3,
+        OpenChannel = 0xAC
     }
 
     /// <summary>
@@ -55,7 +56,8 @@ namespace Tibia.Packets
         Help = 7,
         OwnPrivate = 14,
         Private1 = 17,
-        Private = 0xFFFF
+        Private = 0xFFFF,
+        Custom = 0xAA
     }
 
     #endregion

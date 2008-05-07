@@ -65,6 +65,8 @@
     <Compile Include="Packets\AnimatedTextPacket.cs" />
     <Compile Include="Packets\CharListPacket.cs" />
     <Compile Include="Packets\ChatMessagePacket.cs" />
+    <Compile Include="Packets\ChannelListPacket.cs" />
+    <Compile Include="Packets\OpenChannelPacket.cs" />
     <Compile Include="Packets\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\CreatureHealthPacket.cs" />
     <Compile Include="Packets\Enums.cs" />

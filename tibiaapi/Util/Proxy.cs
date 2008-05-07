@@ -271,6 +271,7 @@ namespace Tibia.Util
             connected = true;
 
             // Notify that the client has logged in
+            // TODO: should this actually happen when the client receives the first packet from the server? or even when the client replies to the first packet from the server?
             if (LoggedIn != null)
                 LoggedIn();
         }
