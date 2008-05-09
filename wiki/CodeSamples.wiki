@@ -15,11 +15,26 @@
  * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
 
 == Get a client object to work with ==
+*C#*
 {{{
 Client client = Util.ClientChooser.ShowBox();
+if (client == null)
+{
+ MessageBox.Show("No active client.");
+ Application.Exit();
+}
 }}}
 
+*VB.Net*
+{{{
+client = ClientChooser.ShowBox()
+If client Is Nothing Then
+MsgBox("No active client.")
+Application.[Exit]()
+End If
+}}}
 == Getting player information from the Tibia website ==
+*C#*
 {{{
 // Set the textbox uxText to equal the profession of the player Bubble
 // This method is asynchronous, that is why we have to supply a 
@@ -38,6 +53,7 @@ private void uxButton_Click(object sender, EventArgs e)
 }}}
 
 == Parsing commands from the player ==
+*C#*
 {{{
 // Put this after you start the proxy
 client.Proxy.ReceivedPlayerSpeechPacket += (Proxy.PacketListener)ReceivedPlayerSpeechPacket;
@@ -69,6 +85,7 @@ private Packet ReceivedPlayerSpeechPacket(Packet packet)
 }}}
 
 == Using the proxy ==
+*C#*
 {{{
 // Start the proxy and attach event handlers
 // Put this in Form_Load
@@ -100,6 +117,7 @@ private void LogPacket(byte[] packet, string from)
 }}}
 
 == Perform name spy or level spy ==
+*C#*
 {{{
 // Create a new map object
 Map map = new Map(client);
@@ -111,8 +129,19 @@ map.ShowNames(true);
 map.ShowFloor(-1, true);
 }}}
 
+*VB.Net*
+{{{
+Dim map As New Map(client)
+'enable X-ray
+map.ShowNames(True)
+'show floor over you
+map.ShowFloor(-1, True)
+}}}
+
 == Setup a global keyboard hook ==
 Put the following in a button's click event. This example captures the hotkey Ctrl + Alt + A in the Tibia client only (doesn't let it go to the client). All other keypresses, client or otherwise, are ignored.
+
+*C#*
 {{{
 if (!KeyboardHook.Enabled)
 {
@@ -141,36 +170,67 @@ else
 }}}
 
 == Connect to an OT Server ==
+*C#*
 {{{
 client.SetOT("radonia.net", 7171);
 }}}
 
 == Eat a mushroom in your inventory ==
+*C#*
 {{{
 Inventory inventory = new Inventory(client);
 inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use();
 }}}
+
+*VB.Net*
+{{{
+Dim inventory As New Inventory(client)
+inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use()
+}}}
 Or, more efficiently (using the hotkey packets)
+
+*C#*
 {{{
 Inventory inventory = new Inventory(client);
 inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom);
 }}}
 
 == Attack the first rat found in the battelist ==
+*C#*
 {{{
 BattleList blist = client.getBattleList();
 blist.getCreature("rat").attack();
 }}}
 
+*VB.Net*
+{{{
+Dim blist As BattleList = client.getBattleList()
+blist.getCreature("rat").attack()
+}}}
+
 == Change your players outfit type and addon ==
+*C#*
 {{{
 Player player = client.getPlayer();
 player.Outfit = Tibia.Constants.OutfitType.BeggarMale;
 player.Addon = Tibia.Constants.OutfitAddon.Both;
 }}}
 
+*VB.Net*
+{{{
+Dim player As Player = client.getPlayer()
+player.Outfit = Tibia.Constants.OutfitType.BeggarMale
+player.Addon = Tibia.Constants.OutfitAddon.Both
+}}}
+
 == Replace all the trees with small fir trees ==
+*C#*
 {{{
 Map map = new Map(client);
 map.replaceTrees();
+}}}
+*VB.Net*
+{{{
+Dim map As New Map(client)
+map.replaceTrees()
 }}}
