@@ -56,22 +56,22 @@ namespace Tibia.Packets
                     case ChatType.Whisper:
                     case ChatType.Yell:
                         lenMessage = BitConverter.ToInt16(packet, 4);
-                        message = Encoding.ASCII.GetString(packet, 6, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, 6, lenMessage);
                         break;
 
                     case ChatType.ChannelNormal:
                         channel = (ChatChannel)BitConverter.ToInt16(packet, 4);
                         lenMessage = BitConverter.ToInt16(packet, 6);
-                        message = Encoding.ASCII.GetString(packet, 8, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, 8, lenMessage);
                         break;
                     case ChatType.PrivateMessage:
                         lenRecipientName = BitConverter.ToInt16(packet, index);
                         index += 2;
-                        recipientName = Encoding.ASCII.GetString(packet, index, lenRecipientName);
+                        recipientName = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenRecipientName);
                         index += lenRecipientName;
                         lenMessage = BitConverter.ToInt16(packet, index);
                         index += 2;
-                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
                         break;
                 }
 

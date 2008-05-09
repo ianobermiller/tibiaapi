@@ -59,7 +59,7 @@ namespace Tibia.Packets
                 int index = 7;
                 lenSenderName = BitConverter.ToInt16(packet, index);
                 index += 2;
-                senderName = Encoding.ASCII.GetString(packet, index, lenSenderName);
+                senderName = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenSenderName);
                 index += lenSenderName;
                 senderLevel = packet[index];
                 index += 2;
@@ -81,7 +81,7 @@ namespace Tibia.Packets
                         index += 1;
                         lenMessage = packet[index];
                         index += 2;
-                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
                         break;
                 
                     case ChatType.ChannelNormal:
@@ -91,14 +91,14 @@ namespace Tibia.Packets
                         index += 3;
                         lenMessage = packet[index];
                         index += 2;
-                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
                         break;
 
                     default:
                         index += 1;
                         lenMessage = packet[index];
                         index += 2;
-                        message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
                         break;
                 }
                 
@@ -174,7 +174,7 @@ namespace Tibia.Packets
                         Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 8, 2);
 
                         // Message
-                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 10, message.Length);
+                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 10, message.Length);
                         break;
 
                     case ChatType.ChannelNormal:
@@ -198,7 +198,7 @@ namespace Tibia.Packets
                         Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 5, 2);
 
                         // Message
-                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 7, message.Length);
+                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 7, message.Length);
                         break;
 
                     default:
@@ -214,7 +214,7 @@ namespace Tibia.Packets
                         Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 3, 2);
 
                         // Message
-                        Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 9 + senderName.Length + 5, message.Length);
+                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 5, message.Length);
                         break;
                 }
 
@@ -225,7 +225,7 @@ namespace Tibia.Packets
                 Array.Copy(BitConverter.GetBytes((short)(senderName.Length)), 0, packet, 7, 2);
 
                 // Sender name
-                Array.Copy(Encoding.ASCII.GetBytes(senderName), 0, packet, 9, senderName.Length);
+                Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(senderName), 0, packet, 9, senderName.Length);
 
                 // Sender level
                 packet[9 + senderName.Length] = (byte)level;
