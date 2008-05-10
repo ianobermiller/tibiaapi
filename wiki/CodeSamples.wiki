@@ -131,13 +131,13 @@ map.ShowFloor(-1, true);
 
 *VB.Net*
 {{{
-// Create a new map object
+' Create a new map object
 Dim map As New Map(client)
 
-// Show names on other floors
+' Show names on other floors
 map.ShowNames(true)
 
-// Move the screen to the floor below
+' Move the screen to the floor below
 map.ShowFloor(-1, true)
 }}}
 
