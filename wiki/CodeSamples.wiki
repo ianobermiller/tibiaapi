@@ -20,8 +20,8 @@
 Client client = Util.ClientChooser.ShowBox();
 if (client == null)
 {
- MessageBox.Show("No active client.");
- Application.Exit();
+	MessageBox.Show("No active client.");
+	Application.Exit();
 }
 }}}
 
@@ -29,8 +29,8 @@ if (client == null)
 {{{
 client = ClientChooser.ShowBox()
 If client Is Nothing Then
-MsgBox("No active client.")
-Application.[Exit]()
+	MsgBox("No active client.")
+	Application.[Exit]()
 End If
 }}}
 == Getting player information from the Tibia website ==
@@ -131,11 +131,14 @@ map.ShowFloor(-1, true);
 
 *VB.Net*
 {{{
+// Create a new map object
 Dim map As New Map(client)
-'enable X-ray
-map.ShowNames(True)
-'show floor over you
-map.ShowFloor(-1, True)
+
+// Show names on other floors
+map.ShowNames(true)
+
+// Move the screen to the floor below
+map.ShowFloor(-1, true)
 }}}
 
 == Setup a global keyboard hook ==
@@ -175,6 +178,11 @@ else
 client.SetOT("radonia.net", 7171);
 }}}
 
+*VB.Net*
+{{{
+client.SetOT("radonia.net", 7171)
+}}}
+
 == Eat a mushroom in your inventory ==
 *C#*
 {{{
@@ -193,6 +201,12 @@ Or, more efficiently (using the hotkey packets)
 {{{
 Inventory inventory = new Inventory(client);
 inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom);
+}}}
+
+*VB.Net*
+{{{
+Dim inventory As New Inventory(client)
+inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom)
 }}}
 
 == Attack the first rat found in the battelist ==
