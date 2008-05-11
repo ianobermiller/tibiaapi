@@ -67,12 +67,15 @@
     <Compile Include="Packets\ChatMessagePacket.cs" />
     <Compile Include="Packets\ChannelListPacket.cs" />
     <Compile Include="Packets\ChannelOpenPacket.cs" />
+    <Compile Include="Packets\CreatureMovePacket.cs" />
     <Compile Include="Packets\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\CreatureHealthPacket.cs" />
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\ProjectilePacket.cs" />
     <Compile Include="Packets\StatusMessagePacket.cs" />
+    <Compile Include="Packets\TileAnimationPacket.cs" />
     <Compile Include="Packets\VipLoginPacket.cs" />
+    <Compile Include="Util\Irc.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
     </Compile>
