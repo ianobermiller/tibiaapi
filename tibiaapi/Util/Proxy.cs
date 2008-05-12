@@ -102,12 +102,13 @@ namespace Tibia.Util
         public PacketListener ReceivedChannelListPacket;
         public PacketListener ReceivedChannelOpenPacket;
         public PacketListener ReceivedChatMessagePacket;
-        public PacketListener RecievedCreatureHealthPacket;
+        public PacketListener ReceivedCreatureHealthPacket;
         public PacketListener ReceivedProjectilePacket;
         public PacketListener ReceivedStatusMessagePacket;
         public PacketListener ReceivedVipLoginPacket;
         public PacketListener ReceivedCreatureMovePacket;
         public PacketListener ReceivedTileAnimationPacket;
+        public PacketListener ReceivedAttackPacket;
 
         // Outgoing
         public PacketListener ReceivedPlayerSpeechPacket;
@@ -525,8 +526,8 @@ namespace Tibia.Util
                         return ReceivedProjectilePacket(new ProjectilePacket(packet));
                     break;
                 case PacketType.CreatureHealth:
-                    if (RecievedCreatureHealthPacket != null)
-                        return RecievedCreatureHealthPacket(new CreatureHealthPacket(packet));
+                    if (ReceivedCreatureHealthPacket != null)
+                        return ReceivedCreatureHealthPacket(new CreatureHealthPacket(packet));
                     break;
                 case PacketType.VipLogin:
                     if (ReceivedVipLoginPacket != null)
@@ -547,6 +548,10 @@ namespace Tibia.Util
                 case PacketType.TileAnimation:
                     if (ReceivedTileAnimationPacket != null)
                         return ReceivedTileAnimationPacket(new TileAnimationPacket(packet));
+                    break;
+                case PacketType.Attacked:
+                    if (ReceivedAttackPacket != null)
+                        return ReceivedAttackPacket(new AttackedPacket(packet));
                     break;
             }
             return new Packet(packet);
