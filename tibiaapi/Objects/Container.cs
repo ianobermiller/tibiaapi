@@ -101,6 +101,17 @@ namespace Tibia.Objects
             return client.Send(packet);
         }
 
+        public bool Rename(string newName)
+        {
+            if (client.UsingProxy)
+            {
+                Packets.ContainerOpenedPacket packet = Packets.ContainerOpenedPacket.Create(this, newName);
+                return client.SendToClient(packet);
+            }
+            else
+                return false;
+        }
+
         #region Get/Set Properties
         /// <summary>
         /// Gets the client this container is associated with.

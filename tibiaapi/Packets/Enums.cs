@@ -14,6 +14,7 @@ namespace Tibia.Packets
         CharList = 0x14,
         ChatMessage = 0xAA,
         ClientLoggedIn = 0xA0,
+        ContainerOpened = 0x6E,
         CreatureHealth = 0x8C,
         CreatureMove = 0x6D,
         GameWorldLoginData = 0x0A,
