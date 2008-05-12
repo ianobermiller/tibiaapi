@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tibia.Packets
 {
-    class AttackedPacket : Packet
+    public class AttackedPacket : Packet
     {
         private int creatureId;
         public int CreatureId
@@ -38,8 +38,8 @@ namespace Tibia.Packets
 
         public static AttackedPacket Create(Objects.Creature creature)
         {
-            byte[] packet = new byte[7];
-            packet[0] = 0x05;
+            byte[] packet = new byte[8];
+            packet[0] = 0x06;
             packet[2] = (byte)PacketType.Attacked;
             Array.Copy(BitConverter.GetBytes(creature.Id), 0, packet, 3, 4);
             AttackedPacket atp = new AttackedPacket(packet);
