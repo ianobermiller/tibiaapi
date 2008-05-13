@@ -145,7 +145,7 @@ namespace Tibia.Packets
             return l;
         }
 
-        public int GetString(int length)
+        public string GetString(int length)
         {
             string s = Encoding.ASCII.GetString(data, index, length);
             index += length;
