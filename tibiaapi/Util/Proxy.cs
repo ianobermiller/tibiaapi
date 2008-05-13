@@ -109,6 +109,7 @@ namespace Tibia.Util
         public PacketListener ReceivedCreatureMovePacket;
         public PacketListener ReceivedTileAnimationPacket;
         public PacketListener ReceivedAttackPacket;
+        public PacketListener ReceivedStatusUpdatePacket;
 
         // Outgoing
         public PacketListener ReceivedPlayerSpeechPacket;
@@ -552,6 +553,10 @@ namespace Tibia.Util
                 case PacketType.Attacked:
                     if (ReceivedAttackPacket != null)
                         return ReceivedAttackPacket(new AttackedPacket(packet));
+                    break;
+                case PacketType.StatusUpdate:
+                    if (ReceivedStatusUpdatePacket != null)
+                        return ReceivedStatusUpdatePacket(new StatusUpdatePacket(packet));
                     break;
             }
             return new Packet(packet);

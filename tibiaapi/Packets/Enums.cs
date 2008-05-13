@@ -27,6 +27,7 @@ namespace Tibia.Packets
         Projectile = 0x85,
         TileAnimation = 0x83,
         StatusMessage = 0xB4,
+        StatusUpdate = 0xA0,
         VipLogin = 0xD3
     }
 

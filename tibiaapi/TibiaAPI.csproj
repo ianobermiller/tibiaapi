@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -79,6 +79,7 @@
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\ProjectilePacket.cs" />
     <Compile Include="Packets\StatusMessagePacket.cs" />
+    <Compile Include="Packets\StatusUpdatePacket.cs" />
     <Compile Include="Packets\TileAnimationPacket.cs" />
     <Compile Include="Packets\VipLoginPacket.cs" />
     <Compile Include="Util\Irc.cs" />
