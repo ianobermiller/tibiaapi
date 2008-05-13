@@ -68,6 +68,10 @@
     <Compile Include="Packets\ChannelListPacket.cs" />
     <Compile Include="Packets\ChannelOpenPacket.cs" />
     <Compile Include="Packets\ContainerOpenedPacket.cs" />
+    <Compile Include="Packets\PacketBuilder.cs" />
+    <Compile Include="Packets\DefaultTemplatePacket.cs" />
+    <Compile Include="Packets\MapItemRemovePacket.cs" />
+    <Compile Include="Packets\MapItemAddPacket.cs" />
     <Compile Include="Packets\CreatureMovePacket.cs" />
     <Compile Include="Packets\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\CreatureHealthPacket.cs" />

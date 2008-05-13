@@ -7,6 +7,7 @@ namespace Tibia.Packets
     /// </summary>
     public enum PacketType : byte
     {
+        DefaultTemplate = 0x00,
         AnimatedText = 0x84,
         Attacked = 0x86,
         ChannelList = 0xAB,
@@ -20,9 +21,11 @@ namespace Tibia.Packets
         CreatureMove = 0x6D,
         GameWorldLoginData = 0x0A,
         Logout = 0x14,
-        TileAnimation = 0x83,
+        MapItemAdd = 0x6A,
+        MapItemRemove = 0x6C,
         PlayerSpeech = 0x96,
         Projectile = 0x85,
+        TileAnimation = 0x83,
         StatusMessage = 0xB4,
         VipLogin = 0xD3
     }
