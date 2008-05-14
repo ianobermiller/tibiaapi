@@ -41,7 +41,7 @@ namespace Tibia.Packets
         }
 
         /// <summary>
-        /// Get/Set the current index in this packet.
+        /// Get/Set the current index in this packet. Set is the same as Seek(int).
         /// </summary>
         public int Index
         {
@@ -95,50 +95,97 @@ namespace Tibia.Packets
         #endregion
 
         #region Add
+        /// <summary>
+        /// Add a byte at the current index and advance.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public int AddByte(byte b)
         {
             return AddBytes(new byte[] { b });
         }
 
+        /// <summary>
+        /// Add an array of bytes at the current index and advance.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public int AddBytes(byte[] b)
         {
             return AddBytes(b, b.Length);
         }
 
+        /// <summary>
+        /// Add an array of bytes at the current index and advance.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public int AddBytes(byte[] b, int length)
         {
-            Array.Copy(b, 0, data, index, length);
-            index += length;
-            return length;
+            return AddBytes(b, 0, length);
         }
 
-        public int AddBytes(byte[] b, int length, int sourceIndex)
+        /// <summary>
+        /// Add an array of bytes at the current index and advance.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="sourceIndex"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public int AddBytes(byte[] b, int sourceIndex, int length)
         {
             Array.Copy(b, sourceIndex, data, index, length);
             index += length;
             return length;
         }
 
+        /// <summary>
+        /// Add an "integer" (aka. ushort) at the current index and advance.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         public int AddInt(int i)
         {
             return AddBytes(BitConverter.GetBytes((ushort)i));
         }
 
+        /// <summary>
+        /// Add a "long" (aka. 4 byte int) at the current index and advance.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
         public int AddLong(int l)
         {
             return AddBytes(BitConverter.GetBytes(l));
         }
 
+        /// <summary>
+        /// Add a string at the current index and advance.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public int AddString(string s)
         {
             return AddString(s, s.Length);
         }
 
+        /// <summary>
+        /// Add part of a string at the current index and advance.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public int AddString(string s, int length)
         {
             return AddBytes(Encoding.ASCII.GetBytes(s));
         }
 
+        /// <summary>
+        /// Add a location object at the current index and advance.
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
         public int AddLocation(Location loc)
         {
             AddBytes(BitConverter.GetBytes((ushort)loc.X));
@@ -148,11 +195,20 @@ namespace Tibia.Packets
         #endregion
 
         #region Get
+        /// <summary>
+        /// Get the byte at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
         public byte GetByte()
         {
             return data[index++];
         }
 
+        /// <summary>
+        /// Get an array of bytes at the current index and advance.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public byte[] GetBytes(int length)
         {
             byte[] b = new byte[length];
@@ -161,6 +217,10 @@ namespace Tibia.Packets
             return b;
         }
 
+        /// <summary>
+        /// Get an "int" (aka. 2 byte unsigned short) at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
         public ushort GetInt()
         {
             ushort i = BitConverter.ToUInt16(data, index);
@@ -168,6 +228,10 @@ namespace Tibia.Packets
             return i;
         }
 
+        /// <summary>
+        /// Get a "long" (aka. 4 byte integer) at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
         public int GetLong()
         {
             int l = BitConverter.ToInt32(data, index);
@@ -175,6 +239,11 @@ namespace Tibia.Packets
             return l;
         }
 
+        /// <summary>
+        /// Get a string at the current index and advance.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public string GetString(int length)
         {
             string s = Encoding.ASCII.GetString(data, index, length);
@@ -182,6 +251,10 @@ namespace Tibia.Packets
             return s;
         }
 
+        /// <summary>
+        /// Get a location object at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
         public Location GetLocation()
         {
             Location loc = new Location();
@@ -191,6 +264,10 @@ namespace Tibia.Packets
             return loc;
         }
 
+        /// <summary>
+        /// Get the completed packet with the two byte length header attached.
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetPacket()
         {
             byte[] b = new byte[index + 2];
@@ -201,12 +278,22 @@ namespace Tibia.Packets
         #endregion
 
         #region Control
+        /// <summary>
+        /// Move the index to the specified value. Same as setting Index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public int Seek(int index)
         {
             this.index = index;
             return index;
         }
 
+        /// <summary>
+        /// Skip the index ahead the specified amount of bytes.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public int Skip(int length)
         {
             index += length;

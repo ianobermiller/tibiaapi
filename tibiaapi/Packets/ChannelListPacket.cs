@@ -34,21 +34,18 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.ChannelList) return false;
-                numChannels = packet[3];
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                numChannels = p.GetByte();
                 channels = new List<Channel>(numChannels);
-                int index = 4;
                 ushort id, len;
                 for (int i = 0; i < numChannels; i++)
                 {
-                    id = BitConverter.ToUInt16(packet, index);
-                    index += 2;
-                    len = BitConverter.ToUInt16(packet, index);
-                    index += 2;
+                    id = p.GetInt();
+                    len = p.GetInt();
                     channels.Add(new Channel(
                         (ChatChannel)id,
-                        Encoding.ASCII.GetString(packet, index, len)
+                        p.GetString(len)
                     ));
-                    index += len;
                 }
                 return true;
             }
@@ -60,25 +57,16 @@ namespace Tibia.Packets
 
         public static ChannelListPacket Create(List<Channel> channels)
         {
-            short len = 0;
-            foreach (Channel c in channels)
-                len += (short)(4 + c.Name.Length);
-            byte[] packet = new byte[4 + len];
+            PacketBuilder p = new PacketBuilder(PacketType.ChannelList);
+            p.AddByte((byte)channels.Count);
 
-            Array.Copy(BitConverter.GetBytes((short)(2 + len)), 0, packet, 0, 2);
-            packet[2] = (byte)PacketType.ChannelList;
-            packet[3] = (byte)channels.Count;
-            int index = 4;
             foreach (Channel c in channels)
             {
-                Array.Copy(BitConverter.GetBytes((ushort)c.Id), 0, packet, index, 2);
-                index += 2;
-                Array.Copy(BitConverter.GetBytes((short)c.Name.Length), 0, packet, index, 2);
-                index += 2;
-                Array.Copy(Encoding.ASCII.GetBytes(c.Name), 0, packet, index, c.Name.Length);
-                index += c.Name.Length;
+                p.AddInt((int)c.Id);
+                p.AddInt(c.Name.Length);
+                p.AddString(c.Name);
             }
-            ChannelListPacket clp = new ChannelListPacket(packet);
+            ChannelListPacket clp = new ChannelListPacket(p.GetPacket());
             return clp;
         }
     }
