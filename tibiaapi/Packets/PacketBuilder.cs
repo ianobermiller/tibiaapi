@@ -112,6 +112,13 @@ namespace Tibia.Packets
             return length;
         }
 
+        public int AddBytes(byte[] b, int length, int sourceIndex)
+        {
+            Array.Copy(b, sourceIndex, data, index, length);
+            index += length;
+            return length;
+        }
+
         public int AddInt(int i)
         {
             return AddBytes(BitConverter.GetBytes((ushort)i));
