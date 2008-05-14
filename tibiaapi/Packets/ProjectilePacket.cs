@@ -41,20 +41,10 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.Projectile) return false;
-                int index = 3;
-                from.X = BitConverter.ToInt16(packet, index);
-                index += 2;
-                from.Y = BitConverter.ToInt16(packet, index);
-                index += 2;
-                from.Z = packet[index];
-                index += 1;
-                to.X = BitConverter.ToInt16(packet, index);
-                index += 2;
-                to.Y = BitConverter.ToInt16(packet, index);
-                index += 2;
-                to.Z = packet[index];
-                index += 1;
-                projectile = packet[index];
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                from = p.GetLocation();
+                to = p.GetLocation();
+                projectile = p.GetByte();
                 return true;
             }
             else
@@ -65,15 +55,11 @@ namespace Tibia.Packets
 
         public static ProjectilePacket Create(Objects.Location from, Objects.Location to, byte projectile)
         {
-            byte[] packet = new byte[14];
-
-            packet[0] = 0x0C;
-            packet[2] = (byte)PacketType.Projectile;
-            Array.Copy(from.ToBytes(), 0, packet, 3, 5);
-            Array.Copy(to.ToBytes(), 0, packet, 8, 5);
-            packet[13] = projectile;
-
-            ProjectilePacket pp = new ProjectilePacket(packet);
+            PacketBuilder p = new PacketBuilder(PacketType.Projectile);
+            p.AddLocation(from);
+            p.AddLocation(to);
+            p.AddByte(projectile);
+            ProjectilePacket pp = new ProjectilePacket(p.GetPacket());
             return pp;
         }
     }

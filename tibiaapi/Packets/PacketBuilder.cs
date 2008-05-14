@@ -71,6 +71,13 @@ namespace Tibia.Packets
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="start"></param>
+        public PacketBuilder(byte[] packet, int start) : this(packet, start, packet.Length - start)  { }
+
+        /// <summary>
+        /// Start parsing the given packet.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <param name="start"></param>
         /// <param name="length"></param>
         public PacketBuilder(byte[] packet, int start, int length) : this()
         {
@@ -98,7 +105,7 @@ namespace Tibia.Packets
 
         public int AddInt(int i)
         {
-            return AddBytes(BitConverter.GetBytes((short)i));
+            return AddBytes(BitConverter.GetBytes((ushort)i));
         }
 
         public int AddLong(int l)
@@ -114,6 +121,13 @@ namespace Tibia.Packets
         public int AddString(string s, int length)
         {
             return AddBytes(Encoding.ASCII.GetBytes(s));
+        }
+
+        public int AddLocation(Location loc)
+        {
+            AddBytes(BitConverter.GetBytes((ushort)loc.X));
+            AddBytes(BitConverter.GetBytes((ushort)loc.Y));
+            return AddByte((byte)loc.Z);
         }
         #endregion
 
@@ -131,9 +145,9 @@ namespace Tibia.Packets
             return b;
         }
 
-        public int GetInt()
+        public ushort GetInt()
         {
-            int i = BitConverter.ToInt16(data, index);
+            ushort i = BitConverter.ToUInt16(data, index);
             index += 2;
             return i;
         }
@@ -152,12 +166,35 @@ namespace Tibia.Packets
             return s;
         }
 
+        public Location GetLocation()
+        {
+            Location loc = new Location();
+            loc.X = GetInt();
+            loc.Y = GetInt();
+            loc.Z = GetByte();
+            return loc;
+        }
+
         public byte[] GetPacket()
         {
-            byte[] b = new byte[index];
+            byte[] b = new byte[index + 2];
             Array.Copy(BitConverter.GetBytes((short)index), b, 2);
             Array.Copy(data, 0, b, 2, index);
             return b;
+        }
+        #endregion
+
+        #region Control
+        public int Seek(int index)
+        {
+            this.index = index;
+            return index;
+        }
+
+        public int Skip(int length)
+        {
+            index += length;
+            return index;
         }
         #endregion
     }

@@ -35,14 +35,9 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.TileAnimation) return false;
-                int index = 3;
-                loc.X = BitConverter.ToInt16(packet, index);
-                index += 2;
-                loc.Y = BitConverter.ToInt16(packet, index);
-                index += 2;
-                loc.Z = packet[index];
-                index += 1;
-                anim = packet[index];
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                loc = p.GetLocation();
+                anim = p.GetByte();
                 return true;
             }
             else
@@ -50,16 +45,12 @@ namespace Tibia.Packets
                 return false;
             }
         }
-        public static TileAnimationPacket Create(Objects.Location loc, byte Animation)
+        public static TileAnimationPacket Create(Objects.Location loc, byte animation)
         {
-            byte[] packet = new byte[9];
-            packet[0] = 0x07;
-            packet[2] = (byte)PacketType.TileAnimation;
-            Array.Copy(BitConverter.GetBytes((short)(loc.X)), 0, packet, 3, 2);
-            Array.Copy(BitConverter.GetBytes((short)(loc.Y)), 0, packet, 5, 2);
-            packet[7] = (byte)loc.Z;
-            packet[8] = Animation;
-            TileAnimationPacket tap = new TileAnimationPacket(packet);
+            PacketBuilder p = new PacketBuilder(PacketType.TileAnimation);
+            p.AddLocation(loc);
+            p.AddByte(animation);
+            TileAnimationPacket tap = new TileAnimationPacket(p.GetPacket());
             return tap;
         }
     }

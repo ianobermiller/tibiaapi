@@ -30,8 +30,8 @@ namespace Tibia.Objects
         public byte[] ToBytes()
         {
             byte[] bytes = new byte[5];
-            Array.Copy(BitConverter.GetBytes((short)X), 0, bytes, 0, 2);
-            Array.Copy(BitConverter.GetBytes((short)Y), 0, bytes, 2, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)X), 0, bytes, 0, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)Y), 0, bytes, 2, 2);
             bytes[4] = (byte)Z;
             return bytes;
         }

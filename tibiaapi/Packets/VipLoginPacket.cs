@@ -29,8 +29,8 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.VipLogin) return false;
-                int index = 3;
-                playerId = BitConverter.ToInt32(packet, index);
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                playerId = p.GetLong();
                 return true;
             }
             else
@@ -39,13 +39,16 @@ namespace Tibia.Packets
             }
         }
 
-        public static VipLoginPacket Create(Objects.Vip creature)
+        public static VipLoginPacket Create(Objects.Vip player)
         {
-            byte[] packet = new byte[7];
-            packet[0] = 0x05;
-            packet[2] = (byte)PacketType.VipLogin;
-            Array.Copy(BitConverter.GetBytes(creature.Id), 0, packet, 3, 4);
-            VipLoginPacket vlp = new VipLoginPacket(packet);
+            return Create(player.Id);
+        }
+
+        public static VipLoginPacket Create(int id)
+        {
+            PacketBuilder p = new PacketBuilder(PacketType.VipLogin);
+            p.AddLong(id);
+            VipLoginPacket vlp = new VipLoginPacket(p.GetPacket());
             return vlp;
         }
     }

@@ -47,7 +47,7 @@ namespace Tibia.Packets
                 {
                     //new creature, all info
                 }
-                else if (typen == 0x63)
+                else if (typen == 0x62)
                 {
                     //Creature, Known ID
                 }

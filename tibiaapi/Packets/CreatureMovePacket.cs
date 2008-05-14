@@ -7,16 +7,25 @@ namespace Tibia.Packets
     public class CreatureMovePacket : Packet
     {
         private Objects.Location from;
+        private byte fromStackPos;
         private Objects.Location to;
         private byte id;
+
         public Objects.Location From
         {
             get { return from; }
         }
+
+        public byte FromStackPos
+        {
+            get { return fromStackPos; }
+        }
+
         public Objects.Location To
         {
             get { return to; }
         }
+
         public CreatureMovePacket()
         {
             type = PacketType.CreatureMove;
@@ -32,19 +41,10 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.CreatureMove) return false;
-                int index = 3;
-                from.X = BitConverter.ToInt16(packet, index);
-                index += 2;
-                from.Y = BitConverter.ToInt16(packet, index);
-                index += 2;
-                from.Z = packet[index];
-                index += 2;
-                to.X = BitConverter.ToInt16(packet, index);
-                index += 2;
-                to.Y = BitConverter.ToInt16(packet, index);
-                index += 2;
-                to.Z = packet[index];
-                index += 1;
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                from = p.GetLocation();
+                fromStackPos = p.GetByte();
+                to = p.GetLocation();
                 return true;
             }
             else
@@ -53,18 +53,13 @@ namespace Tibia.Packets
             }
         }
 
-        public static CreatureMovePacket Create(Objects.Location from, Objects.Location to)
+        public static CreatureMovePacket Create(Objects.Location from, byte fromStackPos, Objects.Location to)
         {
-            byte[] packet = new byte[14];
-            packet[0] = 0x0C;
-            packet[2] = (byte)PacketType.CreatureHealth;
-            Array.Copy(BitConverter.GetBytes((short)(from.X)), 0, packet, 3, 2);
-            Array.Copy(BitConverter.GetBytes((short)(from.Y)), 0, packet, 5, 2);
-            packet[7] = (byte)from.Z;
-            Array.Copy(BitConverter.GetBytes((short)(to.X)), 0, packet, 9, 2);
-            Array.Copy(BitConverter.GetBytes((short)(to.Y)), 0, packet, 11, 2);
-            packet[13] = (byte)to.Z;
-            CreatureMovePacket cmp = new CreatureMovePacket(packet);
+            PacketBuilder p = new PacketBuilder(PacketType.CreatureMove);
+            p.AddLocation(from);
+            p.AddByte(fromStackPos);
+            p.AddLocation(to);
+            CreatureMovePacket cmp = new CreatureMovePacket(p.GetPacket());
             return cmp;
         }
     }

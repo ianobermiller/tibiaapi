@@ -6,17 +6,29 @@ namespace Tibia.Packets
 {
     public class StatusUpdatePacket:Packet
     {
-        private int hp, mp, cap, exp, level, stamina;
-        private byte xpbar,soul;
+        private int hp, maxHp, cap, exp, level, mp, maxMp, stamina;
+        private byte xpbar, magicLevel, soul;
 
+        #region Properties
         public int Health
         {
             get { return hp; }
         }
 
+
+        public int MaxHealth
+        {
+            get { return maxHp; }
+        }
+
         public int Mana
         {
             get { return mp; }
+        }
+
+        public int MaxMana
+        {
+            get { return maxMp; }
         }
 
         public int Cap
@@ -39,41 +51,47 @@ namespace Tibia.Packets
             get { return xpbar; }
         }
 
+        public byte MagicLevel
+        {
+            get { return magicLevel; }
+        }
+
         public byte SoulPoints
         {
             get { return soul; }
         }
-        
+        #endregion
+
         public StatusUpdatePacket()
         {
             type = PacketType.StatusUpdate;
             destination = PacketDestination.Client;
         }
+
         public StatusUpdatePacket(byte[] data)
             :this()
         {
             ParseData(data);
         }
+
         public new bool ParseData(byte[] packet)
         {
             if (base.ParseData(packet))
             {
                 if (type != PacketType.StatusUpdate) return false;
-                int index = 3;
-                hp = BitConverter.ToInt16(packet, index);
-                index += 4;
-                cap = BitConverter.ToInt16(packet, index);
-                index += 2;
-                exp = BitConverter.ToInt32(packet, index);
-                index += 4;
-                level = BitConverter.ToInt16(packet, index);
-                index += 2;
-                xpbar = packet[index];
-                index += 1;
-                mp = BitConverter.ToInt16(packet, index);
-                index += 6;
-                soul = packet[index];
-                stamina = BitConverter.ToInt16(packet, index);
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                hp = p.GetInt();
+                maxHp = p.GetInt();
+                cap = p.GetInt();
+                exp = p.GetLong();
+                level = p.GetInt();
+                xpbar = p.GetByte();
+                mp = p.GetInt();
+                maxMp = p.GetInt();
+                magicLevel = p.GetByte();
+                p.GetByte(); // ?
+                soul = p.GetByte();
+                stamina = p.GetInt();
                 return true;
             }
             else
@@ -82,24 +100,37 @@ namespace Tibia.Packets
             }
         }
 
-        public static StatusUpdatePacket Create(int hp, int mana, int level, int exp, int cap, int stamina, byte soul, byte xpbar)
+        /// <summary>
+        /// Create a status update packet.
+        /// </summary>
+        /// <param name="hp"></param>
+        /// <param name="maxHp"></param>
+        /// <param name="cap"></param>
+        /// <param name="exp"></param>
+        /// <param name="level"></param>
+        /// <param name="xpbar">percentage, 0 - 100</param>
+        /// <param name="mana"></param>
+        /// <param name="maxMana"></param>
+        /// <param name="magicLvl"></param>
+        /// <param name="soul"></param>
+        /// <param name="stamina">in seconds</param>
+        /// <returns></returns>
+        public static StatusUpdatePacket Create(int hp, int maxHp, int cap, int exp, int level, byte xpbar, int mana, int maxMana, byte magicLvl, byte soul, int stamina)
         {
-            PacketBuilder pkt = new PacketBuilder();
-            pkt.AddInt(23);
-            pkt.AddByte((byte)PacketType.StatusUpdate);
-            pkt.AddInt(hp);
-            pkt.AddInt(hp);
-            pkt.AddInt(cap);
-            pkt.AddLong(exp);
-            pkt.AddInt(level);
-            pkt.AddByte(xpbar);
-            pkt.AddInt(mana);
-            pkt.AddInt(mana);
-            pkt.AddByte(0x00);
-            pkt.AddByte(0x00);
-            pkt.AddByte(soul);
-            pkt.AddInt(stamina);
-            StatusUpdatePacket sup = new StatusUpdatePacket(pkt.Data);
+            PacketBuilder p = new PacketBuilder(PacketType.StatusUpdate);
+            p.AddInt(hp);
+            p.AddInt(maxHp);
+            p.AddInt(cap);
+            p.AddLong(exp);
+            p.AddInt(level);
+            p.AddByte(xpbar);
+            p.AddInt(mana);
+            p.AddInt(maxMana);
+            p.AddByte(magicLvl);
+            p.AddByte(0x00); // ?
+            p.AddByte(soul);
+            p.AddInt(stamina);
+            StatusUpdatePacket sup = new StatusUpdatePacket(p.GetPacket());
             return sup;
         }
     }

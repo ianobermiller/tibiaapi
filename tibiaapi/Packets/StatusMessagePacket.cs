@@ -6,7 +6,7 @@ namespace Tibia.Packets
     public class StatusMessagePacket : Packet
     {
         private StatusMessageType color;
-        private short lenMessage;
+        private ushort lenMessage;
         private string message;
 
         public StatusMessageType Color
@@ -36,12 +36,10 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.StatusMessage) return false;
-                int index = 3; // Color
-                color = (StatusMessageType)packet[index];
-                index += 1; // Message length
-                lenMessage = BitConverter.ToInt16(packet, index);
-                index += 2; // Begin message
-                message = Encoding.ASCII.GetString(packet, index, lenMessage);
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                color = (StatusMessageType)p.GetByte();
+                lenMessage = p.GetInt();
+                message = p.GetString(lenMessage);
                 return true;
             }
             else
@@ -52,13 +50,11 @@ namespace Tibia.Packets
 
         public static StatusMessagePacket Create(StatusMessageType color, string message)
         {
-            byte[] packet = new byte[message.Length + 6];
-            Array.Copy(BitConverter.GetBytes((short)(message.Length + 4)), packet, 2);
-            packet[2] = (byte)PacketType.StatusMessage;
-            packet[3] = (byte)color;
-            Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 4, 2);
-            Array.Copy(Encoding.ASCII.GetBytes(message), 0, packet, 6, message.Length);
-            StatusMessagePacket smp = new StatusMessagePacket(packet);
+            PacketBuilder p = new PacketBuilder(PacketType.StatusMessage);
+            p.AddByte((byte)color);
+            p.AddInt(message.Length);
+            p.AddString(message);
+            StatusMessagePacket smp = new StatusMessagePacket(p.GetPacket());
             return smp;
         }
     }
