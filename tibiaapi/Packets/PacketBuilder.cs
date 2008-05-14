@@ -39,6 +39,15 @@ namespace Tibia.Packets
                 }
             }
         }
+
+        /// <summary>
+        /// Get/Set the current index in this packet.
+        /// </summary>
+        public int Index
+        {
+            get { return index; }
+            set { index = value; }
+        }
         #endregion
 
         #region Constructors

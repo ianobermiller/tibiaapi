@@ -26,8 +26,8 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.Attacked) return false;
-                int index = 3;
-                creatureId = BitConverter.ToInt32(packet, index);
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                creatureId = p.GetLong();
                 return true;
             }
             else
@@ -38,11 +38,14 @@ namespace Tibia.Packets
 
         public static AttackedPacket Create(Objects.Creature creature)
         {
-            byte[] packet = new byte[8];
-            packet[0] = 0x06;
-            packet[2] = (byte)PacketType.Attacked;
-            Array.Copy(BitConverter.GetBytes(creature.Id), 0, packet, 3, 4);
-            AttackedPacket atp = new AttackedPacket(packet);
+            return Create(creature.Id);
+        }
+
+        public static AttackedPacket Create(int id)
+        {
+            PacketBuilder p = new PacketBuilder(PacketType.Attacked);
+            p.AddLong(id);
+            AttackedPacket atp = new AttackedPacket(p.GetPacket());
             return atp;
         }
     }

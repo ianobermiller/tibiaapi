@@ -20,7 +20,7 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.DefaultTemplate) return false;
-                int index = 3;
+                PacketBuilder p = new PacketBuilder(packet, 3);
 
                 return true;
             }
@@ -32,10 +32,10 @@ namespace Tibia.Packets
 
         public static DefaultTemplatePacket Create()
         {
-            byte[] packet = new byte[1];
+            PacketBuilder p = new PacketBuilder(PacketType.DefaultTemplate);
 
-            DefaultTemplatePacket p = new DefaultTemplatePacket(packet);
-            return p;
+            DefaultTemplatePacket pkt = new DefaultTemplatePacket(p.GetPacket());
+            return pkt;
         }
     }
 }
