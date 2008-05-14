@@ -32,7 +32,7 @@ namespace Tibia.Util
         }
 
         /// <summary>
-        /// Decrypte a packet using XTEA.
+        /// Decrypt a packet using XTEA.
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="key"></param>

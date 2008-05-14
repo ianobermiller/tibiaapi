@@ -5,6 +5,19 @@ namespace Tibia.Packets
 {
     public class MapItemRemovePacket : Packet
     {
+        private Location from;
+        private int stackPos;
+
+        public Location From
+        {
+            get { return from; }
+        }
+
+        public int StackPos
+        {
+            get { return StackPos; }
+        }
+
         public MapItemRemovePacket()
         {
             type = PacketType.MapItemRemove;
@@ -20,8 +33,10 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.MapItemRemove) return false;
-                int index = 3;
-
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                from = p.GetLocation();
+                stackPos = p.GetByte();
+                index = p.Index;
                 return true;
             }
             else 

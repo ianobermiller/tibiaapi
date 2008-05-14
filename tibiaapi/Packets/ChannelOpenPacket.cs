@@ -39,6 +39,7 @@ namespace Tibia.Packets
                 channelId = p.GetInt();
                 lenChannelName = p.GetInt();
                 channelName = p.GetString(lenChannelName);
+                index = p.Index;
                 return true;
             }
             else 

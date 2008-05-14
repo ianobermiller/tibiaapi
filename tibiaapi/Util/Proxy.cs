@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Tibia.Objects;
 using Tibia.Packets;
+using System.IO;
 
 namespace Tibia.Util
 {
@@ -39,7 +40,7 @@ namespace Tibia.Util
         private bool           isLoggedIn = false;
         private int            loginDelay = 250;
         private short          localPort;
-        private Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
+        public Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientSendQueue = new Queue<byte[]>();
         private Queue<byte[]>  serverSendQueue = new Queue<byte[]>();
@@ -48,6 +49,8 @@ namespace Tibia.Util
         private bool           writingToClient = false;
         private bool           writingToServer = false;
         private DateTime       lastServerWrite = DateTime.UtcNow;
+        private PacketBuilder  partial;
+        private int            partialRemaining = 0;
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -68,8 +71,8 @@ namespace Tibia.Util
         /// A generic function prototype for packet events.
         /// </summary>
         /// <param name="packet">The unencrypted packet that was received.</param>
-        /// <returns>The unencrypted packet to be forwarded. If null, the packet will not be forwarded.</returns>
-        public delegate Packet PacketListener(Packet packet);
+        /// <returns>true to continue forwarding the packet, false to drop the packet</returns>
+        public delegate bool PacketListener(Packet packet);
 
         /// <summary>
         /// A function prototype for proxy notifications.
@@ -86,6 +89,11 @@ namespace Tibia.Util
         /// Called when the client has logged out.
         /// </summary>
         public ProxyNotification OnLogOut;
+
+        /// <summary>
+        /// Called when the client crashes.
+        /// </summary>
+        public ProxyNotification OnCrash;
 
         /// <summary>
         /// Called when a packet is received from the server.
@@ -110,13 +118,38 @@ namespace Tibia.Util
         public PacketListener ReceivedTileAnimationPacket;
         public PacketListener ReceivedAttackPacket;
         public PacketListener ReceivedStatusUpdatePacket;
+        public PacketListener ReceivedMapItemRemovePacket;
+        public PacketListener ReceivedMapItemAddPacket;
 
         // Outgoing
         public PacketListener ReceivedPlayerSpeechPacket;
 
         #endregion
 
+        #region Properties
+        /// <summary>
+        /// Returns true if the proxy is connected
+        /// </summary>
+        public bool Connected
+        {
+            get { return connected; }
+        }
+
+        /// <summary>
+        /// Returns true if the client is logged in.
+        /// </summary>
+        public bool IsLoggedIn
+        {
+            get { return isLoggedIn; }
+        }
+        #endregion
+
         #region Constructors
+        /// <summary>
+        /// Default constructor, does nothing.
+        /// </summary>
+        public Proxy() { }
+
         /// <summary>
         /// Create a new proxy and start listening for the client to connect.
         /// </summary>
@@ -157,6 +190,7 @@ namespace Tibia.Util
         }
         #endregion
 
+        #region Startup
         /// <summary>
         /// Restart the proxy.
         /// </summary>
@@ -197,7 +231,7 @@ namespace Tibia.Util
             if (bytesRead > 0)
             {
                 // Check whether this is a char list request or game server login
-                if (dataClient[2] == (byte)PacketType.GameWorldLoginData)
+                if (dataClient[2] == (byte)PacketType.AddCreature)
                 {
                     ConnectClientToGameWorld(bytesRead);
                 }
@@ -228,6 +262,21 @@ namespace Tibia.Util
                 // different port with the game server
                 RefreshClientListener();
             }
+        }
+
+        private void ProcessCharListPacket(byte[] data, int length)
+        {
+            byte[] packet = new byte[length];
+            byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
+
+            Array.Copy(data, packet, length);
+            packet = XTEA.Decrypt(packet, key);
+
+            charList = new CharListPacket();
+            charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
+
+            packet = XTEA.Encrypt(charList.Data, key);
+            Array.Copy(packet, data, length);
         }
 
         private void RefreshClientListener()
@@ -281,6 +330,7 @@ namespace Tibia.Util
             // The proxy is now connected
             connected = true;
         }
+        #endregion
 
         #region Server -> Client
         private void ReceiveFromServer(IAsyncResult ar)
@@ -313,31 +363,197 @@ namespace Tibia.Util
             netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
         }
 
-        private void ProcessServerReceiveQueue()
+        public void ProcessServerReceiveQueue()
         {
             if (serverReceiveQueue.Count > 0)
             {
                 byte[] original = serverReceiveQueue.Dequeue();
                 byte[] decrypted = DecryptPacket(original);
 
+                int remaining = 0; // the bytes worth of logical packets left
+
                 // Always call the default (if attached to)
-                if (ReceivedPacketFromServer != null)
-                    ReceivedPacketFromServer(new Packet(decrypted));
+                //if (ReceivedPacketFromServer != null)
+                //    ReceivedPacketFromServer(new Packet(decrypted));
 
-
-                Packet packetobj = RaiseIncomingEvents(decrypted);
-                if (packetobj != null)
+                // Is this a part of a larger packet?
+                if (partialRemaining > 0)
                 {
-                    // Packet editing not supported yet, something goes wrong in 
-                    // Encrypting or decrypting, usually get an error when saying "hi"
-                    //clientSendQueue.Enqueue(packetobj.Data);
-                    clientSendQueue.Enqueue(original);
+                    // Not sure if this works yet...
+                    // Yes, tack it onto the end of the partial packet
+                    partial.AddBytes(decrypted);
+
+                    // Subtract from the remaining needed
+                    partialRemaining -= decrypted.Length;
+                    
+                }
+                else
+                {
+                    // No, create a new partial packet
+                    partial = new PacketBuilder(decrypted);
+                    remaining = partial.GetInt();
+                    partialRemaining = remaining - (decrypted.Length - 2); // packet length - part we already have
+                }
+
+                // Do we have a complete packet now?
+                if (partialRemaining == 0)
+                {
+                    int length = 0;
+                    bool forward;
+
+                    // Keep going until no more logical packets
+                    while (remaining > 0)
+                    {
+                        // Process the packet
+                        forward = RaiseIncomingEvents(decrypted, ref length);
+
+                        // If packet not found in database, forward the rest
+                        if (length == -1)
+                        {
+                            SendToClient(decrypted);
+                            break;
+                        }
+
+                        length++;
+                        if (forward)
+                        {
+                            if (ReceivedPacketFromServer != null)
+                                ReceivedPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
+
+                            // Repackage it and send
+                            SendToClient(Repackage(decrypted, 2, length));
+                        }
+
+                        // Subtract the amount that was parsed
+                        remaining -= length;
+
+                        // Repackage decrypted without the first logical packet
+                        if (remaining > 0)
+                            decrypted = Repackage(decrypted, length + 2);
+                    }
+
+                    // Start processing the queue
                     ProcessClientSendQueue();
                 }
+                // else, delay processing until the rest of the packet arrives
 
                 if (serverReceiveQueue.Count > 0)
                     ProcessServerReceiveQueue();
             }
+        }
+
+        private byte[] Repackage(byte[] data)
+        {
+            return Repackage(data, 0);
+        }
+
+        private byte[] Repackage(byte[] data, int start)
+        {
+            return Repackage(data, start, data.Length - start);
+        }
+
+        private byte[] Repackage(byte[] data, int start, int length)
+        {
+            byte[] packaged = new byte[length + 2];
+            Array.Copy(BitConverter.GetBytes((ushort)length), packaged, 2);
+            Array.Copy(data, start, packaged, 2, length);
+            return packaged;
+        }
+
+        private bool RaiseIncomingEvents(byte[] packet, ref int length)
+        {
+            length = -1;
+            if (packet.Length < 3) return true;
+            Packet p;
+            PacketType type = (PacketType)packet[2];
+            switch (type)
+            {
+                case PacketType.AnimatedText:
+                    p = new AnimatedTextPacket(packet);
+                    length = p.Index;
+                    if (ReceivedAnimatedTextPacket != null)
+                        return ReceivedAnimatedTextPacket(p);
+                    break;
+                case PacketType.ChatMessage:
+                    p = new ChatMessagePacket(packet);
+                    length = p.Index;
+                    if (ReceivedChatMessagePacket != null)
+                        return ReceivedChatMessagePacket(p);
+                    break;
+                case PacketType.StatusMessage:
+                    p = new StatusMessagePacket(packet);
+                    length = p.Index;
+                    if (ReceivedStatusMessagePacket != null)
+                        return ReceivedStatusMessagePacket(p);
+                    break;
+                case PacketType.Projectile:
+                    p = new ProjectilePacket(packet);
+                    length = p.Index;
+                    if (ReceivedProjectilePacket != null)
+                        return ReceivedProjectilePacket(p);
+                    break;
+                case PacketType.CreatureHealth:
+                    p = new CreatureHealthPacket(packet);
+                    length = p.Index;
+                    if (ReceivedCreatureHealthPacket != null)
+                        return ReceivedCreatureHealthPacket(p);
+                    break;
+                case PacketType.VipLogin:
+                    p = new VipLoginPacket(packet);
+                    length = p.Index;
+                    if (ReceivedVipLoginPacket != null)
+                        return ReceivedVipLoginPacket(p);
+                    break;
+                case PacketType.ChannelList:
+                    p = new ChannelListPacket(packet);
+                    length = p.Index;
+                    if (ReceivedChannelListPacket != null)
+                        return ReceivedChannelListPacket(p);
+                    break;
+                case PacketType.ChannelOpen:
+                    p = new ChannelOpenPacket(packet);
+                    length = p.Index;
+                    if (ReceivedChannelOpenPacket != null)
+                        return ReceivedChannelOpenPacket(p);
+                    break;
+                case PacketType.CreatureMove:
+                    p = new CreatureMovePacket(packet);
+                    length = p.Index;
+                    if (ReceivedCreatureMovePacket != null)
+                        return ReceivedCreatureMovePacket(p);
+                    break;
+                case PacketType.TileAnimation:
+                    p = new TileAnimationPacket(packet);
+                    length = p.Index;
+                    if (ReceivedTileAnimationPacket != null)
+                        return ReceivedTileAnimationPacket(p);
+                    break;
+                case PacketType.Attacked:
+                    p = new AttackedPacket(packet);
+                    length = p.Index;
+                    if (ReceivedAttackPacket != null)
+                        return ReceivedAttackPacket(p);
+                    break;
+                case PacketType.StatusUpdate:
+                    p = new StatusUpdatePacket(packet);
+                    length = p.Index;
+                    if (ReceivedStatusUpdatePacket != null)
+                        return ReceivedStatusUpdatePacket(p);
+                    break;
+                case PacketType.MapItemRemove:
+                    p = new MapItemRemovePacket(packet);
+                    length = p.Index;
+                    if (ReceivedMapItemRemovePacket != null)
+                        return ReceivedMapItemRemovePacket(p);
+                    break;
+                case PacketType.MapItemAdd:
+                    p = new MapItemAddPacket(packet);
+                    length = p.Index;
+                    if (ReceivedMapItemAddPacket != null)
+                        return ReceivedMapItemAddPacket(p);
+                    break;
+            }
+            return true;
         }
 
         private void ProcessClientSendQueue()
@@ -346,7 +562,18 @@ namespace Tibia.Util
             {
                 byte[] packet = clientSendQueue.Dequeue();
                 writingToClient = true;
-                netStreamClient.BeginWrite(packet, 0, packet.Length, ClientWriteDone, null);
+                try
+                {
+                    netStreamClient.BeginWrite(packet, 0, packet.Length, ClientWriteDone, null);
+                }
+                catch(IOException e)
+                {
+                    // Client crash
+                    Stop();
+                    if (OnCrash != null)
+                        OnCrash();
+                    return;
+                }
             }
         }
 
@@ -400,9 +627,30 @@ namespace Tibia.Util
 
             ProcessClientReceiveQueue();
 
-            if (!netStreamClient.CanRead) return;
+            try
+            {
+                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
+            }
+            catch (IOException e)
+            {
+                // Client crashed
+                Stop();
+                if (OnCrash != null)
+                    OnCrash();
+                return;
+            }
+        }
 
-            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
+        private void Stop()
+        {
+            connected = false;
+            netStreamClient.Close();
+            netStreamServer.Close();
+            netStreamLogin.Close();
+            tcpClient.Stop();
+            tcpServer.Close();
+            tcpLogin.Close();
+            socketClient.Close();
         }
 
         private void ProcessClientReceiveQueue()
@@ -417,12 +665,9 @@ namespace Tibia.Util
                     ReceivedPacketFromClient(new Packet(decrypted));
 
 
-                Packet packetobj = RaiseOutgoingEvents(decrypted);
-                if (packetobj != null)
+                bool forward = RaiseOutgoingEvents(decrypted);
+                if (forward)
                 {
-                    // Packet editing not supported yet, something goes wrong in 
-                    // Encrypting or decrypting, usually get an error when saying "hi"
-                    //serverSendQueue.Enqueue(packetobj.Data);
                     serverSendQueue.Enqueue(original);
                     ProcessServerSendQueue();
                 }
@@ -430,6 +675,38 @@ namespace Tibia.Util
                 if (clientReceiveQueue.Count > 0)
                     ProcessClientReceiveQueue();
             }
+        }
+
+        private bool RaiseOutgoingEvents(byte[] packet)
+        {
+            if (packet.Length < 3) return true;
+            switch ((PacketType)packet[2])
+            {
+                case PacketType.PlayerSpeech:
+                    if (ReceivedPlayerSpeechPacket != null)
+                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(packet));
+                    break;
+                case PacketType.ClientLoggedIn:
+                    if (!isLoggedIn)
+                    {
+                        isLoggedIn = true;
+                        if (OnLogIn != null)
+                        {
+                            // Call OnLogIn on a seperate thread after a little time to make sure
+                            // the client has initialized the GUI
+                            MethodInvoker invoker = new MethodInvoker(BeginOnLogIn);
+                            invoker.BeginInvoke(null, null);
+                        }
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        private void BeginOnLogIn()
+        {
+            Thread.Sleep(loginDelay);
+            OnLogIn();
         }
 
         private void ProcessServerSendQueue()
@@ -454,120 +731,7 @@ namespace Tibia.Util
         }
         #endregion
 
-        private void Stop()
-        {
-            connected = false;
-            netStreamClient.Close();
-            netStreamServer.Close();
-            netStreamLogin.Close();
-            tcpClient.Stop();
-            tcpServer.Close();
-            tcpLogin.Close();
-            socketClient.Close();
-        }
-
-        private void ProcessCharListPacket(byte[] data, int length)
-        {
-            byte[] packet = new byte[length];
-            byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
-
-            Array.Copy(data, packet, length);
-            packet = XTEA.Decrypt(packet, key);
-
-            charList = new CharListPacket();
-            charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
-
-            packet = XTEA.Encrypt(charList.Data, key);
-            Array.Copy(packet, data, length);
-        }
-        private Packet RaiseOutgoingEvents(byte[] packet)
-        {
-            if (packet.Length < 3) return new Packet(packet);
-            switch ((PacketType)packet[2])
-            {
-                case PacketType.PlayerSpeech:
-                    if (ReceivedPlayerSpeechPacket != null)
-                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(packet));
-                    break;
-                case PacketType.ClientLoggedIn:
-                    if (!isLoggedIn)
-                    {
-                        isLoggedIn = true;
-                        if (OnLogIn != null)
-                        {
-                            // Call OnLogIn on a seperate thread after 1 second to make sure
-                            // the client has initialized the GUI
-                            MethodInvoker invoker = new MethodInvoker(BeginOnLogIn);
-                            invoker.BeginInvoke(null, null);
-                        }
-                    }
-                    break;
-            }
-            return new Packet(packet);
-        }
-        private Packet RaiseIncomingEvents(byte[] packet)
-        {
-            if (packet.Length < 3) return new Packet(packet);
-            switch ((PacketType)packet[2])
-            {
-                case PacketType.AnimatedText:
-                    if (ReceivedAnimatedTextPacket != null)
-                        return ReceivedAnimatedTextPacket(new AnimatedTextPacket(packet));
-                    break;
-                case PacketType.ChatMessage:
-                    if (ReceivedChatMessagePacket != null)
-                        return ReceivedChatMessagePacket(new ChatMessagePacket(packet));
-                    break;
-                case PacketType.StatusMessage:
-                    if (ReceivedStatusMessagePacket != null)
-                        return ReceivedStatusMessagePacket(new StatusMessagePacket(packet));
-                    break;
-                case PacketType.Projectile:
-                    if (ReceivedProjectilePacket != null)
-                        return ReceivedProjectilePacket(new ProjectilePacket(packet));
-                    break;
-                case PacketType.CreatureHealth:
-                    if (ReceivedCreatureHealthPacket != null)
-                        return ReceivedCreatureHealthPacket(new CreatureHealthPacket(packet));
-                    break;
-                case PacketType.VipLogin:
-                    if (ReceivedVipLoginPacket != null)
-                        return ReceivedVipLoginPacket(new VipLoginPacket(packet));
-                    break;
-                case PacketType.ChannelList:
-                    if (ReceivedChannelListPacket != null)
-                        return ReceivedChannelListPacket(new ChannelListPacket(packet));
-                    break;
-                case PacketType.ChannelOpen:
-                    if (ReceivedChannelOpenPacket != null)
-                        return ReceivedChannelOpenPacket(new ChannelOpenPacket(packet));
-                    break;
-                case PacketType.CreatureMove:
-                    if (ReceivedCreatureMovePacket != null)
-                        return ReceivedCreatureMovePacket(new CreatureMovePacket(packet));
-                    break;
-                case PacketType.TileAnimation:
-                    if (ReceivedTileAnimationPacket != null)
-                        return ReceivedTileAnimationPacket(new TileAnimationPacket(packet));
-                    break;
-                case PacketType.Attacked:
-                    if (ReceivedAttackPacket != null)
-                        return ReceivedAttackPacket(new AttackedPacket(packet));
-                    break;
-                case PacketType.StatusUpdate:
-                    if (ReceivedStatusUpdatePacket != null)
-                        return ReceivedStatusUpdatePacket(new StatusUpdatePacket(packet));
-                    break;
-            }
-            return new Packet(packet);
-        }
-
-        private void BeginOnLogIn()
-        {
-            Thread.Sleep(loginDelay);
-            OnLogIn();
-        }
-
+        #region Inject Packets
         /// <summary>
         /// Encrypts and sends a packet to the server
         /// </summary>
@@ -584,11 +748,15 @@ namespace Tibia.Util
         /// <param name="packet"></param>
         public void SendToClient(byte[] packet)
         {
+            //MessageBox.Show(Packet.ByteArrayToHexString(packet));
+            //return;
             byte[] encrypted = EncryptPacket(packet);
             clientSendQueue.Enqueue(encrypted);
             ProcessClientSendQueue();
         }
+        #endregion
 
+        #region Encryption
         /// <summary>
         /// Wrapper for XTEA.Encrypt
         /// </summary>
@@ -618,23 +786,9 @@ namespace Tibia.Util
         {
             return XTEA.DecryptType(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
         }
+        #endregion
 
-        /// <summary>
-        /// Returns true if the proxy is connected
-        /// </summary>
-        public bool Connected
-        {
-            get { return connected; }
-        }
-
-        /// <summary>
-        /// Returns true if the client is logged in.
-        /// </summary>
-        public bool IsLoggedIn
-        {
-            get { return isLoggedIn; }
-        }
-
+        #region Port Checking
         /// <summary>
         /// Check if a port is open on localhost
         /// </summary>
@@ -677,5 +831,6 @@ namespace Tibia.Util
             }
             return start;
         }
+        #endregion
     }
 }

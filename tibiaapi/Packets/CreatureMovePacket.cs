@@ -45,6 +45,7 @@ namespace Tibia.Packets
                 from = p.GetLocation();
                 fromStackPos = p.GetByte();
                 to = p.GetLocation();
+                index = p.Index;
                 return true;
             }
             else

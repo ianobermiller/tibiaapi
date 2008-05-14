@@ -47,6 +47,7 @@ namespace Tibia.Packets
                         p.GetString(len)
                     ));
                 }
+                index = p.Index;
                 return true;
             }
             else 

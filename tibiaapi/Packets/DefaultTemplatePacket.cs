@@ -22,6 +22,7 @@ namespace Tibia.Packets
                 if (type != PacketType.DefaultTemplate) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
 
+                index = p.Index;
                 return true;
             }
             else 

@@ -70,7 +70,7 @@ namespace Tibia.Packets
         }
 
         /// <summary>
-        /// Start parsing the given packet (do not include the first two length bytes).
+        /// Start parsing the given packet.
         /// </summary>
         /// <param name="packet"></param>
         public PacketBuilder(byte[] packet) : this(packet, 0, packet.Length) { }
@@ -262,6 +262,11 @@ namespace Tibia.Packets
             loc.Y = GetInt();
             loc.Z = GetByte();
             return loc;
+        }
+
+        public Item GetItem()
+        {
+            return null;
         }
 
         /// <summary>

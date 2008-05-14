@@ -45,6 +45,7 @@ namespace Tibia.Packets
                 from = p.GetLocation();
                 to = p.GetLocation();
                 projectile = p.GetByte();
+                index = p.Index;
                 return true;
             }
             else

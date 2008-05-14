@@ -8,24 +8,29 @@ namespace Tibia.Packets
     {
         private int creatureId;
         private byte creatureHP;
+
         public int CreatureId
         {
             get { return creatureId; }
         }
+
         public byte CreatureHP
         {
             get { return creatureHP; }
         }
+
         public CreatureHealthPacket()
         {
             type = PacketType.CreatureHealth;
             destination = PacketDestination.Client;
         }
+
         public CreatureHealthPacket(byte[] data)
             : this()
         {
             ParseData(data);
         }
+
         public new bool ParseData(byte[] packet)
         {
             if (base.ParseData(packet))
@@ -34,6 +39,7 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 creatureId = p.GetLong();
                 creatureHP = p.GetByte();
+                index = p.Index;
                 return true;
             }
             else

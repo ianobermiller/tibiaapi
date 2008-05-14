@@ -40,6 +40,7 @@ namespace Tibia.Packets
                 color = (StatusMessageType)p.GetByte();
                 lenMessage = p.GetInt();
                 message = p.GetString(lenMessage);
+                index = p.Index;
                 return true;
             }
             else

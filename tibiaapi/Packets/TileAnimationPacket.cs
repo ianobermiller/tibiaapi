@@ -38,6 +38,7 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 loc = p.GetLocation();
                 anim = p.GetByte();
+                index = p.Index;
                 return true;
             }
             else

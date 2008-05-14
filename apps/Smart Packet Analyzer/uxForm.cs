@@ -65,7 +65,7 @@ namespace SmartPacketAnalyzer
             }));
         }
 
-        private Tibia.Packets.Packet PacketFromClient(Tibia.Packets.Packet packet)
+        private bool PacketFromClient(Packet packet)
         {
             if (uxLogClient.Checked)
             {
@@ -82,10 +82,10 @@ namespace SmartPacketAnalyzer
                     LogPacket(packet.Data, "CLIENT", "SERVER");
                 }
             }
-            return packet;
+            return true;
         }
 
-        private Tibia.Packets.Packet PacketFromServer(Tibia.Packets.Packet packet)
+        private bool PacketFromServer(Packet packet)
         {
             if (uxLogServer.Checked)
             {
@@ -102,7 +102,7 @@ namespace SmartPacketAnalyzer
                     LogPacket(packet.Data, "SERVER", "CLIENT");
                 }
             }
-            return packet;
+            return true;
         }
 
         private void LogPacket(byte[] packet, string from, string to)

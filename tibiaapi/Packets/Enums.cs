@@ -7,28 +7,32 @@ namespace Tibia.Packets
     /// </summary>
     public enum PacketType : byte
     {
-        DefaultTemplate = 0x00,
-        AnimatedText = 0x84,
-        Attacked = 0x86,
-        ChannelList = 0xAB,
-        ChannelOpen = 0xAC,
-        CharListLoginData = 0x01,
-        CharList = 0x14,
-        ChatMessage = 0xAA,
-        ClientLoggedIn = 0xA0,
-        ContainerOpened = 0x6E,
-        CreatureHealth = 0x8C,
-        CreatureMove = 0x6D,
-        GameWorldLoginData = 0x0A,
-        Logout = 0x14,
-        MapItemAdd = 0x6A,
-        MapItemRemove = 0x6C,
-        PlayerSpeech = 0x96,
-        Projectile = 0x85,
-        TileAnimation = 0x83,
-        StatusMessage = 0xB4,
-        StatusUpdate = 0xA0,
-        VipLogin = 0xD3
+        // Incoming
+        DefaultTemplate     = 0x00,
+        CharListLoginData   = 0x01,
+        AddCreature         = 0x0A,
+        CharList            = 0x14,
+        MapItemAdd          = 0x6A,
+        MapItemRemove       = 0x6C,
+        CreatureMove        = 0x6D,
+        ContainerOpened     = 0x6E,
+        TileAnimation       = 0x83,
+        AnimatedText        = 0x84,
+        Projectile          = 0x85,
+        Attacked            = 0x86,
+        CreatureHealth      = 0x8C,
+        StatusUpdate        = 0xA0,
+        CancelTarget        = 0xA3,
+        ChatMessage         = 0xAA,
+        ChannelList         = 0xAB,
+        ChannelOpen         = 0xAC,
+        StatusMessage       = 0xB4,
+        VipLogin            = 0xD3,
+
+        // Outgoing
+        Logout              = 0x14,
+        PlayerSpeech        = 0x96,
+        ClientLoggedIn      = 0xA0
     }
 
     /// <summary>

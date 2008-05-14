@@ -92,6 +92,7 @@ namespace Tibia.Packets
                 p.GetByte(); // ?
                 soul = p.GetByte();
                 stamina = p.GetInt();
+                index = p.Index;
                 return true;
             }
             else

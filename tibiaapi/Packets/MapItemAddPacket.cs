@@ -36,13 +36,11 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.MapItemAdd) return false;
                 int typen;
-                Tibia.Packets.PacketBuilder pkt = new Tibia.Packets.PacketBuilder(packet);
-                pkt.GetInt();
-                pkt.GetByte();
-                loc.X = pkt.GetInt();
-                loc.Y = pkt.GetInt();
-                loc.Z = pkt.GetByte();
-                typen = pkt.GetInt();
+                PacketBuilder p = new PacketBuilder(packet);
+                loc.X = p.GetInt();
+                loc.Y = p.GetInt();
+                loc.Z = p.GetByte();
+                typen = p.GetInt();
                 if (typen == 0x61)
                 {
                     //new creature, all info
@@ -60,10 +58,11 @@ namespace Tibia.Packets
                     item = new Item((uint)typen);
                     try
                     {
-                        item.Count = pkt.GetByte();
+                        item.Count = p.GetByte();
                     }
                     catch (Exception e) { }
                 }
+                index = p.Index;
                 return true;
             }
             else 

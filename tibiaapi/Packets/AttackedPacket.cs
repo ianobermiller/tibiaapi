@@ -28,6 +28,7 @@ namespace Tibia.Packets
                 if (type != PacketType.Attacked) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 creatureId = p.GetLong();
+                index = p.Index;
                 return true;
             }
             else

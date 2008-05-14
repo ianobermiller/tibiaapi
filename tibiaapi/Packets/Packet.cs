@@ -14,6 +14,7 @@ namespace Tibia.Packets
         protected PacketType type;
         protected PacketDestination destination;
         protected short specifiedLength;
+        protected int index;
 
         /// <summary>
         /// Default constructor.
@@ -96,6 +97,11 @@ namespace Tibia.Packets
                     Array.Copy(BitConverter.GetBytes(value), data, 2);
                 }
             }
+        }
+
+        public int Index
+        {
+            get { return index; }
         }
 
         /// <summary>

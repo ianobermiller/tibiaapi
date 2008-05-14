@@ -43,6 +43,7 @@ namespace Tibia.Packets
                 color = (TextColor)p.GetByte();
                 lenMessage = p.GetInt();
                 message = p.GetString(lenMessage);
+                index = p.Index;
                 return true;
             }
             else 

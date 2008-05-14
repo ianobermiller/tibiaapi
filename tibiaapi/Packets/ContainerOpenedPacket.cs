@@ -73,7 +73,7 @@ namespace Tibia.Packets
                         item.Count = p.GetByte();
                     items.Add(item);
                 }
-
+                index = p.Index;
                 return true;
             }
             else 

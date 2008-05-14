@@ -31,6 +31,7 @@ namespace Tibia.Packets
                 if (type != PacketType.VipLogin) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 playerId = p.GetLong();
+                index = p.Index;
                 return true;
             }
             else
