@@ -7,12 +7,40 @@ namespace Tibia.Packets
 {
     public class ContainerOpenedPacket : Packet
     {
-        private Container container;
+        int icon;
+        byte number;
+        int lenName;
+        string name;
+        int volume;
+        List<Item> items;
+        int itemCount;
 
-        public Container Container
+        #region Properties
+        public int Icon
         {
-            get { return container; }
+            get { return icon; }
         }
+
+        public byte Number
+        {
+            get { return number; }
+        }
+
+        public string Name
+        {
+            get { return name; }
+        }
+
+        public int Volume
+        {
+            get { return volume; }
+        }
+
+        public List<Item> Items
+        {
+            get { return items; }
+        }
+        #endregion
 
         public ContainerOpenedPacket()
         {
@@ -24,12 +52,27 @@ namespace Tibia.Packets
         {
             ParseData(data);
         }
-        public new bool ParseData(byte[] packet)
+        public new bool ParseData(byte[] packet, Client client)
         {
             if (base.ParseData(packet))
             {
                 if (type != PacketType.ContainerOpened) return false;
-                int index = 3;
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                number = p.GetByte();
+                icon = p.GetInt();
+                lenName = p.GetInt();
+                name = p.GetString(lenName);
+                volume = p.GetInt();
+                itemCount = p.GetByte();
+                items = new List<Item>(itemCount);
+                Item item;
+                for (int i = 0; i < itemCount; i++)
+                {
+                    item = new Item(p.GetInt());
+                    if (p.PeekByte() <= 100)
+                        item.Count = p.GetByte();
+                    items.Add(item);
+                }
 
                 return true;
             }
@@ -46,35 +89,28 @@ namespace Tibia.Packets
 
         public static ContainerOpenedPacket Create(int icon, byte number, string name, int volume, List<Item> items)
         {
+            PacketBuilder p = new PacketBuilder(PacketType.ContainerOpened);
             short countable = 0;
             foreach (Item item in items)
             {
                 if (item.Count > 0)
                     countable++;
             }
-            short length = (short)(6 + name.Length + 3 + items.Count * 2 + countable);
-            byte[] packet = new byte[length + 2];
-
-            Array.Copy(BitConverter.GetBytes(length), packet, 2);
-            packet[2] = 0x6E;
-            packet[3] = number;
-            Array.Copy(BitConverter.GetBytes((short)icon), 0, packet, 4, 2);
-            Array.Copy(BitConverter.GetBytes((short)name.Length), 0, packet, 6, 2);
-            Array.Copy(Encoding.ASCII.GetBytes(name), 0, packet, 8, name.Length);
-            int index = 8 + name.Length;
-            packet[index++] = Packet.Lo(volume);
-            packet[index++] = Packet.Hi(volume);
-            packet[index++] = (byte)items.Count;
+            p.AddByte(number);
+            p.AddInt(icon);
+            p.AddInt(name.Length);
+            p.AddString(name);
+            p.AddInt(volume);
+            p.AddByte((byte)items.Count);
             foreach (Item item in items)
             {
-                packet[index++] = Packet.Lo(item.Id);
-                packet[index++] = Packet.Hi(item.Id);
+                p.AddInt((int)item.Id);
                 if (item.Count > 0)
-                    packet[index++] = item.Count;
+                    p.AddByte(item.Count);
             }
 
-            ContainerOpenedPacket p = new ContainerOpenedPacket(packet);
-            return p;
+            ContainerOpenedPacket pkt = new ContainerOpenedPacket(p.GetPacket());
+            return pkt;
         }
     }
 }

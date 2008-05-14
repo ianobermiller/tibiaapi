@@ -277,6 +277,74 @@ namespace Tibia.Packets
         }
         #endregion
 
+        #region Peek
+        /// <summary>
+        /// Get the byte at the current index.
+        /// </summary>
+        /// <returns></returns>
+        public byte PeekByte()
+        {
+            return data[index++];
+        }
+
+        /// <summary>
+        /// Get an array of bytes at the current index.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public byte[] PeekBytes(int length)
+        {
+            byte[] b = new byte[length];
+            Array.Copy(data, index, b, 0, length);
+            return b;
+        }
+
+        /// <summary>
+        /// Get an "int" (aka. 2 byte unsigned short) at the current index.
+        /// </summary>
+        /// <returns></returns>
+        public ushort PeekInt()
+        {
+            ushort i = BitConverter.ToUInt16(data, index);
+            return i;
+        }
+
+        /// <summary>
+        /// Get a "long" (aka. 4 byte integer) at the current index.
+        /// </summary>
+        /// <returns></returns>
+        public int PeekLong()
+        {
+            int l = BitConverter.ToInt32(data, index);
+            return l;
+        }
+
+        /// <summary>
+        /// Get a string at the current index.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public string PeekString(int length)
+        {
+            string s = Encoding.ASCII.GetString(data, index, length);
+            return s;
+        }
+
+        /// <summary>
+        /// Get a location object at the current index.
+        /// </summary>
+        /// <returns></returns>
+        public Location PeekLocation()
+        {
+            Location loc = new Location();
+            loc.X = GetInt();
+            loc.Y = GetInt();
+            loc.Z = GetByte();
+            index -= 5;
+            return loc;
+        }
+        #endregion
+
         #region Control
         /// <summary>
         /// Move the index to the specified value. Same as setting Index.

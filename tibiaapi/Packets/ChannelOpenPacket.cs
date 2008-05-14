@@ -35,12 +35,10 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.ChannelOpen) return false;
-                int index = 3;
-                channelId = BitConverter.ToInt16(packet, index);
-                index += 2;
-                lenChannelName = BitConverter.ToInt16(packet, index);
-                index += 2;
-                channelName = Encoding.ASCII.GetString(packet, index, lenChannelName);
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                channelId = p.GetInt();
+                lenChannelName = p.GetInt();
+                channelName = p.GetString(lenChannelName);
                 return true;
             }
             else 
@@ -56,13 +54,11 @@ namespace Tibia.Packets
 
         public static ChannelOpenPacket Create(ChatChannel channelId, string channelName)
         {
-            byte[] packet = new byte[7 + channelName.Length];
-            Array.Copy(BitConverter.GetBytes((short)5 + channelName.Length), 0, packet, 0, 2);
-            packet[2] = (byte)PacketType.ChannelOpen;
-            Array.Copy(BitConverter.GetBytes((short)channelId), 0, packet, 3, 2);
-            Array.Copy(BitConverter.GetBytes((short)channelName.Length), 0, packet, 5, 2);
-            Array.Copy(Encoding.ASCII.GetBytes(channelName), 0, packet, 7, channelName.Length);
-            ChannelOpenPacket ocp = new ChannelOpenPacket(packet);
+            PacketBuilder p = new PacketBuilder(PacketType.ChannelOpen);
+            p.AddInt((int)channelId);
+            p.AddInt(channelName.Length);
+            p.AddString(channelName);
+            ChannelOpenPacket ocp = new ChannelOpenPacket(p.GetPacket());
             return ocp;
         }
     }
