@@ -283,7 +283,7 @@ namespace SmartPacketAnalyzer
         public CapturedPacket(byte[] data, string source, int length, string destination)
         {
             Data = data;
-            Time = DateTime.Now.ToString();
+            Time = DateTime.Now.ToString("hh:mm:ss.ffff");
             Source = source;
             Destination = destination;
             Length = length;

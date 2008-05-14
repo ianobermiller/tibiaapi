@@ -116,7 +116,7 @@ namespace Tibia.Util
         public PacketListener ReceivedVipLoginPacket;
         public PacketListener ReceivedCreatureMovePacket;
         public PacketListener ReceivedTileAnimationPacket;
-        public PacketListener ReceivedAttackPacket;
+        public PacketListener ReceivedCreatureSquarePacket;
         public PacketListener ReceivedStatusUpdatePacket;
         public PacketListener ReceivedMapItemRemovePacket;
         public PacketListener ReceivedMapItemAddPacket;
@@ -528,11 +528,11 @@ namespace Tibia.Util
                     if (ReceivedTileAnimationPacket != null)
                         return ReceivedTileAnimationPacket(p);
                     break;
-                case PacketType.Attacked:
-                    p = new AttackedPacket(packet);
+                case PacketType.CreatureSquare:
+                    p = new CreatureSquarePacket(packet);
                     length = p.Index;
-                    if (ReceivedAttackPacket != null)
-                        return ReceivedAttackPacket(p);
+                    if (ReceivedCreatureSquarePacket != null)
+                        return ReceivedCreatureSquarePacket(p);
                     break;
                 case PacketType.StatusUpdate:
                     p = new StatusUpdatePacket(packet);

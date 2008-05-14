@@ -19,7 +19,7 @@ namespace Tibia.Packets
         TileAnimation       = 0x83,
         AnimatedText        = 0x84,
         Projectile          = 0x85,
-        Attacked            = 0x86,
+        CreatureSquare      = 0x86,
         CreatureHealth      = 0x8C,
         StatusUpdate        = 0xA0,
         CancelTarget        = 0xA3,
@@ -43,6 +43,11 @@ namespace Tibia.Packets
         Client,
         Server,
         None
+    }
+
+    public enum SquareColor : byte
+    {
+        Black = 0
     }
 
     #region Speech

@@ -4,30 +4,41 @@ using System.Text;
 
 namespace Tibia.Packets
 {
-    public class AttackedPacket : Packet
+    public class CreatureSquarePacket : Packet
     {
         private int creatureId;
+        private SquareColor color;
+
         public int CreatureId
         {
             get { return creatureId; }
         }
-        public AttackedPacket()
+
+        public SquareColor Color
         {
-            type = PacketType.Attacked;
+            get { return color; }
+        }
+
+        public CreatureSquarePacket()
+        {
+            type = PacketType.CreatureSquare;
             destination = PacketDestination.Client;
         }
-        public AttackedPacket(byte[] data)
+
+        public CreatureSquarePacket(byte[] data)
             : this()
         {
             ParseData(data);
         }
+
         public new bool ParseData(byte[] packet)
         {
             if (base.ParseData(packet))
             {
-                if (type != PacketType.Attacked) return false;
+                if (type != PacketType.CreatureSquare) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 creatureId = p.GetLong();
+                color = (SquareColor)p.GetByte();
                 index = p.Index;
                 return true;
             }
@@ -37,16 +48,17 @@ namespace Tibia.Packets
             }
         }
 
-        public static AttackedPacket Create(Objects.Creature creature)
+        public static CreatureSquarePacket Create(Objects.Creature creature, SquareColor color)
         {
-            return Create(creature.Id);
+            return Create(creature.Id, color);
         }
 
-        public static AttackedPacket Create(int id)
+        public static CreatureSquarePacket Create(int id, SquareColor color)
         {
-            PacketBuilder p = new PacketBuilder(PacketType.Attacked);
+            PacketBuilder p = new PacketBuilder(PacketType.CreatureSquare);
             p.AddLong(id);
-            AttackedPacket atp = new AttackedPacket(p.GetPacket());
+            p.AddByte((byte)color);
+            CreatureSquarePacket atp = new CreatureSquarePacket(p.GetPacket());
             return atp;
         }
     }
