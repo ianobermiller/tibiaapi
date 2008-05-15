@@ -62,7 +62,9 @@ namespace Tibia.Packets
                     }
                     catch (Exception e) { }
                 }
-                index = p.Index;
+                // Incomplete
+                //index = p.Index;
+                index = -1;
                 return true;
             }
             else 

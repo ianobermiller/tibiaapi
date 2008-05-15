@@ -175,7 +175,7 @@ namespace Tibia.Addresses
         /// Pointer to an address. When that address has 0x4E added to
         /// it, it points to the game window rect struct.
         /// </summary>
-        public static uint GameWindowRectPointer = 0x0012D624; //8.1
+        public static uint GameWindowRectPointer = 0x12D624; //8.1
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
@@ -188,5 +188,7 @@ namespace Tibia.Addresses
             Struct Layout (each 4 bytes):
             X, Y, Width, Height
         */
+
+        public static uint DatPointer = 0x768C9C;
     }
 }

@@ -63,7 +63,8 @@ namespace Tibia.Packets
         /// Start building a packet of the desired type.
         /// </summary>
         /// <param name="type"></param>
-        public PacketBuilder(PacketType type) : this()
+        public PacketBuilder(PacketType type)
+            : this()
         {
             Type = type;
             index++;
@@ -80,7 +81,7 @@ namespace Tibia.Packets
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="start"></param>
-        public PacketBuilder(byte[] packet, int start) : this(packet, start, packet.Length - start)  { }
+        public PacketBuilder(byte[] packet, int start) : this(packet, start, packet.Length - start) { }
 
         /// <summary>
         /// Start parsing the given packet.
@@ -88,7 +89,8 @@ namespace Tibia.Packets
         /// <param name="packet"></param>
         /// <param name="start"></param>
         /// <param name="length"></param>
-        public PacketBuilder(byte[] packet, int start, int length) : this()
+        public PacketBuilder(byte[] packet, int start, int length)
+            : this()
         {
             Array.Copy(packet, start, data, 0, length);
         }
