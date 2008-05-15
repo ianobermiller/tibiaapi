@@ -49,8 +49,7 @@ namespace Tibia.Packets
         {
             PacketBuilder p = new PacketBuilder(PacketType.VipLogin);
             p.AddLong(id);
-            VipLoginPacket vlp = new VipLoginPacket(p.GetPacket());
-            return vlp;
+            return new VipLoginPacket(p.GetPacket());
         }
     }
 }

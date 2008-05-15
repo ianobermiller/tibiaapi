@@ -9,7 +9,6 @@ namespace Tibia.Packets
     {
         int icon;
         byte number;
-        int lenName;
         string name;
         int volume;
         List<Item> items;
@@ -61,8 +60,7 @@ namespace Tibia.Packets
                 Util.DatReader dat = new Util.DatReader(client);
                 number = p.GetByte();
                 icon = p.GetInt();
-                lenName = p.GetInt();
-                name = p.GetString(lenName);
+                name = p.GetString();
                 volume = p.GetInt();
                 itemCount = p.GetByte();
                 items = new List<Item>(itemCount);
@@ -96,7 +94,6 @@ namespace Tibia.Packets
             }
             p.AddByte(number);
             p.AddInt(icon);
-            p.AddInt(name.Length);
             p.AddString(name);
             p.AddInt(volume);
             p.AddByte((byte)items.Count);
@@ -105,8 +102,7 @@ namespace Tibia.Packets
                 p.AddItem(item);
             }
 
-            ContainerOpenedPacket pkt = new ContainerOpenedPacket(p.GetPacket());
-            return pkt;
+            return new ContainerOpenedPacket(p.GetPacket());
         }
     }
 }

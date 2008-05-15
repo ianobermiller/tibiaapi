@@ -54,6 +54,7 @@ namespace SmartPacketAnalyzer
                 client.StartProxy();
                 client.Proxy.ReceivedPacketFromClient += (Proxy.PacketListener)PacketFromClient;
                 client.Proxy.ReceivedPacketFromServer += (Proxy.PacketListener)PacketFromServer;
+                client.Proxy.SplitPacketFromServer += (Proxy.PacketListener)SplitPacketFromServer;
                 uxTimerShort.Enabled = true;
             }
 
@@ -80,6 +81,26 @@ namespace SmartPacketAnalyzer
                 else
                 {
                     LogPacket(packet.Data, "CLIENT", "SERVER");
+                }
+            }
+            return true;
+        }
+
+        private bool SplitPacketFromServer(Packet packet)
+        {
+            if (uxLogSplit.Checked && uxLogServer.Checked)
+            {
+                if (uxLogHeader.Checked)
+                {
+                    if (uxHeaderByte.Text.Length == 2 &&
+                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
+                    {
+                        LogPacket(packet.Data, "SERVER*", "CLIENT");
+                    }
+                }
+                else
+                {
+                    LogPacket(packet.Data, "SERVER*", "CLIENT");
                 }
             }
             return true;

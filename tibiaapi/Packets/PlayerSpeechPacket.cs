@@ -8,9 +8,7 @@ namespace Tibia.Packets
     {
         private ChatType messageType = ChatType.Normal;
         private ChatChannel channel = ChatChannel.None;
-        private short lenRecipientName = 0;
         private string recipientName = String.Empty;
-        private short lenMessage = 0;
         private string message = String.Empty;
 
         public ChatType MessageType
@@ -46,35 +44,26 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.PlayerSpeech) return false;
-                int index = 3;
-                messageType = (ChatType)packet[index];
-                index++;
+                PacketBuilder p = new PacketBuilder(packet, 3);
+
+                messageType = (ChatType)p.GetByte();
 
                 switch (messageType)
                 {
-                    case ChatType.Normal:
-                    case ChatType.Whisper:
-                    case ChatType.Yell:
-                        lenMessage = BitConverter.ToInt16(packet, 4);
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, 6, lenMessage);
-                        break;
-
                     case ChatType.ChannelNormal:
-                        channel = (ChatChannel)BitConverter.ToInt16(packet, 4);
-                        lenMessage = BitConverter.ToInt16(packet, 6);
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, 8, lenMessage);
+                    case ChatType.ChannelRedAnonymous:
+                    case ChatType.ChannelTutor:
+                    case ChatType.ChannelGM:
+                        channel = (ChatChannel)p.GetInt();
                         break;
                     case ChatType.PrivateMessage:
-                        lenRecipientName = BitConverter.ToInt16(packet, index);
-                        index += 2;
-                        recipientName = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenRecipientName);
-                        index += lenRecipientName;
-                        lenMessage = BitConverter.ToInt16(packet, index);
-                        index += 2;
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
+                        recipientName = p.GetString();
+                        break;
+                    default:
                         break;
                 }
-
+                message = p.GetString();
+                index = p.Index;
                 return true;
             }
             else
@@ -95,74 +84,24 @@ namespace Tibia.Packets
 
         public static PlayerSpeechPacket Create(Objects.ChatMessage message)
         {
-            byte[] packet = { };
-            int packetLength, payloadLength;
-            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
-
-            switch (message.type)
+            PacketBuilder p = new PacketBuilder(PacketType.PlayerSpeech);
+            p.AddByte((byte)message.Type);
+            switch (message.Type)
             {
-                case Packets.ChatType.Normal:
-                case Packets.ChatType.Whisper:
-                case Packets.ChatType.Yell:
-                    packetLength = 6 + message.text.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = Packet.Lo(message.text.Length);
-                    packet[05] = Packet.Hi(message.text.Length);
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, 6, message.text.Length);
-                    break;
-                case Packets.ChatType.ChannelNormal:
-                    packetLength = 8 + message.text.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = (byte)message.channel;
-                    packet[05] = 0x0;
-                    packet[06] = Packet.Lo(message.text.Length);
-                    packet[07] = Packet.Hi(message.text.Length);
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, 8, message.text.Length);
+                case ChatType.ChannelNormal:
+                case ChatType.ChannelRedAnonymous:
+                case ChatType.ChannelTutor:
+                case ChatType.ChannelGM:
+                    p.AddInt((int)message.Channel);
                     break;
                 case Packets.ChatType.PrivateMessage:
-                    packetLength = 8 + message.text.Length + message.recipient.Length;
-                    payloadLength = packetLength - 2;
-                    packet = new byte[packetLength];
-
-                    packet[00] = Packet.Lo(payloadLength);
-                    packet[01] = Packet.Hi(payloadLength);
-                    packet[02] = 0x96;
-                    packet[03] = (byte)message.type;
-                    packet[04] = Packet.Lo(message.recipient.Length);
-                    packet[05] = Packet.Hi(message.recipient.Length);
-
-                    // Insert the recipient's name
-                    Array.Copy(enc.GetBytes(message.recipient), 0, packet, 6, message.recipient.Length);
-
-                    // Skip the index ahead, past the recipient's name
-                    int i = 6 + message.recipient.Length;
-
-                    packet[i] = Packet.Lo(message.text.Length);
-                    packet[i + 1] = Packet.Hi(message.text.Length);
-
-                    // Copy the message to the rest of the bytes
-                    Array.Copy(enc.GetBytes(message.text), 0, packet, i + 2, message.text.Length);
+                    p.AddString(message.Recipient);
                     break;
                 default:
-                    throw new ArgumentException("This type is not valid for sending a message.", "message.type");
+                    break;
             }
-            return new PlayerSpeechPacket(packet);
+            p.AddString(message.Text);
+            return new PlayerSpeechPacket(p.GetPacket());
         }
     }
 }

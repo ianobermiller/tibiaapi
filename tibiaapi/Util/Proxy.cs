@@ -102,6 +102,11 @@ namespace Tibia.Util
         public PacketListener ReceivedPacketFromServer;
 
         /// <summary>
+        /// Used for debugging, called for each logical packet in a combined packet.
+        /// </summary>
+        public PacketListener SplitPacketFromServer;
+
+        /// <summary>
         /// Called when a packet is received from the client.
         /// </summary>
         public PacketListener ReceivedPacketFromClient;
@@ -420,8 +425,8 @@ namespace Tibia.Util
                         if (forward)
                         {
                             // Uncomment for debugging, will also call this on split up packets
-                            //if (ReceivedPacketFromServer != null)
-                            //    ReceivedPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
+                            if (SplitPacketFromServer != null)
+                                SplitPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
 
                             // Repackage it and send
                             SendToClient(Repackage(decrypted, 2, length));
@@ -569,22 +574,35 @@ namespace Tibia.Util
                 {
                     netStreamClient.BeginWrite(packet, 0, packet.Length, ClientWriteDone, null);
                 }
-                catch(IOException e)
+                catch
                 {
                     // Client crash
-                    Stop();
-                    if (OnCrash != null)
-                        OnCrash();
-                    return;
+                    ClientCrashed();
                 }
             }
         }
 
         private void ClientWriteDone(IAsyncResult ar)
         {
-            netStreamClient.EndWrite(ar);
+            try
+            {
+                netStreamClient.EndWrite(ar);
+            }
+            catch
+            {
+                // Client crash
+                ClientCrashed();
+            }
+
             writingToClient = false;
             ProcessClientSendQueue();
+        }
+
+        private void ClientCrashed()
+        {
+            Stop();
+            if (OnCrash != null)
+                OnCrash();
         }
         #endregion
 
@@ -634,13 +652,10 @@ namespace Tibia.Util
             {
                 netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
             }
-            catch (IOException e)
+            catch
             {
-                // Client crashed
-                Stop();
-                if (OnCrash != null)
-                    OnCrash();
-                return;
+                // Client crash
+                ClientCrashed();
             }
         }
 

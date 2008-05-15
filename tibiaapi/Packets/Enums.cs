@@ -64,13 +64,14 @@ namespace Tibia.Packets
         Normal = 0x01,
         Whisper = 0x02,
         Yell = 0x03,
-        PrivateMessage = 0x04,
-        ChannelNormal = 0x05,
-        GM = 0x09,
-        ChannelGM = 0x0A,
-        ChannelTutor = 0x0C,
         Monster = 0x10,
-        MonsterYell = 0x11
+        MonsterYell = 0x11,
+        ChannelNormal = 0x05,
+        ChannelTutor = 0x0C,
+        ChannelGM = 0x0A,
+        ChannelRedAnonymous = 0x0E,
+        PrivateMessage = 0x04,
+        Broadcast = 0x09,
     }
 
     public enum ChatChannel : ushort

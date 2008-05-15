@@ -7,7 +7,6 @@ namespace Tibia.Packets
     public class ChannelOpenPacket : Packet
     {
         private int channelId;
-        private int lenChannelName;
         private string channelName;
 
         public int ChannelId
@@ -37,8 +36,7 @@ namespace Tibia.Packets
                 if (type != PacketType.ChannelOpen) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 channelId = p.GetInt();
-                lenChannelName = p.GetInt();
-                channelName = p.GetString(lenChannelName);
+                channelName = p.GetString();
                 index = p.Index;
                 return true;
             }
@@ -57,10 +55,8 @@ namespace Tibia.Packets
         {
             PacketBuilder p = new PacketBuilder(PacketType.ChannelOpen);
             p.AddInt((int)channelId);
-            p.AddInt(channelName.Length);
             p.AddString(channelName);
-            ChannelOpenPacket ocp = new ChannelOpenPacket(p.GetPacket());
-            return ocp;
+            return new ChannelOpenPacket(p.GetPacket());
         }
     }
 }

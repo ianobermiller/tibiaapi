@@ -60,8 +60,7 @@ namespace Tibia.Packets
             p.AddLocation(from);
             p.AddLocation(to);
             p.AddByte(projectile);
-            ProjectilePacket pp = new ProjectilePacket(p.GetPacket());
-            return pp;
+            return new ProjectilePacket(p.GetPacket());
         }
     }
 }

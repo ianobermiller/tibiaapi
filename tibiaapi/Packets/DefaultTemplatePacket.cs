@@ -35,8 +35,7 @@ namespace Tibia.Packets
         {
             PacketBuilder p = new PacketBuilder(PacketType.DefaultTemplate);
 
-            DefaultTemplatePacket pkt = new DefaultTemplatePacket(p.GetPacket());
-            return pkt;
+            return new DefaultTemplatePacket(p.GetPacket());
         }
     }
 }

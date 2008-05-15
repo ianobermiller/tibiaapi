@@ -12,7 +12,6 @@ namespace Tibia.Packets
         private int creatureId;
         private MapItemAddType addType;
         private int knownRemoved;
-        private int lenCreatureName;
         private string creatureName;
         private byte creatureHpBar;
         private Constants.TurnDirection creatureDir;
@@ -121,8 +120,7 @@ namespace Tibia.Packets
                         addType = MapItemAddType.CreatureNew;
                         knownRemoved = p.GetLong();
                         creatureId = p.GetLong();
-                        lenCreatureName = p.GetInt();
-                        creatureName = p.GetString(lenCreatureName);
+                        creatureName = p.GetString();
                     }
                     creatureHpBar = p.GetByte();
                     creatureDir = (Constants.TurnDirection)p.GetByte();
@@ -168,8 +166,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.MapItemAdd);
             p.AddLocation(loc);
             p.AddItem(item);
-            MapItemAddPacket pkt = new MapItemAddPacket(p.Data, new Util.DatReader(client));
-            return pkt;
+            return new MapItemAddPacket(p.Data, new Util.DatReader(client));
         }
     }
 }

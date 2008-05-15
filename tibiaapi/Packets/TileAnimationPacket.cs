@@ -51,8 +51,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.TileAnimation);
             p.AddLocation(loc);
             p.AddByte(animation);
-            TileAnimationPacket tap = new TileAnimationPacket(p.GetPacket());
-            return tap;
+            return new TileAnimationPacket(p.GetPacket());
         }
     }
 }

@@ -58,8 +58,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.CreatureSquare);
             p.AddLong(id);
             p.AddByte((byte)color);
-            CreatureSquarePacket atp = new CreatureSquarePacket(p.GetPacket());
-            return atp;
+            return new CreatureSquarePacket(p.GetPacket());
         }
     }
 }

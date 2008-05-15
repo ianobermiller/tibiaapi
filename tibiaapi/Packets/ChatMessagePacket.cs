@@ -8,10 +8,8 @@ namespace Tibia.Packets
     {
         private ChatType messageType;
         private ChatChannel channel;
-        private short lenSenderName;
         private string senderName;
-        private byte senderLevel;
-        private short lenMessage;
+        private int senderLevel;
         private string message;
         private Tibia.Objects.Location location;
 
@@ -28,7 +26,7 @@ namespace Tibia.Packets
             get { return senderName; }
         }
 
-        public byte SenderLevel
+        public int SenderLevel
         {
             get { return senderLevel; }
         }
@@ -56,14 +54,13 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.ChatMessage) return false;
-                int index = 7;
-                lenSenderName = BitConverter.ToInt16(packet, index);
-                index += 2;
-                senderName = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenSenderName);
-                index += lenSenderName;
-                senderLevel = packet[index];
-                index += 2;
-                messageType = (ChatType)packet[index];
+                PacketBuilder p = new PacketBuilder(packet, 3);
+
+                p.Skip(4); // four 0's, reserved for future I guess
+                senderName = p.GetString();
+                senderLevel = p.GetInt();
+                messageType = (ChatType)p.GetByte();
+
                 switch (messageType)
                 {
                     case ChatType.Normal:
@@ -71,37 +68,19 @@ namespace Tibia.Packets
                     case ChatType.Yell:
                     case ChatType.Monster:
                     case ChatType.MonsterYell:
-                        index += 1;
-                        location = new Objects.Location();
-                        location.X = BitConverter.ToInt16(packet, index);
-                        index += 2;
-                        location.Y = BitConverter.ToInt16(packet, index);
-                        index += 2;
-                        location.Z = packet[index];
-                        index += 1;
-                        lenMessage = packet[index];
-                        index += 2;
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
+                        location = p.GetLocation();
                         break;
-                
                     case ChatType.ChannelNormal:
                     case ChatType.ChannelTutor:
                     case ChatType.ChannelGM:
-                        channel = (ChatChannel)BitConverter.ToInt16(packet,index);
-                        index += 3;
-                        lenMessage = packet[index];
-                        index += 2;
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
+                    case ChatType.ChannelRedAnonymous:
+                        channel = (ChatChannel)p.GetInt();
                         break;
-
                     default:
-                        index += 1;
-                        lenMessage = packet[index];
-                        index += 2;
-                        message = Encoding.GetEncoding("iso-8859-1").GetString(packet, index, lenMessage);
                         break;
                 }
-                
+                message = p.GetString();
+                index = p.Index;
                 return true;
             }
             else
@@ -110,45 +89,114 @@ namespace Tibia.Packets
             }
         }
 
+        /// <summary>
+        /// Send a simple chat message with no level.
+        /// Only valid ChatTypes are PrivateMessage and Broadcast.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message)
         {
             return Create(messageType, senderName, message, 0);
         }
 
+        /// <summary>
+        /// Send a simple chat message with the specified level.
+        /// Only valid ChatTypes are PrivateMessage and Broadcast.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
         }
 
+        /// <summary>
+        /// Send a channel message without level.
+        /// Valid ChatTypes are ChannelNormal, ChannelTutor, ChannelGM, and ChannelRedAnonymous
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="chan"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, ChatChannel chan)
         {
             return Create(messageType, senderName, message, 0, chan);
         }
 
+        /// <summary>
+        /// Send a channel message with the specified level.
+        /// Valid ChatTypes are ChannelNormal, ChannelTutor, ChannelGM, and ChannelRedAnonymous
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <param name="chan"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, ChatChannel chan)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), chan);
         }
 
+        /// <summary>
+        /// Send a normal speech message with no level.
+        /// Valid ChatTypes are Normal, Whisper, Yell, Monster, and MonsterYell.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="loc"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, Objects.Location loc)
         {
             return Create(messageType, senderName, message, 0, loc);
         }
 
+        /// <summary>
+        /// Send a normal speech message with the specified level.
+        /// Valid ChatTypes are Normal, Whisper, Yell, Monster, and MonsterYell.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <param name="loc"></param>
+        /// <returns></returns>
         public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, Objects.Location loc)
         {
             return Create(messageType, senderName, message, level, Objects.Location.GetInvalid(), ChatChannel.None);
         }
 
-        public static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
+        /// <summary>
+        /// Private because the various wrapper above should be used instead.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="senderName"></param>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <param name="loc"></param>
+        /// <param name="chan"></param>
+        /// <returns></returns>
+        private static ChatMessagePacket Create(ChatType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
         {
             try
             {
                 if (level < 0) throw new ArgumentOutOfRangeException("level", "Level must be non-negative.");
-                if (senderName.Length < 1) throw new ArgumentException("Sender name length but be at least 1.", "senderName");
                 if (message.Length < 1) throw new ArgumentException("Message length must be at least 1.", "message");
 
-                byte[] packet;
+                PacketBuilder p = new PacketBuilder(PacketType.ChatMessage);
+                p.AddLong(0);
+                p.AddString(senderName);
+                p.AddInt(level);
+                p.AddByte((byte)messageType);
+
                 switch (messageType)
                 {
                     case ChatType.Normal:
@@ -156,85 +204,23 @@ namespace Tibia.Packets
                     case ChatType.Yell:
                     case ChatType.Monster:
                     case ChatType.MonsterYell:
-
                         if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
-
-                        // Initialize packet
-                        packet = new byte[message.Length + senderName.Length + 19];
-
-                        // Packet length
-                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 17)), packet, 2);
-
-                        // Comment elements handled after the switch
-
-                        // Location
-                        Array.Copy(loc.ToBytes(), 0, packet, 9 + senderName.Length + 3, 5);
-
-                        // Message length
-                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 8, 2);
-
-                        // Message
-                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 10, message.Length);
+                        p.AddLocation(loc);
                         break;
-
                     case ChatType.ChannelNormal:
                     case ChatType.ChannelTutor:
                     case ChatType.ChannelGM:
-
+                    case ChatType.ChannelRedAnonymous:
                         if (chan == ChatChannel.None) throw new ArgumentException("You must supply a valid chat channel for this message type.", "chan");
-
-                        // Initialize packet
-                        packet = new byte[message.Length + senderName.Length + 16];
-
-                        // Packet length
-                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 14)), packet, 2);
-
-                        // Comment elements handled after the switch
-
-                        // Channel
-                        Array.Copy(BitConverter.GetBytes((short)(chan)), 0, packet, 9 + senderName.Length + 3, 2);
-
-                        // Message length
-                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 5, 2);
-
-                        // Message
-                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 7, message.Length);
+                        p.AddInt((int)chan);
                         break;
-
                     default:
-                        // Initialize packet
-                        packet = new byte[message.Length + senderName.Length + 14];
-
-                        // Packet length
-                        Array.Copy(BitConverter.GetBytes((short)(senderName.Length + message.Length + 12)), packet, 2);
-
-                        // Comment elements handled after the switch
-
-                        // Message length
-                        Array.Copy(BitConverter.GetBytes((short)(message.Length)), 0, packet, 9 + senderName.Length + 3, 2);
-
-                        // Message
-                        Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(message), 0, packet, 9 + senderName.Length + 5, message.Length);
                         break;
                 }
 
-                // Packet type
-                packet[2] = (byte)PacketType.ChatMessage;
+                p.AddString(message);
 
-                // Sender length
-                Array.Copy(BitConverter.GetBytes((short)(senderName.Length)), 0, packet, 7, 2);
-
-                // Sender name
-                Array.Copy(Encoding.GetEncoding("iso-8859-1").GetBytes(senderName), 0, packet, 9, senderName.Length);
-
-                // Sender level
-                packet[9 + senderName.Length] = (byte)level;
-
-                // Message type
-                packet[9 + senderName.Length + 2] = (byte)messageType;
-
-                ChatMessagePacket cmp = new ChatMessagePacket(packet);
-                return cmp;
+                return new ChatMessagePacket(p.GetPacket());
             }
             catch (Exception e)
             {

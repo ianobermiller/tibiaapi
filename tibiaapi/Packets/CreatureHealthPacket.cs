@@ -58,8 +58,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.CreatureHealth);
             p.AddLong(id);
             p.AddByte(hp);
-            CreatureHealthPacket chp = new CreatureHealthPacket(p.GetPacket());
-            return chp;
+            return new CreatureHealthPacket(p.GetPacket());
         }
     }
 }

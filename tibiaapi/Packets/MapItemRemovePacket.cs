@@ -50,8 +50,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.MapItemRemove);
             p.AddLocation(from);
             p.AddByte(fromStackPosition);
-            MapItemRemovePacket pkt = new MapItemRemovePacket(p.GetPacket());
-            return pkt;
+            return new MapItemRemovePacket(p.GetPacket());
         }
     }
 }

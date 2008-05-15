@@ -9,7 +9,7 @@ namespace Tibia.Packets
     /// </summary>
     public class PacketBuilder
     {
-        public const int MaxLength = 8096;
+        public const int MaxLength = 15360;
         private byte[] data;
         private PacketType type;
         private int index = 0;
@@ -163,23 +163,13 @@ namespace Tibia.Packets
         }
 
         /// <summary>
-        /// Add a string at the current index and advance.
+        /// Add the string length and the a string at the current index and advance.
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
         public int AddString(string s)
         {
-            return AddString(s, s.Length);
-        }
-
-        /// <summary>
-        /// Add part of a string at the current index and advance.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        public int AddString(string s, int length)
-        {
+            AddInt(s.Length);
             return AddBytes(Encoding.ASCII.GetBytes(s));
         }
 
@@ -254,12 +244,12 @@ namespace Tibia.Packets
         }
 
         /// <summary>
-        /// Get a string at the current index and advance.
+        /// Get the string length and then the string at the current index and advance.
         /// </summary>
-        /// <param name="length"></param>
         /// <returns></returns>
-        public string GetString(int length)
+        public string GetString()
         {
+            int length = GetInt();
             string s = Encoding.ASCII.GetString(data, index, length);
             index += length;
             return s;

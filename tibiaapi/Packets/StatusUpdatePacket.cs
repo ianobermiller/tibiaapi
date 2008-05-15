@@ -131,8 +131,7 @@ namespace Tibia.Packets
             p.AddByte(0x00); // ?
             p.AddByte(soul);
             p.AddInt(stamina);
-            StatusUpdatePacket sup = new StatusUpdatePacket(p.GetPacket());
-            return sup;
+            return new StatusUpdatePacket(p.GetPacket());
         }
     }
 }

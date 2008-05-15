@@ -7,7 +7,6 @@ namespace Tibia.Packets
     public class AnimatedTextPacket : Packet
     {
         private Objects.Location loc;
-        private ushort lenMessage;
         private string message;
         private TextColor color;
 
@@ -41,8 +40,7 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 loc = p.GetLocation();
                 color = (TextColor)p.GetByte();
-                lenMessage = p.GetInt();
-                message = p.GetString(lenMessage);
+                message = p.GetString();
                 index = p.Index;
                 return true;
             }
@@ -57,10 +55,8 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.AnimatedText);
             p.AddLocation(loc);
             p.AddByte((byte)Color);
-            p.AddInt(message.Length);
             p.AddString(message);
-            AnimatedTextPacket amp = new AnimatedTextPacket(p.GetPacket());
-            return amp;
+            return new AnimatedTextPacket(p.GetPacket());
         }
     }
 }

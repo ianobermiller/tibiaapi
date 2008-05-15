@@ -9,7 +9,6 @@ namespace Tibia.Packets
         private Objects.Location from;
         private byte fromStackPos;
         private Objects.Location to;
-        private byte id;
 
         public Objects.Location From
         {
@@ -60,8 +59,7 @@ namespace Tibia.Packets
             p.AddLocation(from);
             p.AddByte(fromStackPos);
             p.AddLocation(to);
-            CreatureMovePacket cmp = new CreatureMovePacket(p.GetPacket());
-            return cmp;
+            return new CreatureMovePacket(p.GetPacket());
         }
     }
 }

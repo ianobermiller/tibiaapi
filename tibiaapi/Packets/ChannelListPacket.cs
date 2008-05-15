@@ -37,14 +37,13 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 numChannels = p.GetByte();
                 channels = new List<Channel>(numChannels);
-                ushort id, len;
+                ushort id;
                 for (int i = 0; i < numChannels; i++)
                 {
                     id = p.GetInt();
-                    len = p.GetInt();
                     channels.Add(new Channel(
                         (ChatChannel)id,
-                        p.GetString(len)
+                        p.GetString()
                     ));
                 }
                 index = p.Index;
@@ -64,11 +63,9 @@ namespace Tibia.Packets
             foreach (Channel c in channels)
             {
                 p.AddInt((int)c.Id);
-                p.AddInt(c.Name.Length);
                 p.AddString(c.Name);
             }
-            ChannelListPacket clp = new ChannelListPacket(p.GetPacket());
-            return clp;
+            return new ChannelListPacket(p.GetPacket());
         }
     }
 }

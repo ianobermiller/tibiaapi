@@ -46,6 +46,10 @@ namespace Tibia.Objects
         /// Keep a local copy of battleList to speed up GetPlayer()
         /// </summary>
         private BattleList battleList;
+        private Map map;
+        private Inventory inventory;
+        private Random random;
+        private Console console;
 
         /// <summary>
         /// Main constructor
@@ -64,6 +68,10 @@ namespace Tibia.Objects
 
             // The client get's it's own battle list to speed up getPlayer()
             battleList = new BattleList(this);
+            map = new Map(this);
+            inventory = new Inventory(this);
+            console = new Console(this);
+            random = new Random();
         }
 
         /// <summary>
@@ -363,6 +371,24 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's map.
+        /// </summary>
+        /// <returns></returns>
+        public Map GetMap()
+        {
+            return map;
+        }
+
+        /// <summary>
+        /// Get the client's inventory.
+        /// </summary>
+        /// <returns></returns>
+        public Inventory GetInventory()
+        {
+            return inventory;
+        }
+
+        /// <summary>
         /// Get the time the client was started.
         /// </summary>
         /// <returns></returns>
@@ -593,8 +619,6 @@ namespace Tibia.Objects
         public bool MakeRune(Rune rune, bool checkSoulPoints)
         {
             if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Inventory inventory = new Inventory(this);
-            Console console = new Console(this);
             Player player = GetPlayer();
             bool allClear = true; // Keeps a running total of success
             Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
@@ -674,22 +698,21 @@ namespace Tibia.Objects
 
         public bool Fish()
         {
-            Map map = new Map(this);
+            Player player = GetPlayer();
             List<Tile> fishes = map.GetFishTiles();
-            Random ran = new Random();
             if (fishes.Count > 0)
             {
-                int tilenr = ran.Next(fishes.Count - 1);
+                int tilenr = random.Next(fishes.Count - 1);
                 Tile tilen = new Tile((uint)tilenr);
                 tilen.Location = map.GetAbsoluteLocation(fishes[tilenr].Number);
                 tilen.Id = fishes[tilenr].Id;
-                if (tilen.Location.X - GetPlayer().Location.X < -7 || tilen.Location.X - GetPlayer().Location.X > 7) return false;
-                if (tilen.Location.Y - GetPlayer().Location.Y < -5 || tilen.Location.Y - GetPlayer().Location.Y > 5) return false;
-                if (tilen.Location.Z - GetPlayer().Location.Z != 0) return false;
-                Packets.AnimatedTextPacket pkt = AnimatedTextPacket.Create("HÄR", TextColor.Blue, tilen.Location);
-                SendToClient(pkt);
-                Inventory i = new Inventory(this);
-                return i.UseItem(Tibia.Constants.Items.Tool.FishingRod, tilen);
+                if (Math.Abs(tilen.Location.X - player.Location.X) <= 7 &&
+                    Math.Abs(tilen.Location.Y - player.Location.Y) <= 5 &&
+                    tilen.Location.Z == player.Location.Z)
+                {
+                    inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, tilen);
+                    return true;
+                }
             }
             return false;
         }

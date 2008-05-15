@@ -64,6 +64,7 @@ namespace SmartPacketAnalyzer
             this.PacketTypeCol = new System.Windows.Forms.ColumnHeader();
             this.uxPacketDisplay = new System.Windows.Forms.TextBox();
             this.uxStart = new System.Windows.Forms.Button();
+            this.uxLogSplit = new System.Windows.Forms.CheckBox();
             this.uxPacketMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -80,19 +81,19 @@ namespace SmartPacketAnalyzer
             this.ConvertToInt,
             this.CopyAllBytes});
             this.uxPacketMenu.Name = "ctxMenuPacket";
-            this.uxPacketMenu.Size = new System.Drawing.Size(153, 70);
+            this.uxPacketMenu.Size = new System.Drawing.Size(151, 48);
             // 
             // ConvertToInt
             // 
             this.ConvertToInt.Name = "ConvertToInt";
-            this.ConvertToInt.Size = new System.Drawing.Size(152, 22);
+            this.ConvertToInt.Size = new System.Drawing.Size(150, 22);
             this.ConvertToInt.Text = "Convert To Int";
             this.ConvertToInt.Click += new System.EventHandler(this.ConvertToInt_Click);
             // 
             // CopyAllBytes
             // 
             this.CopyAllBytes.Name = "CopyAllBytes";
-            this.CopyAllBytes.Size = new System.Drawing.Size(152, 22);
+            this.CopyAllBytes.Size = new System.Drawing.Size(150, 22);
             this.CopyAllBytes.Text = "Copy All Bytes";
             this.CopyAllBytes.Click += new System.EventHandler(this.CopyAllBytes_Click);
             // 
@@ -103,6 +104,7 @@ namespace SmartPacketAnalyzer
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.uxLogSplit);
             this.groupBox1.Controls.Add(this.uxLogClient);
             this.groupBox1.Controls.Add(this.uxLogServer);
             this.groupBox1.Controls.Add(this.label2);
@@ -412,6 +414,18 @@ namespace SmartPacketAnalyzer
             this.uxStart.UseVisualStyleBackColor = true;
             this.uxStart.Click += new System.EventHandler(this.uxStart_Click);
             // 
+            // uxLogSplit
+            // 
+            this.uxLogSplit.AutoSize = true;
+            this.uxLogSplit.Checked = true;
+            this.uxLogSplit.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.uxLogSplit.Location = new System.Drawing.Point(171, 19);
+            this.uxLogSplit.Name = "uxLogSplit";
+            this.uxLogSplit.Size = new System.Drawing.Size(109, 17);
+            this.uxLogSplit.TabIndex = 32;
+            this.uxLogSplit.Text = "Log Split Packets";
+            this.uxLogSplit.UseVisualStyleBackColor = true;
+            // 
             // uxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -474,6 +488,7 @@ namespace SmartPacketAnalyzer
         private System.Windows.Forms.TextBox uxPacketDisplay;
         private System.Windows.Forms.Button uxStart;
         private System.Windows.Forms.ColumnHeader LengthCol;
+        private System.Windows.Forms.CheckBox uxLogSplit;
     }
 }
 
