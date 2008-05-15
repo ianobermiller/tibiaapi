@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Tibia.Packets;
+using System.Text.RegularExpressions;
 
 namespace Tibia.Objects
 {
@@ -382,6 +383,32 @@ namespace Tibia.Objects
                 }
             }
             return item;
+        }
+
+        /// <summary>
+        /// Number the containers using the default format "[#] ContainerName"
+        /// </summary>
+        public void NumberContainers()
+        {
+            NumberContainers("[\\#]");
+        }
+
+        /// <summary>
+        /// Number the containers using a custom prefix.
+        /// Insert "\#" wherever you want the number to appear.
+        /// </summary>
+        /// <param name="format"></param>
+        public void NumberContainers(string format)
+        {
+            foreach (Container c in GetContainers())
+            {
+                if (!new Regex("[a-zA-Z]").IsMatch(c.Name.Substring(0, 1)))
+                {
+                    int index = c.Name.IndexOf(" ") + 1;
+                    c.Name = c.Name.Substring(index);
+                }
+                c.Rename(format.Replace("\\#", c.Number.ToString()) + " " + c.Name);
+            }
         }
 
         /// <summary>

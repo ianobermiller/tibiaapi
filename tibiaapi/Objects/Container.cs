@@ -101,6 +101,13 @@ namespace Tibia.Objects
             return client.Send(packet);
         }
 
+        /// <summary>
+        /// Rename this container by sending a packet. 
+        /// Doesn't require the user to move the container.
+        /// Only caveat is that you can no longer go back up a container.
+        /// </summary>
+        /// <param name="newName"></param>
+        /// <returns></returns>
         public bool Rename(string newName)
         {
             if (client.UsingProxy)

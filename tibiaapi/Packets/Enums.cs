@@ -50,6 +50,14 @@ namespace Tibia.Packets
         Black = 0
     }
 
+    public enum MapItemAddType
+    {
+        Item,
+        CreatureReturning,
+        CreatureKnown,
+        CreatureNew
+    }
+
     #region Speech
     public enum ChatType : byte
     {

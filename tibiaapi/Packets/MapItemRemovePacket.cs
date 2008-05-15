@@ -45,12 +45,13 @@ namespace Tibia.Packets
             }
         }
 
-        public static MapItemRemovePacket Create()
+        public static MapItemRemovePacket Create(Location from, byte fromStackPosition)
         {
-            byte[] packet = new byte[1];
-
-            MapItemRemovePacket p = new MapItemRemovePacket(packet);
-            return p;
+            PacketBuilder p = new PacketBuilder(PacketType.MapItemRemove);
+            p.AddLocation(from);
+            p.AddByte(fromStackPosition);
+            MapItemRemovePacket pkt = new MapItemRemovePacket(p.GetPacket());
+            return pkt;
         }
     }
 }

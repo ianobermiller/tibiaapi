@@ -58,6 +58,7 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.ContainerOpened) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
+                Util.DatReader dat = new Util.DatReader(client);
                 number = p.GetByte();
                 icon = p.GetInt();
                 lenName = p.GetInt();
@@ -68,10 +69,7 @@ namespace Tibia.Packets
                 Item item;
                 for (int i = 0; i < itemCount; i++)
                 {
-                    item = new Item(p.GetInt());
-                    if (p.PeekByte() <= 100)
-                        item.Count = p.GetByte();
-                    items.Add(item);
+                    items.Add(p.GetItem(dat));
                 }
                 index = p.Index;
                 return true;
@@ -104,9 +102,7 @@ namespace Tibia.Packets
             p.AddByte((byte)items.Count);
             foreach (Item item in items)
             {
-                p.AddInt((int)item.Id);
-                if (item.Count > 0)
-                    p.AddByte(item.Count);
+                p.AddItem(item);
             }
 
             ContainerOpenedPacket pkt = new ContainerOpenedPacket(p.GetPacket());

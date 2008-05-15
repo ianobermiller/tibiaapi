@@ -190,9 +190,21 @@ namespace Tibia.Packets
         /// <returns></returns>
         public int AddLocation(Location loc)
         {
-            AddBytes(BitConverter.GetBytes((ushort)loc.X));
-            AddBytes(BitConverter.GetBytes((ushort)loc.Y));
-            return AddByte((byte)loc.Z);
+            return AddBytes(loc.ToBytes());
+        }
+
+        /// <summary>
+        /// Add an item at the current location and advance.
+        /// Adds an extra byte if the count is significant (> 0).
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public int AddItem(Item item)
+        {
+            AddInt((int)item.Id);
+            if (item.Count > 0)
+                AddByte(item.Count);
+            return index;
         }
         #endregion
 
@@ -266,9 +278,18 @@ namespace Tibia.Packets
             return loc;
         }
 
-        public Item GetItem()
+        /// <summary>
+        /// Get an item from the current index and advance.
+        /// Requires a DatReader object to check if the item has an extra byte.
+        /// </summary>
+        /// <param name="dat"></param>
+        /// <returns></returns>
+        public Item GetItem(Util.DatReader dat)
         {
-            return null;
+            Item item = new Item(GetInt());
+            if (dat.GetItem(item.Id).HasExtraByte())
+                item.Count = GetByte();
+            return item;
         }
 
         /// <summary>

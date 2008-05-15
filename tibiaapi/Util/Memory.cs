@@ -193,6 +193,7 @@ namespace Tibia
         /// <returns></returns>
         public static bool WriteString(IntPtr handle, long address, string str)
         {
+            str += '\0';
             if (encoding == null) encoding = new System.Text.ASCIIEncoding();
             byte[] bytes = encoding.GetBytes(str);
             return WriteBytes(handle, address, bytes, (uint)bytes.Length);

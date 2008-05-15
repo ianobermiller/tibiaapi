@@ -9,6 +9,16 @@ namespace Tibia.Packets
     {
         private Location loc;
         private Item item;
+        private int creatureId;
+        private MapItemAddType addType;
+        private int knownRemoved;
+        private int lenCreatureName;
+        private string creatureName;
+        private byte creatureHpBar;
+        private Constants.TurnDirection creatureDir;
+        private bool creatureInvis;
+        private int creatureSpeed;
+        private Constants.Skull creatureSkull;
 
         public Location Loc
         {
@@ -20,51 +30,131 @@ namespace Tibia.Packets
             get { return item; }
         }
 
+        public int CreatureId
+        {
+            get { return creatureId; }
+        }
+
+        public MapItemAddType AddType
+        {
+            get { return addType; }
+        }
+
+        /// <summary>
+        /// Has a value when the maximum amount of known ID's (150)
+        /// has been reached. This is the ID that should be removed.
+        /// </summary>
+        public int KnownRemoved
+        {
+            get { return knownRemoved; }
+        }
+
+        public string CreatureName
+        {
+            get { return creatureName; }
+        }
+
+        public byte CreatureHpBar
+        {
+            get { return CreatureHpBar; }
+        }
+
+        public Constants.TurnDirection CreatureDir
+        {
+            get { return creatureDir; }
+        }
+
+        public bool CreatureInvis
+        {
+            get { return creatureInvis; }
+        }
+
+        public int CreatureSpeed
+        {
+            get { return creatureSpeed; }
+        }
+
+        public Constants.Skull CreatureSkull
+        {
+            get { return creatureSkull; }
+        }
+
         public MapItemAddPacket()
         {
             type = PacketType.MapItemAdd;
             destination = PacketDestination.Client;
         }
-        public MapItemAddPacket(byte[] data)
+        public MapItemAddPacket(byte[] data, Util.DatReader dat)
             : this()
         {
-            ParseData(data);
+            ParseData(data, dat);
         }
-        public new bool ParseData(byte[] packet)
+        public new bool ParseData(byte[] packet, Util.DatReader dat)
         {
             if (base.ParseData(packet))
             {
                 if (type != PacketType.MapItemAdd) return false;
                 int typen;
-                PacketBuilder p = new PacketBuilder(packet);
-                loc.X = p.GetInt();
-                loc.Y = p.GetInt();
-                loc.Z = p.GetByte();
-                typen = p.GetInt();
-                if (typen == 0x61)
+                PacketBuilder p = new PacketBuilder(packet, 3);
+                loc = p.GetLocation();
+                typen = p.PeekInt();
+                if (typen == 0x63)
                 {
-                    //new creature, all info
+                    // returning creature
+                    addType = MapItemAddType.CreatureReturning;
+                    p.Skip(2);
+                    creatureId = p.GetLong();
+                    creatureDir = (Constants.TurnDirection)p.GetByte();
                 }
-                else if (typen == 0x62)
+                else if (typen == 0x62 || typen == 0x61) // creature with description
                 {
-                    //Creature, Known ID
-                }
-                else if (typen == 0x63)
-                {
-                    //Creature, known ID
-                }
-                else
-                {
-                    item = new Item((uint)typen);
-                    try
+                    p.Skip(2);
+                    if (typen == 0x62)
                     {
-                        item.Count = p.GetByte();
+                        // Known creature
+                        addType = MapItemAddType.CreatureKnown;
+                        creatureId = p.GetLong();
                     }
-                    catch (Exception e) { }
+                    else if (typen == 0x61)
+                    {
+                        // New creature
+                        addType = MapItemAddType.CreatureNew;
+                        knownRemoved = p.GetLong();
+                        creatureId = p.GetLong();
+                        lenCreatureName = p.GetInt();
+                        creatureName = p.GetString(lenCreatureName);
+                    }
+                    creatureHpBar = p.GetByte();
+                    creatureDir = (Constants.TurnDirection)p.GetByte();
+
+                    if (p.GetInt() == 0) // is invis
+                    {
+                        if (p.GetInt() == 0)
+                            creatureInvis = true; // no outfit
+                        //else monster outfit
+                    }
+                    else // player outfit
+                    {
+                        creatureInvis = false;
+                        p.Skip(6); // outfit colors
+                    }
+
+                    // light
+                    p.Skip(2);
+
+                    // speed
+                    creatureSpeed = p.GetInt();
+
+                    // skull
+                    creatureSkull = (Constants.Skull)p.GetByte();
+
                 }
-                // Incomplete
-                //index = p.Index;
-                index = -1;
+                else // just an item
+                {
+                    addType = MapItemAddType.Item;
+                    item = p.GetItem(dat);
+                }
+                index = p.Index;
                 return true;
             }
             else 
@@ -73,21 +163,13 @@ namespace Tibia.Packets
             }
         }
 
-        public static MapItemAddPacket Create(Location loc, Item item)
+        public static MapItemAddPacket Create(Location loc, Item item, Client client)
         {
-            PacketBuilder pkt = new PacketBuilder();
-            pkt.AddInt(9);
-            pkt.AddByte((byte)PacketType.MapItemAdd);
-            pkt.AddInt(loc.X);
-            pkt.AddInt(loc.Y);
-            pkt.AddByte((byte)loc.Z);
-            pkt.AddInt((int)item.Id);
-            if (item.Count >0)
-            {
-                pkt.AddByte(item.Count);
-            }
-            MapItemAddPacket p = new MapItemAddPacket(pkt.Data);
-            return p;
+            PacketBuilder p = new PacketBuilder(PacketType.MapItemAdd);
+            p.AddLocation(loc);
+            p.AddItem(item);
+            MapItemAddPacket pkt = new MapItemAddPacket(p.Data, new Util.DatReader(client));
+            return pkt;
         }
     }
 }

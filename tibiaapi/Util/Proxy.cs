@@ -51,6 +51,7 @@ namespace Tibia.Util
         private DateTime       lastServerWrite = DateTime.UtcNow;
         private PacketBuilder  partial;
         private int            partialRemaining = 0;
+        private Util.DatReader dat;
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -179,6 +180,7 @@ namespace Tibia.Util
         public Proxy(Client c, LoginServer ls)
         {
             client = c;
+            dat = new DatReader(client);
             c.UsingProxy = true;
             if (!ls.Server.Equals(string.Empty))
             {
@@ -373,8 +375,8 @@ namespace Tibia.Util
                 int remaining = 0; // the bytes worth of logical packets left
 
                 // Always call the default (if attached to)
-                //if (ReceivedPacketFromServer != null)
-                //    ReceivedPacketFromServer(new Packet(decrypted));
+                if (ReceivedPacketFromServer != null)
+                    ReceivedPacketFromServer(new Packet(decrypted));
 
                 // Is this a part of a larger packet?
                 if (partialRemaining > 0)
@@ -417,8 +419,9 @@ namespace Tibia.Util
                         length++;
                         if (forward)
                         {
-                            if (ReceivedPacketFromServer != null)
-                                ReceivedPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
+                            // Uncomment for debugging, will also call this on split up packets
+                            //if (ReceivedPacketFromServer != null)
+                            //    ReceivedPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
 
                             // Repackage it and send
                             SendToClient(Repackage(decrypted, 2, length));
@@ -547,7 +550,7 @@ namespace Tibia.Util
                         return ReceivedMapItemRemovePacket(p);
                     break;
                 case PacketType.MapItemAdd:
-                    p = new MapItemAddPacket(packet);
+                    p = new MapItemAddPacket(packet, dat);
                     length = p.Index;
                     if (ReceivedMapItemAddPacket != null)
                         return ReceivedMapItemAddPacket(p);
