@@ -1,5 +1,5 @@
 #summary Explanation of the proxy's inner workings.
-#labels Featured,Phase-Implementation
+#labels Phase-Implementation
 
 == Overview ==
 The TibiaAPI proxy is constructed to be completely asynchronous, meaning it does not block or wait for data to be sent. Each method is called successively _when_ data is sent, and a typically login process follows the pattern below.
