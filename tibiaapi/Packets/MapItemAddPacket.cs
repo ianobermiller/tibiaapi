@@ -166,7 +166,7 @@ namespace Tibia.Packets
             PacketBuilder p = new PacketBuilder(PacketType.MapItemAdd);
             p.AddLocation(loc);
             p.AddItem(item);
-            return new MapItemAddPacket(p.Data, new Util.DatReader(client));
+            return new MapItemAddPacket(p.GetPacket(), new Util.DatReader(client));
         }
     }
 }

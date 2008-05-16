@@ -126,6 +126,8 @@ namespace Tibia.Util
         public PacketListener ReceivedStatusUpdatePacket;
         public PacketListener ReceivedMapItemRemovePacket;
         public PacketListener ReceivedMapItemAddPacket;
+        public PacketListener ReceivedCreatureOutfitPacket;
+        public PacketListener ReceivedEqItemAddPacket;
 
         // Outgoing
         public PacketListener ReceivedPlayerSpeechPacket;
@@ -542,6 +544,19 @@ namespace Tibia.Util
                     if (ReceivedMapItemAddPacket != null)
                         return ReceivedMapItemAddPacket(p);
                     break;
+                case PacketType.CreatureOutfit:
+                    p = new CreatureOutfitPacket(packet);
+                    length = p.Index;
+                    if (ReceivedCreatureOutfitPacket != null)
+                        return ReceivedCreatureOutfitPacket(p);
+                    break;
+                case PacketType.EqItemAdd:
+                    p = new EqItemAddPacket(packet, dat);
+                    length = p.Index;
+                    if (ReceivedEqItemAddPacket != null)
+                        return ReceivedEqItemAddPacket(p);
+                    break;
+
             }
             return true;
         }
