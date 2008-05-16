@@ -126,6 +126,7 @@
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Util\Proxy.cs" />
     <Compile Include="Util\Version.cs" />
+    <Compile Include="Util\WinApi.cs" />
     <Compile Include="Util\XTEA.cs" />
     <Compile Include="Website\LookupPlayer.cs" />
     <Compile Include="Website\Website.cs" />

@@ -11,35 +11,6 @@ namespace Tibia
     {
         public static System.Text.ASCIIEncoding encoding = null;
 
-        public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
-        public const uint PROCESS_VM_READ = 0x0010;
-        public const uint PROCESS_VM_WRITE = 0x0020;
-        public const uint PROCESS_VM_OPERATION = 0x0008;
-
-        public const uint PAGE_EXECUTE_READWRITE = 0x40;
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
-        [DllImport("kernel32.dll")]
-        public static extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
-            [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesRead);
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, 
-            IntPtr dwSize, uint flNewProtect, ref uint lpflOldProtect);
-        [DllImport("kernel32.dll")]
-        public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
-            [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
-        [DllImport("kernel32.dll")]
-        public static extern Int32 CloseHandle(IntPtr hObject);
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern void SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetWindowText(IntPtr hWnd, string newTitle);
-
         /// <summary>
         /// Read a specified number of bytes from a process.
         /// </summary>
@@ -52,7 +23,7 @@ namespace Tibia
             IntPtr ptrBytesRead;
             byte[] buffer = new byte[bytesToRead];
 
-            ReadProcessMemory(handle, new IntPtr(address), buffer, bytesToRead, out ptrBytesRead);
+            Util.WinApi.ReadProcessMemory(handle, new IntPtr(address), buffer, bytesToRead, out ptrBytesRead);
 
             return buffer;
         }
@@ -140,7 +111,7 @@ namespace Tibia
             int result;
 
             // Write to memory
-            result = WriteProcessMemory(handle, new IntPtr(address), bytes, length, out bytesWritten);
+            result = Util.WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, length, out bytesWritten);
 
             return (result != 0);
         }
@@ -216,13 +187,13 @@ namespace Tibia
             byte[] bytes = enc.GetBytes(newKey);
 
             // Make it so we can write to the memory block
-            VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), PAGE_EXECUTE_READWRITE, ref oldProtection);
+            Util.WinApi.VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), Util.WinApi.PAGE_EXECUTE_READWRITE, ref oldProtection);
 
             // Write to memory
-            result = WriteProcessMemory(handle, new IntPtr(address), bytes, (uint)bytes.Length, out bytesWritten);
+            result = Util.WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, (uint)bytes.Length, out bytesWritten);
 
             // Put the protection back on the memory block
-            VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), oldProtection, ref oldProtection);
+            Util.WinApi.VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), oldProtection, ref oldProtection);
 
             return (result != 0);
         }

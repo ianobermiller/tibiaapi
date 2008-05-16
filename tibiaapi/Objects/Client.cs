@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using System.Text;
 using Tibia.Packets;
+using System.IO;
 
 namespace Tibia.Objects
 {
@@ -15,26 +15,6 @@ namespace Tibia.Objects
     /// </summary>
     public class Client
     {
-        #region Windows API Import
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern void SetWindowText(IntPtr hWnd, string str);
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count); 
-
-        [DllImport("user32.dll")]
-        private static extern bool IsIconic(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool IsZoomed(IntPtr hWnd);
-        #endregion
-
         private Process process;
         private IntPtr handle;
         private int startTime;
@@ -64,7 +44,7 @@ namespace Tibia.Objects
 
             // Save a copy of the handle so the process doesn't have to be opened
             // every read/write operation
-            handle = Memory.OpenProcess(Memory.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
+            handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
             // The client get's it's own battle list to speed up getPlayer()
             battleList = new BattleList(this);
@@ -81,7 +61,7 @@ namespace Tibia.Objects
         ~Client()
         {
             // Close the process handle
-            Memory.CloseHandle(handle);
+            Util.WinApi.CloseHandle(handle);
         }
 
         /// <summary>
@@ -298,12 +278,12 @@ namespace Tibia.Objects
         {
             get
             {
-                return process.MainWindowHandle == GetForegroundWindow();
+                return process.MainWindowHandle == Util.WinApi.GetForegroundWindow();
             }
             set
             {
                 if (value)
-                    SetForegroundWindow(process.MainWindowHandle);
+                    Util.WinApi.SetForegroundWindow(process.MainWindowHandle);
             }
         }
 
@@ -313,7 +293,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsMinimized()
         {
-            return IsIconic(process.MainWindowHandle);
+            return Util.WinApi.IsIconic(process.MainWindowHandle);
         }
 
         /// <summary>
@@ -322,7 +302,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsMaximized()
         {
-            return IsZoomed(process.MainWindowHandle);
+            return Util.WinApi.IsZoomed(process.MainWindowHandle);
         }
 
         /// <summary>
@@ -331,8 +311,12 @@ namespace Tibia.Objects
         /// <returns>Character name</returns>
         public override string ToString()
         {
-            if (!LoggedIn) return "Not logged in.";
-            return GetPlayer().Name;
+            string s = "[" + GetVersion() + "] ";
+            if (!LoggedIn)
+                s += "Not logged in.";
+            else
+                s += GetPlayer().Name;
+            return s;
         }
 
         /// <summary>
@@ -726,14 +710,19 @@ namespace Tibia.Objects
             {
                 StringBuilder buff = new StringBuilder(256);
 
-                GetWindowText(process.MainWindowHandle, buff, buff.MaxCapacity);
+                Util.WinApi.GetWindowText(process.MainWindowHandle, buff, buff.MaxCapacity);
 
                 return buff.ToString();
             }
             set
             {
-                SetWindowText(process.MainWindowHandle, value);
+                Util.WinApi.SetWindowText(process.MainWindowHandle, value);
             }
+        }
+
+        public void Flash()
+        {
+            Util.WinApi.FlashWindow(process.MainWindowHandle, false);
         }
 
         #region Proxy wrappers
@@ -807,7 +796,13 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool InjectDLL(string filename)
         {
-            return false;
+            if (!File.Exists(filename)) return false;
+            // Get a block of memory to store the filename in the client
+            IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(process.Handle, IntPtr.Zero, (uint)filename.Length, Util.WinApi.MEM_COMMIT | Util.WinApi.MEM_RESERVE, Util.WinApi.PAGE_READWRITE);
+            WriteString(remoteAddress.ToInt32(), filename);
+            IntPtr thread = Util.WinApi.CreateRemoteThread(process.Handle, IntPtr.Zero, 0, Util.WinApi.GetProcAddress(Util.WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"), remoteAddress, 0, IntPtr.Zero);
+            Util.WinApi.VirtualFreeEx(process.Handle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
+            return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
         }
     }
 }
