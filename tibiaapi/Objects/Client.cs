@@ -422,11 +422,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Logout()
         {
-            byte[] packet = new byte[3];
-            packet[0] = 0x01;
-            packet[1] = 0x00;
-            packet[2] = 0x14;
-            return Send(packet);
+            return Send(LogoutPacket.Create());
         }
 
         /// <summary>

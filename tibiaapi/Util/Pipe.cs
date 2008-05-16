@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO.Pipes;
-
+using Tibia.Packets;
 
 namespace Tibia.Util
 {
@@ -21,77 +21,71 @@ namespace Tibia.Util
         public delegate void PipeNotification();
 
         /// <summary>
-        /// A generic function prototype for packet events.
+        /// A generic function prototype for pipe events.
         /// </summary>
         /// <param name="packet">The packet that was received.</param>
-        public delegate void PacketListener(PacketBuilder packet);
+        public delegate void PipeListener(Packet packet);
 
         /// <summary>
-        /// Called when initiating a connection.
+        /// Called when connected.
         /// </summary>
-        public PipeNotification OnConnect;
-
-        // <summary>
-        // Called when connected.
-        // </summary>
         public PipeNotification OnConnected;
 
-        // <summary>
-        //  Called when data is received.
-        // </summary>
-        public PacketListener OnReceive;
+        /// <summary>
+        ///  Called when data is received.
+        /// </summary>
+        public PipeListener OnReceive;
 
-        // <summary>
-        //  Called when data is sent.
-        // </summary>
-        public PacketListener OnSend;
+        /// <summary>
+        ///  Called when data is sent.
+        /// </summary>
+        public PipeListener OnSend;
         #endregion
 
-        // <summary>
-        //  Creates a Pipe to interact with an injected DLL or another program.
-        // </summary>
+        /// <summary>
+        ///  Creates a Pipe to interact with an injected DLL or another program.
+        /// </summary>
         public Pipe(string name)
         {
             pipe = new NamedPipeServerStream(name);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
         }
 
-        // <summary>
-        // Returns the status of the pipe connection.
-        // </summary>
-        public bool IsConnected
+        /// <summary>
+        /// Returns the status of the pipe connection.
+        /// </summary>
+        public bool Connected
         {
-            get { return pipe.IsConnected(); }
+            get { return pipe.IsConnected; }
         }
 
 
-        private void BeginWaitForConnection(IAsyncResult AR)
+        private void BeginWaitForConnection(IAsyncResult ar)
         {
-            OnConnect();
-            pipe.WaitForConnection();
-            if (IsConnected())
+            pipe.EndWaitForConnection(ar);
+            if (pipe.IsConnected)
             {
-                OnConnected();
-                pipe.EndWaitForConnection();
-                pipe.BeginRead(buffer, 0, 1023, new AsyncCallback(BeginRead), null);
+                // Call OnConnected asynchronously
+                OnConnected.BeginInvoke(null, null);
+                pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);
             }
         }
 
-        private void BeginRead(IAsyncResult AR)
+        private void BeginRead(IAsyncResult ar)
         {
-            pipe.EndRead(AR);
-            Packets.PacketBuilder pb = new Packets.PacketBuilder(buffer);
-            OnReceive(new Packets.PacketBuilder(buffer));
-            pipe.BeginRead(buffer, 0, 1023, new AsyncCallback(BeginRead), null);           
+            pipe.EndRead(ar);
+            // Call OnReceive asynchronously
+            OnReceive.BeginInvoke(new Packet(buffer), null, null);
+            pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }
 
-        // <summary>
-        // Sends packet to the destination.
-        // </summary>
-        public void Send(Packets.PacketBuilder packet)
+        /// <summary>
+        /// Sends packet to the destination.
+        /// </summary>
+        public void Send(Packet packet)
         {
             OnSend(packet);
-            pipe.Write(packet.GetPacket(), 0, packet.Data.Length+2);
+            pipe.Write(packet.Data, 0, packet.Data.Length);
         }
     }
 }

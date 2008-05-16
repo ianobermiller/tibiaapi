@@ -584,7 +584,7 @@ namespace Tibia.Util
         {
             Stop();
             if (OnCrash != null)
-                OnCrash();
+                OnCrash.BeginInvoke(null, null);
         }
         #endregion
 
@@ -611,8 +611,7 @@ namespace Tibia.Util
                 if (OnLogOut != null)
                 {
                     // We don't care about the return to this
-                    MethodInvoker invoker = new MethodInvoker(OnLogOut);
-                    invoker.BeginInvoke(null, null);
+                    OnLogOut.BeginInvoke(null, null);
                 }
                     
                 return;

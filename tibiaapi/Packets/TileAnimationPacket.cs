@@ -7,14 +7,14 @@ namespace Tibia.Packets
     public class TileAnimationPacket : Packet
     {
         private Objects.Location loc;
-        private byte anim;
+        private TileAnimationType anim;
 
         public Objects.Location Location
         {
             get { return loc; }
         }
-        
-        public byte Animation
+
+        public TileAnimationType Animation
         {
             get { return anim; }
         }
@@ -37,7 +37,7 @@ namespace Tibia.Packets
                 if (type != PacketType.TileAnimation) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 loc = p.GetLocation();
-                anim = p.GetByte();
+                anim = (TileAnimationType)p.GetByte();
                 index = p.Index;
                 return true;
             }
@@ -46,11 +46,11 @@ namespace Tibia.Packets
                 return false;
             }
         }
-        public static TileAnimationPacket Create(Objects.Location loc, byte animation)
+        public static TileAnimationPacket Create(Objects.Location loc, TileAnimationType animation)
         {
             PacketBuilder p = new PacketBuilder(PacketType.TileAnimation);
             p.AddLocation(loc);
-            p.AddByte(animation);
+            p.AddByte((byte)animation);
             return new TileAnimationPacket(p.GetPacket());
         }
     }
