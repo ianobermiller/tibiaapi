@@ -27,6 +27,9 @@ namespace Tibia.Util
         [DllImport("user32.dll")]
         public static extern bool FlashWindow(IntPtr hWnd, bool invert);
 
+        [DllImport("user32.dll")]
+        public static extern bool SetWindowPos(IntPtr hWnd, uint hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
         public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
         public const uint PROCESS_VM_READ = 0x0010;
         public const uint PROCESS_VM_WRITE = 0x0020;

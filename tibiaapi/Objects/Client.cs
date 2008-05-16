@@ -15,6 +15,7 @@ namespace Tibia.Objects
     /// </summary>
     public class Client
     {
+        #region Variables
         private Process process;
         private IntPtr handle;
         private int startTime;
@@ -30,7 +31,20 @@ namespace Tibia.Objects
         private Inventory inventory;
         private Random random;
         private Console console;
+        #endregion
 
+        #region Events
+        /// <summary>
+        /// Prototype for client notifications.
+        /// </summary>
+        public delegate void ClientNotification();
+
+        /// <summary>
+        /// Event raised when the Tibia client is exited.
+        /// </summary>
+        public ClientNotification Exited;
+
+        #endregion
         /// <summary>
         /// Main constructor
         /// </summary>
@@ -38,6 +52,13 @@ namespace Tibia.Objects
         public Client(Process p)
         {
             process = p;
+            p.EnableRaisingEvents = true;
+            p.Exited += new EventHandler(ClientExited);
+            
+            // Wait until we can really access the process
+            p.Refresh();
+            p.WaitForInputIdle();
+            p.Refresh();
 
             // Save the start time (it isn't changing)
             startTime = ReadInt(Addresses.Client.StartTime);
@@ -81,11 +102,33 @@ namespace Tibia.Objects
         public static Client Open(string path)
         {
             ProcessStartInfo psi = new ProcessStartInfo(path);
+            psi.UseShellExecute = true; // to avoid opening currently running Tibia's
             psi.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+            return Open(psi);
+        }
+
+        /// <summary>
+        /// Open a client from the specified path with arguments
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        public static Client Open(string path, string arguments)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo(path, arguments);
+            psi.UseShellExecute = true; // to avoid opening currently running Tibia's
+            psi.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+            return Open(psi);
+        }
+
+        /// <summary>
+        /// Opens a client given a process start info object.
+        /// </summary>
+        public static Client Open(ProcessStartInfo psi)
+        {
             Process p = Process.Start(psi);
             return new Client(p);
         }
-
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
@@ -704,11 +747,7 @@ namespace Tibia.Objects
         {
             get
             {
-                StringBuilder buff = new StringBuilder(256);
-
-                Util.WinApi.GetWindowText(process.MainWindowHandle, buff, buff.MaxCapacity);
-
-                return buff.ToString();
+                return process.MainWindowTitle;
             }
             set
             {
@@ -716,9 +755,29 @@ namespace Tibia.Objects
             }
         }
 
+        /// <summary>
+        /// Flashes the client's window and taskbar.
+        /// </summary>
         public void Flash()
         {
             Util.WinApi.FlashWindow(process.MainWindowHandle, false);
+        }
+
+        /// <summary>
+        /// Sets the Tibia client as the topmost application or not.
+        /// </summary>
+        public bool TopMost
+        {
+            set
+            {
+                Util.WinApi.SetWindowPos(process.MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
+            }
+        }
+
+        private void ClientExited(object sender, EventArgs e)
+        {
+            if (Exited != null)
+                Exited();
         }
 
         #region Proxy wrappers

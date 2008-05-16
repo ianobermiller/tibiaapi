@@ -88,7 +88,7 @@ namespace Tibia.Packets
         {
             ParseData(data, dat);
         }
-        public new bool ParseData(byte[] packet, Util.DatReader dat)
+        public bool ParseData(byte[] packet, Util.DatReader dat)
         {
             if (base.ParseData(packet))
             {

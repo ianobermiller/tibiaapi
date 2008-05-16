@@ -221,7 +221,7 @@ namespace Tibia.Util
             {
                 result.msgtype = (MessageType)Enum.Parse(typeof(MessageType), lines[1], true);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 result.msgtype = MessageType.NULL;
             }

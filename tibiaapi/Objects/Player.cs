@@ -74,7 +74,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Go to the specified location.
         /// </summary>
-        /// <param name="location"></param>
         /// <returns></returns>
         public Location GoTo
         {

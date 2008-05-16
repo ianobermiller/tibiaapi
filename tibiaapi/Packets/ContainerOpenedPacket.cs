@@ -51,7 +51,8 @@ namespace Tibia.Packets
         {
             ParseData(data);
         }
-        public new bool ParseData(byte[] packet, Client client)
+
+        public bool ParseData(byte[] packet, Client client)
         {
             if (base.ParseData(packet))
             {
@@ -64,7 +65,6 @@ namespace Tibia.Packets
                 volume = p.GetInt();
                 itemCount = p.GetByte();
                 items = new List<Item>(itemCount);
-                Item item;
                 for (int i = 0; i < itemCount; i++)
                 {
                     items.Add(p.GetItem(dat));

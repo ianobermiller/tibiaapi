@@ -66,7 +66,8 @@ namespace Tibia.Util
             if (pipe.IsConnected)
             {
                 // Call OnConnected asynchronously
-                OnConnected.BeginInvoke(null, null);
+                if (OnConnected != null)
+                    OnConnected.BeginInvoke(null, null);
                 pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);
             }
         }
@@ -75,7 +76,8 @@ namespace Tibia.Util
         {
             pipe.EndRead(ar);
             // Call OnReceive asynchronously
-            OnReceive.BeginInvoke(new Packet(buffer), null, null);
+            if (OnReceive != null)
+                OnReceive.BeginInvoke(new Packet(buffer), null, null);
             pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }
 
@@ -84,7 +86,8 @@ namespace Tibia.Util
         /// </summary>
         public void Send(Packet packet)
         {
-            OnSend(packet);
+            if (OnSend != null)
+                OnSend.BeginInvoke(packet,null,null);
             pipe.Write(packet.Data, 0, packet.Data.Length);
         }
     }

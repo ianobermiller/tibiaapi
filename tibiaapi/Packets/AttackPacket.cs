@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Tibia.Packets
 {
+    /// <summary>
+    /// Packet sent to the server to indicate which creature is to be attacked.
+    /// </summary>
     public class AttackPacket : Packet
     {
         int id;
