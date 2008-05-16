@@ -184,6 +184,16 @@ namespace Tibia.Packets
         }
 
         /// <summary>
+        /// Add an item location object at the current index and advance.
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public int AddItemLocation(ItemLocation loc)
+        {
+            return AddBytes(loc.ToBytes());
+        }
+
+        /// <summary>
         /// Add an item at the current location and advance.
         /// Adds an extra byte if the count is significant (> 0).
         /// </summary>
@@ -265,6 +275,32 @@ namespace Tibia.Packets
             loc.X = GetInt();
             loc.Y = GetInt();
             loc.Z = GetByte();
+            return loc;
+        }
+
+        /// <summary>
+        /// Get an item location at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
+        public ItemLocation GetItemLocation()
+        {
+            ItemLocation loc = null;
+            Constants.ItemLocationType type = (Constants.ItemLocationType)GetByte();
+            switch (type)
+            {
+                case Constants.ItemLocationType.Ground:
+                    loc = new ItemLocation(GetLocation());
+                    break;
+                case Constants.ItemLocationType.Container:
+                    Skip(2); // FF FF
+                    loc = new ItemLocation((byte)(GetInt() - 0x40), GetByte());
+                    break;
+                case Constants.ItemLocationType.Slot:
+                    Skip(2); // FF FF
+                    loc = new ItemLocation((Constants.SlotNumber)GetByte());
+                    Skip(2); // 00 00
+                    break;
+            }
             return loc;
         }
 

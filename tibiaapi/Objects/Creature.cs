@@ -48,17 +48,9 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Attack()
         {
-            byte[] packet = new byte[7];
             int creatureId = Id;
-
-            packet[0] = 0x05;
-            packet[1] = 0x00;
-            packet[2] = 0xA1;
-
-            byte[] idBytes = BitConverter.GetBytes(creatureId);
-            Array.Copy(idBytes, 0, packet, 3, idBytes.Length);
             client.WriteInt(Addresses.Player.Target_ID, creatureId);
-            return client.Send(packet);
+            return client.Send(Packets.AttackPacket.Create(creatureId));
         }
 
         /// <summary>
@@ -69,27 +61,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Look()
         {
-            byte[] packet = new byte[11];
-            int creatureId = Id;
-
-            packet[00] = 0x09;
-            packet[01] = 0x00;
-            packet[02] = 0x8C;
-
-            int x = X;
-            int y = Y;
-
-            packet[03] = Packet.Lo(x);
-            packet[04] = Packet.Hi(x);
-            packet[05] = Packet.Lo(y);
-            packet[06] = Packet.Hi(y);
-            packet[07] = Convert.ToByte(Z);
-
-            packet[08] = 0x63;
-            packet[09] = 0x00;
-            packet[10] = 0x01;
-
-            return client.Send(packet);
+            return client.Send(Packets.LookAtPacket.Create(Location, 0x63, 1));
         }
 
         public uint Address

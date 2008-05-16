@@ -118,8 +118,8 @@ namespace Tibia.Constants
         Battle = 128,
         Drowning = 256,
         Frozen = 512,
-        Holy = 1024,
-        Thunder = 2048,
+        Dazzled = 1024,
+        Cursed = 2048,
         None = 0
     }
 

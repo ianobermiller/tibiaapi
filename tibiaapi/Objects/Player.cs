@@ -101,17 +101,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Stop()
         {
-            byte[] packet = new byte[3];
-
-            packet[0] = 0x01;
-            packet[1] = 0x00;
-            packet[2] = 0xBE;
-
             // Make sure the client stops walking 
             // if a destination has been chosen
             GoTo_X = 0;
 
-            return client.Send(packet);
+            return client.Send(CancelMovePacket.Create());
         }
 
         /// <summary>

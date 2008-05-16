@@ -31,8 +31,17 @@ namespace Tibia.Packets
 
         // Outgoing
         Logout              = 0x14,
+        ItemMove            = 0x78,
+        ItemUse             = 0x82,
+        ItemUseOn           = 0x83,
+        ItemUseBattlelist   = 0x84,
+        ContainerClose      = 0x87,
+        ContainerOpenParent = 0x88,
+        LookAt              = 0x8C,
         PlayerSpeech        = 0x96,
-        ClientLoggedIn      = 0xA0
+        ClientLoggedIn      = 0xA0,
+        Attack              = 0xA1,
+        CancelMove          = 0xBE
     }
 
     /// <summary>
@@ -101,15 +110,17 @@ namespace Tibia.Packets
 
     public enum StatusMessageType : byte
     {
-        YellowDefault = 0x01,
-        BlueReceivePM = 0x04,
-        Red           = 0x09,
-        OrangeCM      = 0x10,
-        RedOnScreen   = 0x12,
-        WhiteAdvance  = 0x13,
-        WhiteStatus   = 0x15,
-        GreenYouSee   = 0x16,
-        BlueSentPM    = 0x18
+	    ConsoleYellow	    = 0x01, //Yellow, console
+	    ConsoleLightBlue    = 0x04, //Light blue, console
+	    ConsoleOrange	    = 0x11, //Orange, console
+	    Warning			    = 0x12, //Red, center, console
+	    EventAdvance		= 0x13, //White, center, console
+	    EventDefault		= 0x14, //White, bottom, console
+	    Default			    = 0x15, //White, bottom, console
+	    Description			= 0x16, //Green, center, console
+	    SmallStatus			= 0x17, //White, bottom
+	    ConsoleBlue		    = 0x18, //Blue, console
+	    ConsoleRed		    = 0x19, //Red, console
     }
 
     public enum TextColor : byte
@@ -118,13 +129,15 @@ namespace Tibia.Packets
         Green = 30,
         LightBlue = 35,
         Crystal = 65,
+        Purple = 83,
         Platinum = 89,
         LightGrey = 129,
+        DarkRed = 144,
         Red = 180,
         Orange = 198,
         Gold = 210,
         White = 215,
-        Purple = 255
+        None = 255
     }
     public enum ProjectileType : byte
     {

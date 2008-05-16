@@ -69,14 +69,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenParent()
         {
-            byte[] packet = new byte[4];
-
-            packet[0] = 0x02;
-            packet[1] = 0x00;
-            packet[2] = 0x88;
-            packet[3] = number;
-
-            return client.Send(packet);
+            return client.Send(Packets.ContainerOpenParentPacket.Create(number));
         }
 
         /// <summary>
@@ -91,14 +84,7 @@ namespace Tibia.Objects
                 return true;
             }
 
-            byte[] packet = new byte[4];
-
-            packet[0] = 0x02;
-            packet[1] = 0x00;
-            packet[2] = 0x87;
-            packet[3] = number;
-
-            return client.Send(packet);
+            return client.Send(Packets.ContainerClosePacket.Create(number));
         }
 
         /// <summary>

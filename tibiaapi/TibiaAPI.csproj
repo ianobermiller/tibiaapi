@@ -67,6 +67,15 @@
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Packets\AnimatedTextPacket.cs" />
+    <Compile Include="Packets\ContainerClosePacket.cs" />
+    <Compile Include="Packets\ContainerOpenParentPacket.cs" />
+    <Compile Include="Packets\AttackPacket.cs" />
+    <Compile Include="Packets\CancelMovePacket.cs" />
+    <Compile Include="Packets\ItemMovePacket.cs" />
+    <Compile Include="Packets\ItemUseBattlelistPacket.cs" />
+    <Compile Include="Packets\ItemUseOnPacket.cs" />
+    <Compile Include="Packets\ItemUsePacket.cs" />
+    <Compile Include="Packets\LookAtPacket.cs" />
     <Compile Include="Packets\LogoutPacket.cs" />
     <Compile Include="Packets\CreatureSquarePacket.cs" />
     <Compile Include="Packets\CharListPacket.cs" />

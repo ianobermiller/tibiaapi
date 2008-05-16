@@ -239,22 +239,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[12];
-            packet[00] = 0x0A;
-            packet[01] = 0x00;
-            packet[02] = 0x82;
-            packet[03] = 0xFF;
-            packet[04] = 0xFF;
-            packet[05] = 0x00;
-            packet[06] = 0x00;
-            packet[07] = 0x00;
-            packet[08] = Packet.Lo(id);
-            packet[09] = Packet.Hi(id);
-            packet[10] = 0x00;
-            packet[11] = 0x0F;
-            return client.Send(packet);
+            return client.Send(Packets.ItemUsePacket.Create(ItemLocation.Hotkey(), id, 0, 0x0F));
         }
 
         /// <summary>
@@ -286,22 +271,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, int creatureId)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[15];
-            packet[00] = 0x0D;
-            packet[01] = 0x00;
-            packet[02] = 0x84;
-            packet[03] = 0xFF;
-            packet[04] = 0xFF;
-            packet[05] = 0x00;
-            packet[06] = 0x00;
-            packet[07] = 0x00;
-            packet[08] = Packet.Lo(id);
-            packet[09] = Packet.Hi(id);
-            packet[10] = 0x00;
-            Array.Copy(BitConverter.GetBytes(creatureId), 0, packet, 11, 4);
-            return client.Send(packet);
+            byte stack = 0;
+            byte count = 0;
+            if (id == Constants.Items.Bottle.Vial) stack = count;
+            return client.Send(Packets.ItemUseBattlelistPacket.Create(
+                ItemLocation.Hotkey(), id, stack, creatureId));
         }
 
         /// <summary>
@@ -312,29 +286,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, Tile onTile)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[19];
-            packet[00] = 0x11;
-            packet[01] = 0x00;
-            packet[02] = 0x83;
-            packet[03] = 0xFF;
-            packet[04] = 0xFF;
-            packet[05] = 0x00;
-            packet[06] = 0x00;
-            packet[07] = 0x00;
-            packet[08] = Packet.Lo(id);
-            packet[09] = Packet.Hi(id);
-            packet[10] = 0x00;
-            packet[11] = Packet.Lo(onTile.Location.X);
-            packet[12] = Packet.Hi(onTile.Location.X);
-            packet[13] = Packet.Lo(onTile.Location.Y);
-            packet[14] = Packet.Hi(onTile.Location.Y);
-            packet[15] = Packet.Lo(onTile.Location.Z);
-            packet[16] = Packet.Lo(onTile.Id);
-            packet[17] = Packet.Hi(onTile.Id);
-            packet[18] = 0x00;
-            return client.Send(packet);
+            return client.Send(Packets.ItemUseOnPacket.Create(
+                ItemLocation.Hotkey(), id, 0, onTile.Location, onTile.Id, 0));
         }
 
         /// <summary>

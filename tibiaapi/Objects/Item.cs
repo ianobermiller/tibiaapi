@@ -13,7 +13,6 @@ namespace Tibia.Objects
         protected uint id;
         protected string name;
         protected byte count;
-        protected bool stackable;
         protected ItemLocation loc;
         protected bool found;
 
@@ -54,21 +53,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenContainer(byte container)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[12];
-            packet[00] = 0x0A;
-            packet[01] = 0x00;
-            packet[02] = 0x82;
-
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-            packet[10] = Loc.stackOrder; //¿Only when the item is in a container?
-            packet[11] = container; //Container to open in
-
-            return client.Send(packet);
+            return client.Send(Packets.ItemUsePacket.Create(
+                loc, id, loc.stackOrder, container));
         }
 
         /// <summary>
@@ -77,21 +63,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use()
         {
-            if (client == null) return false;
-            
-            byte[] packet = new byte[12];
-            packet[00] = 0x0A;
-            packet[01] = 0x00;
-            packet[02] = 0x82;
-
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-            packet[10] = Loc.stackOrder;
-            packet[11] = 0x0F;
-
-            return client.Send(packet);
+            return client.Send(Packets.ItemUsePacket.Create(
+                loc, id, loc.stackOrder, 0x0F));
         }
 
         /// <summary>
@@ -101,29 +74,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            if (client == null) return false;
-            
-            byte[] packet = new byte[19];
-
-            packet[00] = 0x11;
-            packet[01] = 0x00;
-            packet[02] = 0x83;
-            
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-            
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-            packet[10] = 0x00;
-            packet[11] = Packet.Lo(onTile.Location.X);
-            packet[12] = Packet.Hi(onTile.Location.X);
-            packet[13] = Packet.Lo(onTile.Location.Y);
-            packet[14] = Packet.Hi(onTile.Location.Y);
-            packet[15] = Packet.Lo(onTile.Location.Z);
-            packet[16] = Packet.Lo(onTile.Id);
-            packet[17] = Packet.Hi(onTile.Id);
-            packet[18] = 0x00;
-            
-            return client.Send(packet);
+            return client.Send(Packets.ItemUseOnPacket.Create(
+                loc, id, 0, onTile.Location, onTile.Id, 0));
         }
 
         /// <summary>
@@ -134,27 +86,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[19];
-
-            packet[00] = 0x11;
-            packet[01] = 0x00;
-            packet[02] = 0x83;
-
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-            packet[10] = 0x00;
-
-            Array.Copy(ItemLocationToBytes(onItem.Loc), 0, packet, 11, 5);
-
-            packet[16] = Packet.Lo(onItem.Id);
-            packet[17] = Packet.Hi(onItem.Id);
-            packet[18] = 0x00;
-
-            return client.Send(packet);
+            return client.Send(Packets.ItemUseOnPacket.Create(
+                loc, id, 0, onItem.Loc, onItem.Id, 0));
         }
 
         /// <summary>
@@ -166,37 +99,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Creature onCreature)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[19];
-            packet[00] = 0x11;
-            packet[01] = 0x00;
-            packet[02] = 0x83;
-
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-            packet[10] = packet[07];
-
-            int x = onCreature.Location.X;
-            packet[11] = Packet.Lo(x);
-            packet[12] = Packet.Hi(x);
-
-            int y = onCreature.Location.Y;
-            packet[13] = Packet.Lo(y);
-            packet[14] = Packet.Hi(y);
-            packet[15] = Convert.ToByte(onCreature.Location.Z);
-
-            packet[16] = 0x63;
-            packet[17] = 0x00;
-
-            if (Id == Constants.Items.Bottle.Vial)
-                packet[18] = Count;
-            else
-                packet[18] = 0x01;
-
-            return client.Send(packet);
+            return client.Send(Packets.ItemUseOnPacket.Create(
+                loc, id, loc.ToBytes()[4], onCreature.Location, 0x63, 0));
         }
 
         /// <summary>
@@ -205,30 +109,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseOnSelf()
         {
-            byte[] packet = new byte[15];
-            packet[00] = 0x0D;
-            packet[01] = 0x00;
-            packet[02] = 0x84;
-
-            packet[03] = 0xFF;
-            packet[04] = 0xFF;
-            packet[05] = 0x00;
-            packet[06] = 0x00;
-            packet[07] = 0x00;
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-
-            if (Id == Constants.Items.Bottle.Vial)
-                packet[10] = Count;
-            else
-                packet[10] = 0x00;
-
-            // 11 - 14
             int playerID = client.ReadInt(Addresses.Player.Id);
-            Array.Copy(BitConverter.GetBytes(playerID), 0, packet, 11, 4);
-
-            return client.Send(packet);
+            byte stack = 0;
+            if (id == Constants.Items.Bottle.Vial) stack = count;
+            return client.Send(Packets.ItemUseBattlelistPacket.Create(
+                ItemLocation.Hotkey(), id, stack, playerID));
         }
 
         /// <summary>
@@ -250,25 +135,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.Item toItem)
         {
-            if (client == null) return false;
-
-            byte[] packet = new byte[17];
-            packet[00] = 0x0F;
-            packet[01] = 0x00;
-            packet[02] = 0x78;
-
-            Array.Copy(ItemLocationToBytes(Loc), 0, packet, 3, 5);
-
-            packet[08] = Packet.Lo(Id);
-            packet[09] = Packet.Hi(Id);
-
-            packet[10] = packet[07];
-
-            Array.Copy(ItemLocationToBytes(toItem.Loc), 0, packet, 11, 5);
-
-            packet[16] = Count;
-
-            return client.Send(packet);
+            return client.Send(Packets.ItemMovePacket.Create(
+                loc, id, loc.ToBytes()[4],toItem.Loc, count));
         }
 
         #region Get/Set Properties
@@ -302,14 +170,6 @@ namespace Tibia.Objects
         {
             get { return count; }
             set { count = value; }
-        }
-        /// <summary>
-        /// Gets or sets whether this item is stackable.
-        /// </summary>
-        public bool Stackable
-        {
-            get { return stackable; }
-            set { stackable = value; }
         }
         /// <summary>
         /// Gets or sets the location of this item.
@@ -483,7 +343,7 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Create a new item location from a general location and stack order (Objects.Location, in the Structures file).
+        /// Create a new item location from a general location and stack order.
         /// </summary>
         /// <param name="l"></param>
         /// <param name="stack"></param>
@@ -492,6 +352,58 @@ namespace Tibia.Objects
             type = Constants.ItemLocationType.Ground;
             groundLocation = l;
             stackOrder = stack;
+        }
+
+        /// <summary>
+        /// Create a new item location at the specified location.
+        /// </summary>
+        /// <param name="l"></param>
+        public ItemLocation(Location l)
+        {
+            type = Constants.ItemLocationType.Ground;
+            groundLocation = l;
+            stackOrder = 1;
+        }
+
+        /// <summary>
+        /// Return a blank item location for packets (FF FF 00 00 00)
+        /// </summary>
+        /// <returns></returns>
+        public static ItemLocation Hotkey()
+        {
+            return new ItemLocation(Constants.SlotNumber.None);
+        }
+
+        public byte[] ToBytes()
+        {
+            byte[] bytes = new byte[5];
+
+            switch (type)
+            {
+                case Constants.ItemLocationType.Container:
+                    bytes[00] = 0xFF;
+                    bytes[01] = 0xFF;
+                    bytes[02] = Convert.ToByte(0x40 + container);
+                    bytes[03] = 0x00;
+                    bytes[04] = position;
+                    break;
+                case Constants.ItemLocationType.Slot:
+                    bytes[00] = 0xFF;
+                    bytes[01] = 0xFF;
+                    bytes[02] = Convert.ToByte(slot);
+                    bytes[03] = 0x00;
+                    bytes[04] = 0x00;
+                    break;
+                case Constants.ItemLocationType.Ground:
+                    bytes[00] = Packet.Lo(groundLocation.X);
+                    bytes[01] = Packet.Hi(groundLocation.X);
+                    bytes[02] = Packet.Lo(groundLocation.Y);
+                    bytes[03] = Packet.Hi(groundLocation.Y);
+                    bytes[04] = Convert.ToByte(groundLocation.Z);
+                    break;
+            }
+
+            return bytes;
         }
     }
 }
