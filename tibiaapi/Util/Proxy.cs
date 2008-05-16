@@ -426,10 +426,10 @@ namespace Tibia.Util
                         {
                             // Uncomment for debugging, will also call this on split up packets
                             if (SplitPacketFromServer != null)
-                                SplitPacketFromServer(new Packet(Repackage(decrypted, 2, length)));
+                                SplitPacketFromServer(new Packet(Packet.Repackage(decrypted, 2, length)));
 
                             // Repackage it and send
-                            SendToClient(Repackage(decrypted, 2, length));
+                            SendToClient(Packet.Repackage(decrypted, 2, length));
                         }
 
                         // Subtract the amount that was parsed
@@ -437,7 +437,7 @@ namespace Tibia.Util
 
                         // Repackage decrypted without the first logical packet
                         if (remaining > 0)
-                            decrypted = Repackage(decrypted, length + 2);
+                            decrypted = Packet.Repackage(decrypted, length + 2);
                     }
 
                     // Start processing the queue
@@ -448,24 +448,6 @@ namespace Tibia.Util
                 if (serverReceiveQueue.Count > 0)
                     ProcessServerReceiveQueue();
             }
-        }
-
-        private byte[] Repackage(byte[] data)
-        {
-            return Repackage(data, 0);
-        }
-
-        private byte[] Repackage(byte[] data, int start)
-        {
-            return Repackage(data, start, data.Length - start);
-        }
-
-        private byte[] Repackage(byte[] data, int start, int length)
-        {
-            byte[] packaged = new byte[length + 2];
-            Array.Copy(BitConverter.GetBytes((ushort)length), packaged, 2);
-            Array.Copy(data, start, packaged, 2, length);
-            return packaged;
         }
 
         private bool RaiseIncomingEvents(byte[] packet, ref int length)

@@ -8,7 +8,7 @@ namespace Tibia.Packets
     {
         private Objects.Location from;
         private Objects.Location to;
-        private byte projectile;
+        private ProjectileType projectile;
         
         public Objects.Location From
         {
@@ -19,7 +19,7 @@ namespace Tibia.Packets
         {
             get { return to; }
         }
-        public byte Projectile
+        public ProjectileType Projectile
         {
             get { return projectile; }
         }
@@ -44,7 +44,7 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(packet, 3);
                 from = p.GetLocation();
                 to = p.GetLocation();
-                projectile = p.GetByte();
+                projectile = (ProjectileType)p.GetByte();
                 index = p.Index;
                 return true;
             }
@@ -54,12 +54,12 @@ namespace Tibia.Packets
             }
         }
 
-        public static ProjectilePacket Create(Objects.Location from, Objects.Location to, byte projectile)
+        public static ProjectilePacket Create(Objects.Location from, Objects.Location to, ProjectileType projectile)
         {
             PacketBuilder p = new PacketBuilder(PacketType.Projectile);
             p.AddLocation(from);
             p.AddLocation(to);
-            p.AddByte(projectile);
+            p.AddByte((byte)projectile);
             return new ProjectilePacket(p.GetPacket());
         }
     }

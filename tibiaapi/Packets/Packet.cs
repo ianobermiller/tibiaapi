@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using Tibia.Objects;
+using System.Collections.Generic;
 
 namespace Tibia.Packets
 {
@@ -112,6 +113,76 @@ namespace Tibia.Packets
             get { return destination; }
             set { destination = value; }
         }
+
+        /// <summary>
+        /// Combine two packets.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static Packet Combine(Packet first, Packet second)
+        {
+            return Combine(new List<Packet> { first, second });
+        }
+
+        /// <summary>
+        /// Combine the packets in the list into one packet.
+        /// </summary>
+        /// <param name="packets"></param>
+        /// <returns></returns>
+        public static Packet Combine(List<Packet> packets)
+        {
+            int index = 0;
+            int length = 0;
+            foreach (Packet p in packets)
+                length += (p.data.Length - 2);
+            byte[] combined = new byte[length];
+            foreach (Packet p in packets)
+            {
+                Array.Copy(p.data, 2, combined, index, p.data.Length - 2);
+                index += p.data.Length - 2;
+            }
+            return new Packet(Repackage(combined));
+        }
+
+
+        #region Repackage
+        /// <summary>
+        /// Add the length header to the packet.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static byte[] Repackage(byte[] data)
+        {
+            return Repackage(data, 0);
+        }
+
+        /// <summary>
+        /// Add the length header to the packet.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public static byte[] Repackage(byte[] data, int start)
+        {
+            return Repackage(data, start, data.Length - start);
+        }
+
+        /// <summary>
+        /// Add the length header to the packet.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static byte[] Repackage(byte[] data, int start, int length)
+        {
+            byte[] packaged = new byte[length + 2];
+            Array.Copy(BitConverter.GetBytes((ushort)length), packaged, 2);
+            Array.Copy(data, start, packaged, 2, length);
+            return packaged;
+        }
+        #endregion
 
         #region Sending Packets with packet.dll
         [DllImport("packet.dll")]
