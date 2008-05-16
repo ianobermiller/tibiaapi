@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Tibia.Objects;
 
 namespace Tibia.Util
 {
@@ -19,7 +20,7 @@ namespace Tibia.Util
         /// Opens a box to pick a client. (Wrapper for Showbox(bool) with smart enabled).
         /// </summary>
         /// <returns></returns>
-        public static Objects.Client ShowBox()
+        public static Client ShowBox()
         {
             return ShowBox(String.Empty, true);
         }
@@ -31,18 +32,19 @@ namespace Tibia.Util
         /// <param name="smart">If true, will not open a box if there is only one 
         /// client; just returns that client.</param>
         /// <returns></returns>
-        public static Objects.Client ShowBox(string title, bool smart)
+        public static Client ShowBox(string title, bool smart)
         {
             List<Objects.Client> clients = Objects.Client.GetClients();
-            if (clients.Count == 0)
-                return null;
-            else if (smart && clients.Count == 1)
+            if (smart && clients.Count == 1)
                 return clients[0];
             else
             {
                 newClientChooser = new ClientChooser();
                 newClientChooser.Text = title == string.Empty ? "Choose a client." : title;
-                newClientChooser.uxClients.DataSource = clients;
+                foreach (Client c in clients)
+                    newClientChooser.uxClients.Items.Add(c);
+                newClientChooser.uxClients.Items.Add("New client...");
+                newClientChooser.uxClients.SelectedIndex = 0;
                 newClientChooser.ShowDialog();
                 return client;
             }
@@ -50,7 +52,15 @@ namespace Tibia.Util
 
         private void uxChoose_Click(object sender, EventArgs e)
         {
-            client = (Objects.Client)uxClients.SelectedItem;
+            if (uxClients.SelectedItem.GetType() == typeof(string))
+            {
+                client = Client.Open();
+                System.Threading.Thread.Sleep(1000);
+            }
+            else
+            {
+                client = (Client)uxClients.SelectedItem;
+            }
             newClientChooser.Dispose();
         }
     }
