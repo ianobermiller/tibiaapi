@@ -30,6 +30,9 @@ namespace Tibia.Util
         [DllImport("user32.dll")]
         public static extern bool SetWindowPos(IntPtr hWnd, uint hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmd);
+
         public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
         public const uint PROCESS_VM_READ = 0x0010;
         public const uint PROCESS_VM_WRITE = 0x0020;
@@ -43,6 +46,17 @@ namespace Tibia.Util
         public const uint SWP_NOSIZE = 0x1;
         public const uint HWND_TOPMOST = 0xFFFFFFFF;
         public const uint HWND_NOTOPMOST = 0xFFFFFFFE;
+        public const uint SW_HIDE = 0;
+        public const uint SW_SHOWNORMAL = 1;
+        public const uint SW_SHOWMINIMIZED = 2;
+        public const uint SW_SHOWMAXIMIZED = 3;
+        public const uint SW_SHOWNOACTIVATE = 4;
+        public const uint SW_SHOW = 5;
+        public const uint SW_MINIMIZE = 6;
+        public const uint SW_SHOWMINNOACTIVE = 7;
+        public const uint SW_SHOWNA = 8;
+        public const uint SW_RESTORE = 9;
+        public const uint SW_SHOWDEFAULT = 10;
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);

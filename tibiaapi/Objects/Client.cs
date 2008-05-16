@@ -19,7 +19,7 @@ namespace Tibia.Objects
         private Process process;
         private IntPtr handle;
         private int startTime;
-        private bool wasMaximized;
+        private bool isVisible;
         private bool usingProxy = false;
         private Util.Proxy proxy;
 
@@ -45,6 +45,7 @@ namespace Tibia.Objects
         public ClientNotification Exited;
 
         #endregion
+
         /// <summary>
         /// Main constructor
         /// </summary>
@@ -52,7 +53,6 @@ namespace Tibia.Objects
         public Client(Process p)
         {
             process = p;
-            p.EnableRaisingEvents = true;
             p.Exited += new EventHandler(ClientExited);
             
             // Wait until we can really access the process
@@ -81,8 +81,15 @@ namespace Tibia.Objects
         /// </summary>
         ~Client()
         {
+            System.Windows.Forms.MessageBox.Show("~client");
             // Close the process handle
             Util.WinApi.CloseHandle(handle);
+        }
+
+        public void Close()
+        {
+            if (process != null && !process.HasExited)
+                process.Kill();
         }
 
         /// <summary>
@@ -127,8 +134,11 @@ namespace Tibia.Objects
         public static Client Open(ProcessStartInfo psi)
         {
             Process p = Process.Start(psi);
+            p.EnableRaisingEvents = true;
             return new Client(p);
         }
+
+      
         /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
@@ -346,6 +356,16 @@ namespace Tibia.Objects
         public bool IsMaximized()
         {
             return Util.WinApi.IsZoomed(process.MainWindowHandle);
+        }
+
+        public bool Visible
+        {
+            set
+            {
+                Util.WinApi.ShowWindow(process.MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
+                isVisible = value;
+            }
+            get { return isVisible; }
         }
 
         /// <summary>
@@ -859,5 +879,6 @@ namespace Tibia.Objects
             Util.WinApi.VirtualFreeEx(process.Handle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
             return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
         }
+
     }
 }

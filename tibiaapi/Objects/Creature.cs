@@ -33,6 +33,21 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Check if the current creature is actually yourself.
+        /// </summary>
+        /// <returns>True if it's yourself, false otherwise</returns>
+        public bool IsSelf()
+        {
+            return (Id == client.GetPlayer().Id);
+        }
+
+        public void Approach()
+        {
+            Player p = client.GetPlayer();
+            p.GoTo = Location;
+        }
+
+        /// <summary>
         /// Check if the creature is attacking the player.
         /// </summary>
         /// <returns></returns>

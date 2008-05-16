@@ -112,6 +112,18 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get list of creatures attacking the player.
+        /// </summary>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesAttacking()
+        {
+            return GetCreatures().FindAll(delegate(Creature c)
+            {
+                return c.IsAttacking();
+            });
+        }
+
+        /// <summary>
         /// Get a list of creatures with the specified name, ignoring spaces.
         /// </summary>
         /// <param name="creatureName"></param>
