@@ -7,6 +7,14 @@ namespace Tibia.Packets
     {
         private Item item;
         private ItemLocation loc;
+        public Item Item
+        {
+            get { return item; }
+        }
+        public ItemLocation Loc
+        {
+            get { return loc; }
+        }
         public EqItemAddPacket()
         {
             type = PacketType.EqItemAdd;

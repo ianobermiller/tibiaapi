@@ -71,8 +71,10 @@
     <Compile Include="Packets\ContainerOpenParentPacket.cs" />
     <Compile Include="Packets\AttackPacket.cs" />
     <Compile Include="Packets\CancelMovePacket.cs" />
+    <Compile Include="Packets\CreatureLightPacket.cs" />
     <Compile Include="Packets\CreatureOutfitPacket.cs" />
     <Compile Include="Packets\EqItemAddPacket.cs" />
+    <Compile Include="Packets\EqItemRemovePacket.cs" />
     <Compile Include="Packets\ItemMovePacket.cs" />
     <Compile Include="Packets\ItemUseBattlelistPacket.cs" />
     <Compile Include="Packets\ItemUseOnPacket.cs" />
