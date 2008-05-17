@@ -6,14 +6,14 @@ namespace Tibia.Packets
     public class EqItemAddPacket: Packet
     {
         private Item item;
-        private ItemLocation loc;
+        private Constants.SlotNumber slot;
         public Item Item
         {
             get { return item; }
         }
-        public ItemLocation Loc
+        public Constants.SlotNumber Slot
         {
-            get { return loc; }
+            get { return slot; }
         }
         public EqItemAddPacket()
         {
@@ -31,8 +31,9 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.EqItemAdd) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
-                loc = new ItemLocation((Tibia.Constants.SlotNumber)p.GetByte());
+                slot = (Tibia.Constants.SlotNumber)p.GetByte();
                 item = p.GetItem(dat);
+                item.Loc = new ItemLocation(slot);
                 index = p.Index;
                 return true;
             }

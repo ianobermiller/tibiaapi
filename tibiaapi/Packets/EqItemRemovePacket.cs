@@ -5,10 +5,10 @@ namespace Tibia.Packets
 {
     public class EqItemRemovePacket:Packet
     {
-        private ItemLocation loc;
-        public ItemLocation Loc
+        private Constants.SlotNumber slot;
+        public Constants.SlotNumber Slot
         {
-            get { return loc; }
+            get { return slot; }
         }
         public EqItemRemovePacket()
         {
@@ -26,7 +26,7 @@ namespace Tibia.Packets
             {
                 if (type != PacketType.EqItemRemove) return false;
                 PacketBuilder p = new PacketBuilder(packet, 3);
-                loc = new ItemLocation((Tibia.Constants.SlotNumber)p.GetByte());
+                slot = (Tibia.Constants.SlotNumber)p.GetByte();
                 index = p.Index;
                 return true;
             }
