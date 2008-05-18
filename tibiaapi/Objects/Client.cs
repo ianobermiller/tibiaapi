@@ -81,7 +81,6 @@ namespace Tibia.Objects
         /// </summary>
         ~Client()
         {
-            System.Windows.Forms.MessageBox.Show("~client");
             // Close the process handle
             Util.WinApi.CloseHandle(handle);
         }

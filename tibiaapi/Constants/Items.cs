@@ -160,6 +160,7 @@ namespace Tibia.Constants
             public static ushort GreatManaPotion = 238;
             public static ushort GreatHealthPotion = 239;
             public static ushort UltimateHealthPotion = 7643;
+            public static ushort GreatSpiritPotion = 7642;
         }
 
         public static class Fluid
