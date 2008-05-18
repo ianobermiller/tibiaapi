@@ -52,6 +52,8 @@ namespace Tibia.Util
         private PacketBuilder  partial;
         private int            partialRemaining = 0;
         private Util.DatReader dat;
+        private byte[] tempArray = new byte[8192];
+        private int tempLen = 0;
 
         private LoginServer[]  loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -260,18 +262,38 @@ namespace Tibia.Util
         private void CharListReceived(IAsyncResult ar)
         {
             int bytesRead = netStreamLogin.EndRead(ar);
-
+            
             if (bytesRead > 0)
             {
-                // Process the character list
-                ProcessCharListPacket(dataServer, bytesRead);
+                int getTheLen =  BitConverter.ToInt16(dataServer, 0);
+                if (bytesRead ==getTheLen+2)
+                {
+                    // Process the character list
+                    ProcessCharListPacket(dataServer, bytesRead);
 
-                // Send the modified char list to the client
-                netStreamClient.BeginWrite(dataServer, 0, bytesRead, null, null);
+                    // Send the modified char list to the client
+                    netStreamClient.BeginWrite(dataServer, 0, bytesRead, null, null);
 
-                // Refresh the client listener because the client reconnects on a
-                // different port with the game server
-                RefreshClientListener();
+                    // Refresh the client listener because the client reconnects on a
+                    // different port with the game server
+                    RefreshClientListener();
+                }
+                else
+                {
+                    if (tempLen == 0)
+                    {
+                        Array.Copy(dataServer, tempArray, bytesRead);
+                        tempLen = bytesRead;
+                        netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
+                    }
+                    else
+                    {
+                        Array.Copy(dataServer, 0, tempArray, tempLen, bytesRead);
+                        ProcessCharListPacket(tempArray, bytesRead+tempLen);
+                        netStreamClient.BeginWrite(tempArray, 0, bytesRead+tempLen, null, null);
+                        RefreshClientListener();
+                    }
+                }
             }
         }
 
