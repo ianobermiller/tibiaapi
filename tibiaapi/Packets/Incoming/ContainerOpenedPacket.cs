@@ -52,7 +52,7 @@ namespace Tibia.Packets
             ParseData(data);
         }
 
-        public bool ParseData(byte[] packet)
+        public new bool ParseData(byte[] packet)
         {
             if (base.ParseData(packet))
             {

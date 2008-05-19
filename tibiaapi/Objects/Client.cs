@@ -304,6 +304,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
+        [Obsolete("Send filters by destination.")] 
         public bool SendToClient(Packet packet)
         {
             return SendToClient(packet.Data);

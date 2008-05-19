@@ -99,7 +99,7 @@ namespace Tibia.Objects
             if (client.UsingProxy)
             {
                 Packets.ContainerOpenedPacket packet = Packets.ContainerOpenedPacket.Create(client, this, newName);
-                return client.SendToClient(packet);
+                return client.Send(packet);
             }
             else
                 return false;
