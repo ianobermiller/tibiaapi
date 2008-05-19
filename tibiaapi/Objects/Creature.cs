@@ -65,7 +65,7 @@ namespace Tibia.Objects
         {
             int creatureId = Id;
             client.WriteInt(Addresses.Player.Target_ID, creatureId);
-            return client.Send(Packets.AttackPacket.Create(creatureId));
+            return client.Send(Packets.AttackPacket.Create(client, creatureId));
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Look()
         {
-            return client.Send(Packets.LookAtPacket.Create(Location, 0x63, 1));
+            return client.Send(Packets.LookAtPacket.Create(client, Location, 0x63, 1));
         }
 
         public uint Address

@@ -13,6 +13,7 @@ namespace Tibia.Packets
         private byte[] data;
         private PacketType type;
         private int index = 0;
+        private Client client;
 
         #region Properties
         /// <summary>
@@ -54,8 +55,9 @@ namespace Tibia.Packets
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public PacketBuilder()
+        public PacketBuilder(Client c)
         {
+            client = c;
             data = new byte[MaxLength];
         }
 
@@ -63,8 +65,8 @@ namespace Tibia.Packets
         /// Start building a packet of the desired type.
         /// </summary>
         /// <param name="type"></param>
-        public PacketBuilder(PacketType type)
-            : this()
+        public PacketBuilder(Client c, PacketType type)
+            : this(c)
         {
             Type = type;
             index++;
@@ -74,14 +76,14 @@ namespace Tibia.Packets
         /// Start parsing the given packet.
         /// </summary>
         /// <param name="packet"></param>
-        public PacketBuilder(byte[] packet) : this(packet, 0, packet.Length) { }
+        public PacketBuilder(Client c, byte[] packet) : this(c, packet, 0, packet.Length) { }
 
         /// <summary>
         /// Start parsing the given packet.
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="start"></param>
-        public PacketBuilder(byte[] packet, int start) : this(packet, start, packet.Length - start) { }
+        public PacketBuilder(Client c, byte[] packet, int start) : this(c, packet, start, packet.Length - start) { }
 
         /// <summary>
         /// Start parsing the given packet.
@@ -89,8 +91,8 @@ namespace Tibia.Packets
         /// <param name="packet"></param>
         /// <param name="start"></param>
         /// <param name="length"></param>
-        public PacketBuilder(byte[] packet, int start, int length)
-            : this()
+        public PacketBuilder(Client c, byte[] packet, int start, int length)
+            : this(c)
         {
             Array.Copy(packet, start, data, 0, length);
         }
@@ -202,7 +204,7 @@ namespace Tibia.Packets
         public int AddItem(Item item)
         {
             AddInt((int)item.Id);
-            if (item.Count > 0)
+            if (client.GetDatReader().GetItem(item.Id).HasExtraByte())
                 AddByte(item.Count);
             return index;
         }
@@ -308,12 +310,11 @@ namespace Tibia.Packets
         /// Get an item from the current index and advance.
         /// Requires a DatReader object to check if the item has an extra byte.
         /// </summary>
-        /// <param name="dat"></param>
         /// <returns></returns>
-        public Item GetItem(Util.DatReader dat)
+        public Item GetItem()
         {
             Item item = new Item(GetInt());
-            if (dat.GetItem(item.Id).HasExtraByte())
+            if (client.GetDatReader().GetItem(item.Id).HasExtraByte())
                 item.Count = GetByte();
             return item;
         }

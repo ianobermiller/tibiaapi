@@ -5,13 +5,14 @@ namespace Tibia.Packets
 {
     public class DefaultTemplatePacket : Packet
     {
-        public DefaultTemplatePacket()
+        public DefaultTemplatePacket(Client c)
+            : base(c)
         {
             type = PacketType.DefaultTemplate;
             destination = PacketDestination.Client;
         }
-        public DefaultTemplatePacket(byte[] data)
-            : this()
+        public DefaultTemplatePacket(Client c, byte[] data)
+            : this(c)
         {
             ParseData(data);
         }
@@ -20,7 +21,7 @@ namespace Tibia.Packets
             if (base.ParseData(packet))
             {
                 if (type != PacketType.DefaultTemplate) return false;
-                PacketBuilder p = new PacketBuilder(packet, 3);
+                PacketBuilder p = new PacketBuilder(client, packet, 3);
 
                 index = p.Index;
                 return true;
@@ -31,11 +32,11 @@ namespace Tibia.Packets
             }
         }
 
-        public static DefaultTemplatePacket Create()
+        public static DefaultTemplatePacket Create(Client c)
         {
-            PacketBuilder p = new PacketBuilder(PacketType.DefaultTemplate);
+            PacketBuilder p = new PacketBuilder(c, PacketType.DefaultTemplate);
 
-            return new DefaultTemplatePacket(p.GetPacket());
+            return new DefaultTemplatePacket(c, p.GetPacket());
         }
     }
 }

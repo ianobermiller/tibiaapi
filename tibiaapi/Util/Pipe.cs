@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO.Pipes;
+using Tibia.Objects;
 using Tibia.Packets;
 
 namespace Tibia.Util
@@ -9,6 +10,7 @@ namespace Tibia.Util
     class Pipe
     {
         #region Variables
+        private Client client;
         private NamedPipeServerStream pipe;
         private byte[] buffer = new byte[1024];
         #endregion
@@ -45,8 +47,9 @@ namespace Tibia.Util
         /// <summary>
         ///  Creates a Pipe to interact with an injected DLL or another program.
         /// </summary>
-        public Pipe(string name)
+        public Pipe(Client c, string name)
         {
+            client = c;
             pipe = new NamedPipeServerStream(name);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
         }
@@ -77,7 +80,7 @@ namespace Tibia.Util
             pipe.EndRead(ar);
             // Call OnReceive asynchronously
             if (OnReceive != null)
-                OnReceive.BeginInvoke(new Packet(buffer), null, null);
+                OnReceive.BeginInvoke(new Packet(client, buffer), null, null);
             pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }
 

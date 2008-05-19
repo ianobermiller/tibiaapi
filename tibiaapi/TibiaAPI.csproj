@@ -66,40 +66,40 @@
     <Compile Include="Constants\ItemList.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
-    <Compile Include="Packets\AnimatedTextPacket.cs" />
-    <Compile Include="Packets\ContainerClosePacket.cs" />
-    <Compile Include="Packets\ContainerOpenParentPacket.cs" />
-    <Compile Include="Packets\AttackPacket.cs" />
-    <Compile Include="Packets\CancelMovePacket.cs" />
-    <Compile Include="Packets\CreatureLightPacket.cs" />
-    <Compile Include="Packets\CreatureOutfitPacket.cs" />
-    <Compile Include="Packets\EqItemAddPacket.cs" />
-    <Compile Include="Packets\EqItemRemovePacket.cs" />
-    <Compile Include="Packets\ItemMovePacket.cs" />
-    <Compile Include="Packets\ItemUseBattlelistPacket.cs" />
-    <Compile Include="Packets\ItemUseOnPacket.cs" />
-    <Compile Include="Packets\ItemUsePacket.cs" />
-    <Compile Include="Packets\LookAtPacket.cs" />
-    <Compile Include="Packets\LogoutPacket.cs" />
-    <Compile Include="Packets\CreatureSquarePacket.cs" />
-    <Compile Include="Packets\CharListPacket.cs" />
-    <Compile Include="Packets\ChatMessagePacket.cs" />
-    <Compile Include="Packets\ChannelListPacket.cs" />
-    <Compile Include="Packets\ChannelOpenPacket.cs" />
-    <Compile Include="Packets\ContainerOpenedPacket.cs" />
+    <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
+    <Compile Include="Packets\Outgoing\ContainerClosePacket.cs" />
+    <Compile Include="Packets\Outgoing\ContainerOpenParentPacket.cs" />
+    <Compile Include="Packets\Incoming\AttackPacket.cs" />
+    <Compile Include="Packets\Incoming\CancelMovePacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureLightPacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureOutfitPacket.cs" />
+    <Compile Include="Packets\Incoming\EqItemAddPacket.cs" />
+    <Compile Include="Packets\Incoming\EqItemRemovePacket.cs" />
+    <Compile Include="Packets\Outgoing\ItemMovePacket.cs" />
+    <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
+    <Compile Include="Packets\Outgoing\ItemUseOnPacket.cs" />
+    <Compile Include="Packets\Outgoing\ItemUsePacket.cs" />
+    <Compile Include="Packets\Outgoing\LookAtPacket.cs" />
+    <Compile Include="Packets\Outgoing\LogoutPacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureSquarePacket.cs" />
+    <Compile Include="Packets\Incoming\CharListPacket.cs" />
+    <Compile Include="Packets\Incoming\ChatMessagePacket.cs" />
+    <Compile Include="Packets\Incoming\ChannelListPacket.cs" />
+    <Compile Include="Packets\Incoming\ChannelOpenPacket.cs" />
+    <Compile Include="Packets\Incoming\ContainerOpenedPacket.cs" />
     <Compile Include="Packets\PacketBuilder.cs" />
     <Compile Include="Packets\DefaultTemplatePacket.cs" />
-    <Compile Include="Packets\MapItemRemovePacket.cs" />
-    <Compile Include="Packets\MapItemAddPacket.cs" />
-    <Compile Include="Packets\CreatureMovePacket.cs" />
-    <Compile Include="Packets\PlayerSpeechPacket.cs" />
-    <Compile Include="Packets\CreatureHealthPacket.cs" />
+    <Compile Include="Packets\Incoming\MapItemRemovePacket.cs" />
+    <Compile Include="Packets\Incoming\MapItemAddPacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureMovePacket.cs" />
+    <Compile Include="Packets\Outgoing\PlayerSpeechPacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureHealthPacket.cs" />
     <Compile Include="Packets\Enums.cs" />
-    <Compile Include="Packets\ProjectilePacket.cs" />
-    <Compile Include="Packets\StatusMessagePacket.cs" />
-    <Compile Include="Packets\StatusUpdatePacket.cs" />
-    <Compile Include="Packets\TileAnimationPacket.cs" />
-    <Compile Include="Packets\VipLoginPacket.cs" />
+    <Compile Include="Packets\Incoming\ProjectilePacket.cs" />
+    <Compile Include="Packets\Incoming\StatusMessagePacket.cs" />
+    <Compile Include="Packets\Incoming\StatusUpdatePacket.cs" />
+    <Compile Include="Packets\Incoming\TileAnimationPacket.cs" />
+    <Compile Include="Packets\Incoming\VipLoginPacket.cs" />
     <Compile Include="Util\Irc.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
@@ -161,5 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CurrentForumPost.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Packets\Pipes\" />
   </ItemGroup>
 </Project>

@@ -305,7 +305,7 @@ namespace Tibia.Util
             Array.Copy(data, packet, length);
             packet = XTEA.Decrypt(packet, key);
 
-            charList = new CharListPacket();
+            charList = new CharListPacket(client);
             charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
 
             packet = XTEA.Encrypt(charList.Data, key);
@@ -407,7 +407,7 @@ namespace Tibia.Util
 
                 // Always call the default (if attached to)
                 if (ReceivedPacketFromServer != null)
-                    ReceivedPacketFromServer(new Packet(decrypted));
+                    ReceivedPacketFromServer(new Packet(client, decrypted));
 
                 // Is this a part of a larger packet?
                 if (partialRemaining > 0)
@@ -423,7 +423,7 @@ namespace Tibia.Util
                 else
                 {
                     // No, create a new partial packet
-                    partial = new PacketBuilder(decrypted);
+                    partial = new PacketBuilder(client, decrypted);
                     remaining = partial.GetInt();
                     partialRemaining = remaining - (decrypted.Length - 2); // packet length - part we already have
                 }
@@ -452,7 +452,7 @@ namespace Tibia.Util
                         {
                             // Uncomment for debugging, will also call this on split up packets
                             if (SplitPacketFromServer != null)
-                                SplitPacketFromServer(new Packet(Packet.Repackage(decrypted, 2, length)));
+                                SplitPacketFromServer(new Packet(client, Packet.Repackage(decrypted, 2, length)));
 
                             // Repackage it and send
                             SendToClient(Packet.Repackage(decrypted, 2, length));
@@ -485,109 +485,109 @@ namespace Tibia.Util
             switch (type)
             {
                 case PacketType.AnimatedText:
-                    p = new AnimatedTextPacket(packet);
+                    p = new AnimatedTextPacket(client, packet);
                     length = p.Index;
                     if (ReceivedAnimatedTextPacket != null)
                         return ReceivedAnimatedTextPacket(p);
                     break;
                 case PacketType.ChatMessage:
-                    p = new ChatMessagePacket(packet);
+                    p = new ChatMessagePacket(client, packet);
                     length = p.Index;
                     if (ReceivedChatMessagePacket != null)
                         return ReceivedChatMessagePacket(p);
                     break;
                 case PacketType.StatusMessage:
-                    p = new StatusMessagePacket(packet);
+                    p = new StatusMessagePacket(client, packet);
                     length = p.Index;
                     if (ReceivedStatusMessagePacket != null)
                         return ReceivedStatusMessagePacket(p);
                     break;
                 case PacketType.Projectile:
-                    p = new ProjectilePacket(packet);
+                    p = new ProjectilePacket(client, packet);
                     length = p.Index;
                     if (ReceivedProjectilePacket != null)
                         return ReceivedProjectilePacket(p);
                     break;
                 case PacketType.CreatureHealth:
-                    p = new CreatureHealthPacket(packet);
+                    p = new CreatureHealthPacket(client, packet);
                     length = p.Index;
                     if (ReceivedCreatureHealthPacket != null)
                         return ReceivedCreatureHealthPacket(p);
                     break;
                 case PacketType.VipLogin:
-                    p = new VipLoginPacket(packet);
+                    p = new VipLoginPacket(client, packet);
                     length = p.Index;
                     if (ReceivedVipLoginPacket != null)
                         return ReceivedVipLoginPacket(p);
                     break;
                 case PacketType.ChannelList:
-                    p = new ChannelListPacket(packet);
+                    p = new ChannelListPacket(client, packet);
                     length = p.Index;
                     if (ReceivedChannelListPacket != null)
                         return ReceivedChannelListPacket(p);
                     break;
                 case PacketType.ChannelOpen:
-                    p = new ChannelOpenPacket(packet);
+                    p = new ChannelOpenPacket(client, packet);
                     length = p.Index;
                     if (ReceivedChannelOpenPacket != null)
                         return ReceivedChannelOpenPacket(p);
                     break;
                 case PacketType.CreatureMove:
-                    p = new CreatureMovePacket(packet);
+                    p = new CreatureMovePacket(client, packet);
                     length = p.Index;
                     if (ReceivedCreatureMovePacket != null)
                         return ReceivedCreatureMovePacket(p);
                     break;
                 case PacketType.TileAnimation:
-                    p = new TileAnimationPacket(packet);
+                    p = new TileAnimationPacket(client, packet);
                     length = p.Index;
                     if (ReceivedTileAnimationPacket != null)
                         return ReceivedTileAnimationPacket(p);
                     break;
                 case PacketType.CreatureSquare:
-                    p = new CreatureSquarePacket(packet);
+                    p = new CreatureSquarePacket(client, packet);
                     length = p.Index;
                     if (ReceivedCreatureSquarePacket != null)
                         return ReceivedCreatureSquarePacket(p);
                     break;
                 case PacketType.StatusUpdate:
-                    p = new StatusUpdatePacket(packet);
+                    p = new StatusUpdatePacket(client, packet);
                     length = p.Index;
                     if (ReceivedStatusUpdatePacket != null)
                         return ReceivedStatusUpdatePacket(p);
                     break;
                 case PacketType.MapItemRemove:
-                    p = new MapItemRemovePacket(packet);
+                    p = new MapItemRemovePacket(client, packet);
                     length = p.Index;
                     if (ReceivedMapItemRemovePacket != null)
                         return ReceivedMapItemRemovePacket(p);
                     break;
                 case PacketType.MapItemAdd:
-                    p = new MapItemAddPacket(packet, dat);
+                    p = new MapItemAddPacket(client, packet);
                     length = p.Index;
                     if (ReceivedMapItemAddPacket != null)
                         return ReceivedMapItemAddPacket(p);
                     break;
                 case PacketType.CreatureOutfit:
-                    p = new CreatureOutfitPacket(packet);
+                    p = new CreatureOutfitPacket(client, packet);
                     length = p.Index;
                     if (ReceivedCreatureOutfitPacket != null)
                         return ReceivedCreatureOutfitPacket(p);
                     break;
                 case PacketType.EqItemAdd:
-                    p = new EqItemAddPacket(packet, dat);
+                    p = new EqItemAddPacket(client, packet);
                     length = p.Index;
                     if (ReceivedEqItemAddPacket != null)
                         return ReceivedEqItemAddPacket(p);
                     break;
                 case PacketType.EqItemRemove:
-                    p = new EqItemRemovePacket(packet);
+                    p = new EqItemRemovePacket(client, packet);
                     length = p.Index;
                     if (ReceivedEqItemRemovePacket != null)
                         return ReceivedEqItemRemovePacket(p);
                     break;
                 case PacketType.CreatureLight:
-                    p = new CreatureLightPacket(packet);
+                    p = new CreatureLightPacket(client, packet);
                     length = p.Index;
                     if (ReceivedCreatureLightPacket != null)
                         return ReceivedCreatureLightPacket(p);
@@ -712,7 +712,7 @@ namespace Tibia.Util
 
                 // Always call the default (if attached to)
                 if (ReceivedPacketFromClient != null)
-                    ReceivedPacketFromClient(new Packet(decrypted));
+                    ReceivedPacketFromClient(new Packet(client, decrypted));
 
 
                 bool forward = RaiseOutgoingEvents(decrypted);
@@ -734,7 +734,7 @@ namespace Tibia.Util
             {
                 case PacketType.PlayerSpeech:
                     if (ReceivedPlayerSpeechPacket != null)
-                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(packet));
+                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(client, packet));
                     break;
                 case PacketType.ClientLoggedIn:
                     if (!isLoggedIn)

@@ -12,6 +12,7 @@ namespace Tibia.Packets
     public class Packet
     {
         protected byte[] data;
+        protected Client client;
         protected PacketType type;
         protected PacketDestination destination;
         protected short specifiedLength;
@@ -22,16 +23,16 @@ namespace Tibia.Packets
         /// For derived classes, this should isntantiate a new data array
         /// so users can create new packets.
         /// </summary>
-        public Packet()
+        public Packet(Client c)
         {
-
+            client = c;
         }
 
         /// <summary>
         /// Create a new packet object and parse the specified data packet.
         /// </summary>
         /// <param name="data"></param>
-        public Packet(byte[] data)
+        public Packet(Client c, byte[] data) : this(c)
         {
             ParseData(data);
         }
@@ -63,6 +64,15 @@ namespace Tibia.Packets
         {
             get { return data; }
             set { data = value; }
+        }
+
+        /// <summary>
+        /// Get/Set the client associated with this packet object.
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
+            set { client = value; }
         }
 
         /// <summary>
@@ -114,6 +124,7 @@ namespace Tibia.Packets
             set { destination = value; }
         }
 
+        #region Combine
         /// <summary>
         /// Combine two packets.
         /// </summary>
@@ -134,6 +145,7 @@ namespace Tibia.Packets
         {
             int index = 0;
             int length = 0;
+            if (packets.Count == 0) return null;
             foreach (Packet p in packets)
                 length += (p.data.Length - 2);
             byte[] combined = new byte[length];
@@ -142,9 +154,9 @@ namespace Tibia.Packets
                 Array.Copy(p.data, 2, combined, index, p.data.Length - 2);
                 index += p.data.Length - 2;
             }
-            return new Packet(Repackage(combined));
+            return new Packet(packets[0].Client, Repackage(combined));
         }
-
+        #endregion
 
         #region Repackage
         /// <summary>

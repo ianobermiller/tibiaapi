@@ -53,7 +53,7 @@ namespace Tibia.Objects
         /// <returns>message packet</returns>
         public bool Say(ChatMessage message)
         {
-            PlayerSpeechPacket packet = PlayerSpeechPacket.Create(message);
+            PlayerSpeechPacket packet = PlayerSpeechPacket.Create(client, message);
 
             return client.Send(packet);
         }

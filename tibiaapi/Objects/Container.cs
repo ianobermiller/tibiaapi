@@ -69,7 +69,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenParent()
         {
-            return client.Send(Packets.ContainerOpenParentPacket.Create(number));
+            return client.Send(Packets.ContainerOpenParentPacket.Create(client, number));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Tibia.Objects
                 return true;
             }
 
-            return client.Send(Packets.ContainerClosePacket.Create(number));
+            return client.Send(Packets.ContainerClosePacket.Create(client, number));
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Tibia.Objects
         {
             if (client.UsingProxy)
             {
-                Packets.ContainerOpenedPacket packet = Packets.ContainerOpenedPacket.Create(this, newName);
+                Packets.ContainerOpenedPacket packet = Packets.ContainerOpenedPacket.Create(client, this, newName);
                 return client.SendToClient(packet);
             }
             else

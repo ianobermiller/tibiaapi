@@ -54,7 +54,7 @@ namespace Tibia.Objects
         public bool OpenContainer(byte container)
         {
             return client.Send(Packets.ItemUsePacket.Create(
-                loc, id, loc.stackOrder, container));
+                client, loc, id, loc.stackOrder, container));
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Tibia.Objects
         public bool Use()
         {
             return client.Send(Packets.ItemUsePacket.Create(
-                loc, id, loc.stackOrder, 0x0F));
+                client, loc, id, loc.stackOrder, 0x0F));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Tibia.Objects
         public bool Use(Objects.Tile onTile)
         {
             return client.Send(Packets.ItemUseOnPacket.Create(
-                loc, id, 0, onTile.Location, onTile.Id, 0));
+                client, loc, id, 0, onTile.Location, onTile.Id, 0));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Tibia.Objects
         public bool Use(Objects.Item onItem)
         {
             return client.Send(Packets.ItemUseOnPacket.Create(
-                loc, id, 0, onItem.Loc, onItem.Id, 0));
+                client, loc, id, 0, onItem.Loc, onItem.Id, 0));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Tibia.Objects
         public bool Use(Objects.Creature onCreature)
         {
             return client.Send(Packets.ItemUseOnPacket.Create(
-                loc, id, loc.ToBytes()[4], onCreature.Location, 0x63, 0));
+                client, loc, id, loc.ToBytes()[4], onCreature.Location, 0x63, 0));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Tibia.Objects
             byte stack = 0;
             if (id == Constants.Items.Bottle.Vial) stack = count;
             return client.Send(Packets.ItemUseBattlelistPacket.Create(
-                ItemLocation.Hotkey(), id, stack, playerID));
+                client, ItemLocation.Hotkey(), id, stack, playerID));
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Tibia.Objects
         public bool Move(Objects.Item toItem)
         {
             return client.Send(Packets.ItemMovePacket.Create(
-                loc, id, loc.ToBytes()[4],toItem.Loc, count));
+                client, loc, id, loc.ToBytes()[4],toItem.Loc, count));
         }
 
         #region Get/Set Properties

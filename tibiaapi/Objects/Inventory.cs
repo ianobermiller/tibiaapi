@@ -239,7 +239,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id)
         {
-            return client.Send(Packets.ItemUsePacket.Create(ItemLocation.Hotkey(), id, 0, 0x0F));
+            return client.Send(Packets.ItemUsePacket.Create(client, ItemLocation.Hotkey(), id, 0, 0x0F));
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Tibia.Objects
             byte count = 0;
             if (id == Constants.Items.Bottle.Vial) stack = count;
             return client.Send(Packets.ItemUseBattlelistPacket.Create(
-                ItemLocation.Hotkey(), id, stack, creatureId));
+                client, ItemLocation.Hotkey(), id, stack, creatureId));
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace Tibia.Objects
         public bool UseItem(uint id, Tile onTile)
         {
             return client.Send(Packets.ItemUseOnPacket.Create(
-                ItemLocation.Hotkey(), id, 0, onTile.Location, onTile.Id, 0));
+                client, ItemLocation.Hotkey(), id, 0, onTile.Location, onTile.Id, 0));
         }
 
         /// <summary>

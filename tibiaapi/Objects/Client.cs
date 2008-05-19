@@ -31,6 +31,7 @@ namespace Tibia.Objects
         private Inventory inventory;
         private Random random;
         private Console console;
+        private Util.DatReader dat;
         #endregion
 
         #region Events
@@ -73,6 +74,7 @@ namespace Tibia.Objects
             inventory = new Inventory(this);
             console = new Console(this);
             random = new Random();
+            dat = new Util.DatReader(this);
         }
 
         /// <summary>
@@ -426,6 +428,15 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's DatReader.
+        /// </summary>
+        /// <returns></returns>
+        public Util.DatReader GetDatReader()
+        {
+            return dat;
+        }
+
+        /// <summary>
         /// Get the client's inventory.
         /// </summary>
         /// <returns></returns>
@@ -484,7 +495,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Logout()
         {
-            return Send(LogoutPacket.Create());
+            return Send(LogoutPacket.Create(this));
         }
 
         /// <summary>
