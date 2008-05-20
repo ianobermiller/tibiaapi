@@ -272,7 +272,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Send(Packet packet)
         {
-            return Send(packet.Data);
+            if (packet.Destination = PacketDestination.Server)
+            {
+                return Send(packet.Data);
+            }
+            else
+            {
+                return SendToClient(packet.Data);
+            }
         }
 
         /// <summary>

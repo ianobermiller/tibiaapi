@@ -501,7 +501,7 @@ namespace Tibia.Constants
         public static int White = 215;
     }
 
-    public enum Skull
+    public enum Skull : byte
     {
         None = 0,
         Yellow = 1,
