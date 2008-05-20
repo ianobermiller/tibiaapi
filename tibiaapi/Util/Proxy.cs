@@ -136,6 +136,7 @@ namespace Tibia.Util
         public PacketListener ReceivedFlagUpdatePacket;
         public PacketListener ReceivedMapItemAddPacket;
         public PacketListener ReceivedMapItemRemovePacket;
+        public PacketListener ReceivedMapItemUpdatePacket;
         public PacketListener ReceivedPrivateChannelOpenPacket;
         public PacketListener ReceivedProjectilePacket;
         public PacketListener ReceivedSkillUpdatePacket;
@@ -631,6 +632,12 @@ namespace Tibia.Util
                     if (ReceivedMapItemRemovePacket != null)
                         return ReceivedMapItemRemovePacket(p);
                     break;
+                case PacketType.MapItemUpdate:
+                    p = new MapItemUpdatePacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedMapItemUpdatePacket != null)
+                        return ReceivedMapItemUpdatePacket(p);
+                    break;
                 case PacketType.PrivateChannelOpen:
                     p = new PrivateChannelOpenPacket(client, packet);
                     length = p.Index;
@@ -683,8 +690,7 @@ namespace Tibia.Util
                     length = p.Index;
                     if (ReceivedWorldLightPacket != null)
                         return ReceivedWorldLightPacket(p);
-                    break;    
-
+                    break;
             }
             return true;
         }

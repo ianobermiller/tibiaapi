@@ -14,6 +14,7 @@ namespace Tibia.Packets
         CharList            = 0x14,
         Ping                = 0x1E,
         MapItemAdd          = 0x6A,
+        MapItemUpdate       = 0x6B,
         MapItemRemove       = 0x6C,
         CreatureMove        = 0x6D,
         ContainerOpened     = 0x6E,
@@ -60,6 +61,7 @@ namespace Tibia.Packets
         ClientLoggedIn      = 0xA0,
         Attack              = 0xA1,
         CancelMove          = 0xBE
+
     }
 
     /// <summary>

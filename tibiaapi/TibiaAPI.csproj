@@ -75,6 +75,7 @@
     <Compile Include="Packets\Incoming\CreatureSkullPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSpeedPacket.cs" />
     <Compile Include="Packets\Incoming\FlagUpdatePacket.cs" />
+    <Compile Include="Packets\Incoming\MapItemUpdate.cs" />
     <Compile Include="Packets\Incoming\PrivateChannelOpenPacket.cs" />
     <Compile Include="Packets\Incoming\SkillUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\VipAddPacket.cs" />

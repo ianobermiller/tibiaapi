@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Tibia.Objects;
-using System.Text;
 
 namespace Tibia.Packets
 {
-    public class MapItemAddPacket : Packet
+    public class MapItemUpdatePacket : Packet
     {
         private Location loc;
+        private byte stackpos;
         private Item item;
         private int creatureId;
         private MapItemAddType addType;
@@ -29,23 +28,18 @@ namespace Tibia.Packets
             get { return item; }
         }
 
+        public byte StackPos
+        {
+            get { return stackpos; }
+        }
         public int CreatureId
         {
             get { return creatureId; }
         }
 
-        public MapItemAddType AddType
+        public MapItemAddType UpdateType
         {
             get { return addType; }
-        }
-
-        /// <summary>
-        /// Has a value when the maximum amount of known ID's (150)
-        /// has been reached. This is the ID that should be removed.
-        /// </summary>
-        public int KnownRemoved
-        {
-            get { return knownRemoved; }
         }
 
         public string CreatureName
@@ -77,13 +71,13 @@ namespace Tibia.Packets
         {
             get { return creatureSkull; }
         }
-
-        public MapItemAddPacket(Client c) : base(c)
+        public MapItemUpdatePacket(Client c)
+            : base(c)
         {
-            type = PacketType.MapItemAdd;
+            type = PacketType.MapItemUpdate;
             destination = PacketDestination.Client;
         }
-        public MapItemAddPacket(Client c, byte[] data)
+        public MapItemUpdatePacket(Client c, byte[] data)
             : this(c)
         {
             ParseData(data);
@@ -92,20 +86,20 @@ namespace Tibia.Packets
         {
             if (base.ParseData(packet))
             {
-                if (type != PacketType.MapItemAdd) return false;
                 int typen;
+                if (type != PacketType.MapItemUpdate) return false;
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 loc = p.GetLocation();
+                stackpos = p.GetByte();
                 typen = p.PeekInt();
                 if (typen == 0x63)
                 {
-                    // returning creature
                     addType = MapItemAddType.CreatureReturning;
                     p.Skip(2);
-                    creatureId = p.GetLong();
+                    creatureId=p.GetLong();
                     creatureDir = (Constants.TurnDirection)p.GetByte();
                 }
-                else if (typen == 0x62 || typen == 0x61) // creature with description
+                else if (typen == 0x61 || typen == 0x62)
                 {
                     p.Skip(2);
                     if (typen == 0x62)
@@ -124,7 +118,6 @@ namespace Tibia.Packets
                     }
                     creatureHpBar = p.GetByte();
                     creatureDir = (Constants.TurnDirection)p.GetByte();
-
                     if (p.GetInt() == 0) // is invis
                     {
                         if (p.GetInt() == 0)
@@ -136,18 +129,11 @@ namespace Tibia.Packets
                         creatureInvis = false;
                         p.Skip(6); // outfit colors
                     }
-
-                    // light
                     p.Skip(2);
-
-                    // speed
                     creatureSpeed = p.GetInt();
-
-                    // skull
                     creatureSkull = (Constants.Skull)p.GetByte();
-
                 }
-                else // just an item
+                else
                 {
                     addType = MapItemAddType.Item;
                     item = p.GetItem();
@@ -155,18 +141,18 @@ namespace Tibia.Packets
                 index = p.Index;
                 return true;
             }
-            else 
+            else
             {
                 return false;
             }
         }
 
-        public static MapItemAddPacket Create(Client c, Location loc, Item item)
+        public static MapItemUpdatePacket Create(Client c,Location loc, Item item)
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.MapItemAdd);
+            PacketBuilder p = new PacketBuilder(c, PacketType.MapItemUpdate);
             p.AddLocation(loc);
             p.AddItem(item);
-            return new MapItemAddPacket(c, p.GetPacket());
+            return new MapItemUpdatePacket(c, p.GetPacket());
         }
     }
 }
