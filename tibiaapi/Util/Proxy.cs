@@ -116,6 +116,7 @@ namespace Tibia.Util
         // Incoming
         public PacketListener ReceivedAnimatedTextPacket;
         public PacketListener ReceivedBookOpenPacket;
+        public PacketListener ReceivedCancelAutoWalkPacket;
         public PacketListener ReceivedChannelListPacket;
         public PacketListener ReceivedChannelOpenPacket;
         public PacketListener ReceivedChatMessagePacket;
@@ -137,6 +138,7 @@ namespace Tibia.Util
         public PacketListener ReceivedMapItemAddPacket;
         public PacketListener ReceivedMapItemRemovePacket;
         public PacketListener ReceivedMapItemUpdatePacket;
+        public PacketListener ReceivedPartyInvitePacket;
         public PacketListener ReceivedPrivateChannelOpenPacket;
         public PacketListener ReceivedProjectilePacket;
         public PacketListener ReceivedSkillUpdatePacket;
@@ -512,6 +514,12 @@ namespace Tibia.Util
                     if (ReceivedBookOpenPacket != null)
                         return ReceivedBookOpenPacket(p);
                     break;
+                case PacketType.CancelAutoWalk:
+                    p = new CancelAutoWalkPacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedCancelAutoWalkPacket != null)
+                        return ReceivedCancelAutoWalkPacket(p);
+                    break;
                 case PacketType.ChannelList:
                     p = new ChannelListPacket(client, packet);
                     length = p.Index;
@@ -637,6 +645,12 @@ namespace Tibia.Util
                     length = p.Index;
                     if (ReceivedMapItemUpdatePacket != null)
                         return ReceivedMapItemUpdatePacket(p);
+                    break;
+                case PacketType.PartyInvite:
+                    p = new PartyInvitePacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedPartyInvitePacket != null)
+                        return ReceivedPartyInvitePacket(p);
                     break;
                 case PacketType.PrivateChannelOpen:
                     p = new PrivateChannelOpenPacket(client, packet);

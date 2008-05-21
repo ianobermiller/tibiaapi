@@ -287,21 +287,25 @@ namespace Tibia.Packets
         public ItemLocation GetItemLocation()
         {
             ItemLocation loc = null;
-            Constants.ItemLocationType type = (Constants.ItemLocationType)GetByte();
-            switch (type)
+            byte tmp = PeekByte();
+            if(tmp==0xFF)
             {
-                case Constants.ItemLocationType.Ground:
-                    loc = new ItemLocation(GetLocation());
-                    break;
-                case Constants.ItemLocationType.Container:
-                    Skip(2); // FF FF
-                    loc = new ItemLocation((byte)(GetInt() - 0x40), GetByte());
-                    break;
-                case Constants.ItemLocationType.Slot:
-                    Skip(2); // FF FF
-                    loc = new ItemLocation((Constants.SlotNumber)GetByte());
-                    Skip(2); // 00 00
-                    break;
+                Skip(2);
+                byte tmp2=GetByte();
+                if(tmp2>=0x40)
+                {
+                    Skip(1);
+                    byte slot = GetByte();
+                    loc = new ItemLocation(tmp2,slot);
+                }else
+                {
+                    loc = new ItemLocation((Tibia.Constants.SlotNumber)tmp2);
+                    Skip(2);
+                }
+            }
+            else
+            {
+                loc = new ItemLocation(GetLocation());     
             }
             return loc;
         }

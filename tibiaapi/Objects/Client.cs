@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Tibia.Packets;
 using System.IO;
 
@@ -704,9 +705,9 @@ namespace Tibia.Objects
                     ItemLocation newLocation;
 
                     // Determine the location to make the rune
-                    if (inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
+                    /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Left);
-                    else if (inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
+                    else*/ if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Right);
                     else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
                     {
@@ -721,19 +722,19 @@ namespace Tibia.Objects
 
                     // Move the rune and say the magic words, make sure everything went well
                     allClear = allClear & blank.Move(newLocation);
+                    Thread.Sleep(200);
                     allClear = allClear & console.Say(rune.Words);
-
+                    Thread.Sleep(200);
                     // Don't bother continuing if both the above actions didn't work
                     if (!allClear) return false;
 
                     // Build a rune object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newRune = new Item(rune.Id, 1, new ItemLocation(Constants.SlotNumber.Right), this, true);
+                    Item newRune = new Item(rune.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
 
                     // Move the rune back to it's original location
                     allClear = allClear & newRune.Move(oldLocation);
-
                     // Check if we moved an item to the ammo slot
                     // If we did, move it back
                     if (itemMovedToAmmo != null)

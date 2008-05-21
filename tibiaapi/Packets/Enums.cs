@@ -34,6 +34,7 @@ namespace Tibia.Packets
         CreatureOutfit      = 0x8E,
         CreatureSpeed       = 0x8F,
         CreatureSkull       = 0x90,
+        PartyInvite         = 0x91,
         BookOpen            = 0x96,
         StatusUpdate        = 0xA0,
         SkillUpdate         = 0xA1,
@@ -44,6 +45,7 @@ namespace Tibia.Packets
         ChannelOpen         = 0xAC,
         PrivateChannelOpen  = 0xAD, 
         StatusMessage       = 0xB4,
+        CancelAutoWalk      = 0xB5,
         VipAdd              = 0xD2, 
         VipLogin            = 0xD3,
         VipLogout           = 0xD4,
@@ -262,5 +264,18 @@ namespace Tibia.Packets
         GiantIce = 0x34,
         WaterSplash = 0x35,
         PlantAttack = 0x36,
+    }
+    public enum PartyType
+    {
+        Inviter = 1,
+        Invitee = 2,
+        Member  = 3,
+        Leader  = 4,
+        MemberShareXP = 5,
+        LeaderShareXP = 6,
+        MemberShareXPInactive = 7,
+        LeaderShareXPInactive = 8,
+        MemberShareXPAlone = 9,
+        LeaderShareXPAlone = 10
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\BookOpenPacket.cs" />
+    <Compile Include="Packets\Incoming\CancelAutoWalkPacket.cs" />
     <Compile Include="Packets\Incoming\ContainerItemAddPacket.cs" />
     <Compile Include="Packets\Incoming\ContainerClosedPacket.cs" />
     <Compile Include="Packets\Incoming\ContainerItemRemove.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Packets\Incoming\CreatureSpeedPacket.cs" />
     <Compile Include="Packets\Incoming\FlagUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\MapItemUpdate.cs" />
+    <Compile Include="Packets\Incoming\PartyInvitePacket.cs" />
     <Compile Include="Packets\Incoming\PrivateChannelOpenPacket.cs" />
     <Compile Include="Packets\Incoming\SkillUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\VipAddPacket.cs" />
