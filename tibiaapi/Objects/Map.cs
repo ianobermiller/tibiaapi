@@ -297,6 +297,7 @@ namespace Tibia.Objects
             Tile temp = new Tile();
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
             temp.Number = LocationToSquareNumber(loc);
+            temp.Location = loc;
             temp.Id = (uint)client.ReadInt((mapBegin + (Addresses.Map.Step_Square * temp.Number) + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id));
             return temp;
         }
