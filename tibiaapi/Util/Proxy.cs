@@ -135,6 +135,7 @@ namespace Tibia.Util
         public PacketListener ReceivedEqItemAddPacket;
         public PacketListener ReceivedEqItemRemovePacket;
         public PacketListener ReceivedFlagUpdatePacket;
+        public PacketListener ReceivedInformationBoxPacket;
         public PacketListener ReceivedMapItemAddPacket;
         public PacketListener ReceivedMapItemRemovePacket;
         public PacketListener ReceivedMapItemUpdatePacket;
@@ -627,6 +628,12 @@ namespace Tibia.Util
                     length = p.Index;
                     if (ReceivedFlagUpdatePacket != null)
                         return ReceivedFlagUpdatePacket(p);
+                    break;
+                case PacketType.InformationBox:
+                    p = new InformationBoxPacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedInformationBoxPacket != null)
+                        return ReceivedInformationBoxPacket(p);
                     break;
                 case PacketType.MapItemAdd:
                     p = new MapItemAddPacket(client, packet);

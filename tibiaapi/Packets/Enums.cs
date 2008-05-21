@@ -12,6 +12,7 @@ namespace Tibia.Packets
         CharListLoginData   = 0x01,
         AddCreature         = 0x0A,
         CharList            = 0x14,
+        InformationBox      = 0x15,
         Ping                = 0x1E,
         MapItemAdd          = 0x6A,
         MapItemUpdate       = 0x6B,
