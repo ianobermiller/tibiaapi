@@ -117,6 +117,9 @@
     <Compile Include="Packets\Incoming\StatusUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\TileAnimationPacket.cs" />
     <Compile Include="Packets\Incoming\VipLoginPacket.cs" />
+    <Compile Include="Util\MapViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Util\Irc.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
@@ -124,7 +127,6 @@
     <Compile Include="Util\ClientChooser.Designer.cs">
       <DependentUpon>ClientChooser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\MapViewer.cs" />
     <Compile Include="Objects\Hotkey.cs" />
     <Compile Include="Objects\MapSquare.cs" />
     <Compile Include="Objects\Creature.cs" />

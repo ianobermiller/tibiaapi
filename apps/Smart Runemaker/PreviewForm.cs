@@ -19,9 +19,6 @@ namespace SmartRunemaker
         private IntPtr thumb;
 
         #region Constants
-
-        static readonly int GWL_STYLE = -16;
-
         static readonly int DWM_TNP_VISIBLE = 0x8;
         static readonly int DWM_TNP_OPACITY = 0x4;
         static readonly int DWM_TNP_RECTDESTINATION = 0x1;

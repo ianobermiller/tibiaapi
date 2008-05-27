@@ -3,33 +3,67 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Collections.Generic;
 using Tibia;
 using Tibia.Objects;
 
 namespace Tibia.Util
 {
-    public class MapViewer
+    public class MapViewer : Panel
     {
-        // Public Constants
-        public const int MapFileDimension = 256;
-        public const int FloorMax = 15;
-        public const int FloorMin = 0;
-        public const string MaskOT = "0??0??";
-        public const string MaskReal = "1??1??";
+        #region Constants
+        private const int MapFileDimension = 256;
+        private const int FloorMax = 15;
+        private const int FloorMin = 0;
+        private const string MaskOT = "0??0??";
+        private const string MaskReal = "1??1??";
+        #endregion
 
+        #region Settings
         // Public Delegates
-        public delegate void MapFloorToImageCallback(int percentageComplete);
+        public delegate void MapFloorToImagePercentCallback(int percentageComplete);
 
         // Public Settings
-        public bool CanDrawPercentBar = false;
-        private int percent = 0;
-        public bool DrawCrosshair = true;
-        public bool DrawCoors = true;
-        public bool OTMaps = false;
-        public string Directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Tibia\\Automap\\";
+        private bool drawCrosshair = true;
+        private bool drawCoors = true;
+        private bool openTibiaMaps = false;
+        private string directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Tibia\\Automap\\";
+        private List<MapMarker> markers = new List<MapMarker>();
 
-        // Private Variables
-        private PictureBox pictureBox;
+        public bool DrawCrosshair
+        {
+            get { return drawCrosshair; }
+            set { drawCrosshair = value; }
+        }
+
+        public bool DrawCoors
+        {
+            get { return drawCoors; }
+            set { drawCoors = value; }
+        }
+
+        public bool OpenTibiaMaps
+        {
+            get { return openTibiaMaps; }
+            set { openTibiaMaps = value; }
+        }
+
+        public string Directory
+        {
+            get { return directory; }
+            set { directory = value; }
+        }
+
+        public List<MapMarker> Markers
+        {
+            get { return markers; }
+            set { markers = value; }
+        }
+        #endregion
+
+        #region Private Variables
+        private bool canDrawPercentBar = false;
+        private int percent = 0;
         private Rectangle mapBoundary;
         private int currentZ = 7;
         private Bitmap[] floorImages = new Bitmap[FloorMax + 1];
@@ -38,26 +72,43 @@ namespace Tibia.Util
         private Size imageSize;
         private Image mapImage;
         private double zoomFactor = 1;
+        #endregion
 
-        public MapViewer(PictureBox p)
+        #region Constructor
+        public MapViewer()
         {
-            pictureBox = p;
-            pictureBox.MouseDown += pictureBox_MouseDown;
-            pictureBox.MouseMove += pictureBox_MouseMove;
-            pictureBox.Paint += pictureBox_Paint;
-            pictureBox.Resize += pictureBox_Resize;
+            // Set the value of the double-buffering style bits to true.
+            this.SetStyle(ControlStyles.DoubleBuffer |
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint,
+                true);
+
+            this.UpdateStyles();
+
+            markers = new List<MapMarker>();
+        }
+        #endregion
+
+        #region Handlers
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            markers = new List<MapMarker>();
+        }
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            //SetMapCenter(PointToMapCoors(new Point(e.X, e.Y)));
+            Zoom((e.Delta > 0) ? 2 : .5);
+            Invalidate();
         }
 
-        ~MapViewer()
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
-            pictureBox.MouseDown -= pictureBox_MouseDown;
-            pictureBox.MouseMove -= pictureBox_MouseMove;
-            pictureBox.Paint -= pictureBox_Paint;
-            pictureBox.Resize -= pictureBox_Resize;
+            SetMapCenter(PointToMapCoors(new Point(e.X, e.Y)));
+            Invalidate();
         }
 
-        #region pictureBox Handlers
-        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
+        protected override void OnMouseDown(MouseEventArgs e)
         {
             switch (e.Button)
             {
@@ -70,7 +121,7 @@ namespace Tibia.Util
             }
         }
 
-        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -79,19 +130,18 @@ namespace Tibia.Util
                 startingPos.X = e.X;
                 startingPos.Y = e.Y;
 
-                pictureBox.Invalidate();
+                Invalidate();
             }
         }
 
-        private void pictureBox_Paint(object sender, PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             RedrawMap(e.Graphics);
         }
 
-        private void pictureBox_Resize(object sender, EventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            //RedrawMap(true);
-            pictureBox.Invalidate();
+            Invalidate();
         }
         #endregion
 
@@ -251,6 +301,7 @@ namespace Tibia.Util
         }
         #endregion
 
+        #region Map File Loading
         /// <summary>
         /// Load the map into the picturebox at the currentZ level.
         /// Uses two level caching: the generated bitmap is saved as
@@ -268,14 +319,14 @@ namespace Tibia.Util
             }
             else
             {
-                string dir = Directory;
+                string dir = directory;
 
                 // Open the directory
                 DirectoryInfo di = new DirectoryInfo(dir);
 
                 // Get all the map files
                 FileInfo[] mapFiles = di.GetFiles(
-                    (OTMaps ? MaskOT : MaskReal) +
+                    (openTibiaMaps ? MaskOT : MaskReal) +
                     currentZ.ToString("00") +
                     ".map");
 
@@ -295,15 +346,15 @@ namespace Tibia.Util
                 }
                 else
                 {
-                    CanDrawPercentBar = true;
+                    canDrawPercentBar = true;
 
                     image = MapFloorToImage(dir, currentZ, delegate(int percentage)
                     {
                         this.percent = percentage;
-                        pictureBox.Refresh();
+                        Invalidate();
                     });
 
-                    CanDrawPercentBar = false;
+                    canDrawPercentBar = false;
 
                     // Save the image to speed up processing next time
                     image.Save(imageFileName, ImageFormat.Png);
@@ -316,7 +367,7 @@ namespace Tibia.Util
                 imageSize = image.Size;
             mapImage = image;
 
-            pictureBox.Invalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -337,13 +388,13 @@ namespace Tibia.Util
         /// <param name="floor"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public Bitmap MapFloorToImage(string dir, int floor, MapFloorToImageCallback callback)
+        public Bitmap MapFloorToImage(string dir, int floor, MapFloorToImagePercentCallback callback)
         {
             // Open the directory
             DirectoryInfo di = new DirectoryInfo(dir);
 
             // Get all the map files
-            FileInfo[] mapFiles = di.GetFiles((OTMaps ? MaskOT : MaskReal) + floor.ToString("00") + ".map");
+            FileInfo[] mapFiles = di.GetFiles((openTibiaMaps ? MaskOT : MaskReal) + floor.ToString("00") + ".map");
 
             // Find the boundary
             Rectangle r = GetBoundary(mapFiles);
@@ -374,14 +425,19 @@ namespace Tibia.Util
 
             return b;
         }
+        #endregion
 
+        #region Level
         /// <summary>
         /// Move down a level
         /// </summary>
         public void LevelUp()
         {
-            currentZ--;
-            LoadMap();
+            if (currentZ > FloorMin)
+            {
+                currentZ--;
+                LoadMap();
+            }
         }
 
         /// <summary>
@@ -389,8 +445,11 @@ namespace Tibia.Util
         /// </summary>
         public void LevelDown()
         {
-            currentZ++;
-            LoadMap();
+            if (currentZ < FloorMax)
+            {
+                currentZ++;
+                LoadMap();
+            }
         }
 
         /// <summary>
@@ -399,13 +458,15 @@ namespace Tibia.Util
         /// <param name="z"></param>
         public void SetLevel(int z)
         {
-            if (z != currentZ)
+            if (z != currentZ && (currentZ < FloorMax || currentZ > FloorMin))
             {
                 currentZ = z;
                 LoadMap();
             }
         }
+        #endregion
 
+        #region Zoom
         /// <summary>
         /// Set the zoom factor for the map
         /// </summary>
@@ -420,13 +481,15 @@ namespace Tibia.Util
 
             SetMapCenter(center);
         }
+        #endregion
 
+        #region Redraw Map
         /// <summary>
         /// Redraw the map (no background redraw)
         /// </summary>
         private void RedrawMap(Graphics g)
         {
-            RedrawMap(false, g);
+            RedrawMap(true, g);
         }
 
         /// <summary>
@@ -436,7 +499,7 @@ namespace Tibia.Util
         /// <param name="g"></param>
         private void RedrawMap(bool clear, Graphics g)
         {
-            if (CanDrawPercentBar)
+            if (canDrawPercentBar)
             {
                 DrawPercentBar(percent, g);
                 return;
@@ -450,13 +513,26 @@ namespace Tibia.Util
 
             g.DrawImage(mapImage, new Rectangle(imagePos, imageSize));
 
-            if (DrawCrosshair)
+            if (drawCrosshair)
                 DrawCrosshairs(g);
 
-            if (DrawCoors)
+            if (drawCoors)
                 DrawCoordinates(g);
-        }
 
+            if (markers != null)
+            {
+                foreach (MapMarker mc in markers)
+                {
+                    mc.Update();
+                    DrawMarker(mc.Location, mc.Name,
+                        mc.ColorMarkerFill, mc.ColorMarkerOutline, mc.ColorTextFill, mc.ColorTextOutline,
+                        mc.DrawHPBar ? mc.HPBar : -1, g);
+                }
+            }
+        }
+        #endregion
+
+        #region Coordinate Helpers
         /// <summary>
         /// Convert Tibia coordinates to a point on the map
         /// </summary>
@@ -502,8 +578,8 @@ namespace Tibia.Util
         /// <returns></returns>
         public Point GetMapCenterPoint()
         {
-            int x = pictureBox.Width / 2;
-            int y = pictureBox.Height / 2;
+            int x = Width / 2;
+            int y = Height / 2;
 
             return new Point(x, y);
         }
@@ -522,7 +598,7 @@ namespace Tibia.Util
             imagePos.X = newX;
             imagePos.Y = newY;
 
-            pictureBox.Invalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -533,22 +609,24 @@ namespace Tibia.Util
         {
             return PointToMapCoors(GetMapCenterPoint());
         }
+        #endregion
 
+        #region Draw Helpers
         /// <summary>
         /// Draw a percentage bar on the map
         /// </summary>
         /// <param name="percent"></param>
         /// <param name="g"></param>
-        public void DrawPercentBar(int percent, Graphics g)
+        private void DrawPercentBar(int percent, Graphics g)
         {
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
             StringFormat sf = new StringFormat();
             sf.Alignment = StringAlignment.Center;
 
-            int width = pictureBox.Width / 2;
+            int width = Width / 2;
             int height = font.Height;
-            int x = (int)((pictureBox.Width - width) / 2);
-            int y = (int)((pictureBox.Height - height) / 2);
+            int x = (int)((Width - width) / 2);
+            int y = (int)((Height - height) / 2);
 
             Rectangle outer = new Rectangle(x, y, width, height);
 
@@ -562,7 +640,7 @@ namespace Tibia.Util
         /// <summary>
         /// Draw crosshairs in the middle of the map
         /// </summary>
-        public void DrawCrosshairs(Graphics g)
+        private void DrawCrosshairs(Graphics g)
         {
             DrawCrosshairs(GetMapCenterPoint(), g);
         }
@@ -573,7 +651,7 @@ namespace Tibia.Util
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="g"></param>
-        public void DrawCrosshairs(int x, int y, Graphics g)
+        private void DrawCrosshairs(int x, int y, Graphics g)
         {
             DrawCrosshairs(new Point(x, y), g);
         }
@@ -583,7 +661,7 @@ namespace Tibia.Util
         /// </summary>
         /// <param name="p"></param>
         /// <param name="g"></param>
-        public void DrawCrosshairs(Point p, Graphics g)
+        private void DrawCrosshairs(Point p, Graphics g)
         {
             int x = p.X;
             int y = p.Y;
@@ -597,12 +675,12 @@ namespace Tibia.Util
         /// <summary>
         /// Draw the current coordinates of the center point in the upper right corner
         /// </summary>
-        public void DrawCoordinates(Graphics g)
+        private void DrawCoordinates(Graphics g)
         {
             Location l = GetMapCenter();
 
             Font font = new Font("Tahoma", 10, FontStyle.Bold);
-            Rectangle rect = new Rectangle(pictureBox.Width - 120, 0, 120, font.Height);
+            Rectangle rect = new Rectangle(Width - 120, 0, 120, font.Height);
 
             // g.FillRectangle(new SolidBrush(Color.FromArgb(100, 255, 255, 255)), rect);
             g.FillRectangle(Brushes.Black, rect);
@@ -613,26 +691,12 @@ namespace Tibia.Util
         }
 
         /// <summary>
-        /// Draw a creature on the map
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="hpBar">if true the color of the name will be based on the creatures hp bar</param>
-        /// <param name="g"></param>
-        public void DrawCreatureMarker(Creature c, bool hpBar, Graphics g)
-        {
-            if (hpBar)
-                DrawMarker(c.Location, c.Name, Color.Yellow, Color.Black, Color.White, Color.Black, c.HPBar, g);
-            else
-                DrawMarker(c.Location, c.Name, g);
-        }
-
-        /// <summary>
         /// Draw a marker with the default colors.
         /// </summary>
         /// <param name="l"></param>
         /// <param name="text"></param>
         /// <param name="g"></param>
-        public void DrawMarker(Location l, string text, Graphics g)
+        private void DrawMarker(Location l, string text, Graphics g)
         {
             DrawMarker(l, text, Color.Yellow, Color.Black, g);
         }
@@ -645,12 +709,12 @@ namespace Tibia.Util
         /// <param name="markerFill"></param>
         /// <param name="markerOutline"></param>
         /// <param name="g"></param>
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Graphics g)
+        private void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Graphics g)
         {
             DrawMarker(l, text, markerFill, markerOutline, Color.White, Color.Black, g);
         }
 
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, Graphics g)
+        private void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, Graphics g)
         {
             DrawMarker(l, text, markerFill, markerOutline, textFill, textOutline, -1, g);
         }
@@ -666,7 +730,7 @@ namespace Tibia.Util
         /// <param name="textOutline"></param>
         /// <param name="hpBar">if hpBar >= 0 &amp;&amp; &lt;= 100 draw an HP bar</param>
         /// <param name="g"></param>
-        public void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar, Graphics g)
+        private void DrawMarker(Location l, string text, Color markerFill, Color markerOutline, Color textFill, Color textOutline, int hpBar, Graphics g)
         {
             // Convert to Tibia coors
             Point p = MapCoorsToPoint(l);
@@ -730,7 +794,7 @@ namespace Tibia.Util
         /// <param name="rect"></param>
         /// <param name="sf"></param>
         /// <param name="g"></param>
-        public void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf, Graphics g)
+        private void DrawOutlinedText(string text, Font font, Brush fill, Brush outline, Rectangle rect, StringFormat sf, Graphics g)
         {
             // Draw the outline by offsetting the rectangle
             rect.Offset(-1, -1);
@@ -746,6 +810,119 @@ namespace Tibia.Util
             rect.Offset(1, -1);
             g.DrawString(text, font, fill, rect, sf);
         }
+        #endregion
 
+        [Serializable]
+        public class MapMarker
+        {
+            #region Properties
+            private bool drawHPBar = true;
+            private Location location;
+            private string name;
+            private int hpBar;
+            private Creature creature = null;
+            private Color colorMarkerFill = Color.Yellow;
+            private Color colorMarkerOutline = Color.Black;
+            private Color colorTextFill = Color.White;
+            private Color colorTextOutline = Color.Black;
+
+            public bool DrawHPBar
+            {
+                get { return drawHPBar; }
+                set { drawHPBar = value; }
+            }
+
+            public Location Location
+            {
+                get { return location; }
+                set { location = value; }
+            }
+
+            public string Name
+            {
+                get { return name; }
+                set { name = value; }
+            }
+
+            public int HPBar
+            {
+                get { return hpBar; }
+                set { hpBar = value; }
+            }
+
+            public Creature Creature
+            {
+                get { return creature; }
+                set { creature = value; }
+            }
+
+            public Color ColorMarkerFill
+            {
+                get { return colorMarkerFill; }
+                set { colorMarkerFill = value; }
+            }
+
+            public Color ColorMarkerOutline
+            {
+                get { return colorMarkerOutline; }
+                set { colorMarkerOutline = value; }
+            }
+
+            public Color ColorTextFill
+            {
+                get { return colorTextFill; }
+                set { colorTextFill = value; }
+            }
+
+            public Color ColorTextOutline
+            {
+                get { return colorTextOutline; }
+                set { colorTextOutline = value; }
+            }
+            #endregion
+
+            public MapMarker() { }
+
+            public MapMarker(Creature c) : this(c, true) { }
+
+            public MapMarker(Creature c, bool drawHP)
+            {
+                drawHPBar = drawHP;
+                creature = c;
+                Update();
+            }
+
+            public MapMarker(string cname, Location loc)
+            {
+                name = cname;
+                location = loc;
+                drawHPBar = false;
+            }
+
+            public MapMarker(string cname, Location loc, byte hp)
+            {
+                name = cname;
+                location = loc;
+                hpBar = hp;
+                drawHPBar = true;
+            }
+
+            public void Update()
+            {
+                if (creature != null && creature.Client != null && creature.Client.LoggedIn)
+                {
+                    name = creature.Name;
+                    location = creature.Location;
+                    hpBar = creature.HPBar;
+                }
+            }
+
+            public void Update(Creature c)
+            {
+                name = c.Name;
+                location = c.Location;
+                hpBar = c.HPBar;
+            }
+        }
     }
 }
