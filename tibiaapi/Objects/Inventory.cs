@@ -140,11 +140,32 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Find an item in the player's inventory by its id.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns>Item object describing the item and its location.</returns>
+        public Item FindItem(Item item)
+        {
+            return FindItem(item.Id);
+        }
+
+        /// <summary>
+        /// Find an item in the player's inventory by its id.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
+        /// <returns>Item object describing the item and its location.</returns>
+        public Item FindItem(Item item, bool checkSlot)
+        {
+            return FindItem(item.Id, checkSlot);
+        }
+
+        /// <summary>
         /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public Item FindItem<T>(List<T> list) where T : Item
+        public Item FindItem<T>(ICollection<T> list) where T : Item
         {
             return FindItem(delegate(Item i)
             {
@@ -158,7 +179,7 @@ namespace Tibia.Objects
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
-        public Item FindItem<T>(List<T> list, bool checkSlot) where T : Item
+        public Item FindItem<T>(ICollection<T> list, bool checkSlot) where T : Item
         {
             return FindItem(delegate(Item i)
             {
@@ -243,6 +264,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// If you just want to use an item, like eat a food, or check gp etc
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item)
+        {
+            return UseItem(item.Id);
+        }
+
+        /// <summary>
         /// Use a item on a creature, like sd'ing your enemy.
         /// </summary>
         /// <param name="id"></param>
@@ -251,6 +282,17 @@ namespace Tibia.Objects
         public bool UseItem(uint id, Creature onCreature)
         {
             return UseItem(id, onCreature.Id);
+        }
+
+        /// <summary>
+        /// Use a item on a creature, like sd'ing your enemy.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="onCreature"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item, Creature onCreature)
+        {
+            return UseItem(item.Id, onCreature.Id);
         }
 
         /// <summary>
@@ -264,6 +306,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Use an item on your self
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool UseItemOnSelf(Item item)
+        {
+            return UseItem(item.Id, client.ReadInt(Addresses.Player.Id));
+        }
+
+        /// <summary>
         /// Use an item on a creature of the given id
         /// </summary>
         /// <param name="id"></param>
@@ -273,9 +325,20 @@ namespace Tibia.Objects
         {
             byte stack = 0;
             byte count = 0;
-            if (id == Constants.Items.Bottle.Vial) stack = count;
+            if (id == Constants.Items.Bottle.Vial.Id) stack = count;
             return client.Send(Packets.ItemUseBattlelistPacket.Create(
                 client, ItemLocation.Hotkey(), id, stack, creatureId));
+        }
+
+        /// <summary>
+        /// Use an item on a creature of the given id
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="creatureId"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item, int creatureId)
+        {
+            return UseItem(item.Id, creatureId);
         }
 
         /// <summary>
@@ -288,6 +351,17 @@ namespace Tibia.Objects
         {
             return client.Send(Packets.ItemUseOnPacket.Create(
                 client, ItemLocation.Hotkey(), id, 0, onTile.Location, onTile.Id, 0));
+        }
+
+        /// <summary>
+        /// Use an item on a tile (eg. fishing)
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="onTile"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item, Tile onTile)
+        {
+            return UseItem(item.Id, onTile);
         }
 
         /// <summary>

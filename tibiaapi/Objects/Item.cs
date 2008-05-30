@@ -111,7 +111,7 @@ namespace Tibia.Objects
         {
             int playerID = client.ReadInt(Addresses.Player.Id);
             byte stack = 0;
-            if (id == Constants.Items.Bottle.Vial) stack = count;
+            if (id == Constants.Items.Bottle.Vial.Id) stack = count;
             return client.Send(Packets.ItemUseBattlelistPacket.Create(
                 client, ItemLocation.Hotkey(), id, stack, playerID));
         }
@@ -234,10 +234,16 @@ namespace Tibia.Objects
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns>True if the item is in the list, false if not</returns>
-        public bool IsInList<T>(List<T> list) where T : Item
+        public bool IsInList<T>(IEnumerable<T> list) where T : Item
         {
             if (Id != 0)
-                return (list.Find(delegate(T i) { return Id == i.Id; }) != null);
+            {
+                foreach (T i in list)
+                {
+                    if (Id == i.Id) return true;
+                }
+                return false;
+            }
             else
                 return false;
         }
@@ -249,19 +255,6 @@ namespace Tibia.Objects
     }
 
     #region Special Item Types
-
-    /// <summary>
-    /// Represents an ammo item. Same as a regular item, but with the PickUp field.
-    /// </summary>
-    public class Ammunition : Item
-    {
-        public bool PickUp;
-
-        public Ammunition(uint id, string name, bool pickUp) : base(id, name)
-        {
-            PickUp = pickUp;
-        }
-    }
 
     /// <summary>
     /// Represents a food item. Same as regular item but also stores regeneration time.

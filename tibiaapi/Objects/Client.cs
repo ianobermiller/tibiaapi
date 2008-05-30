@@ -491,7 +491,7 @@ namespace Tibia.Objects
         {
             if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Inventory inventory = new Inventory(this);
-            Item food = inventory.FindItem(new Tibia.Constants.ItemList.Food());
+            Item food = inventory.FindItem(Tibia.Constants.ItemLists.Foods.Values);
             if (food.Found)
                 return food.Use();
             else
@@ -656,7 +656,7 @@ namespace Tibia.Objects
         public bool MakeRune(ushort id)
         {
             if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Rune rune = new Tibia.Constants.ItemList.Rune().Find(delegate(Rune r) { return r.Id == id; });
+            Rune rune = Tibia.Constants.ItemLists.Runes[id];
             if (rune == null) return false;
             return MakeRune(rune);
         }

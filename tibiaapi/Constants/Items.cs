@@ -1,4 +1,5 @@
 using System;
+using Tibia.Objects;
 
 namespace Tibia.Constants
 {
@@ -9,165 +10,169 @@ namespace Tibia.Constants
     {
         public static class Ammunition
         {
-            public static ushort Spear = 3277;
-            public static ushort SmallStone = 1781;
-            public static ushort ThrowingStar = 3287;
-            public static ushort Bolts = 3446;
-            public static ushort Arrow = 3447;
-            public static ushort BurstArrow = 3449;
-            public static ushort PoisonedArrow = 3448;
-            public static ushort PowerBolt = 3450;
+            public static Item Spear = new Item(3277, "Spear");
+            public static Item SmallStone = new Item(1781, "SmallStone");
+            public static Item ThrowingStar = new Item(3287, "ThrowingStar");
+            public static Item Bolts = new Item(3446, "Bolts");
+            public static Item Arrow = new Item(3447, "Arrow");
+            public static Item BurstArrow = new Item(3449, "BurstArrow");
+            public static Item PoisonedArrow = new Item(3448, "PoisonedArrow");
+            public static Item PowerBolt = new Item(3450, "PowerBolt");
         }
 
         public static class Container
         {
-            public static ushort BackpackBlack = 2870;
-            public static ushort BackpackBlue = 2869;
-            public static ushort BackpackBrown = 2854;
-            public static ushort BackpackGold = 2871;
-            public static ushort BackpackGrass = 2872;
-            public static ushort BackpackGreen = 2865;
-            public static ushort BackpackPirate = 5926;
-            public static ushort BackpackPurple = 2868;
-            public static ushort BackpackRed = 2867;
-            public static ushort BackpackStar = 5949;
-            public static ushort BackpackYellow = 2866;
-            public static ushort BagBrown = 2853;
-            public static ushort ParcelNew = 3503;
-            public static ushort ParcelUsed = 3504;
+            public static Item BackpackBlack = new Item(2870, "BackpackBlack");
+            public static Item BackpackBlue = new Item(2869, "BackpackBlue");
+            public static Item BackpackBrown = new Item(2854, "BackpackBrown");
+            public static Item BackpackGold = new Item(2871, "BackpackGold");
+            public static Item BackpackGrass = new Item(2872, "BackpackGrass");
+            public static Item BackpackGreen = new Item(2865, "BackpackGreen");
+            public static Item BackpackPirate = new Item(5926, "BackpackPirate");
+            public static Item BackpackPurple = new Item(2868, "BackpackPurple");
+            public static Item BackpackRed = new Item(2867, "BackpackRed");
+            public static Item BackpackStar = new Item(5949, "BackpackStar");
+            public static Item BackpackYellow = new Item(2866, "BackpackYellow");
+            public static Item BagBrown = new Item(2853, "BagBrown");
+            public static Item ParcelNew = new Item(3503, "ParcelNew");
+            public static Item ParcelUsed = new Item(3504, "ParcelUsed");
         }
 
         public static class Food
         {
-            public static ushort Apple = 3585;
-            public static ushort Banana = 3587;
-            public static ushort Blueberry = 0;
-            public static ushort Bread = 3600;
-            public static ushort BrownBread = 3602;
-            public static ushort BrownMushroom = 3725;
-            public static ushort Carrot = 3595;
-            public static ushort Cheese = 3607;
-            public static ushort Cherry = 3590;
-            public static ushort Coconut = 3589;
-            public static ushort Cookie = 3598;
-            public static ushort Corncob = 3597;
-            public static ushort DragonHam = 3583;
-            public static ushort Egg = 3606;
-            public static ushort Fish = 3578;
-            public static ushort Grapes = 3592;
-            public static ushort GreenMushroom = 3732;
-            public static ushort Ham = 3582;
-            public static ushort Meat = 3577;
-            public static ushort Mellon = 3593;
-            public static ushort Orange = 3586;
-            public static ushort Roll = 3601;
-            public static ushort Salmon = 3579;
-            public static ushort WhiteMushroom = 3723;
+            public static Objects.Food Apple = new Objects.Food(3585, "Apple", 0);
+            public static Objects.Food Banana = new Objects.Food(3587, "Banana", 0);
+            public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 0);
+            public static Objects.Food Bread = new Objects.Food(3600, "Bread", 0);
+            public static Objects.Food BrownBread = new Objects.Food(3602, "BrownBread", 0);
+            public static Objects.Food BrownMushroom = new Objects.Food(3725, "BrownMushroom", 0);
+            public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 0);
+            public static Objects.Food Cheese = new Objects.Food(3607, "Cheese", 0);
+            public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 0);
+            public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 0);
+            public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 0);
+            public static Objects.Food Corncob = new Objects.Food(3597, "Corncob", 0);
+            public static Objects.Food DragonHam = new Objects.Food(3583, "DragonHam", 0);
+            public static Objects.Food Egg = new Objects.Food(3606, "Egg", 0);
+            public static Objects.Food Fish = new Objects.Food(3578, "Fish", 0);
+            public static Objects.Food Grapes = new Objects.Food(3592, "Grapes", 0);
+            public static Objects.Food GreenMushroom = new Objects.Food(3732, "GreenMushroom", 0);
+            public static Objects.Food Ham = new Objects.Food(3582, "Ham", 0);
+            public static Objects.Food Meat = new Objects.Food(3577, "Meat", 0);
+            public static Objects.Food Mellon = new Objects.Food(3593, "Mellon", 0);
+            public static Objects.Food Orange = new Objects.Food(3586, "Orange", 0);
+            public static Objects.Food Roll = new Objects.Food(3601, "Roll", 0);
+            public static Objects.Food Salmon = new Objects.Food(3579, "Salmon", 0);
+            public static Objects.Food WhiteMushroom = new Objects.Food(3723, "WhiteMushroom", 0);
         }
 
         public static class Quest
         {
-            public static ushort ApeFur = 5883;
-            public static ushort BatWing = 5894;
-            public static ushort BearPaw = 5896;
-            public static ushort BeholderEye = 5898;
-            public static ushort BluePiece = 5912;
-            public static ushort BrownPiece = 5913;
-            public static ushort ChickenFeather = 5890;
-            public static ushort DragonClaw = 5919;
-            public static ushort FishFin = 5895;
-            public static ushort GreenDragonLeather = 5877;
-            public static ushort GreenDragonScale = 5920;
-            public static ushort GreenPiece = 5910;
-            public static ushort HeavenBlossom = 5921;
-            public static ushort HoneyComb = 5902;
-            public static ushort LizardLeather = 5876;
-            public static ushort LizardScale = 5881;
-            public static ushort MinotaurLeather = 5878;
-            public static ushort RedDragonLeather = 5948;
-            public static ushort RedDragonScale = 5882;
-            public static ushort RedPiece = 5911;
-            public static ushort SniperGloves = 5875;
-            public static ushort VampireDust = 5905;
-            public static ushort WhitePiece = 5909;
-            public static ushort WolfPaw = 5897;
-            public static ushort YellowPiece = 5914;
+            public static Item ApeFur = new Item(5883, "ApeFur");
+            public static Item BatWing = new Item(5894, "BatWing");
+            public static Item BearPaw = new Item(5896, "BearPaw");
+            public static Item BeholderEye = new Item(5898, "BeholderEye");
+            public static Item BluePiece = new Item(5912, "BluePiece");
+            public static Item BrownPiece = new Item(5913, "BrownPiece");
+            public static Item ChickenFeather = new Item(5890, "ChickenFeather");
+            public static Item DragonClaw = new Item(5919, "DragonClaw");
+            public static Item FishFin = new Item(5895, "FishFin");
+            public static Item GreenDragonLeather = new Item(5877, "GreenDragonLeather");
+            public static Item GreenDragonScale = new Item(5920, "GreenDragonScale");
+            public static Item GreenPiece = new Item(5910, "GreenPiece");
+            public static Item HeavenBlossom = new Item(5921, "HeavenBlossom");
+            public static Item HoneyComb = new Item(5902, "HoneyComb");
+            public static Item LizardLeather = new Item(5876, "LizardLeather");
+            public static Item LizardScale = new Item(5881, "LizardScale");
+            public static Item MinotaurLeather = new Item(5878, "MinotaurLeather");
+            public static Item RedDragonLeather = new Item(5948, "RedDragonLeather");
+            public static Item RedDragonScale = new Item(5882, "RedDragonScale");
+            public static Item RedPiece = new Item(5911, "RedPiece");
+            public static Item SniperGloves = new Item(5875, "SniperGloves");
+            public static Item VampireDust = new Item(5905, "VampireDust");
+            public static Item WhitePiece = new Item(5909, "WhitePiece");
+            public static Item WolfPaw = new Item(5897, "WolfPaw");
+            public static Item YellowPiece = new Item(5914, "YellowPiece");
         }
 
         public static class Rune
         {
-            public static ushort AnimateDead = 3203;
-            public static ushort Antidote = 3153;
-            public static ushort Avalanche = 3161;
-            public static ushort Blank = 3147;
-            public static ushort Chameleon = 3178;
-            public static ushort ConvinceCreature = 3177;
-            public static ushort Desintegrate = 3197;
-            public static ushort DestroyField = 3148;
-            public static ushort EnergyBomb = 3149;
-            public static ushort EnergyField = 3164;
-            public static ushort EnergyWall = 3166;
-            public static ushort Explosion = 3200;
-            public static ushort FireBomb = 3192;
-            public static ushort FireField = 3188;
-            public static ushort FireWall = 3190;
-            public static ushort Fireball = 3189;
-            public static ushort GreatFireball = 3191;
-            public static ushort HeavyMagicMissile = 3198;
-            public static ushort Icicle = 3158;
-            public static ushort IntenseHealing = 3152;
-            public static ushort LightMagicMissile = 3174;
-            public static ushort MagicWall = 3180;
-            public static ushort Paralyze = 3165;
-            public static ushort PoisonBomb = 3173;
-            public static ushort PoisonField = 3172;
-            public static ushort PoisonWall = 3176;
-            public static ushort Soulfire = 3195;
-            public static ushort Stalagmite = 3179;
-            public static ushort StoneShower = 3175;
-            public static ushort SuddenDeath = 3155;
-            public static ushort Thunderstorm = 3202;
-            public static ushort UltimateHealing = 3160;
+            public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead", "adana mort", 600, 5, Constants.SpellCategory.Summon);
+            public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote", "adana pox", 200, 1, Constants.SpellCategory.Healing);
+            public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche", "adori mas frigo", 530, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", "", 0, 0, SpellCategory.Support);
+            public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon", "adevo ina", 600, 2, Constants.SpellCategory.Support);
+            public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature", "adeta sio", 200, 3, Constants.SpellCategory.Summon);
+            public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate", "adito tera", 200, 3, Constants.SpellCategory.Support);
+            public static Objects.Rune DestroyField = new Objects.Rune(3148, "Destroy Field", "adito grav", 120, 2, Constants.SpellCategory.Support);
+            public static Objects.Rune EnergyBomb = new Objects.Rune(3149, "Energy Bomb", "adevo mas vis", 880, 5, Constants.SpellCategory.Attack);
+            public static Objects.Rune EnergyField = new Objects.Rune(3164, "Energy Field", "adevo grav vis", 320, 2, Constants.SpellCategory.Attack);
+            public static Objects.Rune EnergyWall = new Objects.Rune(3166, "Energy Wall", "adevo mas grav vis", 1000, 5, Constants.SpellCategory.Attack);
+            public static Objects.Rune Explosion = new Objects.Rune(3200, "Explosion", "adevo mas hur", 570, 4, Constants.SpellCategory.Attack);
+            public static Objects.Rune FireBomb = new Objects.Rune(3192, "Fire Bomb", "adevo mas flam", 600, 4, Constants.SpellCategory.Attack);
+            public static Objects.Rune FireField = new Objects.Rune(3188, "Fire Field", "adevo grav flam", 240, 1, Constants.SpellCategory.Attack);
+            public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall", "adevo mas grav flam", 780, 4, Constants.SpellCategory.Attack);
+            public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball", "adori flam", 460, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball", "adori gran flam", 530, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile", "adori vis", 350, 2, Constants.SpellCategory.Attack);
+            public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle", "adori frigo", 460, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", "adura gran", 120, 2, Constants.SpellCategory.Healing);
+            public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile", "adori min vis", 120, 1, Constants.SpellCategory.Attack);
+            public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall", "adevo grav tera", 750, 5, Constants.SpellCategory.Support);
+            public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze", "adana ani", 1400, 3, Constants.SpellCategory.Support);
+            public static Objects.Rune PoisonBomb = new Objects.Rune(3173, "Poison Bomb", "adevo mas pox", 520, 2, Constants.SpellCategory.Attack);
+            public static Objects.Rune PoisonField = new Objects.Rune(3172, "Poison Field", "adevo grav pox", 200, 1, Constants.SpellCategory.Attack);
+            public static Objects.Rune PoisonWall = new Objects.Rune(3176, "Poison Wall", "adevo mas grav pox", 640, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune Soulfire = new Objects.Rune(3195, "Soulfire", "adevo res flam", 420, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune Stalagmite = new Objects.Rune(3179, "Stalagmite", "adori tera", 350, 2, Constants.SpellCategory.Attack);
+            public static Objects.Rune StoneShower = new Objects.Rune(3175, "Stone Shower", "adori mas tera", 430, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune SuddenDeath = new Objects.Rune(3155, "Sudden Death", "adori gran mort", 985, 5, Constants.SpellCategory.Attack);
+            public static Objects.Rune Thunderstorm = new Objects.Rune(3202, "Thunderstorm", "adori mas vis", 430, 3, Constants.SpellCategory.Attack);
+            public static Objects.Rune UltimateHealing = new Objects.Rune(3160, "Ultimate Healing Rune", "adura vita", 400, 3, Constants.SpellCategory.Healing);
         }
 
         public static class Tool
         {
-            public static ushort Rope = 3003;
-            public static ushort FishingRod = 3483;
-            public static ushort Pick = 3456;
-            public static ushort Shovel = 3457;
+            public static Item Rope = new Item(3003, "Rope");
+            public static Item FishingRod = new Item(3483, "FishingRod");
+            public static Item Pick = new Item(3456, "Pick");
+            public static Item Shovel = new Item(3457, "Shovel");
         }
 
         public static class Valuable
         {
-            public static ushort GoldCoin = 3031;
-            public static ushort PlatinumCoin = 3035;
-            public static ushort CrystalCoin = 3043;
-            public static ushort ScarabCoin = 3042;
-            public static ushort SmallAmethyst = 3033;
-            public static ushort SmallEmerald = 3032;
-            public static ushort BlackPearl = 3027;
-            public static ushort WhitePearl = 3026;
+            public static Item GoldCoin = new Item(3031, "GoldCoin");
+            public static Item PlatinumCoin = new Item(3035, "PlatinumCoin");
+            public static Item CrystalCoin = new Item(3043, "CrystalCoin");
+            public static Item ScarabCoin = new Item(3042, "ScarabCoin");
+            public static Item SmallAmethyst = new Item(3033, "SmallAmethyst");
+            public static Item SmallEmerald = new Item(3032, "SmallEmerald");
+            public static Item BlackPearl = new Item(3027, "BlackPearl");
+            public static Item WhitePearl = new Item(3026, "WhitePearl");
         }
 
         public static class Bottle
         {
-            public static ushort Vial = 2874;
-            public static ushort HealthPotion = 266;
-            public static ushort ManaPotion = 268;
-            public static ushort StrongHealthPotion = 236;
-            public static ushort StrongManaPotion = 237;
-            public static ushort GreatManaPotion = 238;
-            public static ushort GreatHealthPotion = 239;
-            public static ushort UltimateHealthPotion = 7643;
-            public static ushort GreatSpiritPotion = 7642;
+            public static Item Vial = new Item(2874, "Vial");
+        }
+
+        public static class Potion
+        {
+            public static Item Health = new Item(266, "Health");
+            public static Item Mana = new Item(268, "Mana");
+            public static Item StrongHealth = new Item(236, "StrongHealth");
+            public static Item StrongMana = new Item(237, "StrongMana");
+            public static Item GreatMana = new Item(238, "GreatMana");
+            public static Item GreatHealth = new Item(239, "GreatHealth");
+            public static Item UltimateHealth = new Item(7643, "UltimateHealth");
+            public static Item GreatSpirit = new Item(7642, "GreatSpirit");
         }
 
         public static class Fluid
         {
             public static byte Empty = 0;
-            public static byte Mana = 10; // 7
-            public static byte Life = 2; // 10
+            public static byte Mana = 10;
+            public static byte Life = 2;
         }
     }
 }

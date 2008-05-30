@@ -21,10 +21,10 @@ namespace SmartRunemaker
 
         public static Tibia.Objects.Rune ShowBox()
         {
-            List<Tibia.Objects.Rune> runeList = new Tibia.Constants.ItemList.Rune();
+            ICollection<Tibia.Objects.Rune> runeList = Tibia.Constants.ItemLists.Runes.Values;
             newRuneChooser = new RuneChooser();
             newRuneChooser.uxRunes.DataSource = runeList;
-            newRuneChooser.uxRunes.SelectedItem = runeList.Find(delegate(Tibia.Objects.Rune r) { return r.Id == Tibia.Constants.Items.Rune.SuddenDeath; });
+            newRuneChooser.uxRunes.SelectedItem = Tibia.Constants.Items.Rune.SuddenDeath.Id;
             newRuneChooser.ShowDialog();
             return rune;
         }
