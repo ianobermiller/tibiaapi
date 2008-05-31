@@ -170,9 +170,9 @@ namespace Tibia.Constants
 
         public static class Fluid
         {
-            public static byte Empty = 0;
-            public static byte Mana = 10;
-            public static byte Life = 2;
+            public static Item Empty = Bottle.Vial;
+            public static Item Life = new Item(Bottle.Vial.Id, "Lifefluid") { Count = 11 };
+            public static Item Mana = new Item(Bottle.Vial.Id, "Manafluid") { Count = 10 };
         }
     }
 }

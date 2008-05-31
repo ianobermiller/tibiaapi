@@ -117,6 +117,7 @@
     <Compile Include="Packets\Incoming\StatusUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\TileAnimationPacket.cs" />
     <Compile Include="Packets\Incoming\VipLoginPacket.cs" />
+    <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\MapViewer.cs">
       <SubType>Component</SubType>
     </Compile>

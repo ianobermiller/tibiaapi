@@ -18,15 +18,15 @@ namespace Tibia.Util
             if (packet.Length == 0)
                 return 0;
             
-            uint[] keyprep = ByteArrayToUintArray(key);
+            uint[] keyprep = key.ToUintArray();
 
             byte[] start = new byte[8];
             Array.Copy(packet, 2, start, 0, 8);
-            uint[] startprep = ByteArrayToUintArray(start);
+            uint[] startprep = start.ToUintArray();
 
             Decode(startprep, 0, keyprep);
 
-            start = UintArrayToByteArray(startprep);
+            start = startprep.ToByteArray();
 
             return start[2];
         }
@@ -46,8 +46,8 @@ namespace Tibia.Util
 
             Array.Copy(packet, 2, payload, 0, payload.Length);
 
-            uint[] payloadprep = ByteArrayToUintArray(payload);
-            uint[] keyprep = ByteArrayToUintArray(key);
+            uint[] payloadprep = payload.ToUintArray();
+            uint[] keyprep = key.ToUintArray();
 
             for (int i = 0; i < payloadprep.Length; i += 2)
             {
@@ -55,7 +55,7 @@ namespace Tibia.Util
             }
 
             // Remove the junk bytes
-            byte[] decrypted = UintArrayToByteArray(payloadprep);
+            byte[] decrypted = payloadprep.ToByteArray();
             int length = BitConverter.ToInt16(decrypted, 0) + 2;
             byte[] decryptedprep = new byte[length];
             Array.Copy(decrypted, decryptedprep, length);
@@ -74,14 +74,14 @@ namespace Tibia.Util
             if (packet.Length == 0)
                 return packet;
 
-            uint[] keyprep = ByteArrayToUintArray(key);
+            uint[] keyprep = key.ToUintArray();
 
             // Pad the packet with extra bytes for encryption
             int pad = packet.Length % 8;
             byte[] packetprep = new byte[packet.Length + (8 - pad)];
             Array.Copy(packet, packetprep, packet.Length);
 
-            uint[] payloadprep = ByteArrayToUintArray(packetprep);
+            uint[] payloadprep = packetprep.ToUintArray();
 
             for (int i = 0; i < payloadprep.Length; i += 2)
             {
@@ -90,7 +90,7 @@ namespace Tibia.Util
 
             byte[] encrypted = new byte[packetprep.Length + 2];
 
-            Array.Copy(UintArrayToByteArray(payloadprep), 0, encrypted, 2, packetprep.Length);
+            Array.Copy(payloadprep.ToByteArray(), 0, encrypted, 2, packetprep.Length);
 
             Array.Copy(BitConverter.GetBytes((short)packetprep.Length), 0, encrypted, 0, 2);
 
@@ -144,7 +144,7 @@ namespace Tibia.Util
             }
         }
 
-        private static uint[] ByteArrayToUintArray(byte[] bytes)
+        private static uint[] ToUintArray(this byte[] bytes)
         {
             uint[] uints = new uint[bytes.Length / 4];
 
@@ -156,7 +156,7 @@ namespace Tibia.Util
             return uints;
         }
 
-        private static byte[] UintArrayToByteArray(uint[] uints)
+        private static byte[] ToByteArray(this uint[] uints)
         {
             byte[] bytes = new byte[uints.Length * 4];
 

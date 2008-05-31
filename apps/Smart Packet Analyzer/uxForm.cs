@@ -73,7 +73,7 @@ namespace SmartPacketAnalyzer
                 if (uxLogHeader.Checked)
                 {
                     if (uxHeaderByte.Text.Length == 2 && 
-                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
+                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
                         LogPacket(packet.Data, "CLIENT", "SERVER");
                     }
@@ -93,7 +93,7 @@ namespace SmartPacketAnalyzer
                 if (uxLogHeader.Checked)
                 {
                     if (uxHeaderByte.Text.Length == 2 &&
-                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
+                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
                         LogPacket(packet.Data, "SERVER*", "CLIENT");
                     }
@@ -113,7 +113,7 @@ namespace SmartPacketAnalyzer
                 if (uxLogHeader.Checked)
                 {
                     if (uxHeaderByte.Text.Length == 2 &&
-                        (byte)packet.Type == Packet.HexStringToByteArray(uxHeaderByte.Text)[0])
+                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
                         LogPacket(packet.Data, "SERVER", "CLIENT");
                     }
@@ -174,9 +174,9 @@ namespace SmartPacketAnalyzer
                 while (index < displayedPacket.Length)
                 {
                     int byteCount = (bytesPerLine < left) ? bytesPerLine : left;
-                    string line = Packet.ByteArrayToHexString(displayedPacket, index, byteCount);
+                    string line = displayedPacket.ToHexString(index, byteCount);
                     s += line.PadRight(bytesPerLine * 3);
-                    s += " " + Packet.ByteArrayToASCII(displayedPacket, index, byteCount) + Environment.NewLine;
+                    s += " " + displayedPacket.ToPrintableString(index, byteCount) + Environment.NewLine;
                     index += bytesPerLine;
                     left -= bytesPerLine;
                 }
@@ -199,12 +199,12 @@ namespace SmartPacketAnalyzer
         private void ConvertToInt_Click(object sender, EventArgs e)
         {
             if (uxPacketDisplay.SelectedText.Length >= 5)
-                MessageBox.Show(Tibia.Packets.Packet.HexStringToInt(uxPacketDisplay.SelectedText).ToString());
+                MessageBox.Show(uxPacketDisplay.SelectedText.ToIntAsHex().ToString());
         }
 
         private void CopyAllBytes_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(Packet.ByteArrayToHexString(displayedPacket));
+            Clipboard.SetText(displayedPacket.ToHexString());
         }
 
         private void uxTimerShort_Tick(object sender, EventArgs e)
@@ -242,12 +242,12 @@ namespace SmartPacketAnalyzer
 
         private void uxSendToClient_Click(object sender, EventArgs e)
         {
-            client.SendToClient(Tibia.Packets.Packet.HexStringToByteArray(uxSend.Text));
+            client.SendToClient(uxSend.Text.ToBytesAsHex());
         }
 
         private void uxSendToServer_Click(object sender, EventArgs e)
         {
-            client.Send(Tibia.Packets.Packet.HexStringToByteArray(uxSend.Text));
+            client.Send(uxSend.Text.ToBytesAsHex());
         }
 
         private void uxAddAddress_Click(object sender, EventArgs e)

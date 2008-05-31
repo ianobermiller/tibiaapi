@@ -127,5 +127,16 @@ namespace Tibia.Addresses
         /// Level spy add 2.
         /// </summary>
         public static uint LevelSpyAdd2 = 0x25D8;
+
+        /// <summary>
+        /// Write to this byte to reveal invisible creatures.
+        /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
+        /// </summary>
+        public static uint RevealInvisible1 = 0x453AF3;
+        public static byte RevealInvisible1Default = 0x72;
+        public static byte RevealInvisible1Edited = 0xEB;
+        public static uint RevealInvisible2 = 0x4DE734;
+        public static byte RevealInvisible2Default = 0x75;
+        public static byte RevealInvisible2Edited = 0xEB;
     }
 }

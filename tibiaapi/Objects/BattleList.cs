@@ -199,9 +199,27 @@ namespace Tibia.Objects
             });
         }
 
-        public int ShowInvisible()
+        public void ShowInvisible(bool on)
         {
-            return ShowInvisible(Constants.OutfitType.OldMale);
+            if (on)
+            {
+                client.WriteByte(Addresses.Map.RevealInvisible1,
+                    Addresses.Map.RevealInvisible1Edited);
+                client.WriteByte(Addresses.Map.RevealInvisible2,
+                    Addresses.Map.RevealInvisible2Edited);
+            }
+            else
+            {
+                client.WriteByte(Addresses.Map.RevealInvisible1,
+                    Addresses.Map.RevealInvisible1Default);
+                client.WriteByte(Addresses.Map.RevealInvisible2,
+                    Addresses.Map.RevealInvisible2Default);
+            }
+        }
+
+        public void ShowInvisible()
+        {
+            ShowInvisible(true);
         }
 
         /// <summary>
