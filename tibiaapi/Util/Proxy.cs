@@ -186,22 +186,7 @@ namespace Tibia.Util
         /// Create a new proxy and start listening for the client to connect.
         /// </summary>
         /// <param name="c"></param>
-        public Proxy(Client c) : this(c, new LoginServer(string.Empty, 0)) { }
-
-        /// <summary>
-        /// Create a new proxy that connects to the specified server and the default port (7171).
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="serverIP"></param>
-        public Proxy(Client c, string serverIP) : this(c, serverIP, DefaultPort) { }
-
-        /// <summary>
-        /// Create a new proxy that connects to the specified server and port.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="serverIP"></param>
-        /// <param name="serverPort"></param>
-        public Proxy(Client c, string serverIP, short serverPort) : this (c, new LoginServer(serverIP, serverPort)) { }
+        public Proxy(Client c) : this(c, null) { }
 
         /// <summary>
         /// Create a new proxy with the specified login server.
@@ -212,8 +197,8 @@ namespace Tibia.Util
         {
             client = c;
             dat = new DatReader(client);
-            c.UsingProxy = true;
-            if (!ls.Server.Equals(string.Empty))
+            client.UsingProxy = true;
+            if (ls != null)
             {
                 loginServers = new LoginServer[] { ls };
             }

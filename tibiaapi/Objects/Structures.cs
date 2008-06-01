@@ -149,8 +149,15 @@ namespace Tibia.Objects
     /// </summary>
     public class LoginServer
     {
-        public string Server;
-        public short Port;
+        public string Server = string.Empty;
+        public short Port = 7171;
+
+        public LoginServer() { }
+
+        public LoginServer(string server)
+        {
+            Server = server;
+        }
 
         public LoginServer(string server, short port)
         {

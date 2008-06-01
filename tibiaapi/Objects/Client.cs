@@ -49,6 +49,7 @@ namespace Tibia.Objects
 
         #endregion
 
+        #region Constructor/Destructor
         /// <summary>
         /// Main constructor
         /// </summary>
@@ -88,6 +89,7 @@ namespace Tibia.Objects
             // Close the process handle
             Util.WinApi.CloseHandle(handle);
         }
+        #endregion
 
         public LoginServer OpenTibiaServer
         {
@@ -101,6 +103,7 @@ namespace Tibia.Objects
                 process.Kill();
         }
 
+        #region Open Client
         /// <summary>
         /// Open a client at the default path
         /// </summary>
@@ -146,9 +149,8 @@ namespace Tibia.Objects
             p.EnableRaisingEvents = true;
             return new Client(p);
         }
+        #endregion
 
-      
-        /** The following are all wrapper methods for Memory.Methods **/
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
         {
@@ -846,29 +848,6 @@ namespace Tibia.Objects
                 proxy = new Util.Proxy(this, openTibiaServer);
             else
                 proxy = new Util.Proxy(this);
-            return UsingProxy;
-        }
-
-        /// <summary>
-        /// Start the proxy using the given server and default prot.
-        /// </summary>
-        /// <param name="serverIP"></param>
-        /// <returns></returns>
-        public bool StartProxy(string serverIP)
-        {
-            proxy = new Util.Proxy(this, serverIP);
-            return UsingProxy;
-        }
-
-        /// <summary>
-        /// Start the proxy using the given server and port.
-        /// </summary>
-        /// <param name="serverIP"></param>
-        /// <param name="serverPort"></param>
-        /// <returns></returns>
-        public bool StartProxy(string serverIP, short serverPort)
-        {
-            proxy = new Util.Proxy(this, serverIP, serverPort);
             return UsingProxy;
         }
 

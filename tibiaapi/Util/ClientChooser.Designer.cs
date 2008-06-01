@@ -41,17 +41,20 @@ namespace Tibia.Util
             // 
             // uxClients
             // 
+            this.uxClients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.uxClients.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.uxClients.FormattingEnabled = true;
             this.uxClients.Location = new System.Drawing.Point(4, 4);
             this.uxClients.Name = "uxClients";
-            this.uxClients.Size = new System.Drawing.Size(161, 21);
+            this.uxClients.Size = new System.Drawing.Size(211, 21);
             this.uxClients.TabIndex = 0;
             this.uxClients.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
             // 
             // uxChoose
             // 
-            this.uxChoose.Location = new System.Drawing.Point(171, 3);
+            this.uxChoose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxChoose.Location = new System.Drawing.Point(221, 3);
             this.uxChoose.Name = "uxChoose";
             this.uxChoose.Size = new System.Drawing.Size(62, 23);
             this.uxChoose.TabIndex = 1;
@@ -61,6 +64,8 @@ namespace Tibia.Util
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.uxPort);
             this.groupBox1.Controls.Add(this.uxServer);
             this.groupBox1.Controls.Add(this.uxPortLabel);
@@ -68,7 +73,7 @@ namespace Tibia.Util
             this.groupBox1.Controls.Add(this.uxUseOT);
             this.groupBox1.Location = new System.Drawing.Point(4, 32);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(229, 75);
+            this.groupBox1.Size = new System.Drawing.Size(279, 75);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             // 
@@ -84,10 +89,12 @@ namespace Tibia.Util
             // 
             // uxServer
             // 
+            this.uxServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.uxServer.Enabled = false;
             this.uxServer.Location = new System.Drawing.Point(52, 20);
             this.uxServer.Name = "uxServer";
-            this.uxServer.Size = new System.Drawing.Size(169, 20);
+            this.uxServer.Size = new System.Drawing.Size(219, 20);
             this.uxServer.TabIndex = 3;
             this.uxServer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
             // 
@@ -126,7 +133,7 @@ namespace Tibia.Util
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(237, 110);
+            this.ClientSize = new System.Drawing.Size(287, 110);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.uxChoose);
             this.Controls.Add(this.uxClients);
