@@ -34,6 +34,7 @@ namespace SmartPacketAnalyzer
             this.CopyAllBytes = new System.Windows.Forms.ToolStripMenuItem();
             this.uxTimerShort = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.uxLogSplit = new System.Windows.Forms.CheckBox();
             this.uxLogClient = new System.Windows.Forms.CheckBox();
             this.uxLogServer = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -64,7 +65,6 @@ namespace SmartPacketAnalyzer
             this.PacketTypeCol = new System.Windows.Forms.ColumnHeader();
             this.uxPacketDisplay = new System.Windows.Forms.TextBox();
             this.uxStart = new System.Windows.Forms.Button();
-            this.uxLogSplit = new System.Windows.Forms.CheckBox();
             this.uxPacketMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -119,6 +119,16 @@ namespace SmartPacketAnalyzer
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Packet Options";
+            // 
+            // uxLogSplit
+            // 
+            this.uxLogSplit.AutoSize = true;
+            this.uxLogSplit.Location = new System.Drawing.Point(171, 19);
+            this.uxLogSplit.Name = "uxLogSplit";
+            this.uxLogSplit.Size = new System.Drawing.Size(109, 17);
+            this.uxLogSplit.TabIndex = 32;
+            this.uxLogSplit.Text = "Log Split Packets";
+            this.uxLogSplit.UseVisualStyleBackColor = true;
             // 
             // uxLogClient
             // 
@@ -413,18 +423,6 @@ namespace SmartPacketAnalyzer
             this.uxStart.Text = "Stop Packet Logging";
             this.uxStart.UseVisualStyleBackColor = true;
             this.uxStart.Click += new System.EventHandler(this.uxStart_Click);
-            // 
-            // uxLogSplit
-            // 
-            this.uxLogSplit.AutoSize = true;
-            this.uxLogSplit.Checked = true;
-            this.uxLogSplit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.uxLogSplit.Location = new System.Drawing.Point(171, 19);
-            this.uxLogSplit.Name = "uxLogSplit";
-            this.uxLogSplit.Size = new System.Drawing.Size(109, 17);
-            this.uxLogSplit.TabIndex = 32;
-            this.uxLogSplit.Text = "Log Split Packets";
-            this.uxLogSplit.UseVisualStyleBackColor = true;
             // 
             // uxForm
             // 

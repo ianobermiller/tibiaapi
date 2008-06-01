@@ -40,6 +40,7 @@ namespace SmartIPChanger
             this.uxServer.Name = "uxServer";
             this.uxServer.Size = new System.Drawing.Size(148, 20);
             this.uxServer.TabIndex = 0;
+            this.uxServer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
             // 
             // uxPort
             // 
@@ -48,6 +49,7 @@ namespace SmartIPChanger
             this.uxPort.Size = new System.Drawing.Size(45, 20);
             this.uxPort.TabIndex = 1;
             this.uxPort.Text = "7171";
+            this.uxPort.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
             // 
             // uxGo
             // 
@@ -59,7 +61,7 @@ namespace SmartIPChanger
             this.uxGo.UseVisualStyleBackColor = true;
             this.uxGo.Click += new System.EventHandler(this.uxGo_Click);
             // 
-            // Form1
+            // uxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -68,7 +70,7 @@ namespace SmartIPChanger
             this.Controls.Add(this.uxPort);
             this.Controls.Add(this.uxServer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "uxForm";
             this.Text = "Smart IPChanger";
             this.ResumeLayout(false);
             this.PerformLayout();

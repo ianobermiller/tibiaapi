@@ -34,7 +34,7 @@ namespace SmartIPChanger
                 else
                     Application.Exit();
 
-                Client client = ClientChooser.ShowBox();
+                Client client = ClientChooser.ShowBox(new ClientChooserOptions() { ShowOTOption = false });
                 if (client == null)
                 {
                     if (File.Exists("tibia.exe"))

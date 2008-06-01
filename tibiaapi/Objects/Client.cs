@@ -22,6 +22,7 @@ namespace Tibia.Objects
         private int startTime;
         private bool isVisible;
         private bool usingProxy = false;
+        private LoginServer openTibiaServer = null;
         private Util.Proxy proxy;
 
         /// <summary>
@@ -86,6 +87,12 @@ namespace Tibia.Objects
         {
             // Close the process handle
             Util.WinApi.CloseHandle(handle);
+        }
+
+        public LoginServer OpenTibiaServer
+        {
+            get { return openTibiaServer; }
+            set { openTibiaServer = value; }
         }
 
         public void Close()
@@ -835,7 +842,10 @@ namespace Tibia.Objects
         /// <returns>True if the proxy initialized correctly.</returns>
         public bool StartProxy()
         {
-            proxy = new Util.Proxy(this);
+            if (openTibiaServer != null)
+                proxy = new Util.Proxy(this, openTibiaServer);
+            else
+                proxy = new Util.Proxy(this);
             return UsingProxy;
         }
 

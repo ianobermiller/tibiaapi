@@ -86,8 +86,8 @@
     <Compile Include="Packets\Incoming\WorldLightPacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerClosePacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerOpenParentPacket.cs" />
-    <Compile Include="Packets\Incoming\AttackPacket.cs" />
-    <Compile Include="Packets\Incoming\CancelMovePacket.cs" />
+    <Compile Include="Packets\Outgoing\AttackPacket.cs" />
+    <Compile Include="Packets\Outgoing\CancelMovePacket.cs" />
     <Compile Include="Packets\Incoming\CreatureLightPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureOutfitPacket.cs" />
     <Compile Include="Packets\Incoming\EqItemAddPacket.cs" />

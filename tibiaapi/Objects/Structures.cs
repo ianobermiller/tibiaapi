@@ -147,7 +147,7 @@ namespace Tibia.Objects
     /// <summary>
     /// Represents a Login Server
     /// </summary>
-    public struct LoginServer
+    public class LoginServer
     {
         public string Server;
         public short Port;

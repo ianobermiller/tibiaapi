@@ -32,6 +32,7 @@ namespace Tibia.Util
         private const string Localhost = "127.0.0.1";
         private byte[]       LocalhostBytes = new byte[] { 127, 0, 0, 1 };
         private const short  DefaultPort = 7171;
+        private const int BufferSize = 8192;
 
         private Client         client;
         private CharListPacket charList;
@@ -44,15 +45,15 @@ namespace Tibia.Util
         private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientSendQueue = new Queue<byte[]>();
         private Queue<byte[]>  serverSendQueue = new Queue<byte[]>();
-        private byte[]         dataServer = new byte[8192];
-        private byte[]         dataClient = new byte[8192];
+        private byte[] dataServer = new byte[BufferSize];
+        private byte[] dataClient = new byte[BufferSize];
         private bool           writingToClient = false;
         private bool           writingToServer = false;
         private DateTime       lastServerWrite = DateTime.UtcNow;
         private PacketBuilder  partial;
         private int            partialRemaining = 0;
         private Util.DatReader dat;
-        private byte[] tempArray = new byte[8192];
+        private byte[] tempArray = new byte[BufferSize];
         private int tempLen = 0;
 
         private LoginServer[]  loginServers = new LoginServer[] {
@@ -281,11 +282,11 @@ namespace Tibia.Util
         private void CharListReceived(IAsyncResult ar)
         {
             int bytesRead = netStreamLogin.EndRead(ar);
-            
+
             if (bytesRead > 0)
             {
-                int getTheLen =  BitConverter.ToInt16(dataServer, 0);
-                if (bytesRead ==getTheLen+2)
+                int getTheLen = BitConverter.ToInt16(dataServer, 0);
+                if (bytesRead == getTheLen + 2)
                 {
                     // Process the character list
                     ProcessCharListPacket(dataServer, bytesRead);
@@ -308,15 +309,15 @@ namespace Tibia.Util
                     else
                     {
                         Array.Copy(dataServer, 0, tempArray, tempLen, bytesRead);
-                        ProcessCharListPacket(tempArray, bytesRead+tempLen);
-                        netStreamClient.BeginWrite(tempArray, 0, bytesRead+tempLen, null, null);
+                        ProcessCharListPacket(tempArray, bytesRead + tempLen);
+                        netStreamClient.BeginWrite(tempArray, 0, bytesRead + tempLen, null, null);
                         RefreshClientListener();
                     }
                 }
             }
         }
 
-        private void ProcessCharListPacket(byte[] data, int length)
+        private bool ProcessCharListPacket(byte[] data, int length)
         {
             byte[] packet = new byte[length];
             byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
@@ -324,11 +325,15 @@ namespace Tibia.Util
             Array.Copy(data, packet, length);
             packet = XTEA.Decrypt(packet, key);
 
+            if (ReceivedPacketFromServer != null)
+                ReceivedPacketFromServer.BeginInvoke(new Packet(client, packet), null, null);
+
             charList = new CharListPacket(client);
             charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
 
             packet = XTEA.Encrypt(charList.Data, key);
             Array.Copy(packet, data, length);
+            return true;
         }
 
         private void RefreshClientListener()
@@ -426,7 +431,7 @@ namespace Tibia.Util
 
                 // Always call the default (if attached to)
                 if (ReceivedPacketFromServer != null)
-                    ReceivedPacketFromServer(new Packet(client, decrypted));
+                    ReceivedPacketFromServer.BeginInvoke(new Packet(client, decrypted), null, null);
 
                 // Is this a part of a larger packet?
                 if (partialRemaining > 0)
@@ -469,9 +474,8 @@ namespace Tibia.Util
                         length++;
                         if (forward)
                         {
-                            // Uncomment for debugging, will also call this on split up packets
                             if (SplitPacketFromServer != null)
-                                SplitPacketFromServer(new Packet(client, Packet.Repackage(decrypted, 2, length)));
+                                SplitPacketFromServer.BeginInvoke(new Packet(client, Packet.Repackage(decrypted, 2, length)), null, null);
 
                             // Repackage it and send
                             SendToClient(Packet.Repackage(decrypted, 2, length));
@@ -831,8 +835,7 @@ namespace Tibia.Util
 
                 // Always call the default (if attached to)
                 if (ReceivedPacketFromClient != null)
-                    ReceivedPacketFromClient(new Packet(client, decrypted));
-
+                    ReceivedPacketFromClient.BeginInvoke(new Packet(client, decrypted), null, null);
 
                 bool forward = RaiseOutgoingEvents(decrypted);
                 if (forward)
