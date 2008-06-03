@@ -23,6 +23,11 @@ namespace Tibia.Objects
             Z = z;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         /// <summary>
         /// Convert the location to bytes to be placed into a packet.
         /// </summary>
