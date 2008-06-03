@@ -20,6 +20,26 @@ namespace Tibia.Constants
             public static Item PowerBolt = new Item(3450, "PowerBolt");
         }
 
+        public static class Neck
+        {
+            public static Item AmuletofLoss = new Item(3057, "Amulet of Loss");
+            public static Item BronzeAmulet = new Item(3056, "Bronze Amulet");
+            public static Item BronzeNecklace = new Item(3009, "Bronze Necklace");
+            public static Item CrystalNecklace = new Item(3008, "Crystal Necklace");
+            public static Item DragonNecklace = new Item(3085, "Dragon Necklace");
+            public static Item ElvenAmulet = new Item(3082, "Elven Amulet");
+            public static Item GarlicNecklace = new Item(3083, "Garlic Necklace");
+            public static Item GoldenAmulet = new Item(3013, "Golden Amulet");
+            public static Item PlatinumAmulet = new Item(3055, "Platinum Amulet");
+            public static Item ProtectionAmulet = new Item(3084, "Protection Amulet");
+            public static Item Scarf = new Item(3572, "Scarf");
+            public static Item SilverAmulet = new Item(3054, "SilverAmulet");
+            public static Item StarAmulet = new Item(3014, "StarAmulet");
+            public static Item StoneSkinAmulet = new Item(3081, "Stone Skin Amulet");
+            public static Item StrangeTalisman = new Item(3045, "Strange Talisman");
+            public static Item WolfToothChain = new Item(3012, "Wolf ToothChain");
+        }
+
         public static class Container
         {
             public static Item BackpackBlack = new Item(2870, "BackpackBlack");
