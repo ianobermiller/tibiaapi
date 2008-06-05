@@ -76,6 +76,10 @@ namespace Tibia.Addresses
         public static uint Z_Axis_Default = 7; // default ground level
 
         /// <summary>
+        /// Memory address for player tile
+        /// </summary>
+        public static uint Player_Tile = 0x3E3A08;
+        /// <summary>
         /// Nop Value, to use with namespy and levelspy
         /// </summary>
         public static byte[] Nops = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
