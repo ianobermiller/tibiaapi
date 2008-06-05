@@ -342,6 +342,31 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Use an item on a location (tile).
+        /// Automatically finds the tile information.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="onLocation"></param>
+        /// <returns></returns>
+        public bool UseItem(uint id, Location onLocation)
+        {
+            MapSquare square = client.Map.GetMapSquare(onLocation);
+            return UseItem(id, square.Tile);
+        }
+
+        /// <summary>
+        /// Use an item on a location (tile).
+        /// Automatically finds the tile information.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="onLocation"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item, Location onLocation)
+        {
+            return UseItem(item.Id, onLocation);
+        }
+
+        /// <summary>
         /// Use an item on a tile (eg. fishing)
         /// </summary>
         /// <param name="id"></param>

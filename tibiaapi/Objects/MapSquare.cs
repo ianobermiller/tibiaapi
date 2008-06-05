@@ -10,36 +10,38 @@ namespace Tibia.Objects
     {
         private uint address;
         private Client client;
-        public int objectCount;
-        public Tile tile;
-        public List<MapObject> objects;
+        public Tile Tile = new Tile();
+        public List<MapObject> Objects;
 
-        public MapSquare(Client c, uint a)
+        public MapSquare(Client c, uint addr, Location location)
         {
             client = c;
-            address = a;
-            Refresh();
+            address = addr;
+            Tile.Location = location;
+            GetData();
         }
 
-        public void Refresh()
+        private void GetData()
         {
             uint pointer;
 
-            objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount);
+            int objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount);
 
             // Get the tile data (first object)
             pointer = address + Addresses.Map.Distance_Square_Objects;
-            tile = new Tile(Convert.ToUInt32(client.ReadInt(pointer + Addresses.Map.Distance_Object_Id)));
+            Tile.Id = Convert.ToUInt32(client.ReadInt(pointer + Addresses.Map.Distance_Object_Id));
+
+            Objects = new List<MapObject>(objectCount);
 
             // Get all the objects above the tile, first clear out the old objects
-            objects.Clear();
+            Objects.Clear();
 
             for (uint i = 0; i < objectCount; i++)
             {
                 // Go to the next object
                 pointer += Addresses.Map.Step_Square_Object;
 
-                objects.Add(new MapObject(
+                Objects.Add(new MapObject(
                     client.ReadInt(pointer + Addresses.Map.Distance_Object_Id),
                     client.ReadInt(pointer + Addresses.Map.Distance_Object_Data),
                     client.ReadInt(pointer + Addresses.Map.Distance_Object_Data_Ex)));
@@ -52,15 +54,15 @@ namespace Tibia.Objects
     /// </summary>
     public struct MapObject
     {
-        public int id;
-        public int data;
-        public int dataex;
+        public int Id;
+        public int Data;
+        public int DataEx;
 
         public MapObject(int id, int data, int dataex)
         {
-            this.id = id;
-            this.data = data;
-            this.dataex = dataex;
+            this.Id = id;
+            this.Data = data;
+            this.DataEx = dataex;
         }
     }
 }

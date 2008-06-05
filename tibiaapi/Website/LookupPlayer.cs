@@ -41,13 +41,15 @@ namespace Tibia
             public string Comment;
             public string AccountStatus;
 
-            public CharDeath[] deaths;
+            public CharDeath[] Deaths;
 
             public string RealName;
             public string Location;
             public DateTime Created;
 
-            public CharStatus[] characters;
+            public CharInfo[] characters;
+
+            public string Status;
 
             public static CharInfo Parse(string html)
             {
@@ -58,6 +60,10 @@ namespace Tibia
                 i.Level = int.Parse(Regex.Match(html, @"Level:</TD><TD>([^<]*)</TD>").Groups[1].Value);
                 i.World = Regex.Match(html, @"World:</TD><TD>([^<]*)<\/TD>").Groups[1].Value;
                 i.Residence = Regex.Match(html, @"Residence:</TD><TD>([^<]*)</TD>").Groups[1].Value;
+                string guildDetails = Regex.Match(html, @"membership:</TD><TD>(.*?)</TD>").Groups[1].Value;
+                i.GuildTitle = Regex.Match(guildDetails, @"(.*) of the <A HREF").Groups[1].Value;
+                i.GuildName = Regex.Match(guildDetails, @">([^<]*)</A>").Groups[1].Value;
+
                 // Requires more complex parsing
                 //i.LastLogin = DateTime.Parse(HttpUtility.HtmlDecode(Regex.Match(html, @"Last Login:<\/TD><TD>([^<]*)<\/TD>").Groups[1].Value));
                 i.Comment = Regex.Match(html, @"Comment:</TD><TD>(.*?)</TD>", RegexOptions.Singleline).Groups[1].Value.Replace("<br />", string.Empty);
@@ -76,16 +82,10 @@ namespace Tibia
 
         public class CharDeath
         {
-            public DateTime time;
+            public string CharName;
+            public DateTime Time;
             public int AtLevel;
             public string[] KilledBy;
-        }
-
-        public class CharStatus
-        {
-            public string Name;
-            public string World;
-            public string Status;
         }
     }
 }

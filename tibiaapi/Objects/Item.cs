@@ -78,6 +78,20 @@ namespace Tibia.Objects
                 client, loc, id, 0, onTile.Location, onTile.Id, 0));
         }
 
+
+
+        /// <summary>
+        /// Use the item on a tile location.
+        /// Gets the tile id automatically.
+        /// </summary>
+        /// <param name="onLocation"></param>
+        /// <returns></returns>
+        public bool Use(Location onLocation)
+        {
+            MapSquare square = client.Map.GetMapSquare(onLocation);
+            return Use(square.Tile);
+        }
+
         /// <summary>
         /// Use an item on another item.
         /// Not tested.

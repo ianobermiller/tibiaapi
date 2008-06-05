@@ -204,7 +204,7 @@ namespace Tibia.Packets
         public int AddItem(Item item)
         {
             AddInt((int)item.Id);
-            if (client.GetDatReader().GetItem(item.Id).HasExtraByte())
+            if (client.DatReader.GetItem(item.Id).HasExtraByte())
                 AddByte(item.Count);
             return index;
         }
@@ -318,7 +318,7 @@ namespace Tibia.Packets
         public Item GetItem()
         {
             Item item = new Item(GetInt());
-            if (client.GetDatReader().GetItem(item.Id).HasExtraByte())
+            if (client.DatReader.GetItem(item.Id).HasExtraByte())
                 item.Count = GetByte();
             return item;
         }

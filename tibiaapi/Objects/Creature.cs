@@ -53,7 +53,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAttacking()
         {
-            return BlackSquare > (Environment.TickCount - client.GetStartTime());
+            return BlackSquare > (Environment.TickCount - client.StartTime);
         }
 
         /// <summary>

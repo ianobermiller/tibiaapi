@@ -47,6 +47,11 @@ namespace Tibia.Objects
         /// </summary>
         public ClientNotification Exited;
 
+        private void ClientExited(object sender, EventArgs e)
+        {
+            if (Exited != null)
+                Exited();
+        }
         #endregion
 
         #region Constructor/Destructor
@@ -91,17 +96,201 @@ namespace Tibia.Objects
         }
         #endregion
 
+        #region Properties
         public LoginServer OpenTibiaServer
         {
             get { return openTibiaServer; }
             set { openTibiaServer = value; }
         }
 
-        public void Close()
+        /// <summary>
+        /// Get or set the title of the client.
+        /// </summary>
+        public string Title
         {
-            if (process != null && !process.HasExited)
-                process.Kill();
+            get
+            {
+                return process.MainWindowTitle;
+            }
+            set
+            {
+                Util.WinApi.SetWindowText(process.MainWindowHandle, value);
+            }
         }
+
+        /// <summary>
+        /// Sets the Tibia client as the topmost application or not.
+        /// </summary>
+        public bool IsTopMost
+        {
+            set
+            {
+                Util.WinApi.SetWindowPos(process.MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
+            }
+        }
+
+        /// <summary>
+        /// Get the status of the client.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.LoginStatus Status
+        {
+            get { return (Constants.LoginStatus)ReadByte(Addresses.Client.Status); }
+        }
+
+        /// <summary>
+        /// Check whether or not the client is logged in
+        /// </summary>
+        public bool LoggedIn
+        {
+            get
+            {
+                return Status == Constants.LoginStatus.LoggedIn;
+            }
+        }
+
+        /// <summary>
+        /// Get and set the Statusbar text (the white text above the console).
+        /// </summary>
+        public string Statusbar
+        {
+            get { return ReadString(Addresses.Client.Statusbar_Text); }
+            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+        }
+
+        /// <summary>
+        /// Gets the last seen item/tile id.
+        /// </summary>
+        public ushort LastSeenId
+        {
+            get
+            {
+                byte[] bytes = ReadBytes(Addresses.Client.See_Id, 2);
+                return BitConverter.ToUInt16(bytes, 0);
+            }
+        }
+
+        /// <summary>
+        /// Gets the amount of the last seen item/tile. Returns 0 if the item is not
+        /// stackable. Also gets the amount of charges in a rune starting at 1.
+        /// </summary>
+        public ushort LastSeenCount
+        {
+            get
+            {
+                byte[] bytes = ReadBytes(Addresses.Client.See_Count, 2);
+                return BitConverter.ToUInt16(bytes, 0);
+            }
+        }
+
+        /// <summary>
+        /// Gets the text of the last seen item/tile.
+        /// </summary>
+        public string LastSeenText
+        {
+            get { return ReadString(Addresses.Client.See_Text); }
+        }
+
+        /// <summary>
+        /// Get if this client is the active window, or bring it to the foreground
+        /// </summary>
+        public bool IsActive
+        {
+            get
+            {
+                return process.MainWindowHandle == Util.WinApi.GetForegroundWindow();
+            }
+            set
+            {
+                if (value)
+                    Util.WinApi.SetForegroundWindow(process.MainWindowHandle);
+            }
+        }
+
+        /// <summary>
+        /// Check if the client is minimized
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMinimized
+        {
+            get { return Util.WinApi.IsIconic(process.MainWindowHandle); }
+        }
+
+        /// <summary>
+        /// Check if the client is maximized
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMaximized
+        {
+            get { return Util.WinApi.IsZoomed(process.MainWindowHandle); }
+        }
+
+        public bool IsVisible
+        {
+            set
+            {
+                Util.WinApi.ShowWindow(process.MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
+                isVisible = value;
+            }
+            get { return isVisible; }
+        }
+
+        /// <summary>
+        /// Get the client's version
+        /// </summary>
+        /// <returns></returns>
+        public string Version
+        {
+            get { return process.MainModule.FileVersionInfo.FileVersion; }
+        }
+
+        /// <summary>
+        /// Get/Set the RSA key, wrapper for Memory.WriteRSA
+        /// </summary>
+        /// <returns></returns>
+        public string RSA
+        {
+            get
+            {
+                return ReadString(Addresses.Client.RSA);
+            }
+            set
+            {
+                Memory.WriteRSA(handle, Addresses.Client.RSA, value);
+            }
+        }
+
+        /// <summary>
+        /// Get the current FPS of the client.
+        /// </summary>
+        public double FPSCurrent
+        {
+            get
+            {
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateCurrentOffset);
+            }
+        }
+
+        /// <summary>
+        /// Get or set the FPS limit for the client.
+        /// </summary>
+        /// <returns></returns>
+        public double FPSLimit
+        {
+            get
+            {
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
+            }
+            set
+            {
+                if (value <= 0) value = 1;
+                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
+            }
+        }
+        #endregion
 
         #region Open Client
         /// <summary>
@@ -213,194 +402,23 @@ namespace Tibia.Objects
         }
         #endregion
 
+        #region Override Functions
         /// <summary>
-        /// Get the status of the client.
+        /// String identifier for this client.
         /// </summary>
         /// <returns></returns>
-        public Constants.LoginStatus Status()
-        {
-            return (Constants.LoginStatus)ReadByte(Addresses.Client.Status);
-        }
-
-        /// <summary>
-        /// Check whether or not the client is logged in
-        /// </summary>
-        public bool LoggedIn
-        {
-            get
-            {
-                return Status() == Constants.LoginStatus.LoggedIn;
-            }
-        }
-
-        /// <summary>
-        /// Get and set the Statusbar text (the white text above the console).
-        /// </summary>
-        public string Statusbar
-        {
-            get { return ReadString(Addresses.Client.Statusbar_Text); }
-            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
-        }
-
-        /// <summary>
-        /// Gets the last seen item/tile id.
-        /// </summary>
-        public ushort LastSeenId
-        {
-            get
-            {
-                byte[] bytes = ReadBytes(Addresses.Client.See_Id, 2);
-                return BitConverter.ToUInt16(bytes, 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets the amount of the last seen item/tile. Returns 0 if the item is not
-        /// stackable. Also gets the amount of charges in a rune starting at 1.
-        /// </summary>
-        public ushort LastSeenCount
-        {
-            get
-            {
-                byte[] bytes = ReadBytes(Addresses.Client.See_Count, 2);
-                return BitConverter.ToUInt16(bytes, 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets the text of the last seen item/tile.
-        /// </summary>
-        public string LastSeenText
-        {
-            get { return ReadString(Addresses.Client.See_Text); }
-        }
-
-        /// <summary>
-        /// Send a packet to the server.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Send(Packet packet)
-        {
-            if (packet.Destination == PacketDestination.Server)
-            {
-                return Send(packet.Data);
-            }
-            else
-            {
-                return SendToClient(packet.Data);
-            }
-        }
-
-        /// <summary>
-        /// Send a packet to the server.
-        /// Uses the proxy if UsingProxy is true, and the dll otherwise.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Send(byte[] packet)
-        {
-            if (UsingProxy)
-            {
-                if (proxy.Connected)
-                {
-                    proxy.SendToServer(packet);
-                    return true;
-                }
-                else
-                    throw new Exceptions.ProxyDisconnectedException();
-            }
-            else
-            {
-                return Packet.SendPacketWithDLL(this, packet);
-            }
-        }
-
-        /// <summary>
-        /// Send the specified packet to the client using the proxy.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        [Obsolete("Send filters by destination.")] 
-        public bool SendToClient(Packet packet)
-        {
-            return SendToClient(packet.Data);
-        }
-
-        /// <summary>
-        /// Sends a packet to the client using the proxy (not available if not using proxy).
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool SendToClient(byte[] packet)
-        {
-            if (proxy.Connected)
-            {
-                proxy.SendToClient(packet);
-                return true;
-            }
-            else
-                throw new Exceptions.ProxyRequiredException();
-        }
-
-        /// <summary>
-        /// Get if this client is the active window, or bring it to the foreground
-        /// </summary>
-        public bool IsActive
-        {
-            get
-            {
-                return process.MainWindowHandle == Util.WinApi.GetForegroundWindow();
-            }
-            set
-            {
-                if (value)
-                    Util.WinApi.SetForegroundWindow(process.MainWindowHandle);
-            }
-        }
-
-        /// <summary>
-        /// Check if the client is minimized
-        /// </summary>
-        /// <returns></returns>
-        public bool IsMinimized()
-        {
-            return Util.WinApi.IsIconic(process.MainWindowHandle);
-        }
-
-        /// <summary>
-        /// Check if the client is maximized
-        /// </summary>
-        /// <returns></returns>
-        public bool IsMaximized()
-        {
-            return Util.WinApi.IsZoomed(process.MainWindowHandle);
-        }
-
-        public bool Visible
-        {
-            set
-            {
-                Util.WinApi.ShowWindow(process.MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
-                isVisible = value;
-            }
-            get { return isVisible; }
-        }
-
-        /// <summary>
-        /// Return the character name.
-        /// </summary>
-        /// <returns>Character name</returns>
         public override string ToString()
         {
-            string s = "[" + GetVersion() + "] ";
+            string s = "[" + Version + "] ";
             if (!LoggedIn)
                 s += "Not logged in.";
             else
                 s += GetPlayer().Name;
             return s;
         }
+        #endregion
 
+        #region Client Processes
         /// <summary>
         /// Get a list of all the open clients. Class method.
         /// </summary>
@@ -416,6 +434,14 @@ namespace Tibia.Objects
             return clients;
         }
 
+        public void Close()
+        {
+            if (process != null && !process.HasExited)
+                process.Kill();
+        }
+        #endregion
+
+        #region Client's Objects
         /// <summary>
         /// Get the client's player.
         /// </summary>
@@ -431,45 +457,45 @@ namespace Tibia.Objects
         /// Get the client's battlelist.
         /// </summary>
         /// <returns></returns>
-        public BattleList GetBattleList()
+        public BattleList BattleList
         {
-            return battleList;
+            get { return battleList; }
         }
 
         /// <summary>
         /// Get the client's map.
         /// </summary>
         /// <returns></returns>
-        public Map GetMap()
+        public Map Map
         {
-            return map;
+            get { return map; }
         }
 
         /// <summary>
         /// Get the client's DatReader.
         /// </summary>
         /// <returns></returns>
-        public Util.DatReader GetDatReader()
+        public Util.DatReader DatReader
         {
-            return dat;
+            get { return dat; }
         }
 
         /// <summary>
         /// Get the client's inventory.
         /// </summary>
         /// <returns></returns>
-        public Inventory GetInventory()
+        public Inventory Inventory
         {
-            return inventory;
+            get { return inventory; }
         }
 
         /// <summary>
         /// Get the time the client was started.
         /// </summary>
         /// <returns></returns>
-        public int GetStartTime()
+        public int StartTime
         {
-            return startTime;
+            get { return startTime; }
         }
 
         /// <summary>
@@ -482,16 +508,9 @@ namespace Tibia.Objects
                 return process;
             }
         }
+        #endregion
 
-        /// <summary>
-        /// Get the client's version
-        /// </summary>
-        /// <returns></returns>
-        public string GetVersion()
-        {
-            return process.MainModule.FileVersionInfo.FileVersion;
-        }
-
+        #region Client Functions
         /// <summary>
         /// Eat food found in any container.
         /// </summary>
@@ -508,6 +527,138 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Make the specified rune with the default options.
+        /// </summary>
+        /// <param name="rune">The rune to make.</param>
+        /// <returns></returns>
+        public bool MakeRune(Rune rune)
+        {
+            return MakeRune(rune, false);
+        }
+
+        /// <summary>
+        /// Make a rune with the specified id. Wrapper for makeRune(Rune).
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
+        public bool MakeRune(ushort id)
+        {
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
+            Rune rune = Tibia.Constants.ItemLists.Runes[id];
+            if (rune == null) return false;
+            return MakeRune(rune);
+        }
+
+        /// <summary>
+        /// Make a rune. Drags a blank to a free hand, casts the words, and moved the new rune back.
+        /// If no free hand is found, but the ammo is open, it moved the item in the right hand down to ammo.
+        /// </summary>
+        /// <param name="rune">The rune to make.</param>
+        /// <param name="checkSoulPoints">Whether or not to check for soul points.</param>
+        /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
+        public bool MakeRune(Rune rune, bool checkSoulPoints)
+        {
+            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
+            Player player = GetPlayer();
+            bool allClear = true; // Keeps a running total of success
+            Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
+
+            // If wanted, check for soul points
+            if (checkSoulPoints)
+                if (player.Soul < rune.SoulPoints) return false;
+
+            // Make sure the player has enough mana
+            if (player.Mana >= rune.ManaPoints)
+            {
+                // Find the first blank rune
+                Item blank = inventory.FindItem(Tibia.Constants.Items.Rune.Blank);
+
+                // Make sure a blank rune was found
+                if (blank.Found)
+                {
+                    // Save the current location of the blank rune
+                    ItemLocation oldLocation = blank.Loc;
+
+                    // The location where the rune will be made
+                    ItemLocation newLocation;
+
+                    // Determine the location to make the rune
+                    /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
+                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
+                    else*/
+                    if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
+                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
+                    {
+                        // If no hands are open, but the ammo slot is, 
+                        // move the right hand item to clear the ammo slot
+                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                        itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
+                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
+                    }
+                    else
+                        return false; // No where to put the rune!
+
+                    // Move the rune and say the magic words, make sure everything went well
+                    allClear = allClear & blank.Move(newLocation);
+                    Thread.Sleep(200);
+                    allClear = allClear & console.Say(rune.Words);
+                    Thread.Sleep(200);
+                    // Don't bother continuing if both the above actions didn't work
+                    if (!allClear) return false;
+
+                    // Build a rune object for the newly created item
+                    // We don't use getSlot because it could execute too fast, returning a blank
+                    // rune or nothing at all. If we just send a packet, the server will catch up.
+                    Item newRune = new Item(rune.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
+
+                    // Move the rune back to it's original location
+                    allClear = allClear & newRune.Move(oldLocation);
+                    // Check if we moved an item to the ammo slot
+                    // If we did, move it back
+                    if (itemMovedToAmmo != null)
+                    {
+                        itemMovedToAmmo.Loc = new ItemLocation(Tibia.Constants.SlotNumber.Ammo);
+                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Right));
+                    }
+                    // Return true if everything worked well, false if it did not
+                    return allClear;
+                }
+                else
+                {
+                    // No blanks found, return false
+                    return false;
+                }
+            }
+            else
+            {
+                // Not enough mana, return false
+                return false;
+            }
+        }
+
+        public bool Fish()
+        {
+            Player player = GetPlayer();
+            List<Tile> fishes = map.GetFishTiles();
+            if (fishes.Count > 0)
+            {
+                int tilenr = random.Next(fishes.Count - 1);
+                inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, fishes[tilenr]);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Flashes the client's window and taskbar.
+        /// </summary>
+        public void Flash()
+        {
+            Util.WinApi.FlashWindow(process.MainWindowHandle, false);
+        }
+
+        /// <summary>
         /// Logout.
         /// </summary>
         /// <returns></returns>
@@ -515,23 +666,9 @@ namespace Tibia.Objects
         {
             return Send(LogoutPacket.Create(this));
         }
+        #endregion
 
-        /// <summary>
-        /// Get/Set the RSA key, wrapper for Memory.WriteRSA
-        /// </summary>
-        /// <returns></returns>
-        public string RSA
-        {
-            get
-            {
-                return ReadString(Addresses.Client.RSA);
-            }
-            set
-            {
-                Memory.WriteRSA(handle, Addresses.Client.RSA, value);
-            }
-        }
-
+        #region Login Server
         /// <summary>
         /// Get/Set the Login Servers
         /// </summary>
@@ -625,208 +762,77 @@ namespace Tibia.Objects
         {
             return SetOT(ls.Server, ls.Port);
         }
+        #endregion
 
+        #region Sending Packets
         /// <summary>
-        /// Get the current FPS of the client.
+        /// Send a packet to the server.
         /// </summary>
-        public double FPSCurrent
-        {
-            get
-            {
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
-                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateCurrentOffset);
-            }
-        }
-
-        /// <summary>
-        /// Get or set the FPS limit for the client.
-        /// </summary>
+        /// <param name="packet"></param>
         /// <returns></returns>
-        public double FPSLimit
+        public bool Send(Packet packet)
         {
-            get
+            if (packet.Destination == PacketDestination.Server)
             {
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
-                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
-            }
-            set
-            {
-                if (value <= 0) value = 1;
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
-                WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
-            }
-        }
-
-        /// <summary>
-        /// Make a rune with the specified id. Wrapper for makeRune(Rune).
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
-        public bool MakeRune(ushort id)
-        {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Rune rune = Tibia.Constants.ItemLists.Runes[id];
-            if (rune == null) return false;
-            return MakeRune(rune);
-        }
-
-        /// <summary>
-        /// Make the specified rune with the default options.
-        /// </summary>
-        /// <param name="rune">The rune to make.</param>
-        /// <returns></returns>
-        public bool MakeRune(Rune rune)
-        {
-            return MakeRune(rune, false);
-        }
-
-        /// <summary>
-        /// Make a rune. Drags a blank to a free hand, casts the words, and moved the new rune back.
-        /// If no free hand is found, but the ammo is open, it moved the item in the right hand down to ammo.
-        /// </summary>
-        /// <param name="rune">The rune to make.</param>
-        /// <param name="checkSoulPoints">Whether or not to check for soul points.</param>
-        /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
-        public bool MakeRune(Rune rune, bool checkSoulPoints)
-        {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Player player = GetPlayer();
-            bool allClear = true; // Keeps a running total of success
-            Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
-
-            // If wanted, check for soul points
-            if (checkSoulPoints)
-                if (player.Soul < rune.SoulPoints) return false;
-
-            // Make sure the player has enough mana
-            if (player.Mana >= rune.ManaPoints)
-            {
-                // Find the first blank rune
-                Item blank = inventory.FindItem(Tibia.Constants.Items.Rune.Blank);
-
-                // Make sure a blank rune was found
-                if (blank.Found)
-                {
-                    // Save the current location of the blank rune
-                    ItemLocation oldLocation = blank.Loc;
-
-                    // The location where the rune will be made
-                    ItemLocation newLocation;
-
-                    // Determine the location to make the rune
-                    /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
-                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
-                    else*/ if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
-                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
-                    {
-                        // If no hands are open, but the ammo slot is, 
-                        // move the right hand item to clear the ammo slot
-                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                        itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
-                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
-                    }
-                    else
-                        return false; // No where to put the rune!
-
-                    // Move the rune and say the magic words, make sure everything went well
-                    allClear = allClear & blank.Move(newLocation);
-                    Thread.Sleep(200);
-                    allClear = allClear & console.Say(rune.Words);
-                    Thread.Sleep(200);
-                    // Don't bother continuing if both the above actions didn't work
-                    if (!allClear) return false;
-
-                    // Build a rune object for the newly created item
-                    // We don't use getSlot because it could execute too fast, returning a blank
-                    // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newRune = new Item(rune.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
-
-                    // Move the rune back to it's original location
-                    allClear = allClear & newRune.Move(oldLocation);
-                    // Check if we moved an item to the ammo slot
-                    // If we did, move it back
-                    if (itemMovedToAmmo != null)
-                    {
-                        itemMovedToAmmo.Loc = new ItemLocation(Tibia.Constants.SlotNumber.Ammo);
-                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Right));
-                    }
-                    // Return true if everything worked well, false if it did not
-                    return allClear;
-                }
-                else
-                {
-                    // No blanks found, return false
-                    return false;
-                }
+                return Send(packet.Data);
             }
             else
             {
-                // Not enough mana, return false
-                return false;
+                return SendToClient(packet.Data);
             }
         }
 
-        public bool Fish()
+        /// <summary>
+        /// Send a packet to the server.
+        /// Uses the proxy if UsingProxy is true, and the dll otherwise.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool Send(byte[] packet)
         {
-            Player player = GetPlayer();
-            List<Tile> fishes = map.GetFishTiles();
-            if (fishes.Count > 0)
+            if (UsingProxy)
             {
-                int tilenr = random.Next(fishes.Count - 1);
-                Tile tilen = new Tile((uint)tilenr);
-                tilen.Location = map.GetAbsoluteLocation(fishes[tilenr].Number);
-                tilen.Id = fishes[tilenr].Id;
-                if (Math.Abs(tilen.Location.X - player.Location.X) <= 7 &&
-                    Math.Abs(tilen.Location.Y - player.Location.Y) <= 5 &&
-                    tilen.Location.Z == player.Location.Z)
+                if (proxy.Connected)
                 {
-                    inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, tilen);
+                    proxy.SendToServer(packet);
                     return true;
                 }
+                else
+                    throw new Exceptions.ProxyDisconnectedException();
             }
-            return false;
-        }
-
-        /// <summary>
-        /// Get or set the title of the client.
-        /// </summary>
-        public string Title
-        {
-            get
+            else
             {
-                return process.MainWindowTitle;
-            }
-            set
-            {
-                Util.WinApi.SetWindowText(process.MainWindowHandle, value);
+                return Packet.SendPacketWithDLL(this, packet);
             }
         }
 
         /// <summary>
-        /// Flashes the client's window and taskbar.
+        /// Send the specified packet to the client using the proxy.
         /// </summary>
-        public void Flash()
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        [Obsolete("Send filters by destination.")] 
+        public bool SendToClient(Packet packet)
         {
-            Util.WinApi.FlashWindow(process.MainWindowHandle, false);
+            return SendToClient(packet.Data);
         }
 
         /// <summary>
-        /// Sets the Tibia client as the topmost application or not.
+        /// Sends a packet to the client using the proxy (not available if not using proxy).
         /// </summary>
-        public bool TopMost
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool SendToClient(byte[] packet)
         {
-            set
+            if (proxy.Connected)
             {
-                Util.WinApi.SetWindowPos(process.MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
+                proxy.SendToClient(packet);
+                return true;
             }
+            else
+                throw new Exceptions.ProxyRequiredException();
         }
-
-        private void ClientExited(object sender, EventArgs e)
-        {
-            if (Exited != null)
-                Exited();
-        }
+        #endregion
 
         #region Proxy wrappers
         /// <summary>
@@ -872,6 +878,7 @@ namespace Tibia.Objects
         }
         #endregion
 
+        #region DLL Injection
         /// <summary>
         /// Inject a DLL into the process
         /// </summary>
@@ -887,6 +894,6 @@ namespace Tibia.Objects
             Util.WinApi.VirtualFreeEx(process.Handle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
             return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
         }
-
+        #endregion
     }
 }

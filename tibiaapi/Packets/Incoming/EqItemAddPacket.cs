@@ -45,7 +45,7 @@ namespace Tibia.Packets
         }
         public static EqItemAddPacket Create(Client c, int id, Tibia.Constants.SlotNumber slot)
         {
-            Util.DatReader dat = c.GetDatReader();
+            Util.DatReader dat = c.DatReader;
             DatItem i = dat.GetItem((uint)id);
             if (i.GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable))
             {

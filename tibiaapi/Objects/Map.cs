@@ -8,8 +8,11 @@ namespace Tibia.Objects
     /// </summary>
     public class Map
     {
+        #region Variables
         private Client client;
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Create a map object.
         /// </summary>
@@ -18,6 +21,7 @@ namespace Tibia.Objects
         {
             client = c;
         }
+        #endregion
 
         #region Replace Tiles
 
@@ -176,17 +180,23 @@ namespace Tibia.Objects
 
         #endregion
 
+        #region Find Creatures in Map
         /// <summary>
         /// Find player on local map
         /// </summary>
         /// <returns></returns>
-
-        public Tile GetPlayerSquare()
+        private Tile GetPlayerSquare()
         {
             int playerId = client.ReadInt(Addresses.Player.Id);
             return GetCreatureSquare(playerId);
         }
-        public Tile GetCreatureSquare(int Id)
+
+        /// <summary>
+        /// Find a creature on the map
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        private Tile GetCreatureSquare(int Id)
         {
             Tile playerLocation = new Tile();
 
@@ -220,7 +230,9 @@ namespace Tibia.Objects
 
             return playerLocation;
         }
+        #endregion
 
+        #region Square Number <=> Location
         /// <summary>
         /// Convert a tiles number to xyz coordinates.
         /// </summary>
@@ -246,132 +258,118 @@ namespace Tibia.Objects
         {
             return Convert.ToUInt32(l.X + l.Y * 18 + l.Z * 14 * 18);
         }
+        #endregion
 
-        /// <summary>
-        /// Get a squares absoulute coordinates by comparing its relative coordinates with that of the players known coordinates.
-        /// </summary>
-        /// <param name="squareNumber"></param>
-        /// <returns></returns>
-        public Location GetAbsoluteLocation(uint squareNumber)
+        #region Helper Functions
+        private Location OffsetLocalLocation(Location loc, int offsetX, int offsetY)
         {
-            return GetAbsoluteLocation(squareNumber, GetPlayerSquare());
-        }
-
-        /// <summary>
-        /// Get a squares absoulute coordinates by comparing its relative coordinates with that of the players known coordinates (using an existing player tile location).
-        /// </summary>
-        /// <param name="squareNumber"></param>
-        /// <param name="playerTile"></param>
-        /// <returns></returns>
-        public Location GetAbsoluteLocation(uint squareNumber, Tile playerTile)
-        {
-            Location playerRelative = SquareNumberToLocation(playerTile.Number);
-
-            int xAdjustment = client.GetPlayer().Location.X - playerRelative.X;
-            int yAdjustment = client.GetPlayer().Location.Y - playerRelative.Y;
-            int zAdjustment = client.GetPlayer().Location.Z - playerRelative.Z;
-
-            Location squareRelative = SquareNumberToLocation(squareNumber);
-            return new Location(
-                squareRelative.X + xAdjustment,
-                squareRelative.Y + yAdjustment,
-                squareRelative.Z + zAdjustment);
-        }
-
-        public Location GetRelativeLocation(Creature creature, int relX, int relY)
-        {
-            Tile loc = GetCreatureSquare(creature.Id);
             Location newLoc = new Location();
-            newLoc.X = loc.Location.X + relX;
-            if (newLoc.X < 0) { newLoc.X += 18; }
-            if (newLoc.X > 17) { newLoc.X -= 18; }
-            newLoc.Y = loc.Location.Y + relY;
-            if (newLoc.Y < 0) { newLoc.Y += 14; }
-            if (newLoc.Y > 13) { newLoc.Y -= 14; }
-            newLoc.Z = loc.Location.Z;
+
+            newLoc.X = loc.X + offsetX;
+            if (newLoc.X < 0)  newLoc.X += 18;
+            if (newLoc.X > 17) newLoc.X -= 18;
+
+            newLoc.Y = loc.Y + offsetY;
+            if (newLoc.Y < 0)  newLoc.Y += 14;
+            if (newLoc.Y > 13) newLoc.Y -= 14;
+
+            newLoc.Z = loc.Z;
+
             return newLoc;
         }
 
-        public Tile GetTileInfo(Location loc)
+        private uint GetMapSquareAddress(uint squareNumber)
         {
-            Tile temp = new Tile();
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            temp.Number = LocationToSquareNumber(loc);
-            temp.Location = loc;
-            temp.Id = (uint)client.ReadInt((mapBegin + (Addresses.Map.Step_Square * temp.Number) + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id));
-            return temp;
+            return (uint)client.ReadInt((mapBegin + (Addresses.Map.Step_Square * squareNumber)));
         }
+        #endregion
 
-        /// <summary>
-        /// Enable or disable name spying
-        /// </summary>
-        /// <param name="enable"></param>
-        public void ShowNames(bool enable)
+        #region Local <=> Global
+        private Location ConvertLocalToGlobal(Location loc)
         {
-            if (enable)
-            {
-                client.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
-                client.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
-            }
-            else
-            {
-                client.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
-                client.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
-            }
+            Location globalPlayerLoc = client.GetPlayer().Location;
+            Location localPlayerLoc = GetPlayerSquare().Location;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+            return new Location(
+                loc.X + xAdjustment,
+                loc.Y + yAdjustment,
+                loc.Z + zAdjustment);
         }
 
+        private Location ConvertGlobalToLocal(Location loc)
+        {
+            Location globalPlayerLoc = client.GetPlayer().Location;
+            Location localPlayerLoc = GetPlayerSquare().Location;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+            return new Location(
+                loc.X - xAdjustment,
+                loc.Y - yAdjustment,
+                loc.Z - zAdjustment);
+        }
+        #endregion
+
+        #region Get Map Square
         /// <summary>
-        /// Enable or disable level spy for the given floor. The floor parameter
-        /// is relative to the floor the player is currently on.
+        /// Get the map square at the specified global location.
         /// </summary>
-        /// <param name="floor"></param>
-        /// <param name="enable"></param>
+        /// <param name="loc"></param>
         /// <returns></returns>
-        public bool ShowFloor(int floor, bool enable)
+        public MapSquare GetMapSquare(Location loc)
         {
-            if (enable)
-            {
-                int playerZ, tempPtr;
-
-                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
-
-                tempPtr = client.ReadInt(Addresses.Map.LevelSpyPtr);
-                tempPtr += Addresses.Map.LevelSpyAdd1;
-                tempPtr = client.ReadInt(tempPtr);
-                tempPtr += (int)Addresses.Map.LevelSpyAdd2;
-
-                playerZ = client.ReadInt(Addresses.Player.Z);
-
-                if (playerZ <= 7)
-                {
-                    if (playerZ - floor >= 0 && playerZ - floor <= 7)
-                    {
-                        playerZ = 7 - playerZ;
-                        client.WriteInt(tempPtr, playerZ + floor);
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (floor >= -2 && floor <= 2 && playerZ - floor < 14)
-                    {
-                        client.WriteInt(tempPtr, 2 + floor);
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
-                return true;
-            }
-            return false;
+            Location local = ConvertGlobalToLocal(loc);
+            uint squareNumber = LocationToSquareNumber(local);
+            return new MapSquare(client, GetMapSquareAddress(squareNumber), loc);
         }
-        
+
+        /// <summary>
+        /// Get all the adjacent tiles to a global location, including the tile at that location
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public List<MapSquare> GetAdjacentMapSquares(Location location)
+        {
+            List<MapSquare> squares = new List<MapSquare>(9);
+            Location local = ConvertGlobalToLocal(location);
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    squares.Add(GetMapSquare(OffsetLocalLocation(local, x, y)));
+                }
+            }
+            return squares;
+        }
+        #endregion
+
+        #region GetTiles
+        /// <summary>
+        /// Get the tile at the specified global location.
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public Tile GetTile(Location loc)
+        {
+            return GetMapSquare(loc).Tile;
+        }
+
+        /// <summary>
+        /// Get the tile around the specified creature.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="offsetX"></param>
+        /// <param name="offsetY"></param>
+        /// <returns></returns>
+        public Tile GetTileAroundCreature(Creature creature, int offsetX, int offsetY)
+        {
+            Location localOffset = OffsetLocalLocation(ConvertGlobalToLocal(creature.Location), offsetX, offsetY);
+            return GetMapSquare(localOffset).Tile;
+        }
+
         /// <summary>
         /// Get tiles on the same floor as the player. Automatically gets the absolute location of each tile.
         /// </summary>
@@ -444,7 +442,7 @@ namespace Tibia.Objects
             // Fast, only check the player z
             if (sameFloor)
             {
-                loc.Z = Map.SquareNumberToLocation(playerTile.Number).Z;
+                loc.Z = SquareNumberToLocation(playerTile.Number).Z;
 
                 for (int y = 0; y < 14; y++)
                 {
@@ -459,7 +457,7 @@ namespace Tibia.Objects
                         {
                             Tile temp = new Tile(squareNumber);
                             temp.Id = id;
-                            temp.Location = GetAbsoluteLocation(squareNumber, playerTile);
+                            temp.Location = ConvertLocalToGlobal(loc);
                             tiles.Add(temp);
                         }
                     }
@@ -474,7 +472,7 @@ namespace Tibia.Objects
                     {
                         Tile temp = new Tile(i);
                         temp.Id = id;
-                        temp.Location = GetAbsoluteLocation(i, playerTile);
+                        temp.Location = ConvertLocalToGlobal(SquareNumberToLocation(i));
                         tiles.Add(temp);
                     }
                     squarePointer += Addresses.Map.Step_Square;
@@ -483,7 +481,9 @@ namespace Tibia.Objects
 
             return tiles;
         }
+        #endregion
 
+        #region Tile Filters
         /// <summary>
         /// Returns all of the tiles in a list of tiles that are within
         /// viewing range of the centerTile.
@@ -491,7 +491,7 @@ namespace Tibia.Objects
         /// <param name="tiles">List to look through.</param>
         /// <param name="centerTile">The center tile.</param>
         /// <returns>The list that contains all of the tiles within viewing range.</returns>
-        public List<Tile> GetTilesWithinView(List<Tile> tiles, Tile centerTile)
+        public static List<Tile> FilterTilesWithinView(List<Tile> tiles, Location center)
         {
             List<Tile> newtiles = new List<Tile>();
 
@@ -499,9 +499,8 @@ namespace Tibia.Objects
             {
                 //Not counting the center square we can see 7 squares to the
                 //right and left and 5 squares to the top and bottom.
-
-                int x = Math.Abs(tiles[i].Location.X - centerTile.Location.X);
-                int y = Math.Abs(tiles[i].Location.Y - centerTile.Location.Y);
+                int x = Math.Abs(tiles[i].Location.X - center.X);
+                int y = Math.Abs(tiles[i].Location.Y - center.Y);
 
                 if (x <= 7 && y <= 5)
                     newtiles.Add(tiles[i]);
@@ -509,14 +508,93 @@ namespace Tibia.Objects
 
             return newtiles;
         }
+        #endregion
 
+        #region Special Get Tiles
         /// <summary>
         /// Get all the water tiles with fish.
         /// </summary>
         /// <returns></returns>
         public List<Tile> GetFishTiles()
         {
-            return GetTiles(Constants.Tiles.Water.GetFishIds(), true);
+            return FilterTilesWithinView(
+                GetTiles(Constants.Tiles.Water.GetFishIds()), 
+                ConvertLocalToGlobal(GetPlayerSquare().Location));
         }
+        #endregion
+
+        #region Name Spy
+        /// <summary>
+        /// Enable or disable name spying
+        /// </summary>
+        /// <param name="enable"></param>
+        public void ShowNames(bool enable)
+        {
+            if (enable)
+            {
+                client.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
+                client.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
+            }
+            else
+            {
+                client.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
+                client.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
+            }
+        }
+        #endregion
+
+        #region Level Spy
+        /// <summary>
+        /// Enable or disable level spy for the given floor. The floor parameter
+        /// is relative to the floor the player is currently on.
+        /// </summary>
+        /// <param name="floor"></param>
+        /// <param name="enable"></param>
+        /// <returns></returns>
+        public bool ShowFloor(int floor, bool enable)
+        {
+            if (enable)
+            {
+                int playerZ, tempPtr;
+
+                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
+
+                tempPtr = client.ReadInt(Addresses.Map.LevelSpyPtr);
+                tempPtr += Addresses.Map.LevelSpyAdd1;
+                tempPtr = client.ReadInt(tempPtr);
+                tempPtr += (int)Addresses.Map.LevelSpyAdd2;
+
+                playerZ = client.ReadInt(Addresses.Player.Z);
+
+                if (playerZ <= 7)
+                {
+                    if (playerZ - floor >= 0 && playerZ - floor <= 7)
+                    {
+                        playerZ = 7 - playerZ;
+                        client.WriteInt(tempPtr, playerZ + floor);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (floor >= -2 && floor <= 2 && playerZ - floor < 14)
+                    {
+                        client.WriteInt(tempPtr, 2 + floor);
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
+                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
+                return true;
+            }
+            return false;
+        }
+        #endregion
     }
 }
