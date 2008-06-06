@@ -50,6 +50,7 @@
  * OnLogIn is called 250ms after the packet is recieved to allow the client to initialize
  * Character encoding for packets can handle international characters
  * Client.Fish()
+ * Client.MakeRune()
  * The MapViewer is now a control you can drag into your project, and you add markers by adding them to MapViewer.Markers
  * Fixed Lifefluid and Manafluid items
  * Cleaned up the Map class and added some new GetTile/Square functions
