@@ -33,6 +33,12 @@ namespace Tibia.Util
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmd);
 
+        [DllImport("user32")]
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        
         public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
         public const uint PROCESS_VM_READ = 0x0010;
         public const uint PROCESS_VM_WRITE = 0x0020;
@@ -57,6 +63,9 @@ namespace Tibia.Util
         public const uint SW_SHOWNA = 8;
         public const uint SW_RESTORE = 9;
         public const uint SW_SHOWDEFAULT = 10;
+
+        public const uint WM_LBUTTONDOWN = 0x201;
+        public const uint WM_LBUTTONUP = 0x202;
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
@@ -94,5 +103,18 @@ namespace Tibia.Util
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+        public static int MakeLParam(int LoWord, int HiWord)
+        {
+            return ((HiWord << 16) | (LoWord & 0xffff));
+        } 
     }
 }

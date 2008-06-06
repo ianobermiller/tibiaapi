@@ -290,6 +290,41 @@ namespace Tibia.Objects
                 WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
             }
         }
+        /// <summary>
+        /// Gets the position of the client, and its outer boundaries
+        /// </summary>
+        public Position Position
+        {
+            get
+            {
+                Util.WinApi.RECT r= new Tibia.Util.WinApi.RECT();
+                Util.WinApi.GetWindowRect(process.MainWindowHandle, ref r);
+                return new Position(r);
+            }
+        }
+        /// <summary>
+        /// Wrapper for SendMessage function
+        /// </summary>
+        /// <param name="MessageId"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public void SendMessage(uint MessageId, int wParam, int lParam)
+        {
+            Util.WinApi.SendMessage(process.MainWindowHandle, MessageId, wParam, lParam);
+        }
+        /// <summary>
+        /// Clicks with the mouse somewhere on the screen
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void Click(int x, int y)
+        {
+                SendMessage(Util.WinApi.WM_LBUTTONUP, 0, 0);
+                int lpara = Util.WinApi.MakeLParam(x, y);
+                SendMessage(Util.WinApi.WM_LBUTTONDOWN, 0, lpara);
+                SendMessage(Util.WinApi.WM_LBUTTONUP, 0, lpara);
+        }
         #endregion
 
         #region Open Client
