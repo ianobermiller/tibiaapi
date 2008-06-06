@@ -1,6 +1,59 @@
 #summary Complete change log of TibiaAPI.
 #labels Featured,Phase-Implementation
 
+= v2.2 =
+
+== Renamed ==
+ * LoggedIn -> OnLogin
+ * LoggedOut -> OnLogOut
+ * Constants.ItemList -> Constants.ItemLists
+ * ChatMessage fields: type->Type, text->Text, recipient->Recipient, channel->Channel
+ * ChannelGM -> ChannelRedAnonymous
+ * Many Client.Something() functions were converted to properties, so drop the ()
+ * All spells are now in Constants/Spells.cs
+ * Several packet related conversion functions are now extensions
+ * All the item constants are now item objects, so to get the ID, you call item.ID. However, most functions have been modified to accept an Item as well as an id, so that is not usually necessary.
+
+== Added ==
+ * Many New Packets
+ * Tons of new items
+ * More Tile ID's for holes and stairs
+ * More outfits
+ * Website.GuildMembers function gets a list of guild members
+ * Enhanced ClientChooser that allows you to open a client from the default location or choose a location, and also easily handles Open Tibia servers
+ * A list of all the items, so you can get information about an item by getting the properties by Constants.AllItems[id].Property
+ * DatReader now works and reads from memory
+ * Inventory.UseItem(Id, Location) and Item.Use(Location) that automatically get the tile info for you
+ * Support for any kind of TransformingItem, like enchanted spears
+ * Util.Pipe for communicating with injected DLLs
+ * WhoIsOnline lookup
+ * PacketBuilder for working with packets
+ * Crash notification and protection to the proxy
+ * OnExit event when client is closed
+ * Simple IRC client capabilities
+ * Battlelist.GetCreaturesAttacking
+ * Container.Rename
+ * Client.InjectDLL
+ * Client.Open can take parameters
+ * Client.IsTopMost
+ * Client.Close()
+ * Client.IsVisible
+ * Creature.Approach()
+ * Creature.IsSelf()
+ * Guild details to LookupPlayer
+ * Visual Basic code samples
+ 
+== Fixed ==
+ * The proxy can handle combined and split packets
+ * The proxy plays well with OT servers
+ * The proxy doesn't crash if you enter a wrong password and try again
+ * OnLogIn is called 250ms after the packet is recieved to allow the client to initialize
+ * Character encoding for packets can handle international characters
+ * Client.Fish()
+ * The MapViewer is now a control you can drag into your project, and you add markers by adding them to MapViewer.Markers
+ * Fixed Lifefluid and Manafluid items
+ * Cleaned up the Map class and added some new GetTile/Square functions
+
 = v2.1 =
 
 == Renamed ==
