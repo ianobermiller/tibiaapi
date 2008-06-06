@@ -169,7 +169,9 @@
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Util\Pipe.cs" />
     <Compile Include="Util\Proxy.cs" />
-    <Compile Include="Util\Timer.cs" />
+    <Compile Include="Util\Timer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Util\Version.cs" />
     <Compile Include="Util\WinApi.cs" />
     <Compile Include="Util\XTEA.cs" />

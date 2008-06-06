@@ -4,9 +4,10 @@ using System.Threading;
 namespace Tibia.Util
 {
     /// <summary>
-    /// Provides the definition to create timers within their own threads.
+    /// Provides the definition to create timers within their own threads and within critical sections.
     /// </summary>
-    public class Timer
+    [Serializable]
+    public class Timer  : System.ComponentModel.Component
     {
         private System.Threading.Timer timer;
         private long timerInterval;
@@ -21,6 +22,16 @@ namespace Tibia.Util
         /// Called when the timer is executed.
         /// </summary>
         public TimerExecution OnExecute;
+
+        /// <summary>
+        /// Creates a timer with a specified interval, and starts after the specified delay.
+        /// </summary>
+        public Timer() {
+            timerInterval = 100;
+            timerState = TimerState.Stopped;
+            timer = new System.Threading.Timer(new TimerCallback(Tick), null, Timeout.Infinite, timerInterval);
+        }
+        
 
         /// <summary>
         /// Creates a timer with a specified interval, and starts after the specified delay.
