@@ -33,48 +33,51 @@ namespace Tibia
             public int Level;
             public string World;
             public string Residence;
-            public string House;
-            public DateTime HousePaidUntil;
+            //public string House;
+            //public DateTime HousePaidUntil;
             public string GuildName;
             public string GuildTitle;
-            public DateTime LastLogin;
+            //public DateTime LastLogin;
             public string Comment;
             public string AccountStatus;
 
-            public CharDeath[] Deaths;
+            //public CharDeath[] Deaths;
 
             public string RealName;
             public string Location;
-            public DateTime Created;
+            //public DateTime Created;
 
-            public CharInfo[] characters;
+            //public CharInfo[] Characters;
 
-            public string Status;
+            //public string Status;
+
+            //public DateTime GuildJoin;
+            public string GuildNickName;
 
             public static CharInfo Parse(string html)
             {
                 CharInfo i = new CharInfo();
-                i.Name = HttpUtility.HtmlDecode(Regex.Match(html, @"Name:</TD><TD>([^<]*)</TD>").Groups[1].Value);
-                i.Sex = Regex.Match(html, @"Sex:</TD><TD>([^<]*)</TD>").Groups[1].Value;
-                i.Profession = Regex.Match(html, @"Profession:</TD><TD>([^<]*)</TD>").Groups[1].Value;
-                i.Level = int.Parse(Regex.Match(html, @"Level:</TD><TD>([^<]*)</TD>").Groups[1].Value);
-                i.World = Regex.Match(html, @"World:</TD><TD>([^<]*)<\/TD>").Groups[1].Value;
-                i.Residence = Regex.Match(html, @"Residence:</TD><TD>([^<]*)</TD>").Groups[1].Value;
-                string guildDetails = Regex.Match(html, @"membership:</TD><TD>(.*?)</TD>").Groups[1].Value;
-                i.GuildTitle = Regex.Match(guildDetails, @"(.*) of the <A HREF").Groups[1].Value;
-                i.GuildName = Regex.Match(guildDetails, @">([^<]*)</A>").Groups[1].Value;
+                i.Name = Match(html, @"Name:</td><td>([^<]*)</td>");
+                i.Sex = Match(html, @"Sex:</td><td>([^<]*)</td>");
+                i.Profession = Match(html, @"Profession:</td><td>([^<]*)</td>");
+                i.Level = int.Parse(Match(html, @"Level:</td><td>([^<]*)</td>"));
+                i.World = Match(html, @"World:</td><td>([^<]*)<\/td>");
+                i.Residence = Match(html, @"Residence:</td><td>([^<]*)</td>");
+                string guildDetails = Match(html, @"membership:</td><td>(.*?)</td>");
+                i.GuildTitle = Match(guildDetails, @"(.*) of the <a href");
+                i.GuildName = Match(guildDetails, @">([^<]*)</a>");
 
                 // Requires more complex parsing
                 //i.LastLogin = DateTime.Parse(HttpUtility.HtmlDecode(Regex.Match(html, @"Last Login:<\/TD><TD>([^<]*)<\/TD>").Groups[1].Value));
-                i.Comment = Regex.Match(html, @"Comment:</TD><TD>(.*?)</TD>", RegexOptions.Singleline).Groups[1].Value.Replace("<br />", string.Empty);
-                i.AccountStatus = Regex.Match(html, @"Account&#160;Status:</TD><TD>([^<]*)</TD>").Groups[1].Value;
+                i.Comment = Match(html, @"Comment:</td><td>(.*?)</td>").Replace("<br />", string.Empty);
+                i.AccountStatus = Match(html, @"Account&#160;Status:</td><td>([^<]*)</td>");
 
 
-                i.RealName = Regex.Match(html, @"Real name:</TD><TD>([^<]*)</TD>").Groups[1].Value;
-                i.Location = Regex.Match(html, @"Location:</TD><TD>([^<]*)</TD>").Groups[1].Value;
+                i.RealName = Match(html, @"Real name:</td><td>([^<]*)</td>");
+                i.Location = Match(html, @"Location:</td><td>([^<]*)</td>");
                 // Requires more complex parsing
                 //i.Created = DateTime.Parse(HttpUtility.HtmlDecode(Regex.Match(html, @"Created:<\/TD><TD>([^<]*)<\/TD>").Groups[1].Value));
-                Match deaths = Regex.Match(html, @"<TR BGCOLOR=(?:#D4C0A1|#F1E0C6)><TD WIDTH=25%>(.*?)?</TD><TD>((?:Died|Killed) at Level ([^ ]*)|and) by (?:<[^>]*>)?([^<]*)", RegexOptions.Singleline);
+                MatchCollection deaths = Regex.Matches(html, @"<tr bgcolor=(?:#D4C0A1|#F1E0C6)><td width=25%>(.*?)?</td><td>((?:Died|Killed) at Level ([^ ]*)|and) by (?:<[^>]*>)?([^<]*)", RegexOptions.Singleline);
                 // TODO finish this!
                 return i;
             }

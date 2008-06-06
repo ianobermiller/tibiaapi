@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Tibia
 {
@@ -25,6 +27,11 @@ namespace Tibia
             }
             while (count > 0);
             return respBody;
+        }
+
+        public static string Match(string html, string pattern)
+        {
+            return HttpUtility.HtmlDecode(Regex.Match(html, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value);
         }
     }
 }
