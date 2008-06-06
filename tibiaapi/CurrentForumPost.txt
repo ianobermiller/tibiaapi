@@ -1,10 +1,10 @@
 =================================================
-[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.1 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.11 (and 8.10)[/I][/SIZE]
+[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.2 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.11 (and 8.10)[/I][/SIZE]
 =================================================
 
 [SIZE=3][COLOR=Orange]About this Release[/COLOR][/SIZE][LIST]
-[*]We have worked a lot over the past few weeks to increase the functionality of the proxy dramatically. You can now hook your methods to proxy events such as the projectile packet and when any chats are received. We have made the proxy more stable and efficient through the use of queues and the new ability to ctrl+g and switch characters.
-[*]In this release we have added several example programs to the source that you can check out and explore. See Downloads below.
+[*]The proxy has become much more stable with this release, and has increased dramatically in functionality. Take the Smart Packet Analyzer for a spin to see what I mean.
+[*]We've also done some major refactoring of how Items are looked at, so all constants are actually item objects now.
 [*]Please note the list of renamed objects/properties/methods so you can update your code faster. [[URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/ChangeLog[/COLOR][/URL]]
 [/LIST]
 
@@ -15,14 +15,14 @@
 [*]Authors: Ian and ame, with special thanks to the [URL="http://www.codeplex.com/ktibiax"]KTibiaX[/URL] project and [URL="http://sourceforge.net/projects/evrebot/"]Evremonde[/URL].[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Documentation[/COLOR][/SIZE][LIST]
+[*]Docs will be updated to v2.2 soon...
 [*]You can also view a list of the most important TibiaAPI objects and methods at Google Code:  [URL="http://code.google.com/p/tibiaapi/wiki/Features"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/Features[/COLOR][/URL]
 [*]In order to view the most recent documentation properly, it must be checked out of the SVN. See [URL="http://code.google.com/p/tibiaapi/source"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/source[/COLOR][/URL] for more information.
 [*]The best way to find out what TibiaAPI offers is to download it yourself and check out the autocompletion in Visual Studio (or your IDE of choice).[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Downloads [/COLOR][/SIZE][[URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Complete Listing[/COLOR][/URL]]
 [LIST]
-[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.1_05-05-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.1 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio and the latest Packet.dll
-[*]If you check out the [URL="http://code.google.com/p/tibiaapi/source/checkout"][COLOR=DeepSkyBlue]source code[/COLOR][/URL] you will find three new example programs that will be updated with TibiaAPI, Smart Runemaker, Smart IPChanger, and Smart Packet Analyzer
+[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.2_06-06-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.2 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio and the latest Packet.dll
 [*]You can find many examples at the [URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Google Code download page[/COLOR][/URL].
 [/LIST]
 
@@ -33,124 +33,14 @@
 
 [SIZE=3][COLOR=DarkOrange]Upcoming[/COLOR][/SIZE]
 [LIST]
-[*]We still want your suggestions on what to include in the proxy, see here: [URL="http://tpforums.org/forum/showthread.php?t=1499"][COLOR=DeepSkyBlue]TibiaAPI has a working Proxy! Ideas?[/COLOR][/URL]
-[*]We are working on extending the Packet database.
-[*]We are also preparing the API for the possible immigration of TibiaTekBot to TibiaAPI.
+[*]Auto-Login
+[*]Screen drawing via DLL injection
+[*]Integration with TibiaTek Plus (not really a feature, but will be taking up some of our time)
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE][LIST]
-[*]2.1
-	[LIST]
-	[*]Added the following packet objects and their corresponding listeners in Proxy
-		[LIST]
-		[*]CharListPacket (no listener, for proxy connections)
-		[*]StatusMessagePacket
-		[*]ChatMessagePacket
-		[*]AnimatedTextPacket
-		[*]ProjectilePacket
-		[*]CreatureHealthPacket
-		[*]VipLoginPacket
-		[*]PlayerSpeechPacket
-		[/LIST]
-	[*]Added Website class with function LookupPlayer for accessing the Tibia website (incomplete)
-	[*]Added functions to Location: Parse, ToString, Equals, IsValid, GetInvalid, and ToBytes.
-	[*]Added Smart Packet Analyzer, Smart IPChanger, and Smart Runemaker to the svn in the apps/ directory.
-	[*]Added Client.Fish() function.
-	[*]Added potions to the item lists.
-	[*]Fixed the Proxy to handle logging out correctly and also relogging in.
-	[*]Fixed the Proxy to use the first open port, allows for using multiple clients.
-	[*]Fixed FPS.
-	[*]Fixed Player.Stop() to stop even when map walking.
-	[*]Fixed rune list with the latest spells.
-	[/LIST]
 [*][URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]View complete change log[/COLOR][/URL]
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Code Samples[/COLOR][/SIZE]
-[LIST]
-[*]Get a client object to work with
-[code]
-Client client = ClientChooser.ShowBox();
-[/code]
-
-[*]Getting player information from the Tibia website
-[code]
-// Set the textbox uxText to equal the profession of the player Bubble
-// This method is asynchronous, that is why we have to supply a 
-// callback to get the data. It does not block your GUI if the 
-// request take a while.
-private void uxButton_Click(object sender, EventArgs e)
-{
-	Website.LookupPlayer("Bubble", delegate(Website.CharInfo i)
-	{
-		uxText.Invoke(new EventHandler(delegate
-		{
-			uxText.Text = i.Profession;
-		}));
-	});
-}
-[/code]
-
-[*]Parsing commands from the player without sending them to the server
-[code]
-// Put this after you start the proxy
-client.Proxy.ReceivedPlayerSpeechPacket += (Proxy.PacketListener)ReceivedPlayerSpeechPacket;
-[/code]
-[code]
-// This simple example assumes you have a textbox named uxText, 
-// to which it will append the command your client sent
-private Packet ReceivedPlayerSpeechPacket(Packet packet)
-{
-	PlayerSpeechPacket p = (PlayerSpeechPacket)packet;
-	if (p.Message.StartsWith("/"))
-	{
-		uxText.Invoke(new EventHandler(delegate
-			{
-				uxText.AppendText("Command: " + p.Message.Substring(1));
-				uxText.AppendText(Environment.NewLine);
-				
-				// Scroll to the bottom of the text box
-				uxText.SelectionStart = uxText.Text.Length;
-				uxText.ScrollToCaret();
-			}));
-			
-		// Don't send the command to the server
-		return null;
-	}
-	else
-		return packet;
-}
-[/code]
-
-[*]Using the proxy
-[code]
-// Start the proxy and attach event handlers
-// Put this in Form_Load
-client.StartProxy();
-client.Proxy.ReceivedFromClient += (Proxy.PacketListener)PacketFromClient;
-client.Proxy.ReceivedFromServer += (Proxy.PacketListener)PacketFromServer;
-
-// Sample event handlers
-private Packet PacketFromClient(Packet packet)
-{
-        LogPacket(packet.Data, "CLIENT");
-        return packet;
-}
-
-private Packet PacketFromServer(Packet packet)
-{
-        LogPacket(packet.Data, "SERVER");
-        return packet;
-}
-
-private void LogPacket(byte[] packet, string from)
-{
-        uxPackets.Invoke(new EventHandler(delegate
-        {
-                string s = "from " + from + Environment.NewLine;
-                s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
-        }));
-}
-[/code]
-
 [*][URL="http://code.google.com/p/tibiaapi/wiki/CodeSamples"][COLOR=DeepSkyBlue]More code samples[/COLOR][/URL][/LIST]

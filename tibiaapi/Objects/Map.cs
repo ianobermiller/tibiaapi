@@ -187,7 +187,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         private Tile GetPlayerSquare()
         {
-            return new Tile(client.ReadShort(Addresses.Map.Player_Tile));
+            return new Tile((uint)client.ReadShort(Addresses.Map.Player_Tile));
         }
 
         /// <summary>
