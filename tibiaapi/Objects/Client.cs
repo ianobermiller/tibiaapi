@@ -45,12 +45,12 @@ namespace Tibia.Objects
         /// <summary>
         /// Event raised when the Tibia client is exited.
         /// </summary>
-        public ClientNotification Exited;
+        public ClientNotification OnExit;
 
         private void ClientExited(object sender, EventArgs e)
         {
-            if (Exited != null)
-                Exited();
+            if (OnExit != null)
+                OnExit();
         }
         #endregion
 
