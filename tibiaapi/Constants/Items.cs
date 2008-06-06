@@ -10,14 +10,39 @@ namespace Tibia.Constants
     {
         public static class Ammunition
         {
-            public static Item Spear = new Item(3277, "Spear");
-            public static Item SmallStone = new Item(1781, "Small Stone");
-            public static Item ThrowingStar = new Item(3287, "Throwing Star");
-            public static Item Bolts = new Item(3446, "Bolts");
             public static Item Arrow = new Item(3447, "Arrow");
             public static Item BurstArrow = new Item(3449, "Burst Arrow");
             public static Item PoisonedArrow = new Item(3448, "Poisoned Arrow");
+            public static Item EarthArrow = new Item(7774, "Earth Arrow");
+            public static Item FlashArrow = new Item(761, "Flash Arrow");
+            public static Item ShiverArrow = new Item(762, "Shiver Arrow");
+            public static Item FlamingArrow = new Item(763, "Flaming Arrow");
+            public static Item SniperArrow = new Item(7364, "Sniper Arrow");
+
             public static Item PowerBolt = new Item(3450, "Power Bolt");
+            public static Item Bolts = new Item(3446, "Bolt");
+            public static Item PiercingBolt = new Item(7363, "Piercing Bolt");
+
+            public static Item SmallStone = new Item(1781, "Small Stone");
+            public static Item ThrowingStar = new Item(3287, "Throwing Star");
+            public static Item ThrowingKnife = new Item(3298, "Throwing Knife");
+
+            public static Item Spear = new Item(3277, "Spear");
+            public static Item HuntingSpear = new Item(3347, "Hunting Spear");
+            public static TransformingItem EnchantedSpear = new TransformingItem(7367, "Enchanted Spear", Spells.EnchantSpear, 3, Ammunition.Spear);
+            public static Item RoyalSpear = new Item(7378, "Royal Spear");
+        }
+
+        public static class Boots
+        {
+            public static Item BootsofHaste = new Item(3079, "Boots of Haste");
+            public static Item LeatherBoots = new Item(3552, "Leather Boots");
+            public static Item SteelBoots = new Item(3554, "Steel Boots");
+            public static Item CrocodileBoots = new Item(3556, "Crocodile Boots");
+            public static Item LightningBoots = new Item(820, "Lightning Boots");
+            public static Item TerraBoots = new Item(813, "Terra Boots");
+            public static Item FurBoots = new Item(7457, "Fur Boots");
+            public static Item SoftBoots = new Item(6529, "Soft Boots");
         }
 
         public static class Bottle
@@ -38,9 +63,16 @@ namespace Tibia.Constants
             public static Item BackpackRed = new Item(2867, "Backpack Red");
             public static Item BackpackStar = new Item(5949, "Backpack Star");
             public static Item BackpackYellow = new Item(2866, "Backpack Yellow");
-            public static Item BagBrown = new Item(2853, "Bag Brown");
-            public static Item ParcelNew = new Item(3503, "Parcel New");
             public static Item ParcelUsed = new Item(3504, "Parcel Used");
+            public static Item BagBrown = new Item(2853, "Bag Brown");
+            public static Item BagGreen = new Item(2857, "Bag Green");
+            public static Item BagYellow = new Item(2858, "Bag Yellow");
+            public static Item BagRed = new Item(2859, "Bag Red");
+            public static Item BagPurple = new Item(2860, "Bag Purple");
+            public static Item BagBlue = new Item(2861, "Bag Blue");
+            public static Item BagGrey = new Item(2862, "Bag Grey");
+            public static Item ParcelNew = new Item(3503, "Parcel New");
+            public static Item BackpackOfHolding = new Item(3253, "Backpack of Holding");
         }
 
         public static class Fluid
@@ -137,6 +169,10 @@ namespace Tibia.Constants
             public static Item WhitePiece = new Item(5909, "White Piece");
             public static Item WolfPaw = new Item(5897, "Wolf Paw");
             public static Item YellowPiece = new Item(5914, "Yellow Piece");
+            public static Item IronOre = new Item(5880, "Iron Ore");
+            public static Item Hook = new Item(6097, "Hook");
+            public static Item EyePatch = new Item(6098, "Eye Patch");
+            public static Item PegLeg = new Item(6126, "Peg Leg");
         }
 
         public static class Ring
@@ -160,38 +196,38 @@ namespace Tibia.Constants
 
         public static class Rune
         {
-            public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead", "adana mort", 600, 5, Constants.SpellCategory.Summon);
-            public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote", "adana pox", 200, 1, Constants.SpellCategory.Healing);
-            public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche", "adori mas frigo", 530, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", "", 0, 0, SpellCategory.Support);
-            public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon", "adevo ina", 600, 2, Constants.SpellCategory.Support);
-            public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature", "adeta sio", 200, 3, Constants.SpellCategory.Summon);
-            public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate", "adito tera", 200, 3, Constants.SpellCategory.Support);
-            public static Objects.Rune DestroyField = new Objects.Rune(3148, "Destroy Field", "adito grav", 120, 2, Constants.SpellCategory.Support);
-            public static Objects.Rune EnergyBomb = new Objects.Rune(3149, "Energy Bomb", "adevo mas vis", 880, 5, Constants.SpellCategory.Attack);
-            public static Objects.Rune EnergyField = new Objects.Rune(3164, "Energy Field", "adevo grav vis", 320, 2, Constants.SpellCategory.Attack);
-            public static Objects.Rune EnergyWall = new Objects.Rune(3166, "Energy Wall", "adevo mas grav vis", 1000, 5, Constants.SpellCategory.Attack);
-            public static Objects.Rune Explosion = new Objects.Rune(3200, "Explosion", "adevo mas hur", 570, 4, Constants.SpellCategory.Attack);
-            public static Objects.Rune FireBomb = new Objects.Rune(3192, "Fire Bomb", "adevo mas flam", 600, 4, Constants.SpellCategory.Attack);
-            public static Objects.Rune FireField = new Objects.Rune(3188, "Fire Field", "adevo grav flam", 240, 1, Constants.SpellCategory.Attack);
-            public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall", "adevo mas grav flam", 780, 4, Constants.SpellCategory.Attack);
-            public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball", "adori flam", 460, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball", "adori gran flam", 530, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile", "adori vis", 350, 2, Constants.SpellCategory.Attack);
-            public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle", "adori frigo", 460, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", "adura gran", 120, 2, Constants.SpellCategory.Healing);
-            public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile", "adori min vis", 120, 1, Constants.SpellCategory.Attack);
-            public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall", "adevo grav tera", 750, 5, Constants.SpellCategory.Support);
-            public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze", "adana ani", 1400, 3, Constants.SpellCategory.Support);
-            public static Objects.Rune PoisonBomb = new Objects.Rune(3173, "Poison Bomb", "adevo mas pox", 520, 2, Constants.SpellCategory.Attack);
-            public static Objects.Rune PoisonField = new Objects.Rune(3172, "Poison Field", "adevo grav pox", 200, 1, Constants.SpellCategory.Attack);
-            public static Objects.Rune PoisonWall = new Objects.Rune(3176, "Poison Wall", "adevo mas grav pox", 640, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune Soulfire = new Objects.Rune(3195, "Soulfire", "adevo res flam", 420, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune Stalagmite = new Objects.Rune(3179, "Stalagmite", "adori tera", 350, 2, Constants.SpellCategory.Attack);
-            public static Objects.Rune StoneShower = new Objects.Rune(3175, "Stone Shower", "adori mas tera", 430, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune SuddenDeath = new Objects.Rune(3155, "Sudden Death", "adori gran mort", 985, 5, Constants.SpellCategory.Attack);
-            public static Objects.Rune Thunderstorm = new Objects.Rune(3202, "Thunderstorm", "adori mas vis", 430, 3, Constants.SpellCategory.Attack);
-            public static Objects.Rune UltimateHealing = new Objects.Rune(3160, "Ultimate Healing Rune", "adura vita", 400, 3, Constants.SpellCategory.Healing);
+            public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead Rune", Spells.AnimateDead, 5);
+            public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote Rune", Spells.AntidoteRune, 1);
+            public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche Rune", Spells.AvalancheRune, 3);
+            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", null, 0);
+            public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon Rune", Spells.Chameleon, 2);
+            public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature Rune", Spells.ConvinceCreature, 3);
+            public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate Rune", Spells.Desintegrate, 3);
+            public static Objects.Rune DestroyField = new Objects.Rune(3148, "Destroy Field Rune", Spells.DestroyField, 2);
+            public static Objects.Rune EnergyBomb = new Objects.Rune(3149, "Energy Bomb Rune", Spells.EnergyBomb, 5);
+            public static Objects.Rune EnergyField = new Objects.Rune(3164, "Energy Field Rune", Spells.EnergyField, 2);
+            public static Objects.Rune EnergyWall = new Objects.Rune(3166, "Energy Wall Rune", Spells.EnergyWall, 5);
+            public static Objects.Rune Explosion = new Objects.Rune(3200, "Explosion Rune", Spells.Explosion, 4);
+            public static Objects.Rune FireBomb = new Objects.Rune(3192, "Fire Bomb Rune", Spells.FireBomb, 4);
+            public static Objects.Rune FireField = new Objects.Rune(3188, "Fire Field Rune", Spells.FireField, 1);
+            public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall Rune", Spells.FireWall, 4);
+            public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball Rune", Spells.Fireball, 3);
+            public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball Rune", Spells.GreatFireball, 3);
+            public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile Rune", Spells.HeavyMagicMissile, 2);
+            public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle Rune", Spells.Icicle, 3);
+            public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealing, 2);
+            public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile Rune", Spells.LightMagicMissile, 1);
+            public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall Rune", Spells.MagicWall, 5);
+            public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze Rune", Spells.Paralyze, 3);
+            public static Objects.Rune PoisonBomb = new Objects.Rune(3173, "Poison Bomb Rune", Spells.PoisonBomb, 2);
+            public static Objects.Rune PoisonField = new Objects.Rune(3172, "Poison Field Rune", Spells.PoisonField, 1);
+            public static Objects.Rune PoisonWall = new Objects.Rune(3176, "Poison Wall Rune", Spells.PoisonWall, 3);
+            public static Objects.Rune Soulfire = new Objects.Rune(3195, "Soulfire Rune", Spells.Soulfire, 3);
+            public static Objects.Rune Stalagmite = new Objects.Rune(3179, "Stalagmite Rune", Spells.Stalagmite, 2);
+            public static Objects.Rune StoneShower = new Objects.Rune(3175, "Stone Shower Rune", Spells.StoneShower, 3);
+            public static Objects.Rune SuddenDeath = new Objects.Rune(3155, "Sudden Death Rune", Spells.SuddenDeath, 5);
+            public static Objects.Rune Thunderstorm = new Objects.Rune(3202, "Thunderstorm Rune", Spells.Thunderstorm, 3);
+            public static Objects.Rune UltimateHealing = new Objects.Rune(3160, "Ultimate Healing Rune", Spells.UltimateHealingRune, 3);
         }
 
         public static class Tool
@@ -212,6 +248,10 @@ namespace Tibia.Constants
             public static Item SmallEmerald = new Item(3032, "Small Emerald");
             public static Item BlackPearl = new Item(3027, "Black Pearl");
             public static Item WhitePearl = new Item(3026, "White Pearl");
+            public static Item SmallDiamond = new Item(3028, "Small Diamond");
+            public static Item SmallSapphire = new Item(3029, "Small Sapphire");
+            public static Item SmallRuby = new Item(3030, "Small Ruby");
+            public static Item Talon = new Item(3034, "Talon");
         }
     }
 }

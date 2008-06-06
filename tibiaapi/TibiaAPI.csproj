@@ -68,6 +68,7 @@
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemLists.cs" />
+    <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />

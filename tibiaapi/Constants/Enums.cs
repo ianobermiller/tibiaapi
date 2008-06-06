@@ -542,7 +542,8 @@ namespace Tibia.Constants
     public enum SpellType
     {
         Instant,
-        Rune
+        ItemTransformation,
+        Creation
     }
 
     #endregion

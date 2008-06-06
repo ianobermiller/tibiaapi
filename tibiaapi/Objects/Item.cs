@@ -286,29 +286,44 @@ namespace Tibia.Objects
     /// <summary>
     /// Represents a rune item. Contains metadata relating specifically to runes.
     /// </summary>
-    public class Rune : Item
+    public class TransformingItem : Item
     {
-        public string Words;
-        public uint ManaPoints;
+        public Spell Spell;
         public uint SoulPoints;
-        public Constants.SpellCategory Category;
+        public Item OriginalItem;
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        /// <param name="id">item id</param>
+        /// <param name="name">item name</param>
+        /// <param name="spell">spell used to create the item</param>
+        /// <param name="soulPoints">amount of soul points needed to make the item</param>
+        /// <param name="originalItem">the item that the spell words are used on to create this item</param>
+        public TransformingItem(uint id, string name, Spell spell, uint soulPoints, Item originalItem)
+            : base(id, name)
+        {
+            Spell = spell;
+            SoulPoints = soulPoints;
+            OriginalItem = originalItem;
+        }
+    }
+
+    /// <summary>
+    /// Represents a rune item. Contains metadata relating specifically to runes.
+    /// </summary>
+    public class Rune : TransformingItem
+    {
         /// <summary>
         /// Default rune constructor.
         /// </summary>
         /// <param name="id">item id</param>
         /// <param name="name">item name</param>
-        /// <param name="words">spell words used to create the rune</param>
-        /// <param name="manaPoints">amount of mana needed to make the rune</param>
+        /// <param name="spell">spell used to create the rune</param>
         /// <param name="soulPoints">amount of soul points needed to make the rune</param>
-        /// <param name="category">the runes category (attack, healing, etc.)</param>
-        public Rune(uint id, string name, string words, uint manaPoints, uint soulPoints, Constants.SpellCategory category)
-            : base(id, name)
+        public Rune(uint id, string name, Spell spell, uint soulPoints)
+            : base(id, name, spell, soulPoints, Constants.Items.Rune.Blank)
         {
-            Words = words;
-            ManaPoints = manaPoints;
-            SoulPoints = soulPoints;
-            Category = category;
         }
     }
 

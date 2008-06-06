@@ -527,36 +527,23 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Make the specified rune with the default options.
+        /// Transform the specified item with the default options.
         /// </summary>
-        /// <param name="rune">The rune to make.</param>
+        /// <param name="item">The item to make.</param>
         /// <returns></returns>
-        public bool MakeRune(Rune rune)
+        public bool TransformItem(TransformingItem item)
         {
-            return MakeRune(rune, false);
+            return TransformItem(item, false);
         }
 
         /// <summary>
-        /// Make a rune with the specified id. Wrapper for makeRune(Rune).
+        /// Transform an item. Drags an original item to a free hand, casts the words, and moved the new item back.
+        /// If no free hand is found, but the ammo is open, move the item in the right hand down to ammo.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>True if the rune succeeded, false if the rune id doesn't exist or creation failed.</returns>
-        public bool MakeRune(ushort id)
-        {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Rune rune = Tibia.Constants.ItemLists.Runes[id];
-            if (rune == null) return false;
-            return MakeRune(rune);
-        }
-
-        /// <summary>
-        /// Make a rune. Drags a blank to a free hand, casts the words, and moved the new rune back.
-        /// If no free hand is found, but the ammo is open, it moved the item in the right hand down to ammo.
-        /// </summary>
-        /// <param name="rune">The rune to make.</param>
+        /// <param name="item">The item to make.</param>
         /// <param name="checkSoulPoints">Whether or not to check for soul points.</param>
-        /// <returns>True if everything went well, false if no blank was found or part or all of the process failed</returns>
-        public bool MakeRune(Rune rune, bool checkSoulPoints)
+        /// <returns>True if everything went well, false if no original item was found or part or all of the process failed</returns>
+        public bool TransformItem(TransformingItem item, bool checkSoulPoints)
         {
             if (!LoggedIn) throw new Exceptions.NotLoggedInException();
             Player player = GetPlayer();
@@ -565,24 +552,24 @@ namespace Tibia.Objects
 
             // If wanted, check for soul points
             if (checkSoulPoints)
-                if (player.Soul < rune.SoulPoints) return false;
+                if (player.Soul < item.SoulPoints) return false;
 
             // Make sure the player has enough mana
-            if (player.Mana >= rune.ManaPoints)
+            if (player.Mana >= item.Spell.ManaPoints)
             {
-                // Find the first blank rune
-                Item blank = inventory.FindItem(Tibia.Constants.Items.Rune.Blank);
+                // Find the first original
+                Item original = inventory.FindItem(item.OriginalItem);
 
-                // Make sure a blank rune was found
-                if (blank.Found)
+                // Make sure an original was found
+                if (original.Found)
                 {
-                    // Save the current location of the blank rune
-                    ItemLocation oldLocation = blank.Loc;
+                    // Save the current location of the original
+                    ItemLocation oldLocation = original.Loc;
 
-                    // The location where the rune will be made
+                    // The location where the item will be made
                     ItemLocation newLocation;
 
-                    // Determine the location to make the rune
+                    // Determine the location to make the item
                     /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Left);
                     else*/
@@ -597,23 +584,23 @@ namespace Tibia.Objects
                         itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
                     }
                     else
-                        return false; // No where to put the rune!
+                        return false; // No where to put the item!
 
-                    // Move the rune and say the magic words, make sure everything went well
-                    allClear = allClear & blank.Move(newLocation);
+                    // Move the original and say the magic words, make sure everything went well
+                    allClear = allClear & original.Move(newLocation);
                     Thread.Sleep(200);
-                    allClear = allClear & console.Say(rune.Words);
+                    allClear = allClear & console.Say(item.Spell.Words);
                     Thread.Sleep(200);
                     // Don't bother continuing if both the above actions didn't work
                     if (!allClear) return false;
 
-                    // Build a rune object for the newly created item
+                    // Build an item object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newRune = new Item(rune.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
+                    Item newItem = new Item(item.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
 
                     // Move the rune back to it's original location
-                    allClear = allClear & newRune.Move(oldLocation);
+                    allClear = allClear & newItem.Move(oldLocation);
                     // Check if we moved an item to the ammo slot
                     // If we did, move it back
                     if (itemMovedToAmmo != null)

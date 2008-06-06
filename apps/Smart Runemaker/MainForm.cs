@@ -56,7 +56,7 @@ namespace SmartRunemaker
             if (client.LoggedIn)
             {
                 if (player.Mana == player.Mana_Max)
-                    client.MakeRune(rune);
+                    client.TransformItem(rune);
             }
         }
 
