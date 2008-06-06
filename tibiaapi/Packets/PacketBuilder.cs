@@ -268,6 +268,17 @@ namespace Tibia.Packets
         }
 
         /// <summary>
+        /// Get the string  only at the current index and advance.
+        /// </summary>
+        /// <returns></returns>
+        public string GetString(int length)
+        {
+            string s = Encoding.ASCII.GetString(data, index, length);
+            index += length;
+            return s;
+        }
+
+        /// <summary>
         /// Get a location object at the current index and advance.
         /// </summary>
         /// <returns></returns>

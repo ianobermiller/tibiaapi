@@ -82,7 +82,7 @@ namespace Tibia.Util
         /// A function prototype for proxy notifications.
         /// </summary>
         /// <returns></returns>
-        public delegate void ProxyNotification();
+        public delegate void ProxyNotification(string message);
 
         /// <summary>
         /// Called when the client has logged in.
@@ -98,6 +98,11 @@ namespace Tibia.Util
         /// Called when the client crashes.
         /// </summary>
         public ProxyNotification OnCrash;
+
+        /// <summary>
+        /// Called when the user enters bad login details.
+        /// </summary>
+        public ProxyNotification OnBadLogin;
 
         /// <summary>
         /// Called when a packet is received from the server.
@@ -275,13 +280,6 @@ namespace Tibia.Util
                 {
                     // Process the character list
                     ProcessCharListPacket(dataServer, bytesRead);
-
-                    // Send the modified char list to the client
-                    netStreamClient.BeginWrite(dataServer, 0, bytesRead, null, null);
-
-                    // Refresh the client listener because the client reconnects on a
-                    // different port with the game server
-                    RefreshClientListener();
                 }
                 else
                 {
@@ -295,14 +293,12 @@ namespace Tibia.Util
                     {
                         Array.Copy(dataServer, 0, tempArray, tempLen, bytesRead);
                         ProcessCharListPacket(tempArray, bytesRead + tempLen);
-                        netStreamClient.BeginWrite(tempArray, 0, bytesRead + tempLen, null, null);
-                        RefreshClientListener();
                     }
                 }
             }
         }
 
-        private bool ProcessCharListPacket(byte[] data, int length)
+        private void ProcessCharListPacket(byte[] data, int length)
         {
             byte[] packet = new byte[length];
             byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
@@ -313,12 +309,37 @@ namespace Tibia.Util
             if (ReceivedPacketFromServer != null)
                 ReceivedPacketFromServer.BeginInvoke(new Packet(client, packet), null, null);
 
-            charList = new CharListPacket(client);
-            charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
+            switch ((PacketType)packet[2])
+            {
+                case PacketType.CharList:
+                    charList = new CharListPacket(client);
+                    charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
 
-            packet = XTEA.Encrypt(charList.Data, key);
-            Array.Copy(packet, data, length);
-            return true;
+                    packet = XTEA.Encrypt(charList.Data, key);
+
+                    // Send the modified char list to the client
+                    netStreamClient.Write(packet, 0, packet.Length);
+
+                    // Refresh the client listener because the client reconnects on a
+                    // different port with the game server
+                    RefreshClientListener();
+                    break;
+                case PacketType.BadLogin:
+                    BadLoginPacket badLogin = new BadLoginPacket(client, packet);
+                    if (OnBadLogin != null)
+                        OnBadLogin.BeginInvoke(badLogin.Message, null, null);
+                    packet = XTEA.Encrypt(packet, key);
+                    netStreamClient.Write(packet, 0, packet.Length);
+                    Stop();
+                    Restart();
+                    break;
+                default:
+                    packet = XTEA.Encrypt(packet, key);
+                    netStreamClient.Write(packet, 0, packet.Length);
+                    Stop();
+                    Restart();
+                    break;
+            }
         }
 
         private void RefreshClientListener()
@@ -743,7 +764,7 @@ namespace Tibia.Util
         {
             Stop();
             if (OnCrash != null)
-                OnCrash.BeginInvoke(null, null);
+                OnCrash.BeginInvoke("The client has crashed.", null, null);
         }
         #endregion
 
@@ -770,7 +791,7 @@ namespace Tibia.Util
                 if (OnLogOut != null)
                 {
                     // We don't care about the return to this
-                    OnLogOut.BeginInvoke(null, null);
+                    OnLogOut.BeginInvoke("The client has logged out.", null, null);
                 }
                     
                 return;
@@ -803,10 +824,12 @@ namespace Tibia.Util
         {
             connected = false;
             netStreamClient.Close();
-            netStreamServer.Close();
+            if (netStreamServer != null)
+                netStreamServer.Close();
+            if (tcpServer != null)
+                tcpServer.Close();
             netStreamLogin.Close();
             tcpClient.Stop();
-            tcpServer.Close();
             tcpLogin.Close();
             socketClient.Close();
         }
@@ -863,7 +886,7 @@ namespace Tibia.Util
         private void BeginOnLogIn()
         {
             Thread.Sleep(loginDelay);
-            OnLogIn();
+            OnLogIn("The client has logged in.");
         }
 
         private void ProcessServerSendQueue()
