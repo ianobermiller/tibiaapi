@@ -42,6 +42,7 @@
  * Creature.IsSelf()
  * Guild details to LookupPlayer
  * Visual Basic code samples
+ * Util.Timer, a timer whose executions don't overlap (uses thread locks)
  
 == Fixed ==
  * The proxy can handle combined and split packets
