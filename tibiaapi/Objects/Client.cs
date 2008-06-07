@@ -293,13 +293,13 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets the position of the client, and its outer boundaries
         /// </summary>
-        public Rectangle Window
+        public Rect Window
         {
             get
             {
                 Util.WinApi.RECT r= new Tibia.Util.WinApi.RECT();
                 Util.WinApi.GetWindowRect(process.MainWindowHandle, ref r);
-                return new Rectangle(r);
+                return new Rect(r);
             }
         }
         /// <summary>
@@ -687,6 +687,30 @@ namespace Tibia.Objects
         public bool Logout()
         {
             return Send(LogoutPacket.Create(this));
+        }
+        public void SetAccountInfo(int account, string password)
+        {
+            WriteInt(Addresses.Client.LoginAccountNum, account);
+            WriteString(Addresses.Client.LoginAccountStr, account.ToString());
+            WriteString(Addresses.Client.LoginPassword, password);
+            WriteBytes(Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
+            WriteBytes(Addresses.Client.LoginPatch2, Tibia.Misc.CreateNopArray(5), 5);
+        }
+        public void ClearAccountInfo()
+        {
+            WriteInt(Addresses.Client.LoginAccountNum, 00);
+            WriteString(Addresses.Client.LoginAccountStr, "      ");
+            WriteBytes(Addresses.Client.LoginPassword, Tibia.Misc.CreateNopArray(10), 10);
+            WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
+            WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
+        }
+        public System.Drawing.Point DialogPosition
+        {
+            get
+            {
+                int DialogB = ReadInt(Addresses.Client.DialogBegin);   
+                return new System.Drawing.Point(ReadInt(DialogB+Addresses.Client.DialogLeft),ReadInt(DialogB+Addresses.Client.DialogTop));
+            }
         }
         #endregion
 

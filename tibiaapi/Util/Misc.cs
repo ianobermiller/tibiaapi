@@ -24,5 +24,14 @@ namespace Tibia
                 color = 0;
             return Color.FromArgb((int) (color + 0xFF000000));
         }
+        public static byte[] CreateNopArray(int len)
+        {
+            byte[] ar = new byte[len];
+            for (int i = 0; i < len; i++)
+            {
+                ar[i] = Addresses.Client.Nop;
+            }
+            return ar;
+        }
     }
 }

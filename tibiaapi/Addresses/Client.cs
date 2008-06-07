@@ -173,7 +173,8 @@ namespace Tibia.Addresses
 
         /// <summary>
         /// Pointer to an address. When that address has 0x4E added to
-        /// it, it points to the game window rect struct.
+        /// it, it points to the game window rect 
+        /// struct.
         /// </summary>
         public static uint GameWindowRectPointer = 0x12D624; //8.1
         /*
@@ -190,5 +191,27 @@ namespace Tibia.Addresses
         */
 
         public static uint DatPointer = 0x768C9C;
+
+        public static uint DialogBegin = 0x61E984;
+        public static uint DialogLeft = 0x14;
+        public static uint DialogTop = 0x18;
+        public static uint DialogWidth = 0x1C;
+        public static uint DialogHeight = 0x20;
+        public static uint DialogCaption = 0x50;
+
+
+        /// <summary>
+        /// Auto login stuff
+        /// </summary>
+        public static uint LoginAccountNum = 0x76C2C0;
+        public static uint LoginAccountStr = 0x76C2B4;
+        public static uint LoginPassword = 0x76C294;
+
+        public static uint LoginPatch = 0x47935E;
+        public static uint LoginPatch2 = 0x47A2B3;
+
+        public static byte Nop = 0x90;
+        public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
+        public static byte[] LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
     }
 }
