@@ -293,13 +293,13 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets the position of the client, and its outer boundaries
         /// </summary>
-        public Position Position
+        public Rectangle Window
         {
             get
             {
                 Util.WinApi.RECT r= new Tibia.Util.WinApi.RECT();
                 Util.WinApi.GetWindowRect(process.MainWindowHandle, ref r);
-                return new Position(r);
+                return new Rectangle(r);
             }
         }
         /// <summary>

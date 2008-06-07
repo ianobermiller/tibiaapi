@@ -187,7 +187,7 @@ namespace Tibia.Objects
             Name = name;
         }
     }
-    public struct Position
+    public struct Rectangle
     {
         private int top;
         private int bottom;
@@ -219,7 +219,7 @@ namespace Tibia.Objects
         {
             get { return width; }
         }
-        public Position(Util.WinApi.RECT r)
+        public Rectangle(Util.WinApi.RECT r)
         {
             top = r.top;
             bottom = r.bottom;
