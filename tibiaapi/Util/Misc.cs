@@ -5,6 +5,11 @@ namespace Tibia
 {
     class Misc
     {
+        /// <summary>
+        /// Obtains the appropiate System.Drawing.Color representation given the health percentage of a creature
+        /// </summary>
+        /// <param name="hp">Health percent of the creature</param>
+        /// <returns>A System.Drawing.Color instance representing the color</returns>
         public static Color HpPercentToColor(int hp)
         {
             int color;
@@ -24,8 +29,15 @@ namespace Tibia
                 color = 0;
             return Color.FromArgb((int) (color + 0xFF000000));
         }
+
+        /// <summary>
+        /// Creates a byte array of No Operation machine instructions (NOPs).
+        /// </summary>
+        /// <param name="len">Length of the byte array</param>
+        /// <returns>A byte array consisting of NOPs</returns>
         public static byte[] CreateNopArray(int len)
         {
+            
             byte[] ar = new byte[len];
             for (int i = 0; i < len; i++)
             {

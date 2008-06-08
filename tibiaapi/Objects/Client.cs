@@ -325,6 +325,41 @@ namespace Tibia.Objects
                 SendMessage(Util.WinApi.WM_LBUTTONDOWN, 0, lpara);
                 SendMessage(Util.WinApi.WM_LBUTTONUP, 0, lpara);
         }
+
+        /// <summary>
+        /// Sets the account number.
+        /// </summary>
+        public int AccountNumber
+        {
+            set
+            {
+                WriteInt(Addresses.Client.LoginAccountNum, account);
+                WriteString(Addresses.Client.LoginAccountStr, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Sets the account password.
+        /// </summary>
+        public string AccountPassword
+        {
+            set
+            {
+                WriteString(Addresses.Client.LoginPassword, value);
+            }
+        }
+
+
+        /// <summary>
+        /// Gets a value indicating if a dialog is opened.
+        /// </summary>
+        public bool DialogIsOpened
+        {
+            get
+            {
+                return (ReadInt(Addresses.Client.DialogBegin) != 0);
+            }
+        }
         #endregion
 
         #region Open Client
@@ -688,27 +723,33 @@ namespace Tibia.Objects
         {
             return Send(LogoutPacket.Create(this));
         }
+
         public void SetAccountInfo(int account, string password)
         {
-            WriteInt(Addresses.Client.LoginAccountNum, account);
-            WriteString(Addresses.Client.LoginAccountStr, account.ToString());
-            WriteString(Addresses.Client.LoginPassword, password);
+            AccountNumber = account;
+            AccountPassword = password;
             WriteBytes(Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
             WriteBytes(Addresses.Client.LoginPatch2, Tibia.Misc.CreateNopArray(5), 5);
         }
+
         public void ClearAccountInfo()
         {
-            WriteInt(Addresses.Client.LoginAccountNum, 00);
-            WriteString(Addresses.Client.LoginAccountStr, "      ");
-            WriteBytes(Addresses.Client.LoginPassword, Tibia.Misc.CreateNopArray(10), 10);
+            AccountNumber = 0;
+            AccountPassword = string.Empty;
             WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
             WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
         }
+
+        /// <summary>
+        /// Gets the position of the current opened dialog. Returns null if dialog is not opened.
+        /// </summary>
         public System.Drawing.Point DialogPosition
         {
             get
             {
-                int DialogB = ReadInt(Addresses.Client.DialogBegin);   
+                int DialogB = ReadInt(Addresses.Client.DialogBegin);
+                if (DialogB == null)
+                    return null;
                 return new System.Drawing.Point(ReadInt(DialogB+Addresses.Client.DialogLeft),ReadInt(DialogB+Addresses.Client.DialogTop));
             }
         }
