@@ -13,6 +13,7 @@ namespace Tibia.Util
         private Client client;
         private NamedPipeServerStream pipe;
         private byte[] buffer = new byte[1024];
+        private string name = string.Empty;
         #endregion
 
         #region Events
@@ -50,6 +51,7 @@ namespace Tibia.Util
         public Pipe(Client c, string name)
         {
             client = c;
+            this.name = name;
             pipe = new NamedPipeServerStream(name);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
         }
@@ -92,6 +94,28 @@ namespace Tibia.Util
             if (OnSend != null)
                 OnSend.BeginInvoke(packet,null,null);
             pipe.Write(packet.Data, 0, packet.Data.Length);
+        }
+
+        /// <summary>
+        /// Gets the name of the pipe.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the client object.
+        /// </summary>
+        public Client Client
+        {
+            get
+            {
+                return client;
+            }
         }
     }
 }
