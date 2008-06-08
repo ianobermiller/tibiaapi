@@ -14,6 +14,7 @@ namespace Tibia.Util
         private NamedPipeServerStream pipe;
         private byte[] buffer = new byte[1024];
         private string name = string.Empty;
+        private Microsoft.Win32.SafeHandles.SafePipeHandle pipeHandle = null;
         #endregion
 
         #region Events
@@ -52,7 +53,8 @@ namespace Tibia.Util
         {
             client = c;
             this.name = name;
-            pipe = new NamedPipeServerStream(name);
+            pipeHandle = new Microsoft.Win32.SafeHandles.SafePipeHandle(null, true);
+            pipe = new NamedPipeServerStream(name,true,false, pipeHandle);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
         }
 
