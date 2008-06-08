@@ -114,7 +114,7 @@ namespace Tibia.Objects
             }
             set
             {
-                Util.WinApi.SetWindowText(process.MainWindowHandle, value);
+                Util.WinApi.SetWindowText(MainWindowHandle, value);
             }
         }
 
@@ -125,7 +125,7 @@ namespace Tibia.Objects
         {
             set
             {
-                Util.WinApi.SetWindowPos(process.MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
+                Util.WinApi.SetWindowPos(MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
             }
         }
 
@@ -198,12 +198,25 @@ namespace Tibia.Objects
         {
             get
             {
-                return process.MainWindowHandle == Util.WinApi.GetForegroundWindow();
+
+                return MainWindowHandle == Util.WinApi.GetForegroundWindow();
             }
             set
             {
                 if (value)
-                    Util.WinApi.SetForegroundWindow(process.MainWindowHandle);
+                    Util.WinApi.SetForegroundWindow(MainWindowHandle);
+            }
+        }
+
+        /// <summary>
+        /// Gets the client process' main window handle.
+        /// </summary>
+        public IntPtr MainWindowHandle
+        {
+            get {
+                if (MainWindowHandle == IntPtr.Zero)
+                    process.Refresh();
+                return MainWindowHandle;
             }
         }
 
@@ -213,7 +226,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsMinimized
         {
-            get { return Util.WinApi.IsIconic(process.MainWindowHandle); }
+            get { return Util.WinApi.IsIconic(MainWindowHandle); }
         }
 
         /// <summary>
@@ -222,14 +235,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsMaximized
         {
-            get { return Util.WinApi.IsZoomed(process.MainWindowHandle); }
+            get { return Util.WinApi.IsZoomed(MainWindowHandle); }
         }
 
         public bool IsVisible
         {
             set
             {
-                Util.WinApi.ShowWindow(process.MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
+                Util.WinApi.ShowWindow(MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
                 isVisible = value;
             }
             get { return isVisible; }
@@ -298,7 +311,7 @@ namespace Tibia.Objects
             get
             {
                 Util.WinApi.RECT r= new Tibia.Util.WinApi.RECT();
-                Util.WinApi.GetWindowRect(process.MainWindowHandle, ref r);
+                Util.WinApi.GetWindowRect(MainWindowHandle, ref r);
                 return new Rect(r);
             }
         }
@@ -311,7 +324,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void SendMessage(uint MessageId, int wParam, int lParam)
         {
-            Util.WinApi.SendMessage(process.MainWindowHandle, MessageId, wParam, lParam);
+            Util.WinApi.SendMessage(MainWindowHandle, MessageId, wParam, lParam);
         }
         /// <summary>
         /// Clicks with the mouse somewhere on the screen
@@ -333,7 +346,7 @@ namespace Tibia.Objects
         {
             set
             {
-                WriteInt(Addresses.Client.LoginAccountNum, account);
+                WriteInt(Addresses.Client.LoginAccountNum, value);
                 WriteString(Addresses.Client.LoginAccountStr, value.ToString());
             }
         }
@@ -712,7 +725,7 @@ namespace Tibia.Objects
         /// </summary>
         public void Flash()
         {
-            Util.WinApi.FlashWindow(process.MainWindowHandle, false);
+            Util.WinApi.FlashWindow(MainWindowHandle, false);
         }
 
         /// <summary>
@@ -748,8 +761,8 @@ namespace Tibia.Objects
             get
             {
                 int DialogB = ReadInt(Addresses.Client.DialogBegin);
-                if (DialogB == null)
-                    return null;
+                if (DialogB == 0)
+                    return new System.Drawing.Point(0,0);
                 return new System.Drawing.Point(ReadInt(DialogB+Addresses.Client.DialogLeft),ReadInt(DialogB+Addresses.Client.DialogTop));
             }
         }
