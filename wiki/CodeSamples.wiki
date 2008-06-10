@@ -13,6 +13,7 @@
  * [CodeSamples#Attack_the_first_rat_found_in_the_battelist Attack the first rat found in the battelist]
  * [CodeSamples#Change_your_players_outfit_type_and_addon Change your players outfit type and addon]
  * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
+ * [CodeSamples#Make_a_simple_lighthack Make a simple lighthack]
 
 == Get a client object to work with ==
 *C#*
@@ -252,7 +253,7 @@ map.replaceTrees()
 == Make a simple lighthack ==
 *C#*
 {{{
-            Player player=client.GetPlayer();
-            player.Light = Tibia.Constants.LightSize.Full;
-            player.LightColor = Tibia.Constants.LightColor.White;
+Player player=client.GetPlayer();
+player.Light = Tibia.Constants.LightSize.Full;
+player.LightColor = Tibia.Constants.LightColor.White;
 }}}
