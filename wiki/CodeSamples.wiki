@@ -248,3 +248,11 @@ map.replaceTrees();
 Dim map As New Map(client)
 map.replaceTrees()
 }}}
+
+== Make a simple lighthack ==
+*C#*
+{{{
+            Player player=client.GetPlayer();
+            player.Light = Tibia.Constants.LightSize.Full;
+            player.LightColor = Tibia.Constants.LightColor.White;
+}}}
