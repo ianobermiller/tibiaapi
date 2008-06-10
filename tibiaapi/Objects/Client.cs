@@ -214,9 +214,9 @@ namespace Tibia.Objects
         public IntPtr MainWindowHandle
         {
             get {
-                if (MainWindowHandle == IntPtr.Zero)
+                if (process.MainWindowHandle == IntPtr.Zero)
                     process.Refresh();
-                return MainWindowHandle;
+                return process.MainWindowHandle;
             }
         }
 

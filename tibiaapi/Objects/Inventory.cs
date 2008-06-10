@@ -247,6 +247,7 @@ namespace Tibia.Objects
                 !(first.Loc.container == second.Loc.container && second.Count == 100))
             {
                 second.Move(first);
+                System.Threading.Thread.Sleep(100);
                 return true;
             }
             else
