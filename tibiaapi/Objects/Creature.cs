@@ -221,5 +221,9 @@ namespace Tibia.Objects
         	set { client.WriteInt(address + Addresses.Creature.Distance_Addon, (int)value); }
         }
         #endregion
+        public override string ToString()
+        {
+            return Name+": "+HPBar.ToString()+"%";
+        }
     }
 }

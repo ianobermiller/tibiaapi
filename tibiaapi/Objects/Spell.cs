@@ -68,7 +68,7 @@ namespace Tibia.Objects
             this.Add(Spells.EnergyWall);
             this.Add(Spells.EnergyWave);
             this.Add(Spells.EnergyBomb);
-            this.Add(Spells.Envenom);
+            this.Add(Spells.EternalWinter);
             this.Add(Spells.EtherealSpear);
             this.Add(Spells.Explosion);
             this.Add(Spells.ExplosiveArrow);
@@ -89,6 +89,7 @@ namespace Tibia.Objects
             this.Add(Spells.Haste);
             this.Add(Spells.HealFriend);
             this.Add(Spells.HeavyMagicMissile);
+            this.Add(Spells.HellsCore);
             this.Add(Spells.IntenseHealing);
             this.Add(Spells.IntenseHealingRune);
             this.Add(Spells.Invisible);
@@ -103,10 +104,10 @@ namespace Tibia.Objects
             this.Add(Spells.Paralyze);
             this.Add(Spells.PoisonBomb);
             this.Add(Spells.PoisonField);
-            this.Add(Spells.PoisonStorm);
             this.Add(Spells.PoisonWall);
             this.Add(Spells.PoisonedArrow);
             this.Add(Spells.PowerBolt);
+            this.Add(Spells.RageoftheSkies);
             this.Add(Spells.Soulfire);
             this.Add(Spells.StrongHaste);
             this.Add(Spells.SuddenDeath);
@@ -118,6 +119,7 @@ namespace Tibia.Objects
             this.Add(Spells.UndeadLegion);
             this.Add(Spells.WhirlwindThrow);
             this.Add(Spells.WildGrowth);
+            this.Add(Spells.WrathofNature);
         }
 
         /// <summary>
