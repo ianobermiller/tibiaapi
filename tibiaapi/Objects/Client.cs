@@ -362,7 +362,6 @@ namespace Tibia.Objects
             }
         }
 
-
         /// <summary>
         /// Gets a value indicating if a dialog is opened.
         /// </summary>
@@ -742,7 +741,6 @@ namespace Tibia.Objects
             AccountNumber = account;
             AccountPassword = password;
             WriteBytes(Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
-            WriteBytes(Addresses.Client.LoginPatch2, Tibia.Misc.CreateNopArray(5), 5);
         }
 
         public void ClearAccountInfo()
