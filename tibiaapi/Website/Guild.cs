@@ -16,14 +16,14 @@ namespace Tibia
         public static void GuildMembers(string guildName, GuildMembersReceived callback)
         {
             string url = "http://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + guildName;
-            request = (HttpWebRequest)HttpWebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
 
             request.BeginGetResponse(delegate(IAsyncResult ar)
             {
                 string html = GetHTML(ar);
 
                 callback(ParseGuildPage(html));
-            }, null);
+            }, request);
         }
 
         private static List<CharInfo> ParseGuildPage(string html)

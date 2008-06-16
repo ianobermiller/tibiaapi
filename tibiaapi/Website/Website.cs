@@ -10,10 +10,9 @@ namespace Tibia
 {
     public partial class Website
     {
-        private static HttpWebRequest request;
-
         public static string GetHTML(IAsyncResult ar)
         {
+            HttpWebRequest request = (HttpWebRequest)ar.AsyncState;
             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(ar);
             Stream respStream = response.GetResponseStream();
             string respBody = string.Empty;

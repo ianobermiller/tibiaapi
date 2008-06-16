@@ -8,9 +8,9 @@ namespace Tibia
     {
         public static void Set(string version)
         {
+            #region 8.00 Addresses
             if (version == "8.00")
             {
-                #region 8.00 Addresses
                 Addresses.BattleList.Start = 0x60EB30;
                 Addresses.BattleList.End = 0x6148F0;
                 Addresses.BattleList.Step_Creatures = 0xA0;
@@ -158,12 +158,9 @@ namespace Tibia
                 Addresses.Vip.Distance_Name = 4;
                 Addresses.Vip.Distance_Status = 34;
                 Addresses.Vip.Distance_Icon = 40;
-                #endregion
+                
             }
-            else
-            {
-                throw new Tibia.Exceptions.VersionNotSupportedException();
-            }
+            #endregion
         }
     }
 }

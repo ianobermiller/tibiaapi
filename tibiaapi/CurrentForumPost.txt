@@ -38,9 +38,11 @@
 [*]Integration with TibiaTek Plus (not really a feature, but will be taking up some of our time)
 [/LIST]
 
-[SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE][LIST]
+[SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE]
+[LIST]
 [*][URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]View complete change log[/COLOR][/URL]
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Code Samples[/COLOR][/SIZE]
+[LIST]
 [*][URL="http://code.google.com/p/tibiaapi/wiki/CodeSamples"][COLOR=DeepSkyBlue]More code samples[/COLOR][/URL][/LIST]

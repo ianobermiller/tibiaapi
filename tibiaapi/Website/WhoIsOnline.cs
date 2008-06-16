@@ -14,7 +14,7 @@ namespace Tibia
         public static void WhoIsOnline(string worldName, WhoIsOnlineReceived callback)
         {
             string url = "http://www.tibia.com/community/?subtopic=whoisonline&world=" + worldName;
-            request = (HttpWebRequest)HttpWebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
 
             request.BeginGetResponse(delegate(IAsyncResult ar)
             {
@@ -34,7 +34,7 @@ namespace Tibia
                 }
 
                 callback(chars);
-            }, null);
+            }, request);
         }
 
         public class CharOnline
