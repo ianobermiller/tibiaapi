@@ -30,7 +30,18 @@ namespace Tibia
 
         public static string Match(string html, string pattern)
         {
-            return HttpUtility.HtmlDecode(Regex.Match(html, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value);
+            return Prepare(
+                Regex.Match(
+                    html, 
+                    pattern, 
+                    RegexOptions.IgnoreCase | RegexOptions.Singleline)
+                .Groups[1].Value);
+        }
+
+        public static string Prepare(string text)
+        {
+            return HttpUtility.HtmlDecode(text) // Decode html character entities
+                .Replace((char)0xA0, ' '); // Replace non-breaking spaces
         }
     }
 }

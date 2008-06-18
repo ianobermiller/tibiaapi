@@ -27,9 +27,9 @@ namespace Tibia
                 for(int i = 0; i < matches.Count; i++)
                 {
                     co = new CharOnline();
-                    co.Name = HttpUtility.HtmlDecode(matches[i].Groups[1].Value);
+                    co.Name = Prepare(matches[i].Groups[1].Value);
                     co.Level = int.Parse(matches[i].Groups[2].Value);
-                    co.Vocation = matches[i].Groups[3].Value;
+                    co.Vocation = Prepare(matches[i].Groups[3].Value);
                     chars.Add(co);
                 }
 
