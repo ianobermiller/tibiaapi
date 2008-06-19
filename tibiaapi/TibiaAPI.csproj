@@ -52,6 +52,12 @@
   </Target>
   -->
   <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -61,6 +67,18 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationTypes">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsFormsIntegration">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Addresses\DatItem.cs" />
@@ -70,7 +88,8 @@
     <Compile Include="Constants\ItemLists.cs" />
     <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\Tiles.cs" />
-    <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Exceptions\Misc.cs" />
+    <Compile Include="Exceptions\Version.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\BookOpenPacket.cs" />
     <Compile Include="Packets\Incoming\CancelAutoWalkPacket.cs" />
@@ -172,6 +191,9 @@
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Util\ClientChooserWPF.xaml.cs">
+      <DependentUpon>ClientChooserWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\Version.cs" />
     <Compile Include="Util\WinApi.cs" />
     <Compile Include="Util\XTEA.cs" />
@@ -191,6 +213,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CurrentForumPost.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Util\ClientChooserWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Packets\Pipes\" />

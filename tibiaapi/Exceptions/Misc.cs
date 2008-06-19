@@ -25,12 +25,7 @@ namespace Tibia.Exceptions
     /// </summary>
     public class ProxyDisconnectedException : InvalidOperationException { }
 
-    /// <summary>
-    /// Thrown when trying to access a resource that is not currently supported, ie. getting the addresses for an unsupported Tibia version.
-    /// </summary>
-    public class VersionNotSupportedException : InvalidOperationException { }
-
-    public class Handler
+    public static class Handler
     {
         public static void Handle(Exception e)
         {
