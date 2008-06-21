@@ -37,8 +37,8 @@ namespace Tibia
             {
                 members.Add(new CharInfo() 
                 { 
-                    Name = HttpUtility.HtmlDecode(m.Groups[1].Value), 
-                    GuildNickName = HttpUtility.HtmlDecode(m.Groups[3].Value), 
+                    Name = Prepare(m.Groups[1].Value),
+                    GuildNickName = Prepare(m.Groups[3].Value), 
                     GuildName = guildName 
                 });
             }
