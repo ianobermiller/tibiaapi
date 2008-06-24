@@ -507,11 +507,16 @@ namespace Tibia.Objects
         /// <returns></returns>
         public static List<Client> GetClients()
         {
-            Process[] processes = Process.GetProcessesByName("Tibia");
-            List<Client> clients = new List<Client>(processes.Length);
-            foreach (Process p in processes)
+            List<Client> clients = new List<Client>();
+            Process[] processes = Process.GetProcesses();
+            foreach (Process process in processes)
             {
-                clients.Add(new Client(p));
+                StringBuilder classname = new StringBuilder();
+                Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
+                if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    clients.Add(new Client(process));
+                }
             }
             return clients;
         }
