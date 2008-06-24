@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using Tibia.Objects;
 
 namespace Tibia
@@ -144,6 +146,68 @@ namespace Tibia
         public static string ToHexString(this byte[] data)
         {
             return data.ToHexString(0, data.Length);
+        }
+        #endregion
+
+        #region General
+        public static string ToStringDeep(this object obj)
+        {
+            StringBuilder s = new StringBuilder();
+            if (obj != null)
+            {
+                Type type = obj.GetType();
+                s.AppendLine(type.FullName + " = ");
+                s.AppendLine("{");
+                List<Type> interfaces = new List<Type>(type.GetInterfaces());
+                if (interfaces.Contains(typeof(IEnumerable)))
+                {
+                    s.AppendLine("\tValues = ");
+                    s.AppendLine("\t{");
+                    foreach(object val in (IEnumerable)obj)
+                    {
+                        s.AppendLine("\t\t" + val.ToString());
+                    }
+                    s.AppendLine("\t}");
+                }
+                foreach (FieldInfo fi in type.GetFields())
+                {
+                    object val;
+                    try
+                    {
+                        val = fi.GetValue(obj);
+                    }
+                    catch
+                    {
+                        val = null;
+                    }
+                    s.AppendLine("\t" + fi.Name + " = " +
+                        (val == null ? "null" : val.ToString()));
+                }
+                foreach (PropertyInfo pi in type.GetProperties())
+                {
+                    if (pi.CanRead)
+                    {
+                        object val;
+                        try
+                        {
+                            val = pi.GetValue(obj, null);
+                        }
+                        catch
+                        {
+                            val = null;
+                        }
+                        s.AppendLine("\t" + pi.Name + " = " +
+                            (val == null ? "null" : val.ToString()));
+                    }
+                }
+                s.AppendLine("}");
+            }
+            else
+            {
+                s.AppendLine("null");
+            }
+
+            return s.ToString();
         }
         #endregion
     }
