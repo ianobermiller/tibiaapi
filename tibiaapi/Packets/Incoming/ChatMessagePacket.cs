@@ -175,6 +175,7 @@ namespace Tibia.Packets
 
         /// <summary>
         /// Private because the various wrapper above should be used instead.
+        /// Throws an ArgumentException if the arguments do not match.
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="senderName"></param>
@@ -185,47 +186,39 @@ namespace Tibia.Packets
         /// <returns></returns>
         private static ChatMessagePacket Create(Client c, ChatType messageType, string senderName, string message, int level, Objects.Location loc, ChatChannel chan)
         {
-            try
+            if (level < 0) throw new ArgumentOutOfRangeException("level", "Level must be non-negative.");
+            if (message.Length < 1) throw new ArgumentException("Message length must be at least 1.", "message");
+
+            PacketBuilder p = new PacketBuilder(c, PacketType.ChatMessage);
+            p.AddLong(0);
+            p.AddString(senderName);
+            p.AddInt(level);
+            p.AddByte((byte)messageType);
+
+            switch (messageType)
             {
-                if (level < 0) throw new ArgumentOutOfRangeException("level", "Level must be non-negative.");
-                if (message.Length < 1) throw new ArgumentException("Message length must be at least 1.", "message");
-
-                PacketBuilder p = new PacketBuilder(c, PacketType.ChatMessage);
-                p.AddLong(0);
-                p.AddString(senderName);
-                p.AddInt(level);
-                p.AddByte((byte)messageType);
-
-                switch (messageType)
-                {
-                    case ChatType.Normal:
-                    case ChatType.Whisper:
-                    case ChatType.Yell:
-                    case ChatType.Monster:
-                    case ChatType.MonsterYell:
-                        if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
-                        p.AddLocation(loc);
-                        break;
-                    case ChatType.ChannelNormal:
-                    case ChatType.ChannelTutor:
-                    case ChatType.ChannelGM:
-                    case ChatType.ChannelRedAnonymous:
-                        if (chan == ChatChannel.None) throw new ArgumentException("You must supply a valid chat channel for this message type.", "chan");
-                        p.AddInt((int)chan);
-                        break;
-                    default:
-                        break;
-                }
-
-                p.AddString(message);
-
-                return new ChatMessagePacket(c, p.GetPacket());
+                case ChatType.Normal:
+                case ChatType.Whisper:
+                case ChatType.Yell:
+                case ChatType.Monster:
+                case ChatType.MonsterYell:
+                    if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
+                    p.AddLocation(loc);
+                    break;
+                case ChatType.ChannelNormal:
+                case ChatType.ChannelTutor:
+                case ChatType.ChannelGM:
+                case ChatType.ChannelRedAnonymous:
+                    if (chan == ChatChannel.None) throw new ArgumentException("You must supply a valid chat channel for this message type.", "chan");
+                    p.AddInt((int)chan);
+                    break;
+                default:
+                    break;
             }
-            catch (Exception e)
-            {
-                Exceptions.Handler.Handle(e);
-                return null;
-            }
+
+            p.AddString(message);
+
+            return new ChatMessagePacket(c, p.GetPacket());
         }
     }
 }
