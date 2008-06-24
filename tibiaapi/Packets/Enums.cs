@@ -64,9 +64,29 @@ namespace Tibia.Packets
         PlayerSpeech        = 0x96,
         ClientLoggedIn      = 0xA0,
         Attack              = 0xA1,
-        CancelMove          = 0xBE
+        CancelMove          = 0xBE,
+
+        // Pipe
+        PipePacket          = 0xFF
 
     }
+
+    /// <summary>
+    /// Identifies the PipePacket by its type (3rd byte)
+    /// </summary>
+    public enum PipePacketType : byte
+    {
+        DefaultTemplate     = 0x00,
+        SetConstant         = 0x01,
+        DisplayText         = 0x02,
+        RemoveText          = 0x03,
+        RemoveAllText       = 0x04,
+        InjectDisplayText   = 0x05,
+        DisplayCreatureText = 0x06,
+        RemoveCreatureText  = 0x07,
+        UpdateCreatureText  = 0x08
+    }
+
 
     /// <summary>
     /// Describes the packets destination
@@ -75,6 +95,7 @@ namespace Tibia.Packets
     {
         Client,
         Server,
+        Pipe,
         None
     }
 

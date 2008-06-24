@@ -7,7 +7,7 @@ using Tibia.Packets;
 
 namespace Tibia.Util
 {
-    class Pipe
+    public class Pipe
     {
         #region Variables
         private Client client;

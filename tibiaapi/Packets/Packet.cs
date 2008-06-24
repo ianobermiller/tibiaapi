@@ -264,4 +264,55 @@ namespace Tibia.Packets
         }
         #endregion
     }
+
+    public class PipePacket : Packet
+    {
+        protected PipePacketType pipetype;
+
+        /// <summary>
+        /// Get PipeType (3rd byte of Pipe Packet).
+        /// </summary>
+        public new PipePacketType Type
+        {
+            get
+            {
+                return pipetype;
+            }
+            set
+            {
+                pipetype = value;
+                if (data != null && data.Length > 3)
+                {
+                    data[2] = (byte)type;
+                }
+            }
+        }
+
+        public new bool ParseData(byte[] packet)
+        {
+            data = packet;
+            if (data.Length > 3)
+            {
+                type = PacketType.PipePacket;
+                pipetype = (PipePacketType)data[2];
+                specifiedLength = BitConverter.ToInt16(data, 0);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public PipePacket(Client c)
+            : base(c)
+        {
+        }
+
+        public PipePacket(Client c, byte[] data)
+            : this(c)
+        {
+            this.ParseData(data);
+        }
+    }
 }

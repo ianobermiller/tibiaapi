@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Addresses\DatItem.cs" />
     <Compile Include="Addresses\Hotkey.cs" />
+    <Compile Include="Addresses\TextDisplay.cs" />
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemLists.cs" />
@@ -142,6 +143,14 @@
     <Compile Include="Packets\Incoming\StatusUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\TileAnimationPacket.cs" />
     <Compile Include="Packets\Incoming\VipLoginPacket.cs" />
+    <Compile Include="Packets\Pipes\DisplayCreatureTextPacket.cs" />
+    <Compile Include="Packets\Pipes\DisplayTextPacket.cs" />
+    <Compile Include="Packets\Pipes\InjectDisplayPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveAllTextPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveCreatureTextPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />
+    <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
+    <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\MapViewer.cs">
       <SubType>Component</SubType>
