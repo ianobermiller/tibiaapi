@@ -38,8 +38,16 @@ void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, 
 	//Displaying texts
 	EnterCriticalSection(&CreatureTextCriticalSection);
 	for(it=CreatureTexts.begin(); it!=CreatureTexts.end(); ++it) {
-		if (*EntityID == it->CreatureId)
+		if (it->CreatureId == 0)
+		{
+			if(!strcmp(lpText, it->CreatureName)) {
+				PrintText(0x01, nX + it->RelativeX, nY + it->RelativeY, it->TextFont, it->cR, it->cG, it->cB, it->DisplayText, 0x00);
+			}
+		}
+		else if (*EntityID == it->CreatureId)
+		{
 			PrintText(0x01, nX + it->RelativeX, nY + it->RelativeY, it->TextFont, it->cR, it->cG, it->cB, it->DisplayText, 0x00);
+		}
 	}
 	LeaveCriticalSection(&CreatureTextCriticalSection);
 }
@@ -249,6 +257,7 @@ void PipeOnRead(){
 		case 0x6: //Set Text Above Creature
 			{
 				int Id = Packet::ReadDWord(Buffer, &position);
+				string CName = Packet::ReadString(Buffer, &position);
                 int nX = Packet::ReadWord(Buffer, &position);
                 int nY = Packet::ReadWord(Buffer, &position);
 				int Pos = Packet::ReadWord(Buffer, &position);
@@ -258,13 +267,16 @@ void PipeOnRead(){
                 int TxtFont = Packet::ReadWord(Buffer, &position);
                 string Text = Packet::ReadString(Buffer, &position);
                 char *lpText = (char*)calloc(Text.size() + 1, sizeof(char));
+				char *cText = (char*)calloc(CName.size() + 1, sizeof(char));
                 strcpy(lpText, Text.c_str());
+				strcpy(cText, CName.c_str());
                 PlayerText Creature = {0};
                 Creature.cB = ColorB;
                 Creature.cG = ColorG;
                 Creature.cR = ColorR;
                 Creature.CreatureId = Id;
                 Creature.DisplayText = lpText;
+				Creature.CreatureName = cText;
                 Creature.RelativeX = nX;
 				if (Pos) {
 					Creature.RelativeY = nY;
@@ -281,12 +293,23 @@ void PipeOnRead(){
 		case 0x7: //Remove Text Above Creature
 			{
 				int Id = Packet::ReadDWord(Buffer, &position);
+				string Name = Packet::ReadString(Buffer, &position);
 				list<PlayerText>::iterator ptIT;
 				EnterCriticalSection(&CreatureTextCriticalSection);
 				for(ptIT = CreatureTexts.begin(); ptIT != CreatureTexts.end(); ) {
-					if (ptIT->CreatureId == Id) {
+					if (ptIT->CreatureId == 0) {
+						if (ptIT->CreatureName == Name) {
+							free(ptIT->DisplayText);
+							free(ptIT->CreatureName);
+							ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
+							ptIT->CreatureName = 0;
+							ptIT = CreatureTexts.erase(ptIT);
+						}
+					} else if (ptIT->CreatureId == Id) {
 						free(ptIT->DisplayText);
+						free(ptIT->CreatureName);
 						ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
+						ptIT->CreatureName = 0;
 						ptIT = CreatureTexts.erase(ptIT);
 					} else {
 						++ptIT;

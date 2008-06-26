@@ -43,6 +43,7 @@ struct NormalText
 struct PlayerText
 {
 	char *DisplayText;
+	char *CreatureName;
 	int CreatureId;
 	int cR;
 	int cG;
