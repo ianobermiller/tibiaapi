@@ -258,9 +258,8 @@ void PipeOnRead(){
 			{
 				int Id = Packet::ReadDWord(Buffer, &position);
 				string CName = Packet::ReadString(Buffer, &position);
-                int nX = Packet::ReadWord(Buffer, &position);
-                int nY = Packet::ReadWord(Buffer, &position);
-				int Pos = Packet::ReadWord(Buffer, &position);
+                int nX = Packet::ReadShort(Buffer, &position);
+                int nY = Packet::ReadShort(Buffer, &position);
                 int ColorR = Packet::ReadWord(Buffer, &position);
                 int ColorG = Packet::ReadWord(Buffer, &position);
                 int ColorB = Packet::ReadWord(Buffer, &position);
@@ -278,11 +277,7 @@ void PipeOnRead(){
                 Creature.DisplayText = lpText;
 				Creature.CreatureName = cText;
                 Creature.RelativeX = nX;
-				if (Pos) {
-					Creature.RelativeY = nY;
-				} else {
-					Creature.RelativeY = -nY;
-				}
+				Creature.RelativeY = nY;
                 Creature.TextFont = TxtFont;
 
                 EnterCriticalSection(&CreatureTextCriticalSection);
@@ -294,6 +289,7 @@ void PipeOnRead(){
 			{
 				int Id = Packet::ReadDWord(Buffer, &position);
 				string Name = Packet::ReadString(Buffer, &position);
+				
 				list<PlayerText>::iterator ptIT;
 				EnterCriticalSection(&CreatureTextCriticalSection);
 				for(ptIT = CreatureTexts.begin(); ptIT != CreatureTexts.end(); ) {
@@ -304,6 +300,8 @@ void PipeOnRead(){
 							ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
 							ptIT->CreatureName = 0;
 							ptIT = CreatureTexts.erase(ptIT);
+						} else {
+							++ptIT;
 						}
 					} else if (ptIT->CreatureId == Id) {
 						free(ptIT->DisplayText);

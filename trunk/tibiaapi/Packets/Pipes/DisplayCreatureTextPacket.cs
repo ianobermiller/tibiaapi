@@ -99,9 +99,8 @@ namespace Tibia.Packets.Pipes
             PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.DisplayCreatureText);
             p.AddLong(CreatureID);
             p.AddString(CreatureName);
-            p.AddInt(TextLoc.X);
-            p.AddInt(TextLoc.Y);
-            p.AddInt(TextLoc.Z);
+            p.AddShort(TextLoc.X);
+            p.AddShort(TextLoc.Y);
             p.AddInt(ColorRed);
             p.AddInt(ColorGreen);
             p.AddInt(ColorBlue);
