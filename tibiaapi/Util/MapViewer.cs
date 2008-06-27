@@ -57,7 +57,6 @@ namespace Tibia.Util
         public List<MapMarker> Markers
         {
             get { return markers; }
-            set { markers = value; }
         }
         #endregion
 

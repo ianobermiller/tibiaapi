@@ -578,7 +578,7 @@ namespace Tibia.Objects
                 }
                 else
                 {
-                    if (floor >= -2 && floor <= 2 && playerZ - floor < 14)
+                    if (floor >= -2 && floor <= 2 && playerZ - floor < 16)
                     {
                         client.WriteInt(tempPtr, 2 + floor);
                         return true;
