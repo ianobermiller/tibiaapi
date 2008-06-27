@@ -107,7 +107,6 @@ namespace SmartLocator
             this.uxMap.DrawCoors = true;
             this.uxMap.DrawCrosshair = true;
             this.uxMap.Location = new System.Drawing.Point(13, 13);
-            this.uxMap.Markers = null;
             this.uxMap.Name = "uxMap";
             this.uxMap.OpenTibiaMaps = false;
             this.uxMap.Size = new System.Drawing.Size(374, 363);
