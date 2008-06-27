@@ -30,7 +30,7 @@ namespace Tibia
         {
             List<CharInfo> members = new List<CharInfo>();
 
-            MatchCollection matches = Regex.Matches(html, @"name=.*?"">(.*?)</a>( \((.*?)\))?</td>", RegexOptions.IgnoreCase);
+            MatchCollection matches = Regex.Matches(html, @""">([^<]+)</a>(\s\(([^\)]+)\))?</td>", RegexOptions.IgnoreCase);
             string guildName = Match(html, @"<h1>([^<]*)</h1>");
 
             foreach (Match m in matches)

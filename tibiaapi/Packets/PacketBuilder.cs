@@ -153,6 +153,15 @@ namespace Tibia.Packets
         {
             return AddBytes(BitConverter.GetBytes((ushort)i));
         }
+        /// <summary>
+        /// Add a "short" (aka. 2 byte int) at the current index and advance
+        /// </summary>
+        /// <param name="i">Value between -127 and 127</param>
+        /// <returns></returns>
+        public int AddShort(int i)
+        {
+            return AddBytes(BitConverter.GetBytes((short)i));
+        }
 
         /// <summary>
         /// Add a "long" (aka. 4 byte int) at the current index and advance.

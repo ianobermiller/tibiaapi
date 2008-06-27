@@ -14,6 +14,13 @@ WORD Packet::ReadWord(BYTE *buffer, int *offset){
 	return result;
 }
 
+short Packet::ReadShort(BYTE *buffer, int *offset){
+	short result;
+	result = buffer[*offset]+(buffer[*offset+1]<<8);
+	(*offset)+=2;
+	return result;
+}
+
 DWORD Packet::ReadDWord(BYTE *buffer, int *offset){
 	DWORD result;
 	result = buffer[*offset]+(buffer[*offset+1]<<8)+(buffer[*offset+2]<<0x10)+(buffer[*offset+3]<<0x18);
