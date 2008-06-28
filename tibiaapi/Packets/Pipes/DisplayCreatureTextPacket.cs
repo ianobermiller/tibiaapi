@@ -78,7 +78,6 @@ namespace Tibia.Packets.Pipes
                 creatureName = p.GetString();
                 textloc.X = p.GetInt();
                 textloc.Y = p.GetInt();
-                textloc.Z = p.GetInt();
                 colorRed = p.GetInt();
                 colorGreen = p.GetInt();
                 colorBlue = p.GetInt();
