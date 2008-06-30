@@ -76,8 +76,8 @@ namespace Tibia.Packets.Pipes
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 creatureID = p.GetLong();
                 creatureName = p.GetString();
-                textloc.X = p.GetInt();
-                textloc.Y = p.GetInt();
+                textloc.X = p.GetShort();
+                textloc.Y = p.GetShort();
                 colorRed = p.GetInt();
                 colorGreen = p.GetInt();
                 colorBlue = p.GetInt();

@@ -320,20 +320,27 @@ void PipeOnRead(){
 		case 0x8: //Update Text Above Creature
 			{
 				int ID = Packet::ReadDWord(Buffer, &position);
-				int PosX = Packet::ReadWord(Buffer, &position);
-				int PosY = Packet::ReadWord(Buffer, &position);
-				int Dir = Packet::ReadWord(Buffer, &position);
+				string CName = Packet::ReadString(Buffer, &position);
+				int PosX = Packet::ReadShort(Buffer, &position);
+				int PosY = Packet::ReadShort(Buffer, &position);
 				string NewText = Packet::ReadString(Buffer, &position);
 				char *lpNewText = (char*)calloc(NewText.size() + 1, sizeof(char));
 				char *OldText;
 				strcpy(lpNewText, NewText.c_str());
 				list<PlayerText>::iterator newit;
-				if (!Dir) {
-					PosY = -PosY;
-				}
 				EnterCriticalSection(&CreatureTextCriticalSection);
 				for(newit = CreatureTexts.begin(); newit != CreatureTexts.end(); ++newit) {
-					if (newit->CreatureId == ID && newit->RelativeX == PosX && newit->RelativeY == PosY) {
+					if (newit->CreatureId == 0) {
+						if (newit->CreatureName == CName && newit->RelativeX == PosX && newit->RelativeY == PosY) {
+							OldText = newit->DisplayText;
+							strcpy(OldText, "");
+							newit->DisplayText = lpNewText;
+							free(OldText);
+							OldText = 0;
+							break;
+						}
+					}
+					else if (newit->CreatureId == ID && newit->RelativeX == PosX && newit->RelativeY == PosY) {
 						OldText = newit->DisplayText;
 						strcpy(OldText, "");
 						newit->DisplayText = lpNewText;
