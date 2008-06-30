@@ -6,12 +6,18 @@ namespace Tibia.Packets.Pipes
     public class UpdateCreatureTextPacket : PipePacket
     {
         int creatureID;
+        string creatureName;
         Location textLoc; //Used to make sure it's the right text.
         string newText;
 
         public int CreatureID
         {
             get { return creatureID; }
+        }
+
+        public string CreatureName
+        {
+            get { return creatureName; }
         }
 
         public Location TextLoc
@@ -45,9 +51,9 @@ namespace Tibia.Packets.Pipes
                 if (pipetype != PipePacketType.UpdateCreatureText || type != PacketType.PipePacket) { return false; }
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 creatureID = p.GetLong();
-                textLoc.X = p.GetInt();
-                textLoc.Y = p.GetInt();
-                textLoc.Z = p.GetInt();
+                creatureName = p.GetString();
+                textLoc.X = p.GetShort();
+                textLoc.Y = p.GetShort();
                 newText = p.GetString();
 
                 index = p.Index;
@@ -59,13 +65,13 @@ namespace Tibia.Packets.Pipes
             }
         }
 
-        public static UpdateCreatureTextPacket Create(Client c, int CreatureID, Location TextLoc, string NewText)
+        public static UpdateCreatureTextPacket Create(Client c, int CreatureID, string CreatureName, Location TextLoc, string NewText)
         {
             PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.UpdateCreatureText);
             p.AddLong(CreatureID);
-            p.AddInt(TextLoc.X);
-            p.AddInt(TextLoc.Y);
-            p.AddInt(TextLoc.Z);
+            p.AddString(CreatureName);
+            p.AddShort(TextLoc.X);
+            p.AddShort(TextLoc.Y);
             p.AddString(NewText);
 
             return new UpdateCreatureTextPacket(c, p.GetPacket());

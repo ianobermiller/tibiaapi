@@ -253,6 +253,13 @@ namespace Tibia.Packets
             return i;
         }
 
+        public short GetShort()
+        {
+            short i = BitConverter.ToInt16(data, index);
+            index += 2;
+            return i;
+        }
+
         /// <summary>
         /// Get a "long" (aka. 4 byte integer) at the current index and advance.
         /// </summary>

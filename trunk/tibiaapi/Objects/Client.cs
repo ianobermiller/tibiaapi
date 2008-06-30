@@ -24,6 +24,8 @@ namespace Tibia.Objects
         private bool usingProxy = false;
         private LoginServer openTibiaServer = null;
         private Util.Proxy proxy;
+        private Util.Pipe pipe = null; //For Displaying Text
+        private AutoResetEvent PipeIsReady;
 
         /// <summary>
         /// Keep a local copy of battleList to speed up GetPlayer()
@@ -83,6 +85,7 @@ namespace Tibia.Objects
             console = new Console(this);
             random = new Random();
             dat = new Util.DatReader(this);
+            PipeIsReady = new AutoResetEvent(false);
         }
 
         /// <summary>
@@ -769,6 +772,143 @@ namespace Tibia.Objects
                 return new System.Drawing.Point(ReadInt(DialogB+Addresses.Client.DialogLeft),ReadInt(DialogB+Addresses.Client.DialogTop));
             }
         }
+
+        public bool DrawScreenText(string TextName, Location loc, int Red, int Green, int Blue, int Font, string Text)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (TextName == string.Empty || loc.X <= 0 || loc.Y <= 0 || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
+                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.DisplayTextPacket.Create(this, TextName, loc, Red, Green, Blue, Font, Text));
+            return true;
+        }
+
+        public bool RemoveScreenText(string TextName)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (TextName == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.RemoveTextPacket.Create(this, TextName));
+            return true;
+        }
+
+        public bool RemoveAllScreenText()
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            
+            pipe.Send(Tibia.Packets.Pipes.RemoveAllTextPacket.Create(this));
+            return true;
+        }
+
+        public bool DrawCreatureText(string CreatureName, Location loc, int Red, int Green, int Blue, int Font, string Text)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureName == string.Empty || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
+                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(this, 0, CreatureName, loc, Red, Green, Blue, Font, Text));
+            return true;
+        }
+
+        public bool DrawCreatureText(int CreatureID, Location loc, int Red, int Green, int Blue, int Font, string Text)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureID == 0 || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
+                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(this, CreatureID, "MyChar", loc, Red, Green, Blue, Font, Text));
+            return true;
+        }
+
+        public bool UpdateCreatureText(string CreatureName, Location loc, string NewText)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureName == string.Empty || NewText == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(this, 0, CreatureName, loc, NewText));
+            return true;
+        }
+
+        public bool UpdateCreatureText(int CreatureID, Location loc, string NewText)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureID == 0 || NewText == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(this, CreatureID, "", loc, NewText));
+            return true;
+        }
+
+        public bool RemoveCreatureText(string CreatureName)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureName == string.Empty)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(this, 0, CreatureName));
+            return true;
+        }
+
+        public bool RemoveCreatureText(int CreatureID)
+        {
+            if (pipe == null)
+            {
+                InitializePipe();
+                PipeIsReady.WaitOne();
+            }
+            //Testing that user has given valid values
+            if (CreatureID == 0)
+                return false;
+
+            pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(this, CreatureID, ""));
+            return true;
+        }
+
+
         #endregion
 
         #region Login Server
@@ -997,6 +1137,36 @@ namespace Tibia.Objects
             Util.WinApi.VirtualFreeEx(process.Handle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
             return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
         }
+        #endregion
+
+        #region Pipe wrappers
+
+        public void InitializePipe()
+        {
+            if (pipe != null)
+                return;
+
+            pipe = new Tibia.Util.Pipe(this, "TibiaAPI" + process.Id.ToString());
+            pipe.OnConnected += new Tibia.Util.Pipe.PipeNotification(OnPipeConnect);
+
+            if (!InjectDLL(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
+                throw new Tibia.Exceptions.InjectDLLNotFoundException();
+        }
+
+        private void OnPipeConnect()
+        {
+            //Set constants for displaying
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintName", Tibia.Addresses.TextDisplay.PrintName));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintFPS", Tibia.Addresses.TextDisplay.PrintFPS));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrShowFPS", Tibia.Addresses.TextDisplay.ShowFPS));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintTextFunc", Tibia.Addresses.TextDisplay.PrintTextFunc));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrNopFPS", Tibia.Addresses.TextDisplay.NopFPS));
+
+            //Hook Display functions
+            pipe.Send(Tibia.Packets.Pipes.InjectDisplayPacket.Create(this, true));
+            PipeIsReady.Set();
+        }
+
         #endregion
     }
 }

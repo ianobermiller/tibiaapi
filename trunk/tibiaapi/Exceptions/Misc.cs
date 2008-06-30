@@ -25,6 +25,11 @@ namespace Tibia.Exceptions
     /// </summary>
     public class ProxyDisconnectedException : InvalidOperationException { }
 
+    /// <summary>
+    /// Thrown when client tries to inject DLL in addition to use Pipe but cannot found it
+    /// </summary>
+    public class InjectDLLNotFoundException : InvalidOperationException { }
+
     public static class Handler
     {
         public static void Handle(Exception e)
