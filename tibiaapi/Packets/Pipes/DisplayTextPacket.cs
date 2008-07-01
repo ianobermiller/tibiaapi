@@ -1,17 +1,20 @@
 ﻿    using System;
     using Tibia.Objects;
+using System.Drawing;
+using Tibia.Constants;
 
     namespace Tibia.Packets.Pipes
     {
     public class DisplayTextPacket : PipePacket
     {
-        string textname;
-        Location loc; //No use for Z though
-        int red;
-        int green;
-        int blue;
-        int font;
-        string text;
+        private string textname;
+        private Location loc; //No use for Z though
+        private int red;
+        private int green;
+        private int blue;
+        private Color color;
+        private ClientFont font;
+        private string text;
 
         public string TextName
         {
@@ -23,19 +26,14 @@
             get { return loc; }
         }
 
-        public int Red
+        public Color Color
         {
-            get { return red; }
+            get { return color; }
         }
 
-        public int Green
+        public ClientFont Font
         {
-            get { return green; }
-        }
-
-        public int Blue
-        {
-            get { return blue; }
+            get { return font; }
         }
 
         public string Text
@@ -70,7 +68,8 @@
                 red = p.GetInt();
                 green = p.GetInt();
                 blue = p.GetInt();
-                font = p.GetInt();
+                color = Color.FromArgb(red, green, blue);
+                font = (ClientFont)p.GetInt();
                 text = p.GetString();
 
                 index = p.Index;
@@ -82,24 +81,17 @@
             }
         }
 
-        public static DisplayTextPacket Create(Client c, string TextName, Location Loc, int Red, int Green, int Blue, int Font, string Text)
+        public static DisplayTextPacket Create(Client c, string textId, Location loc, Color color, ClientFont font, string text)
         {
-            //Testing for correct values
-            if (Red > 0xFF)
-                Red = 0xFF;
-            if (Green > 0xFF)
-                Green = 0xFF;
-            if (Blue > 0xFF)
-                Blue = 0xFF;
             PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.DisplayText);
-            p.AddString(TextName);
-            p.AddInt(Loc.X);
-            p.AddInt(Loc.Y);
-            p.AddInt(Red);
-            p.AddInt(Green);
-            p.AddInt(Blue);
-            p.AddInt(Font);
-            p.AddString(Text);
+            p.AddString(textId);
+            p.AddInt(loc.X);
+            p.AddInt(loc.Y);
+            p.AddInt(color.R);
+            p.AddInt(color.G);
+            p.AddInt(color.B);
+            p.AddInt((int)font);
+            p.AddString(text);
 
             return new DisplayTextPacket(c, p.GetPacket());
         }

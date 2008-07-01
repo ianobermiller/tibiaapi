@@ -583,4 +583,13 @@ namespace Tibia.Constants
     }
 
     #endregion
+
+    #region Text Display
+    public enum ClientFont : int
+    {
+        Normal = 1,
+        NormalBorder = 2,
+        Small = 3,
+    }
+    #endregion
 }

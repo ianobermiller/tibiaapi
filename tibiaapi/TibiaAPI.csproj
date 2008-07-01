@@ -91,6 +91,7 @@
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Misc.cs" />
     <Compile Include="Exceptions\Version.cs" />
+    <Compile Include="Objects\Screen.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\BookOpenPacket.cs" />
     <Compile Include="Packets\Incoming\CancelAutoWalkPacket.cs" />
@@ -228,8 +229,5 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packets\Pipes\" />
   </ItemGroup>
 </Project>

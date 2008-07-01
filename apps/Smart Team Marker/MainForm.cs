@@ -9,12 +9,14 @@ using System.Windows.Forms;
 using Tibia;
 using Tibia.Util;
 using Tibia.Objects;
+using Tibia.Constants;
 namespace SmartTeamMarker
 {
     public partial class MainForm : Form
     {
         /* Pipe Related Variables */
         Client client; //Pipe is named after client's process id
+        Tibia.Objects.Screen screen;
 
         /* Other Variables */ 
         List<Website.CharInfo> AllyMembers = new List<Website.CharInfo>();
@@ -65,7 +67,7 @@ namespace SmartTeamMarker
             foreach (ListViewItem SelItem in AlliesList.SelectedItems)
             {
                 Character = AllyMembers.Find(delegate(Website.CharInfo c) { return c.Name == SelItem.SubItems[0].Text; });
-                client.RemoveCreatureText(Character.Name);
+                screen.RemoveCreatureText(Character.Name);
                 AllyMembers.Remove(Character);
                 AlliesList.Items.Remove(SelItem);
             }
@@ -85,7 +87,7 @@ namespace SmartTeamMarker
             foreach (ListViewItem SelItem in AlliesList.SelectedItems)
             {
                 Character = EnemyMembers.Find(delegate(Website.CharInfo c) { return c.Name == SelItem.SubItems[0].Text; });
-                client.RemoveCreatureText(Character.Name);
+                screen.RemoveCreatureText(Character.Name);
                 EnemyMembers.Remove(Character);
                 EnemiesList.Items.Remove(SelItem);
             }
@@ -96,7 +98,7 @@ namespace SmartTeamMarker
             if (MessageBox.Show("Are you sure you want to delete all the characters?", "Are you sure?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
                 foreach (Website.CharInfo Character in AllyMembers)
-                    client.RemoveCreatureText(Character.Name);
+                    screen.RemoveCreatureText(Character.Name);
                 
                 AlliesList.Items.Clear();
                 AllyMembers.Clear();
@@ -108,7 +110,7 @@ namespace SmartTeamMarker
             if (MessageBox.Show("Are you sure you want to delete all the characters?", "Are you sure?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
                 foreach (Website.CharInfo Character in EnemyMembers)
-                    client.RemoveCreatureText(Character.Name);
+                    screen.RemoveCreatureText(Character.Name);
 
                 EnemiesList.Items.Clear();
                 EnemyMembers.Clear();
@@ -121,11 +123,15 @@ namespace SmartTeamMarker
             {
                 client = ClientChooser.ShowBox();
             } while (client == null && MessageBox.Show("Please select a Tibia client", "Notification", MessageBoxButtons.RetryCancel, MessageBoxIcon.Asterisk) == DialogResult.Retry);
-            
+
             if (client == null)
             {
                 Application.Exit();
                 return;
+            }
+            else
+            {
+                screen = client.Screen;
             }
         }
 
@@ -133,26 +139,22 @@ namespace SmartTeamMarker
         //Function to take care of telling DLL what characters to display
         private void ShowTexts(List<Website.CharInfo> Members, string Team)
         {
-            int red, blue, green;
+            Color color;
             string letter;
             if (Team == "A")
             {
-                red = 0x33;
-                green = 0x99;
-                blue = 0xFF;
+                color = Color.Blue;
                 letter = "A";
             }
             else
             {
-                red = 0xE9;
-                green = 0x09;
-                blue = 0x09;
+                color = Color.Red;
                 letter = "E";
             }
             foreach(Website.CharInfo Character in Members)
             {
                 //pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(client, 0, Character.Name)); //Delete the old one
-                client.DrawCreatureText(Character.Name, new Location(-10, 0, 0), red, green, blue, 2, letter);
+                screen.DrawCreatureText(Character.Name, new Location(-10, 0, 0), color, ClientFont.NormalBorder, letter);
             }
         }
 
@@ -172,7 +174,7 @@ namespace SmartTeamMarker
                 cmdRemoveAlly.Enabled = true;
                 foreach (Website.CharInfo Character in AllyMembers)
                 {
-                    client.RemoveCreatureText(Character.Name);
+                    screen.RemoveCreatureText(Character.Name);
                 }
                 
             }
@@ -193,7 +195,7 @@ namespace SmartTeamMarker
                 cmdRemoveEnemy.Enabled = true;
                 cmdClearEnemy.Enabled = true;
                 foreach (Website.CharInfo Character in EnemyMembers)
-                    client.RemoveCreatureText(Character.Name);
+                    screen.RemoveCreatureText(Character.Name);
                 
             }
         }
