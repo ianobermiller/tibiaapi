@@ -1,5 +1,7 @@
 ﻿using System;
 using Tibia.Objects;
+using System.Drawing;
+using Tibia.Constants;
 
 namespace Tibia.Packets.Pipes
 {
@@ -8,10 +10,11 @@ namespace Tibia.Packets.Pipes
         int creatureID;
         string creatureName;
         Location textloc;
-        int colorRed;
-        int colorGreen;
-        int colorBlue;
-        int textFont; //TODO: Create Enum of possible text fonts
+        Color color;
+        int red;
+        int green;
+        int blue;
+        ClientFont font; //TODO: Create Enum of possible text fonts
         string text;
 
         public int CreatureID
@@ -29,24 +32,14 @@ namespace Tibia.Packets.Pipes
             get { return textloc; }
         }
 
-        public int ColorRed
+        public Color Color
         {
-            get { return colorRed; }
+            get { return color; }
         }
 
-        public int ColorBlue
+        public ClientFont Font
         {
-            get { return colorBlue; }
-        }
-
-        public int ColorGreen
-        {
-            get { return colorGreen; }
-        }
-
-        public int TextFont
-        {
-            get { return textFont; }
+            get { return font; }
         }
 
         public string Text
@@ -78,10 +71,11 @@ namespace Tibia.Packets.Pipes
                 creatureName = p.GetString();
                 textloc.X = p.GetShort();
                 textloc.Y = p.GetShort();
-                colorRed = p.GetInt();
-                colorGreen = p.GetInt();
-                colorBlue = p.GetInt();
-                textFont = p.GetInt();
+                red = p.GetInt();
+                green = p.GetInt();
+                blue = p.GetInt();
+                color = Color.FromArgb(red, green, blue);
+                font = (ClientFont)p.GetInt();
                 text = p.GetString();
 
                 index = p.Index;
@@ -93,18 +87,18 @@ namespace Tibia.Packets.Pipes
             }
         }
 
-        public static DisplayCreatureTextPacket Create(Client c, int CreatureID, string CreatureName, Location TextLoc, int ColorRed, int ColorGreen, int ColorBlue, int TextFont, string Text)
+        public static DisplayCreatureTextPacket Create(Client c, int creatureID, string creatureName, Location loc, Color color, ClientFont font, string text)
         {
             PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.DisplayCreatureText);
-            p.AddLong(CreatureID);
-            p.AddString(CreatureName);
-            p.AddShort(TextLoc.X);
-            p.AddShort(TextLoc.Y);
-            p.AddInt(ColorRed);
-            p.AddInt(ColorGreen);
-            p.AddInt(ColorBlue);
-            p.AddInt(TextFont);
-            p.AddString(Text);
+            p.AddLong(creatureID);
+            p.AddString(creatureName);
+            p.AddShort(loc.X);
+            p.AddShort(loc.Y);
+            p.AddInt(color.R);
+            p.AddInt(color.G);
+            p.AddInt(color.B);
+            p.AddInt((int)font);
+            p.AddString(text);
 
             return new DisplayCreatureTextPacket(c, p.GetPacket());
         }

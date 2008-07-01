@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using Tibia.Packets;
 using System.IO;
+using System.Drawing;
+using Tibia.Constants;
 
 namespace Tibia.Objects
 {
@@ -23,19 +25,18 @@ namespace Tibia.Objects
         private bool isVisible;
         private bool usingProxy = false;
         private LoginServer openTibiaServer = null;
-        private Util.Proxy proxy;
-        private Util.Pipe pipe = null; //For Displaying Text
         private AutoResetEvent PipeIsReady;
 
-        /// <summary>
-        /// Keep a local copy of battleList to speed up GetPlayer()
-        /// </summary>
+        // References to commonly used objects
         private BattleList battleList;
         private Map map;
         private Inventory inventory;
         private Random random;
         private Console console;
         private Util.DatReader dat;
+        private Util.Proxy proxy;
+        private Util.Pipe pipe = null; //For Displaying Text
+        private Screen screen;
         #endregion
 
         #region Events
@@ -85,6 +86,7 @@ namespace Tibia.Objects
             console = new Console(this);
             random = new Random();
             dat = new Util.DatReader(this);
+            screen = new Screen(this);
             PipeIsReady = new AutoResetEvent(false);
         }
 
@@ -375,6 +377,20 @@ namespace Tibia.Objects
                 return (ReadInt(Addresses.Client.DialogBegin) != 0);
             }
         }
+
+        /// <summary>
+        /// Gets the position of the current opened dialog. Returns null if dialog is not opened.
+        /// </summary>
+        public System.Drawing.Point DialogPosition
+        {
+            get
+            {
+                int DialogB = ReadInt(Addresses.Client.DialogBegin);
+                if (DialogB == 0)
+                    return new System.Drawing.Point(0, 0);
+                return new System.Drawing.Point(ReadInt(DialogB + Addresses.Client.DialogLeft), ReadInt(DialogB + Addresses.Client.DialogTop));
+            }
+        }
         #endregion
 
         #region Open Client
@@ -593,14 +609,32 @@ namespace Tibia.Objects
         /// </summary>
         public Process Process
         {
-            get
+            get { return process; }
+        }
+
+        /// <summary>
+        /// Get the client's screen (for displaying text)
+        /// </summary>
+        public Screen Screen
+        {
+            get { return screen; }
+        }
+
+        /// <summary>
+        /// Get the pipe that connects this client to it's injected dll
+        /// </summary>
+        public Util.Pipe Pipe
+        {
+            get 
             {
-                return process;
+                if (pipe == null)
+                    InitializePipe();
+                return pipe; 
             }
         }
         #endregion
 
-        #region Client Functions
+        #region Client MultiFunctions
         /// <summary>
         /// Eat food found in any container.
         /// </summary>
@@ -616,6 +650,7 @@ namespace Tibia.Objects
                 return false;
         }
 
+        #region Transform Items
         /// <summary>
         /// Transform the specified item with the default options.
         /// </summary>
@@ -713,6 +748,7 @@ namespace Tibia.Objects
                 return false;
             }
         }
+        #endregion
 
         public bool Fish()
         {
@@ -726,7 +762,9 @@ namespace Tibia.Objects
             }
             return false;
         }
+        #endregion
 
+        #region Client Functions
         /// <summary>
         /// Flashes the client's window and taskbar.
         /// </summary>
@@ -744,6 +782,7 @@ namespace Tibia.Objects
             return Send(LogoutPacket.Create(this));
         }
 
+        #region Account Info
         public void SetAccountInfo(int account, string password)
         {
             AccountNumber = account;
@@ -758,157 +797,7 @@ namespace Tibia.Objects
             WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
             WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
         }
-
-        /// <summary>
-        /// Gets the position of the current opened dialog. Returns null if dialog is not opened.
-        /// </summary>
-        public System.Drawing.Point DialogPosition
-        {
-            get
-            {
-                int DialogB = ReadInt(Addresses.Client.DialogBegin);
-                if (DialogB == 0)
-                    return new System.Drawing.Point(0,0);
-                return new System.Drawing.Point(ReadInt(DialogB+Addresses.Client.DialogLeft),ReadInt(DialogB+Addresses.Client.DialogTop));
-            }
-        }
-
-        public bool DrawScreenText(string TextName, Location loc, int Red, int Green, int Blue, int Font, string Text)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (TextName == string.Empty || loc.X <= 0 || loc.Y <= 0 || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
-                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.DisplayTextPacket.Create(this, TextName, loc, Red, Green, Blue, Font, Text));
-            return true;
-        }
-
-        public bool RemoveScreenText(string TextName)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (TextName == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.RemoveTextPacket.Create(this, TextName));
-            return true;
-        }
-
-        public bool RemoveAllScreenText()
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            
-            pipe.Send(Tibia.Packets.Pipes.RemoveAllTextPacket.Create(this));
-            return true;
-        }
-
-        public bool DrawCreatureText(string CreatureName, Location loc, int Red, int Green, int Blue, int Font, string Text)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureName == string.Empty || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
-                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(this, 0, CreatureName, loc, Red, Green, Blue, Font, Text));
-            return true;
-        }
-
-        public bool DrawCreatureText(int CreatureID, Location loc, int Red, int Green, int Blue, int Font, string Text)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureID == 0 || Red > 0xFF || Red < 0 || Green > 0xFF || Green < 0 ||
-                Blue > 0xFF || Blue < 0 || Font < 0 || Font > 2 || Text == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(this, CreatureID, "MyChar", loc, Red, Green, Blue, Font, Text));
-            return true;
-        }
-
-        public bool UpdateCreatureText(string CreatureName, Location loc, string NewText)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureName == string.Empty || NewText == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(this, 0, CreatureName, loc, NewText));
-            return true;
-        }
-
-        public bool UpdateCreatureText(int CreatureID, Location loc, string NewText)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureID == 0 || NewText == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(this, CreatureID, "", loc, NewText));
-            return true;
-        }
-
-        public bool RemoveCreatureText(string CreatureName)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureName == string.Empty)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(this, 0, CreatureName));
-            return true;
-        }
-
-        public bool RemoveCreatureText(int CreatureID)
-        {
-            if (pipe == null)
-            {
-                InitializePipe();
-                PipeIsReady.WaitOne();
-            }
-            //Testing that user has given valid values
-            if (CreatureID == 0)
-                return false;
-
-            pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(this, CreatureID, ""));
-            return true;
-        }
-
-
+        #endregion
         #endregion
 
         #region Login Server
@@ -1151,6 +1040,8 @@ namespace Tibia.Objects
 
             if (!InjectDLL(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
                 throw new Tibia.Exceptions.InjectDLLNotFoundException();
+
+            PipeIsReady.WaitOne();
         }
 
         private void OnPipeConnect()
