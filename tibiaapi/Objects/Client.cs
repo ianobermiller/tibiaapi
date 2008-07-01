@@ -25,7 +25,7 @@ namespace Tibia.Objects
         private bool isVisible;
         private bool usingProxy = false;
         private LoginServer openTibiaServer = null;
-        private AutoResetEvent PipeIsReady;
+        private AutoResetEvent pipeIsReady;
 
         // References to commonly used objects
         private BattleList battleList;
@@ -79,6 +79,8 @@ namespace Tibia.Objects
             // every read/write operation
             handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
+            pipeIsReady = new AutoResetEvent(false);
+
             // The client get's it's own battle list to speed up getPlayer()
             battleList = new BattleList(this);
             map = new Map(this);
@@ -87,7 +89,6 @@ namespace Tibia.Objects
             random = new Random();
             dat = new Util.DatReader(this);
             screen = new Screen(this);
-            PipeIsReady = new AutoResetEvent(false);
         }
 
         /// <summary>
@@ -391,6 +392,14 @@ namespace Tibia.Objects
                 return new System.Drawing.Point(ReadInt(DialogB + Addresses.Client.DialogLeft), ReadInt(DialogB + Addresses.Client.DialogTop));
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating if a dialog is opened.
+        /// </summary>
+        public AutoResetEvent PipeIsReady
+        {
+            get { return pipeIsReady; }
+        }
         #endregion
 
         #region Open Client
@@ -625,12 +634,7 @@ namespace Tibia.Objects
         /// </summary>
         public Util.Pipe Pipe
         {
-            get 
-            {
-                if (pipe == null)
-                    InitializePipe();
-                return pipe; 
-            }
+            get { return pipe; }
         }
         #endregion
 
@@ -1029,7 +1033,6 @@ namespace Tibia.Objects
         #endregion
 
         #region Pipe wrappers
-
         public void InitializePipe()
         {
             if (pipe != null)
@@ -1040,8 +1043,6 @@ namespace Tibia.Objects
 
             if (!InjectDLL(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
                 throw new Tibia.Exceptions.InjectDLLNotFoundException();
-
-            PipeIsReady.WaitOne();
         }
 
         private void OnPipeConnect()
@@ -1055,7 +1056,7 @@ namespace Tibia.Objects
 
             //Hook Display functions
             pipe.Send(Tibia.Packets.Pipes.InjectDisplayPacket.Create(this, true));
-            PipeIsReady.Set();
+            pipeIsReady.Set();
         }
 
         #endregion

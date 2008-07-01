@@ -26,6 +26,24 @@ namespace SmartTeamMarker
             InitializeComponent();
         }
 
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            do
+            {
+                client = ClientChooser.ShowBox();
+            } while (client == null && MessageBox.Show("Please select a Tibia client", "Notification", MessageBoxButtons.RetryCancel, MessageBoxIcon.Asterisk) == DialogResult.Retry);
+
+            if (client == null)
+            {
+                Application.Exit();
+                return;
+            }
+            else
+            {
+                screen = client.Screen;
+            }
+        }
+
         private void cmdAddAlly_Click(object sender, EventArgs e)
         {
             List<Website.CharInfo> AllyChars = GetCharacters.ShowBox();
@@ -117,25 +135,6 @@ namespace SmartTeamMarker
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            do
-            {
-                client = ClientChooser.ShowBox();
-            } while (client == null && MessageBox.Show("Please select a Tibia client", "Notification", MessageBoxButtons.RetryCancel, MessageBoxIcon.Asterisk) == DialogResult.Retry);
-
-            if (client == null)
-            {
-                Application.Exit();
-                return;
-            }
-            else
-            {
-                screen = client.Screen;
-            }
-        }
-
-
         //Function to take care of telling DLL what characters to display
         private void ShowTexts(List<Website.CharInfo> Members, string Team)
         {
@@ -153,7 +152,6 @@ namespace SmartTeamMarker
             }
             foreach(Website.CharInfo Character in Members)
             {
-                //pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(client, 0, Character.Name)); //Delete the old one
                 screen.DrawCreatureText(Character.Name, new Location(-10, 0, 0), color, ClientFont.NormalBorder, letter);
             }
         }
