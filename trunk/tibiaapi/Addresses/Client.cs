@@ -9,12 +9,12 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x76D90C; //8.1
+        public static uint StartTime = 0x76D90C; //8.11
 
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x768C7C; //8.11, 8.0 = 7637AC
+        public static uint XTeaKey = 0x776DB4;
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
@@ -24,7 +24,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static int FrameRateCurrentOffset = 0x0; // 8.11 unknown
+        public static int FrameRateCurrentOffset = 0x0; // 8.11
 
         /// <summary>
         /// FPS limit offset
@@ -44,7 +44,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x76C2C8;           //8.1, 8.0 = 0x766DF8
+        public static uint Status = 0x00; //8.11
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -84,11 +84,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x0076D928; // 8.1, 8.0 = 0x00768458
+        public static uint Statusbar_Text = 0x77BA58;
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint Statusbar_Time = Statusbar_Text - 4; // 8.1, 8.0 = 0x00768454
+        public static uint Statusbar_Time = Statusbar_Text - 4; 
 
         /// <summary>
         /// The id of the last clicked item.
@@ -122,7 +122,7 @@ namespace Tibia.Addresses
         
 
         // Login Server addresses
-        public static uint LoginServerStart = 0x763BB8; //8.1, 8.0 = 0x75EAE8
+        public static uint LoginServerStart = 0x0771CF0;
         public static uint Step_LoginServer = 112;
         public static uint Distance_Port = 100;
         public static uint Max_LoginServers = 10;

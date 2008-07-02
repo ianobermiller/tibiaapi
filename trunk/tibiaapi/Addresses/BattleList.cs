@@ -10,12 +10,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the battle list.
         /// </summary>
-        public static uint Start = 0x613BD0; // 8.1, 8.0 = 0x60EB30
+        public static uint Start = 0x621CD0;
 
         /// <summary>
         /// End of the battle list.
         /// </summary>
-        public static uint End = 0x619990; //8.1, 8.0 = 0x6148F0
+        public static uint End = 0x627A90;
 
         /// <summary>
         /// Distance between creatures.
