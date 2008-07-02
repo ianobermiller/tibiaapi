@@ -35,6 +35,7 @@ namespace Tibia.Util
         public ClientChooserWPF()
         {
             InitializeComponent();
+            ShowInTaskbar = true;
             uxUseOT.IsExpanded = false;
             uxLoginServerLabel.Content = LoginServerDisabled;
             uxLoginServerLabel.Foreground = Brushes.PaleVioletRed;
