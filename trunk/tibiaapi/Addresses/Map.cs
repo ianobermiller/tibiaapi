@@ -78,7 +78,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Memory address for player tile
         /// </summary>
-        public static uint Player_Tile = 0x3E3A08;
+        public static uint Player_Tile = 0x3E3A08; // 8.1
         /// <summary>
         /// Nop Value, to use with namespy and levelspy
         /// </summary>
@@ -105,19 +105,19 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4E115A;
+        public static uint LevelSpy1 = 0x4E115A; // 8.1
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4E125F;
+        public static uint LevelSpy2 = 0x4E125F; // 8.1
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4E12E0;
+        public static uint LevelSpy3 = 0x4E12E0; // 8.1
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x61B608;
+        public static uint LevelSpyPtr = 0x61B608; // 8.1
 
         /// <summary>
         /// Defaults for level spy.
@@ -136,10 +136,10 @@ namespace Tibia.Addresses
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x453AF3;
+        public static uint RevealInvisible1 = 0x45B5D3;
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
-        public static uint RevealInvisible2 = 0x4DE734;
+        public static uint RevealInvisible2 = 0x4E6CD4;
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
     }

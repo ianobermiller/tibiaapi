@@ -44,7 +44,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x00; //8.11
+        public static uint Status = 0x77A3F8;
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -190,9 +190,9 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x768C9C;
+        public static uint DatPointer = 0x768C9C; // 8.11
 
-        public static uint DialogBegin = 0x61E984;
+        public static uint DialogBegin = 0x61E984; // 8.11
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
@@ -203,12 +203,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginAccountNum = 0x76C2C0;
-        public static uint LoginAccountStr = 0x76C2B4;
-        public static uint LoginPassword = 0x76C294;
+        public static uint LoginAccountNum = 0x76C2C0; // 8.11
+        public static uint LoginAccountStr = 0x76C2B4; // 8.11
+        public static uint LoginPassword = 0x76C294; // 8.11
 
-        public static uint LoginPatch = 0x47935E;
-        public static uint LoginPatch2 = 0x47A2B3;
+        public static uint LoginPatch = 0x47935E; // 8.11
+        public static uint LoginPatch2 = 0x47A2B3; // 8.11
 
         public static byte Nop = 0x90;
         public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };

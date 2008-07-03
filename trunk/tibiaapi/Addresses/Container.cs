@@ -8,11 +8,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the container list in memory.
         /// </summary>
-        public static uint Start = 0x62A1E4;
+        public static uint Start = 0x62A208;
         /// <summary>
         /// End of the container list in memory.
         /// </summary>
-        public static uint End = 0x628324;
+        public static uint End = Start + (Max_Containers * Step_Container);
 
         /// <summary>
         /// Distance between the containers.

@@ -10,12 +10,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the battle list.
         /// </summary>
-        public static uint Start = 0x621CD0;
+        public static uint Start = Player.Exp + 108;
 
         /// <summary>
         /// End of the battle list.
         /// </summary>
-        public static uint End = 0x627A90;
+        public static uint End = Start + (Step_Creatures * Max_Creatures);
 
         /// <summary>
         /// Distance between creatures.
