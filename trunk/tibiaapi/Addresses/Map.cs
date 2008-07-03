@@ -87,11 +87,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4DF469; // 8.1
+        public static uint NameSpy1 = 0x4E7A09; // 8.2
+
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x004DF473; // 8.1
+        public static uint NameSpy2 = 0x004E7A13; // 8.2
 
         /// <summary>
         /// Default value for Namespy1.
@@ -105,19 +106,22 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4E115A; // 8.1
+        public static uint LevelSpy1 = 0x4E974A; //8.2
+
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4E125F; // 8.1
+        public static uint LevelSpy2 = 0x4E984F; //8.2
+
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4E12E0; // 8.1
+        public static uint LevelSpy3 = 0x4E98D0; //8.2
+
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x61B608; // 8.1
+        public static uint LevelSpyPtr = 0x629754; //8.2
 
         /// <summary>
         /// Defaults for level spy.
