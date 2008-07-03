@@ -263,5 +263,6 @@ player.LightColor = Tibia.Constants.LightColor.White;
 {{{
 Player player=client.GetPlayer();
 Screen screen = new Screen(client);
-screen.DrawCreatureText(player.Id, new Location(0, -10, 0), Color.Green, Tibia.Constants.ClientFont.NormalBorder, player.HPBar.ToString() + "%");
+screen.DrawCreatureText(player.Id, new Location(0, -10, 0), Color.Green, 
+Tibia.Constants.ClientFont.NormalBorder, player.HPBar.ToString() + "%");
 }}}
