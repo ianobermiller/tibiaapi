@@ -120,6 +120,7 @@ namespace Tibia.Packets
         Yell = 0x03,
         Monster = 0x10,
         MonsterYell = 0x11,
+        ChannelNPC = 0x00, 
         ChannelNormal = 0x05,
         ChannelTutor = 0x0C,
         ChannelGM = 0x0A,

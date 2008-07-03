@@ -130,12 +130,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x597610;                  //8.1, 8.0 = 0x593610
+        public static uint RSA = 0x5A3610;
 		  
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x76C28C;        //8.1, 8.0 = 0x766DBC
+        public static uint LoginCharList = 0x77A3BC;
 
         /* Character List Format
         
@@ -151,7 +151,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x76C288;    //8.1, 8.0 = 0x766DB8
+        public static uint LoginSelectedChar = 0x77A3B8;
 
         //This format is for the character list that is stored at 0x76450D.
         //This format is also how it comes in the packet.
