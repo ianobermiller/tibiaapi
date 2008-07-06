@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.IO;
 using Tibia.Objects;
 
 namespace Tibia.Util
@@ -43,7 +44,10 @@ namespace Tibia.Util
                 newClientChooser.Text = options.Title == string.Empty ? "Choose a client." : options.Title;
                 foreach (Client c in clients)
                     newClientChooser.uxClients.Items.Add(c);
-                newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe")))
+                {
+                    newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                }
                 newClientChooser.uxClients.Items.Add(NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
