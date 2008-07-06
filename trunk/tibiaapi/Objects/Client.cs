@@ -53,7 +53,7 @@ namespace Tibia.Objects
         private void ClientExited(object sender, EventArgs e)
         {
             if (OnExit != null)
-                OnExit();
+                OnExit.Invoke();
         }
         #endregion
 
@@ -409,7 +409,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public static Client Open()
         {
-            return Open(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + "\\Tibia\\tibia.exe");
+            return Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe"));
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+using System.IO;
 using Tibia.Objects;
 using Microsoft.Win32;
 
@@ -66,7 +67,10 @@ namespace Tibia.Util
                 newClientChooser.Title = options.Title == string.Empty ? "Choose a client." : options.Title;
                 foreach (Client c in clients)
                     newClientChooser.uxClients.Items.Add(c);
-                newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                if (File.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe")))
+                {
+                    newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                }
                 newClientChooser.uxClients.Items.Add(NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
