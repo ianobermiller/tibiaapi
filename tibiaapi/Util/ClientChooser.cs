@@ -170,5 +170,31 @@ namespace Tibia.Util
         /// Default value for the port box
         /// </summary>
         public short Port = 7171;
+
+        /// <summary>
+        /// Get already running clients and in default locations.
+        /// </summary>
+        public bool LookUpClients = true;
+
+        /// <summary>
+        /// Default
+        /// </summary>
+        public string[] addresses = new string[]{
+            "login01.tibia.com:7171",
+            "login02.tibia.com:7171",
+            "login03.tibia.com:7171",
+            "login04.tibia.com:7171",
+            "login05.tibia.com:7171",
+            "tibia01.cipsoft.com:7171",
+            "tibia02.cipsoft.com:7171",
+            "tibia03.cipsoft.com:7171",
+            "tibia04.cipsoft.com:7171",
+            "tibia05.cipsoft.com:7171"
+        };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string[] clientPaths = new string[]{""};
     }
 }

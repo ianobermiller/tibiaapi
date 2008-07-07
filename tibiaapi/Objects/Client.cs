@@ -68,9 +68,12 @@ namespace Tibia.Objects
             p.Exited += new EventHandler(ClientExited);
             
             // Wait until we can really access the process
-            p.Refresh();
             p.WaitForInputIdle();
-            p.Refresh();
+            while (p.MainWindowHandle == IntPtr.Zero)
+            {
+                p.Refresh();
+                System.Threading.Thread.Sleep(1);
+            }
 
             // Save the start time (it isn't changing)
             startTime = ReadInt(Addresses.Client.StartTime);
