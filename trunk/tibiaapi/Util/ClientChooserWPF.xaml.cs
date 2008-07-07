@@ -13,6 +13,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.IO;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Tibia.Objects;
 using Microsoft.Win32;
 
@@ -58,25 +60,36 @@ namespace Tibia.Util
         /// <returns></returns>
         public static Client ShowBox(ClientChooserOptions options)
         {
-            List<Objects.Client> clients = Objects.Client.GetClients();
-            if (options.Smart && !options.ShowOTOption && clients.Count == 1)
+            List<Objects.Client> clients = null;
+            if (options.LookUpClients)
+                clients = Objects.Client.GetClients();
+            if (options.Smart && options.LookUpClients && !options.ShowOTOption && clients != null && clients.Count == 1)
                 return clients[0];
             else
             {
                 newClientChooser = new ClientChooserWPF();
-                newClientChooser.Title = options.Title == string.Empty ? "Choose a client." : options.Title;
-                foreach (Client c in clients)
-                    newClientChooser.uxClients.Items.Add(c);
-                if (File.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe")))
+                newClientChooser.Title = String.IsNullOrEmpty(options.Title) ? "Choose a client." : options.Title;
+                if (options.LookUpClients)
                 {
-                    newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                    foreach (Client c in clients)
+                    {
+                        newClientChooser.uxClients.Items.Add(c);
+                    }
+                    if (File.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe")))
+                    {
+                        newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                    }
                 }
                 newClientChooser.uxClients.Items.Add(NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
                 newClientChooser.uxUseOT.IsExpanded = options.UseOT;
-                newClientChooser.uxLoginServer.Text = options.Server + ":" + options.Port.ToString();
-
+                //newClientChooser.uxLoginServer.Text = options.Server + ":" + options.Port.ToString();
+                foreach (string address in options.addresses){
+                    newClientChooser.uxLoginServer.Items.Add(address);
+                }
+                if (newClientChooser.uxLoginServer.Items.Count > 0)
+                    newClientChooser.uxLoginServer.SelectedIndex = 0;
                 newClientChooser.ShowDialog();
                 return client;
             }
@@ -116,12 +129,30 @@ namespace Tibia.Util
                            "executable files (*.exe)|*.exe|All files (*.*)|*.*";
                         dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                         dialog.Title = "Select a Tibia client executable";
-                        client = (dialog.ShowDialog() == true)
-                           ? Client.Open(dialog.FileName) : null;
+                        if (dialog.ShowDialog() == true)
+                        {
+                            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(dialog.FileName);
+                            if (fvi.ProductName.Equals("Tibia Player"))
+                            {
+                                client = Client.Open(dialog.FileName);
+                            }
+                            else
+                            {
+                                Microsoft.VisualBasic.Interaction.Beep();   
+                                client = null;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            client = null;
+                            return;
+                        }
                         break;
                 }
-                if (client != null)
-                    System.Threading.Thread.Sleep(1000);
+                
+                //if (client != null)
+                //    System.Threading.Thread.Sleep(1000);
             }
             else
             {
@@ -131,7 +162,7 @@ namespace Tibia.Util
             // Set OT server
             if (client != null && uxUseOT.IsExpanded)
             {
-                string[] explode = uxLoginServer.Text.Split(":".ToCharArray());
+                string[] explode = uxLoginServer.Text.Split(new char[]{':'});
                 LoginServer ls = new LoginServer(explode[0], short.Parse(explode[1]));
                 client.OpenTibiaServer = ls;
                 client.SetOT(ls);
