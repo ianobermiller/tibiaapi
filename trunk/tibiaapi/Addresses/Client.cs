@@ -9,7 +9,7 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x76D90C; //8.11
+        public static uint StartTime = 0x77BA3C;
 
         /// <summary>
         /// Address to the XTea encryption key.
@@ -19,27 +19,27 @@ namespace Tibia.Addresses
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x76CE0C; //8.11
+        public static uint FrameRatePointer = 0x77AF3C;
 
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static int FrameRateCurrentOffset = 0x0; // 8.11
+        public static int FrameRateCurrentOffset = 0x0;
 
         /// <summary>
         /// FPS limit offset
         /// </summary>
-        public static int FrameRateLimitOffset = 0x58; // 8.11
+        public static int FrameRateLimitOffset = 0x58;
 
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0xF8944; //8.1
+        public static uint MultiClient = 0x100CE4;
 
         /// <summary>
         /// Value to be written to the multiclient address.
         /// </summary>
-        public static uint MultiClientValue = 0xEB; //8.1
+        public static uint MultiClientValue = 0xEB;
 
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
@@ -49,27 +49,26 @@ namespace Tibia.Addresses
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x76909C; //8.1, 8.0 = 0x763BCC
-
+        public static uint SafeMode = 0x7771D0;
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
-        public static uint FollowMode = SafeMode + 4; //8.1, 8.0 = 0x763BD0
+        public static uint FollowMode = SafeMode + 4;
 
         /// <summary>
         /// Attack type (Full attack, half and half, full defense)
         /// </summary>
-        public static uint AttackMode = FollowMode + 4; //8.1, 8.0 = 0x763BD4
+        public static uint AttackMode = FollowMode + 4;
 
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x76C328; //8.1, 8.0 = 0x751BD8
+        public static uint ActionState = 0x77A458;
 
         /// <summary>
         /// The window that is foremost
         /// </summary>
-        public static uint CurrentWindow = 0x61E984;    //8.1, 8.0 = 0x6198B4
+        public static uint CurrentWindow = 0x62CABC;
 
         /// <summary>
         /// The last player to send a message to the default channel.
@@ -203,9 +202,9 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginAccountNum = 0x76C2C0; // 8.11
-        public static uint LoginAccountStr = 0x76C2B4; // 8.11
-        public static uint LoginPassword = 0x76C294; // 8.11
+        public static uint LoginPassword = 0x77A3C4; // 8.2
+        public static uint LoginAccountStr = LoginPassword + 32; // 8.2
+        public static uint LoginAccountNum = LoginAccountStr + 12; // 8.2
 
         public static uint LoginPatch = 0x47935E; // 8.11
         public static uint LoginPatch2 = 0x47A2B3; // 8.11
