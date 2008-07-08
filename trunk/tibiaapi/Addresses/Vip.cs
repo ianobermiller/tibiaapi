@@ -5,12 +5,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the VipList.
         /// </summary>
-        public static uint Start = 0x611890; //8.1, 8.0 = 0x60C7F0
+        public static uint Start = 0x61F990;
+
         
         /// <summary>
         /// End of the VipList.
         /// </summary>
-        public static uint End = 0x612128; //8.1, 8.0 = 0x60C840
+        public static uint End = 0x620228;
         
         /// <summary>
         /// Step between Players.

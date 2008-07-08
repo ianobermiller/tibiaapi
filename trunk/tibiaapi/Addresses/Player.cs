@@ -5,6 +5,8 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Player
     {
+        public static uint Exp = 0x621C64;
+
         public static uint GoTo_X = Exp + 80;
         public static uint GoTo_Y = Exp + 76;
         public static uint GoTo_Z = Exp + 72;
@@ -12,8 +14,6 @@ namespace Tibia.Addresses
         public static uint Id = Exp + 12;
         public static uint HP = Exp + 8;
         public static uint HP_Max = Exp + 4;
-
-        public static uint Exp = 0x621C64;
 
         public static uint Level = Exp - 4;
         public static uint MagicLevel = Exp - 8;
@@ -66,11 +66,11 @@ namespace Tibia.Addresses
 
 
 
-        public static uint CurrentTileToGo = 0x613B78; //8.1
-        public static uint TilesToGo = 0x613B7C; //8.1
+        public static uint CurrentTileToGo = 0x621C78;
+        public static uint TilesToGo = 0x621C7C;
 
 
-        public static uint RedSquare = 0x613B3C;        //8.1, 8.0 = 0x60EA9C
+        public static uint RedSquare = 0x621C3C;
         public static uint GreenSquare = RedSquare - 4;      //8.1
         public static uint WhiteSquare = GreenSquare - 8;      //8.1
 
@@ -85,6 +85,6 @@ namespace Tibia.Addresses
         /// <summary>
         /// Static address for player Z, used for level spy
         /// </summary>
-        public static uint Z = 0x62CAF8;
+        public static uint Z = 0x62CAF8; //8.1 Couldn't find, but Levelspy works
     }
 }

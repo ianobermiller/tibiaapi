@@ -71,14 +71,14 @@ namespace Tibia.Addresses
         public static uint CurrentWindow = 0x62CABC;
 
         /// <summary>
-        /// The last player to send a message to the default channel.
-        /// </summary>
-        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.1, 8.0 = 0x768680
-
-        /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
         public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
+
+        /// <summary>
+        /// The last player to send a message to the default channel.
+        /// </summary>
+        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.1, 8.0 = 0x768680
 
         /// <summary>
         /// The statusbar text to be displayed.
@@ -92,7 +92,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint Click_Id = 0x76C364;   //8.1, 8.0 = 0x766E94
+        public static uint Click_Id = 0x77A494;
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
@@ -117,7 +117,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x76DB50;     //8.1
+        public static uint See_Text = 0x77BC80;
         
 
         // Login Server addresses
@@ -189,9 +189,9 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x768C9C; // 8.11
+        public static uint DatPointer = 0x776DD4;
 
-        public static uint DialogBegin = 0x61E984; // 8.11
+        public static uint DialogBegin = 0x62CABC;
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
