@@ -195,7 +195,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        private Tile GetCreatureSquare(int Id)
+        public Tile GetCreatureSquare(int Id)
         {
             Tile playerLocation = new Tile();
 
