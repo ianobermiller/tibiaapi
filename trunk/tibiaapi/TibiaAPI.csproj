@@ -109,6 +109,7 @@
     <Compile Include="Packets\Incoming\PartyInvitePacket.cs" />
     <Compile Include="Packets\Incoming\PrivateChannelOpenPacket.cs" />
     <Compile Include="Packets\Incoming\SkillUpdatePacket.cs" />
+    <Compile Include="Packets\Incoming\TradeBoxOpenPacket.cs" />
     <Compile Include="Packets\Incoming\VipAddPacket.cs" />
     <Compile Include="Packets\Incoming\VipLogoutPacket.cs" />
     <Compile Include="Packets\Incoming\WorldLightPacket.cs" />

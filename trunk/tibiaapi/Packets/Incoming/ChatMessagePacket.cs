@@ -66,10 +66,10 @@ namespace Tibia.Packets
                     case ChatType.Whisper:
                     case ChatType.Yell:
                     case ChatType.Monster:
+                    case ChatType.NPC:
                     case ChatType.MonsterYell:
                         location = p.GetLocation();
                         break;
-                    case ChatType.ChannelNPC:
                     case ChatType.ChannelNormal:
                     case ChatType.ChannelTutor:
                     case ChatType.ChannelGM:
@@ -206,7 +206,6 @@ namespace Tibia.Packets
                     if (!loc.IsValid()) throw new ArgumentException("You must supply a valid location for this message type.", "loc");
                     p.AddLocation(loc);
                     break;
-                case ChatType.ChannelNPC:
                 case ChatType.ChannelNormal:
                 case ChatType.ChannelTutor:
                 case ChatType.ChannelGM:
