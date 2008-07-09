@@ -97,11 +97,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Default value for Namespy1.
         /// </summary>
-        public static uint NameSpy1Default = 19061;
+        public static uint NameSpy1Default = 19061; //8.2
         /// <summary>
         /// Default value for Namespy2.
         /// </summary>
-        public static uint NameSpy2Default = 16501;
+        public static uint NameSpy2Default = 16501; //8.2
 
         /// <summary>
         /// Level spy address 1.
@@ -134,16 +134,16 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy add 2.
         /// </summary>
-        public static uint LevelSpyAdd2 = 0x25D8;
+        public static uint LevelSpyAdd2 = 0x25D8; //8.2
 
         /// <summary>
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x45B5D3;
+        public static uint RevealInvisible1 = 0x45B5D3; //8.?
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
-        public static uint RevealInvisible2 = 0x4E6CD4;
+        public static uint RevealInvisible2 = 0x4E6CD4; //8.?
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
     }

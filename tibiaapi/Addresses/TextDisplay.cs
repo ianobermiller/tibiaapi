@@ -5,12 +5,12 @@
         /// <summary>
         /// PrintName function call to overwrite
         /// </summary>
-        public static int PrintName = 0x4EA881;
+        public static int PrintName = 0x4EA881; //8.2
 
         /// <summary>
         /// PrintFPS function call to overwrite
         /// </summary>
-        public static int PrintFPS = 0x455A38;
+        public static int PrintFPS = 0x455A38; //8.2
 
         /// <summary>
         /// Offset, if user wants to show FPS
@@ -20,12 +20,12 @@
         /// <summary>
         /// PrintText function address
         /// </summary
-        public static int PrintTextFunc = 0x4ABAD0;
+        public static int PrintTextFunc = 0x4ABAD0; //8.2
 
         /// <summary>
         /// Conditional check to show FPS
         /// </summary>
-        public static int NopFPS = 0x455974;
+        public static int NopFPS = 0x455974; //8.2
     }
 }
 

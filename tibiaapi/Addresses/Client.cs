@@ -9,66 +9,61 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x77BA3C;
+        public static uint StartTime = 0x77EA3C;
 
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x776DB4;
+        public static uint XTeaKey = 0x776DB4; //8.2
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x77AF3C;
+        public static uint FrameRatePointer = 0x77AF3C; //8.2
 
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static int FrameRateCurrentOffset = 0x0;
+        public static int FrameRateCurrentOffset = 0x0; //8.2
 
         /// <summary>
         /// FPS limit offset
         /// </summary>
-        public static int FrameRateLimitOffset = 0x58;
+        public static int FrameRateLimitOffset = 0x58; //8.2
 
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x100CE4;
+        public static uint MultiClient = 0x100CE4; //8.2
 
         /// <summary>
         /// Value to be written to the multiclient address.
         /// </summary>
-        public static uint MultiClientValue = 0xEB;
+        public static uint MultiClientValue = 0xEB; //8.2
 
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x77A3F8;
+        public static uint Status = 0x77A3F8; //8.2
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x7771D0;
+        public static uint SafeMode = 0x7771D0; //8.2
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
-        public static uint FollowMode = SafeMode + 4;
+        public static uint FollowMode = SafeMode + 4; //8.2
 
         /// <summary>
         /// Attack type (Full attack, half and half, full defense)
         /// </summary>
-        public static uint AttackMode = FollowMode + 4;
+        public static uint AttackMode = FollowMode + 4; //8.2
 
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x77A458;
-
-        /// <summary>
-        /// The window that is foremost
-        /// </summary>
-        public static uint CurrentWindow = 0x62CABC;
+        public static uint ActionState = 0x77A458; //8.2
 
         /// <summary>
         /// The text of the last message sent to the default channel.
@@ -83,58 +78,58 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x77BA58;
+        public static uint Statusbar_Text = 0x77BA58; //8.2
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint Statusbar_Time = Statusbar_Text - 4; 
+        public static uint Statusbar_Time = Statusbar_Text - 4;  //8.2
 
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint Click_Id = 0x77A494;
+        public static uint Click_Id = 0x77A494; //8.2
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
-        public static uint Click_Count = Click_Id + 4;  //8.1, 8.0 = 0x766E98
+        public static uint Click_Count = Click_Id + 4; //8.2
         /// <summary>
         /// The floor that was clicked.
         /// </summary>
-        public static uint Click_Z = Click_Id - 0x68;      //8.1, 8.0 = 0x766E2C
+        public static uint Click_Z = Click_Id - 0x68; //8.2
 
         /// <summary>
         /// The id of the last item seen (looked at).
         /// </summary>
-        public static uint See_Id = Click_Id + 12;     //8.1, 8.0 = 0x766EA0
+        public static uint See_Id = Click_Id + 12; //8.2
         /// <summary>
         /// The amount of the last item seen (eg. 42 fish).
         /// </summary>
-        public static uint See_Count = See_Id + 4;  //8.1, 8.0 = 0x766EA4
+        public static uint See_Count = See_Id + 4; //8.2
         /// <summary>
         /// The floor that the last seen item is on.
         /// </summary>
-        public static uint See_Z = See_Id - 0x68;      //8.1, 8.0 = 0x766E00
+        public static uint See_Z = See_Id - 0x68; //8.2
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x77BC80;
+        public static uint See_Text = 0x77BC80; //8.2
         
 
         // Login Server addresses
-        public static uint LoginServerStart = 0x0771CF0;
-        public static uint Step_LoginServer = 112;
-        public static uint Distance_Port = 100;
-        public static uint Max_LoginServers = 10;
+        public static uint LoginServerStart = 0x771CF0; //8.2
+        public static uint Step_LoginServer = 112; //8.2
+        public static uint Distance_Port = 100; //8.2
+        public static uint Max_LoginServers = 10; //8.2
 
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5A3610;
+        public static uint RSA = 0x5A3610; //8.2
 		  
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x77A3BC;
+        public static uint LoginCharList = 0x77A3BC; //8.2
 
         /* Character List Format
         
@@ -150,7 +145,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x77A3B8;
+        public static uint LoginSelectedChar = 0x77A3B8; //8.2
 
         //This format is for the character list that is stored at 0x76450D.
         //This format is also how it comes in the packet.
@@ -189,28 +184,28 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x776DD4;
+        public static uint DatPointer = 0x776DD4; //8.2
 
-        public static uint DialogBegin = 0x62CABC;
-        public static uint DialogLeft = 0x14;
-        public static uint DialogTop = 0x18;
-        public static uint DialogWidth = 0x1C;
-        public static uint DialogHeight = 0x20;
-        public static uint DialogCaption = 0x50;
+        public static uint DialogBegin = 0x62CABC; //8.2
+        public static uint DialogLeft = 0x14; //8.2
+        public static uint DialogTop = 0x18; //8.2
+        public static uint DialogWidth = 0x1C; //8.2
+        public static uint DialogHeight = 0x20; //8.2
+        public static uint DialogCaption = 0x50; //8.2
 
 
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x77A3C4; // 8.2
-        public static uint LoginAccountStr = LoginPassword + 32; // 8.2
-        public static uint LoginAccountNum = LoginAccountStr + 12; // 8.2
+        public static uint LoginPassword = 0x77A3C4; //8.2
+        public static uint LoginAccountStr = LoginPassword + 32; //8.2
+        public static uint LoginAccountNum = LoginAccountStr + 12; //8.2
 
         public static uint LoginPatch = 0x47935E; // 8.11
         public static uint LoginPatch2 = 0x47A2B3; // 8.11
 
         public static byte Nop = 0x90;
-        public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
-        public static byte[] LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+        public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 }; //8.11
+        public static byte[] LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 }; //8.11
     }
 }

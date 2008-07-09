@@ -29,7 +29,7 @@ namespace Tibia
                 Client.FollowMode = Addresses.Client.SafeMode + 4;
                 Client.AttackMode = Addresses.Client.FollowMode + 4;
                 Client.ActionState = 0x76C328;
-                Client.CurrentWindow = 0x61E984;
+                //Client.CurrentWindow = 0x61E984;
                 Client.LastMSGAuthor = Addresses.Client.LastMSGText - 0x28;
                 Client.LastMSGText = 0x76DB78;
                 Client.Statusbar_Text = 0x76D928;
@@ -252,7 +252,7 @@ namespace Tibia
                 Addresses.Client.AttackMode = 0x763BD4;
                 Addresses.Client.SafeMode = 0x763BCC;
                 Addresses.Client.ActionState = 0x751BD8;
-                Addresses.Client.CurrentWindow = 0x6198B4;
+                //Addresses.Client.CurrentWindow = 0x6198B4;
                 Addresses.Client.LastMSGAuthor = 0x768680;
                 Addresses.Client.LastMSGText = 0x7686A8;
                 Addresses.Client.Statusbar_Text = 0x00768458;
@@ -270,6 +270,7 @@ namespace Tibia
                 Addresses.Client.RSA = 0x593610;
                 Addresses.Client.LoginCharList = 0x766DBC;
                 Addresses.Client.LoginSelectedChar = 0x766DB8;
+                Addresses.Client.DialogBegin = 0x6198B4;
 
                 Addresses.Container.Start = 0x617000;
                 Addresses.Container.End = 0x618EC0;
