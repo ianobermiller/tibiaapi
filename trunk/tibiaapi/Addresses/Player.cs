@@ -5,7 +5,7 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Player
     {
-        public static uint Exp = 0x621C64;
+        public static uint Exp = 0x621C64; //8.2
 
         public static uint GoTo_X = Exp + 80;
         public static uint GoTo_Y = Exp + 76;
@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// Total number of equipment slots (accessed 0-10)
         /// </summary>
         public static int Max_Slots = 11;
-        public static uint Slot_Head = 0x62A190;
+        public static uint Slot_Head = 0x62A190; //8.2
         public static uint Slot_Neck = Slot_Head + 12;
         public static uint Slot_Backpack = Slot_Head + 24;
         public static uint Slot_Armor = Slot_Head + 36;
@@ -66,21 +66,21 @@ namespace Tibia.Addresses
 
 
 
-        public static uint CurrentTileToGo = 0x621C78;
-        public static uint TilesToGo = 0x621C7C;
+        public static uint CurrentTileToGo = 0x621C78; //8.2
+        public static uint TilesToGo = 0x621C7C; //8.2
 
 
-        public static uint RedSquare = 0x621C3C;
+        public static uint RedSquare = 0x621C3C; //8.2
         public static uint GreenSquare = RedSquare - 4;      //8.1
         public static uint WhiteSquare = GreenSquare - 8;      //8.1
 
         public static uint AccessN = 0x766DF4;          //8.0
         public static uint AccessS = 0x766DC4;          //8.0
 
-        public static uint Target_ID = RedSquare;        //8.1
-        public static uint Target_BList_ID = Target_ID - 8;  //8.1
-        public static uint Target_BList_Type = Target_ID - 5;//8.1
-        public static uint Target_Type = Target_ID + 3;      //8.1
+        public static uint Target_ID = RedSquare;    
+        public static uint Target_BList_ID = Target_ID - 8; 
+        public static uint Target_BList_Type = Target_ID - 5;
+        public static uint Target_Type = Target_ID + 3;     
 
         /// <summary>
         /// Static address for player Z, used for level spy

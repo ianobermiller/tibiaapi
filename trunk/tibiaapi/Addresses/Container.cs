@@ -8,11 +8,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the container list in memory.
         /// </summary>
-        public static uint Start = 0x62A208;
+        public static uint Start = 0x62A208; //8.2
         /// <summary>
         /// End of the container list in memory.
         /// </summary>
-        public static uint End = Start + (Max_Containers * Step_Container);
+        public static uint End = Start + (Max_Containers * Step_Container); //8.2
 
         /// <summary>
         /// Distance between the containers.
@@ -26,11 +26,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum amount of containers that can be opened.
         /// </summary>
-        public static uint Max_Containers = 16;
+        public static uint Max_Containers = 16; //8.2
         /// <summary>
         /// The maximum amount of items in one stack.
         /// </summary>
-        public static uint Max_Stack = 100;
+        public static uint Max_Stack = 100; //8.2
 
         /// <summary>
         /// The distance from the start of the container to the IsOpen variable.
