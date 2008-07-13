@@ -14,12 +14,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x776DB4; //8.2
+        public static uint XTeaKey = 0x779DB4; //8.21
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x77AF3C; //8.2
+        public static uint FrameRatePointer = 0x77DF3C; //8.21
 
         /// <summary>
         /// Current fps offset
@@ -44,7 +44,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x77A3F8; //8.2
+        public static uint Status = 0x77D3F8; //8.21
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -63,31 +63,31 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x77A458; //8.2
+        public static uint ActionState = 0x77D458; //8.21
 
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
+        public static uint LastMSGText = 0x76DB78; //8.1
 
         /// <summary>
         /// The last player to send a message to the default channel.
         /// </summary>
-        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.1, 8.0 = 0x768680
+        public static uint LastMSGAuthor = LastMSGText - 0x28;
 
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x77BA58; //8.2
+        public static uint Statusbar_Text = 0x77EA58; //8.21
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint Statusbar_Time = Statusbar_Text - 4;  //8.2
+        public static uint Statusbar_Time = Statusbar_Text - 4;
 
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint Click_Id = 0x77A494; //8.2
+        public static uint Click_Id = 0x77D494; //8.21
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
@@ -112,11 +112,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x77BC80; //8.2
+        public static uint See_Text = 0x77EC80; //8.21
         
 
         // Login Server addresses
-        public static uint LoginServerStart = 0x771CF0; //8.2
+        public static uint LoginServerStart = 0x774CF0; //8.21
         public static uint Step_LoginServer = 112; //8.2
         public static uint Distance_Port = 100; //8.2
         public static uint Max_LoginServers = 10; //8.2
@@ -129,7 +129,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x77A3BC; //8.2
+        public static uint LoginCharList = 0x77D3BC; //8.21
 
         /* Character List Format
         
