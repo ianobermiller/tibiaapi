@@ -142,7 +142,7 @@ namespace SmartTeamMarker
             string letter;
             if (Team == "A")
             {
-                color = Color.Blue;
+                color = Color.LightBlue;
                 letter = "A";
             }
             else

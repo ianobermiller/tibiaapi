@@ -59,7 +59,12 @@ namespace SmartTeamMarker
                 }
                 AlreadyInList = false;
             }
-            this.Cursor = Cursors.Default; //Reset cursor to deafult
+            this.Invoke(new EventHandler(delegate
+            {
+
+                this.Cursor = Cursors.Default; //Reset cursor to deafult
+
+            }));
         }
 
         private void CharacterReceived(Website.CharInfo Character)
@@ -92,7 +97,12 @@ namespace SmartTeamMarker
                 Character.GuildNickName
                 }));
             }));
-            this.Cursor = Cursors.Default; //Reset cursor to deafult
+            this.Invoke(new EventHandler(delegate
+            {
+
+                this.Cursor = Cursors.Default; //Reset cursor to deafult
+
+            }));
         }
 
         #endregion
