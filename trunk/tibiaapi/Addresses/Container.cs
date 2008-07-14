@@ -11,11 +11,6 @@ namespace Tibia.Addresses
         public static uint Start = 0x62D208;
 
         /// <summary>
-        /// End of the container list in memory.
-        /// </summary>
-        public static uint End = Start + (Max_Containers * Step_Container);
-
-        /// <summary>
         /// Distance between the containers.
         /// </summary>
         public static uint Step_Container = 492;
@@ -64,5 +59,10 @@ namespace Tibia.Addresses
         /// The distance from the start of the item to the ItemCount variable.
         /// </summary>
         public static uint Distance_Item_Count = 64;
+
+        /// <summary>
+        /// End of the container list in memory.
+        /// </summary>
+        public static uint End = Start + (Max_Containers * Step_Container);
     }
 }
