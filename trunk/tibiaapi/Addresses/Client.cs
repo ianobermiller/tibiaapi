@@ -14,12 +14,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x779DB4; //8.21
+        public static uint XTeaKey = 0x779DB4;
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x77DF3C; //8.21
+        public static uint FrameRatePointer = 0x77DF3C;
 
         /// <summary>
         /// Current fps offset
@@ -34,7 +34,8 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x100CE4; //8.2
+        public static uint MultiClient = 0x102B74;
+
 
         /// <summary>
         /// Value to be written to the multiclient address.
@@ -44,12 +45,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x77D3F8; //8.21
+        public static uint Status = 0x77D3F8;
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x7771D0; //8.2
+        public static uint SafeMode = 0x77A1D0;
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
@@ -63,60 +64,59 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x77D458; //8.21
+        public static uint ActionState = 0x77D458;
 
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x76DB78; //8.1
+        public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
 
         /// <summary>
         /// The last player to send a message to the default channel.
         /// </summary>
-        public static uint LastMSGAuthor = LastMSGText - 0x28;
+        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.1, 8.0 = 0x768680
 
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x77EA58; //8.21
+        public static uint Statusbar_Text = 0x77EA58; //8.2
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint Statusbar_Time = Statusbar_Text - 4;
+        public static uint Statusbar_Time = Statusbar_Text - 4;  //8.2
 
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint Click_Id = 0x77D494; //8.21
+        public static uint Click_Id = 0x77D494;
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
-        public static uint Click_Count = Click_Id + 4; //8.2
+        public static uint Click_Count = Click_Id + 4;
         /// <summary>
         /// The floor that was clicked.
         /// </summary>
-        public static uint Click_Z = Click_Id - 0x68; //8.2
+        public static uint Click_Z = Click_Id - 0x68;
 
         /// <summary>
         /// The id of the last item seen (looked at).
         /// </summary>
-        public static uint See_Id = Click_Id + 12; //8.2
+        public static uint See_Id = Click_Id + 12;
         /// <summary>
         /// The amount of the last item seen (eg. 42 fish).
         /// </summary>
-        public static uint See_Count = See_Id + 4; //8.2
+        public static uint See_Count = See_Id + 4;
         /// <summary>
         /// The floor that the last seen item is on.
         /// </summary>
-        public static uint See_Z = See_Id - 0x68; //8.2
+        public static uint See_Z = See_Id - 0x68;
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x77EC80; //8.21
+        public static uint See_Text = 0x77BC80;
         
-
         // Login Server addresses
-        public static uint LoginServerStart = 0x774CF0; //8.21
+        public static uint LoginServerStart = 0x774CF0;
         public static uint Step_LoginServer = 112; //8.2
         public static uint Distance_Port = 100; //8.2
         public static uint Max_LoginServers = 10; //8.2
@@ -124,12 +124,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5A3610; //8.2
+        public static uint RSA = 0x5A5610;
+
 		  
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x77D3BC; //8.21
+        public static uint LoginCharList = 0x77D3BC;
 
         /* Character List Format
         
@@ -145,7 +146,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x77A3B8; //8.2
+        public static uint LoginSelectedChar = 0x77D3B8;
 
         //This format is for the character list that is stored at 0x76450D.
         //This format is also how it comes in the packet.
@@ -184,22 +185,22 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x776DD4; //8.2
+        public static uint DatPointer = 0x779DD4;
 
-        public static uint DialogBegin = 0x62CABC; //8.2
-        public static uint DialogLeft = 0x14; //8.2
-        public static uint DialogTop = 0x18; //8.2
-        public static uint DialogWidth = 0x1C; //8.2
-        public static uint DialogHeight = 0x20; //8.2
-        public static uint DialogCaption = 0x50; //8.2
+        public static uint DialogBegin = 0x62FABC;
+        public static uint DialogLeft = 0x14;
+        public static uint DialogTop = 0x18;
+        public static uint DialogWidth = 0x1C;
+        public static uint DialogHeight = 0x20;
+        public static uint DialogCaption = 0x50;
 
 
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x77A3C4; //8.2
-        public static uint LoginAccountStr = LoginPassword + 32; //8.2
-        public static uint LoginAccountNum = LoginAccountStr + 12; //8.2
+        public static uint LoginPassword = 0x77D3C4;
+        public static uint LoginAccountStr = LoginPassword + 32;
+        public static uint LoginAccountNum = LoginAccountStr + 12;
 
         public static uint LoginPatch = 0x47935E; // 8.11
         public static uint LoginPatch2 = 0x47A2B3; // 8.11

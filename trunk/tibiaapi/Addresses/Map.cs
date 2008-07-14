@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x631610;     //8.1, 8.0 = 0x61E408
+        public static uint MapPointer = 0x634610;
 
         /// <summary>
         /// Step between squares on the map.
@@ -87,17 +87,19 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4E7A09; // 8.2
+        public static uint NameSpy1 = 0x4E9539;
+
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x004E7A13; // 8.2
+        public static uint NameSpy2 = 0x4E9543; 
+
 
         /// <summary>
         /// Default value for Namespy1.
         /// </summary>
-        public static uint NameSpy1Default = 19061; //8.2
+        public static uint NameSpy1Default = 19061; //8.2 
         /// <summary>
         /// Default value for Namespy2.
         /// </summary>
@@ -106,22 +108,25 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4E974A; //8.2
+        public static uint LevelSpy1 = 0x4EB3EA;
+
 
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4E984F; //8.2
+        public static uint LevelSpy2 = 0x4EB4EF; 
+
 
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4E98D0; //8.2
+        public static uint LevelSpy3 = 0x4EB570; 
+
 
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x629754; //8.2
+        public static uint LevelSpyPtr = 0x62C754;
 
         /// <summary>
         /// Defaults for level spy.
@@ -134,16 +139,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy add 2.
         /// </summary>
-        public static uint LevelSpyAdd2 = 0x25D8; //8.2
+        public static uint LevelSpyAdd2 = 0x25D8;
 
         /// <summary>
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x45B5D3; //8.?
+        public static uint RevealInvisible1 = 0x45C003; 
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
-        public static uint RevealInvisible2 = 0x4E6CD4; //8.?
+
+        public static uint RevealInvisible2 = 0x4E8805;
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
     }
