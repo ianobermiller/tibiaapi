@@ -470,6 +470,9 @@ namespace Tibia.Constants
         ChakoyaToolshaper = 259,
         ChakoyaWindcaller = 260,
 
+        DemonHunterMale = 289,
+        DemonHunterFemale = 288,
+
         IceGolem = 261,
         SilverRabbit = 262,
         FrostGiantess = 265,
