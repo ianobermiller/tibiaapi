@@ -33,9 +33,8 @@
 
 [SIZE=3][COLOR=DarkOrange]Upcoming[/COLOR][/SIZE]
 [LIST]
-[*]Auto-Login
-[*]Screen drawing via DLL injection
-[*]Integration with TibiaTek Plus (not really a feature, but will be taking up some of our time)
+[*]Auto-Login wrappers
+[*]Added context menu items
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE]
