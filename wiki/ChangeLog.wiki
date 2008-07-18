@@ -1,6 +1,32 @@
 #summary Complete change log of TibiaAPI.
 #labels Featured,Phase-Implementation
 
+= v2.3 =
+
+== Renamed ==
+ * None!
+
+== Added ==
+ * Displaying text directly in the client area using an injected DLL (see the new Smart Team Marker Project and the Screen object for details)
+ * All the features needed for auto-login (which will be coming soon), including client dimensions, dialog info, and username/password setting
+ * Multithreaded timer in Util.Timer
+ * WPF Client Chooser
+ * ToStringDeep debug helper (try it on a complex object like Player)
+ * Tags for all the old versions
+ * NPCChannel chat type
+ * TradeBoxOpenPacket (untested)
+ * Demon hunter outfits
+
+== Fixed ==
+ * Updated to Tibia version 8.21, older versions can be found in Version.cs
+ * Clients with different executable names (ie. not named Tibia.exe) are now recognized
+ * Updated all of the spells
+ * Refactored the repository structure to be more typical
+ * Pipes are now asynchronous
+ * Inventory.Stack() has a short delay
+ * Fixed bugs in the Website class relating to spaces and multiple requests
+ * Bug in map object
+
 = v2.2 =
 
 == Renamed ==
