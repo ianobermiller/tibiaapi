@@ -25,16 +25,13 @@ namespace Tibia.Objects
         {
             uint pointer;
 
-            int objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount);
+            int objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount) - 1; // -1 for Tile
 
             // Get the tile data (first object)
             pointer = address + Addresses.Map.Distance_Square_Objects;
             Tile.Id = Convert.ToUInt32(client.ReadInt(pointer + Addresses.Map.Distance_Object_Id));
 
             Objects = new List<MapObject>(objectCount);
-
-            // Get all the objects above the tile, first clear out the old objects
-            Objects.Clear();
 
             for (uint i = 0; i < objectCount; i++)
             {

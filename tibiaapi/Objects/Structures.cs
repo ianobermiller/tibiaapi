@@ -141,9 +141,9 @@ namespace Tibia.Objects
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder(16);
-            builder.AppendLine("Number = " + Number.ToString());
-            builder.AppendLine("Address = " + Address.ToString());
-            builder.AppendLine("Id = " + Id.ToString());
+            builder.Append("{ Number=" + Number.ToString() + ", ");
+            builder.Append("Address=" + Address.ToString() + ", ");
+            builder.Append("Id=" + Id.ToString() + " }");
 
             return builder.ToString();
         }

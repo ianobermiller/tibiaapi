@@ -22,6 +22,11 @@ namespace Tibia.Util
             return client.ReadInt(baseAddr + 4);
         }
 
+        public DatItem GetItem(Item item)
+        {
+            return GetItem(item.Id);
+        }
+
         public DatItem GetItem(uint itemId)
         {
             return new DatItem(client, itemInfoAddr + 0x4C * (itemId - 100), itemId);
