@@ -1,11 +1,11 @@
 =================================================
-[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.2 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.11 (and 8.10)[/I][/SIZE]
+[SIZE=5][COLOR=DarkOrange]TibiaAPI v2.3 [/COLOR][/SIZE][SIZE=3][I]for Tibia 8.21[/I][/SIZE]
 =================================================
 
 [SIZE=3][COLOR=Orange]About this Release[/COLOR][/SIZE][LIST]
-[*]The proxy has become much more stable with this release, and has increased dramatically in functionality. Take the Smart Packet Analyzer for a spin to see what I mean.
-[*]We've also done some major refactoring of how Items are looked at, so all constants are actually item objects now.
-[*]Please note the list of renamed objects/properties/methods so you can update your code faster. [[URL="http://code.google.com/p/tibiaapi/wiki/ChangeLog"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/ChangeLog[/COLOR][/URL]]
+[*]We have added a very advanced feature, thanks to the TT+ team, and that is displaying text directly on the client through the use of an injected dynamic link library (DLL). Please check out the Screen object and the Smart Team Marker sample program for usage.
+[*]The rest of this release is mostly bug fixes and update to the newest version.
+[*]ATTENTION: We will be freezing the method signatures for the v3.0 release, which means our goal of using a new TibiaAPI dll to update existing programs will finally be realized!
 [/LIST]
 
 [SIZE=3][COLOR=Orange]About TibiaAPI[/COLOR][/SIZE][LIST]
@@ -15,14 +15,14 @@
 [*]Authors: Ian and ame, with special thanks to the [URL="http://www.codeplex.com/ktibiax"]KTibiaX[/URL] project and [URL="http://sourceforge.net/projects/evrebot/"]Evremonde[/URL].[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Documentation[/COLOR][/SIZE][LIST]
-[*]Docs will be updated to v2.2 soon...
+[*]Docs will be updated to v2.3 soon...
 [*]You can also view a list of the most important TibiaAPI objects and methods at Google Code:  [URL="http://code.google.com/p/tibiaapi/wiki/Features"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/wiki/Features[/COLOR][/URL]
 [*]In order to view the most recent documentation properly, it must be checked out of the SVN. See [URL="http://code.google.com/p/tibiaapi/source"][COLOR=DeepSkyBlue]http://code.google.com/p/tibiaapi/source[/COLOR][/URL] for more information.
 [*]The best way to find out what TibiaAPI offers is to download it yourself and check out the autocompletion in Visual Studio (or your IDE of choice).[/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Downloads [/COLOR][/SIZE][[URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Complete Listing[/COLOR][/URL]]
 [LIST]
-[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.2_06-06-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.2 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio and the latest Packet.dll
+[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.3_07-17-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.3 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio, the latest Packet.dll (Stiju), and the TibiaAPI Injected DLL
 [*]You can find many examples at the [URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Google Code download page[/COLOR][/URL].
 [/LIST]
 
