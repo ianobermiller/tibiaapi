@@ -8,12 +8,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x634610;
+        public static uint MapPointer = 0x634610; // 8.21
 
         /// <summary>
         /// Step between squares on the map.
         /// </summary>
-        public static uint Step_Square = 172;          //8.0
+        public static uint Step_Square = 172;
 
         /// <summary>
         /// Step between objects on a square.
@@ -35,15 +35,15 @@ namespace Tibia.Addresses
         /// <summary>
         /// Distance to the id of the object that is on a square.
         /// </summary>
-        public static uint Distance_Object_Id = 0;        //8.0
+        public static uint Distance_Object_Id = 0;
         /// <summary>
         /// Distance to the data of the object that is on a square.
         /// </summary>
-        public static uint Distance_Object_Data = 4;      //8.0
+        public static uint Distance_Object_Data = 4;
         /// <summary>
         /// Distance to the ExData (extra data) of the object that is on a square.
         /// </summary>
-        public static uint Distance_Object_Data_Ex = 8;   //8.0
+        public static uint Distance_Object_Data_Ex = 8;
 
         /// <summary>
         /// Maximum number of objects per tile.
@@ -78,7 +78,8 @@ namespace Tibia.Addresses
         /// <summary>
         /// Memory address for player tile
         /// </summary>
-        public static uint Player_Tile = 0x3E3A08; // 8.1
+        public static uint Player_Tile = 0x3E3A08; // 8.1, Doesn't appear to exist in 8.21
+
         /// <summary>
         /// Nop Value, to use with namespy and levelspy
         /// </summary>
@@ -87,23 +88,23 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4E9539;
+        public static uint NameSpy1 = 0x4E9539; // 8.21
 
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4E9543; 
+        public static uint NameSpy2 = 0x4E9543;  // 8.21
 
 
         /// <summary>
         /// Default value for Namespy1.
         /// </summary>
-        public static uint NameSpy1Default = 19061; //8.2 
+        public static uint NameSpy1Default = 19061;
         /// <summary>
         /// Default value for Namespy2.
         /// </summary>
-        public static uint NameSpy2Default = 16501; //8.2
+        public static uint NameSpy2Default = 16501;
 
         /// <summary>
         /// Level spy address 1.

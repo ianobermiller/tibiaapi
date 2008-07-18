@@ -185,9 +185,10 @@ namespace Tibia.Objects
         /// Find player on local map
         /// </summary>
         /// <returns></returns>
-        private Tile GetPlayerSquare()
+        public Tile GetPlayerSquare()
         {
-            return new Tile((uint)client.ReadShort(Addresses.Map.Player_Tile));
+            return GetCreatureSquare(client.ReadInt(Addresses.Player.Id));
+            //return new Tile((uint)client.ReadShort(Addresses.Map.Player_Tile));
         }
 
         /// <summary>
@@ -233,7 +234,7 @@ namespace Tibia.Objects
 
         #region Square Number <=> Location
         /// <summary>
-        /// Convert a tiles number to xyz coordinates.
+        /// Convert a tiles number to a local map location.
         /// </summary>
         /// <param name="squareNumber"></param>
         /// <returns></returns>
@@ -249,7 +250,7 @@ namespace Tibia.Objects
         }
         
         /// <summary>
-        /// Convert a location to a square number
+        /// Convert a local location to a square number.
         /// </summary>
         /// <param name="l"></param>
         /// <returns></returns>
@@ -277,10 +278,11 @@ namespace Tibia.Objects
             return newLoc;
         }
 
-        private uint GetMapSquareAddress(uint squareNumber)
+        public uint GetMapSquareAddress(uint squareNumber)
         {
             uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            return (uint)client.ReadInt((mapBegin + (Addresses.Map.Step_Square * squareNumber)));
+            uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
+            return address;
         }
         #endregion
 
@@ -328,17 +330,17 @@ namespace Tibia.Objects
         /// <summary>
         /// Get all the adjacent tiles to a global location, including the tile at that location
         /// </summary>
-        /// <param name="location"></param>
+        /// <param name="loc"></param>
         /// <returns></returns>
-        public List<MapSquare> GetAdjacentMapSquares(Location location)
+        public List<MapSquare> GetAdjacentMapSquares(Location loc)
         {
             List<MapSquare> squares = new List<MapSquare>(9);
-            Location local = ConvertGlobalToLocal(location);
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    squares.Add(GetMapSquare(OffsetLocalLocation(local, x, y)));
+                    Location offset = new Location(loc.X + x, loc.Y + y, loc.Z);
+                    squares.Add(GetMapSquare(offset));
                 }
             }
             return squares;
