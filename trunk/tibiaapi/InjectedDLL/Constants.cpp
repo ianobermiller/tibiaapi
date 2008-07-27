@@ -19,7 +19,6 @@ bool HookInjected = false;
 /* Pipes */
 std::string PipeName;
 bool PipeConnected = false;
-HANDLE PipeHandle = 0;
 HANDLE PipeThread = 0;
 BYTE Buffer[1024] = {0};
 CRITICAL_SECTION PipeReadCriticalSection;

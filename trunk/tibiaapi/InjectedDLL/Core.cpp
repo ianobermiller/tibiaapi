@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include <atlbase.h>
+#include <assert.h>
 #include "Constants.h"
 #include "Core.h"
 #include "Packet.h"
@@ -21,6 +23,10 @@ DWORD OldPrintName = 0;				//Used for restoring PrintText when uninjecting DLL
 DWORD OldPrintFPS = 0;				//Used for restroring PrintFPS when uninjecting DLL
 BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
 
+//Asynchronisation variables
+CHandle pipe;						//Holds the Pipe handle (CHandle is from ATL library)
+OVERLAPPED overlapped = { 0 };		
+DWORD errorStatus = ERROR_SUCCESS;
 
 /*Addresses are loaded from Constants.xml file */
 
@@ -362,26 +368,47 @@ void PipeOnRead(){
 }
 
 void PipeThreadProc(HMODULE Module){
-	DWORD br;
 	//Connect to Pipe
 	if (WaitNamedPipeA(PipeName.c_str(), NMPWAIT_WAIT_FOREVER)) {
-		PipeHandle = CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		PipeConnected = PipeHandle > 0;
-		if (!PipeConnected){
-			MessageBoxA(0, "Pipe connection failed!", "TibiaTekBot Injected DLL - Fatal Error", MB_ICONERROR);
+		pipe.Attach(::CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL));
+		if (pipe == INVALID_HANDLE_VALUE){
+			errorStatus = ::GetLastError();
+			MessageBoxA(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 			return;
 		} else {
 			//Pipe is ready. Let's start listening for incoming packets
-			do {
-				EnterCriticalSection(&PipeReadCriticalSection);
-				if (!ReadFile(PipeHandle, Buffer, 1024, &br, NULL))
-					break;
-				PipeOnRead();
-				LeaveCriticalSection(&PipeReadCriticalSection);
-			} while (true);
+			PipeConnected = true;
+			if(!::ReadFileEx(pipe, Buffer, sizeof(Buffer), &overlapped, ReadFileCompleted))
+			{
+				errorStatus = ::GetLastError();
+				MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+				return;
+			} else {
+				while (errorStatus == ERROR_SUCCESS)
+				{
+					const DWORD sleepResult = ::SleepEx(INFINITE, TRUE);
+					assert(WAIT_IO_COMPLETION == sleepResult);
+				}
+			}
 		}
 	} else {
 		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?.", "TibiaTekBot Injected DLL - Fatal Error", 0);
+	}
+}
+
+void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* overlapped)
+{
+	errorStatus = errorCode;;
+
+	if (errorStatus == ERROR_SUCCESS)
+	{
+		PipeOnRead();
+
+		if (!::ReadFileEx(pipe, Buffer, sizeof(Buffer), overlapped, ReadFileCompleted))
+		{
+			errorStatus = ::GetLastError();
+			MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		}
 	}
 }
 
@@ -411,6 +438,8 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 		{
 			TerminateThread(PipeThread, EXIT_SUCCESS);
 			DeleteCriticalSection(&PipeReadCriticalSection);
+			DeleteCriticalSection(&NormalTextCriticalSection);
+			DeleteCriticalSection(&CreatureTextCriticalSection);
 		}
 		break;
     }
