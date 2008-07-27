@@ -21,7 +21,6 @@ extern bool HookInjected;
 /* Pipes */
 extern std::string PipeName;
 extern bool PipeConnected;
-extern HANDLE PipeHandle;
 extern HANDLE PipeThread;
 extern BYTE Buffer[1024];
 extern CRITICAL_SECTION PipeReadCriticalSection;
