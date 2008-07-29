@@ -3,6 +3,68 @@
 #include <string>
 #include "Packet.h"
 
+Packet::Packet(){
+	m_Packet = new BYTE[MAX_PACKETSIZE];
+	o_Packet = 0;
+	m_PacketSize = 0;
+	m_CurrentPos = 0;
+}
+
+Packet::Packet(BYTE* Packet, int PacketSize){
+	m_Packet = Packet;
+	m_PacketSize = PacketSize;
+	m_CurrentPos = 0;
+}
+
+Packet::~Packet(){
+	delete [] m_Packet;
+	if (o_Packet != 0)
+		delete [] o_Packet;
+}
+
+void Packet::AddByte(BYTE value){
+	m_Packet[m_CurrentPos] = value;
+	m_CurrentPos++;
+	m_PacketSize++;
+}
+
+void Packet::AddShort(short value){
+	*(short*)(m_Packet + m_CurrentPos) = value;
+	m_CurrentPos += 2;
+	m_PacketSize += 2;
+}
+
+void Packet::AddWord(WORD value){
+	*(WORD*)(m_Packet + m_CurrentPos) = value;
+	m_CurrentPos += 2;
+	m_PacketSize += 2;
+}
+
+void Packet::AddDWord(DWORD value){
+	*(DWORD*)(m_Packet + m_CurrentPos) = value;
+	m_CurrentPos += 4;
+	m_PacketSize += 4;
+}
+
+void Packet::AddString(std::string value){
+	AddWord(value.length()); //Add string length to the packet
+	strcpy((char*)(m_Packet + m_CurrentPos), value.c_str());
+	m_CurrentPos += value.length();
+	m_PacketSize += value.length();
+}
+
+BYTE* Packet::GetPacket(){
+	o_Packet = new BYTE[m_PacketSize+2];
+	memcpy(o_Packet + 2, m_Packet, m_PacketSize); //Copy packet to outgoing packet
+	*(WORD*)o_Packet = m_PacketSize; //Copy packet size to the start
+	return o_Packet;
+}
+
+int Packet::GetSize(){
+	return m_PacketSize + 2;
+}
+
+
 BYTE Packet::ReadByte(BYTE *buffer, int *offset){
 	return buffer[(*offset)++];
 }
