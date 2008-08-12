@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x779DB4; //8.21
+        public static uint XTeaKey = 0x77BDB4; //8.22
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
@@ -34,7 +34,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x102B74; //8.21
+        public static uint MultiClient = 0x102B94; //8.22
 
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x77D3F8; //8.21
+        public static uint Status = 0x77F3F8; //8.22
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -79,7 +79,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x77EA58; //8.21
+        public static uint Statusbar_Text = 0x781270; //8.22
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
@@ -198,7 +198,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x77D3C4; // 8.21
+        public static uint LoginPassword = 0x77F3E4; // 8.22
         public static uint LoginAccountStr = LoginPassword + 32;
         public static uint LoginAccountNum = LoginAccountStr + 12;
 

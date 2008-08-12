@@ -597,5 +597,26 @@ namespace Tibia.Objects
             return false;
         }
         #endregion
+
+        #region Full Light
+        /// <summary>
+        /// Enable or disable full light.
+        /// </summary>
+        /// <param name="enable"></param>
+        /// <returns></returns>
+        public void FullLight(bool enable)
+        {
+            if (enable)
+            {
+                client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
+                client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
+            }
+            else
+            {
+                client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
+                client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
+            }
+        }
+        #endregion
     }
 }
