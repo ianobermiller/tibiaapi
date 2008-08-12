@@ -519,7 +519,12 @@ namespace Tibia.Constants
         Inviter = 1,
         Invitee = 2,
         Member = 3,
-        Leader = 4
+        Leader = 4,
+        MemberSharedExp = 5,
+        LeaderSharedExp = 6,
+        MemberSharedExpInactive = 7,
+        LeaderSharedExpInactive = 8
+
     }
 
     public enum CreatureType : byte
