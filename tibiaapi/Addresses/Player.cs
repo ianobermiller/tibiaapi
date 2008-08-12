@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// Total number of equipment slots (accessed 0-10)
         /// </summary>
         public static int Max_Slots = 11;
-        public static uint Slot_Head = 0x62D190; // 8.21
+        public static uint Slot_Head = 0x62F190; // 8.22
         public static uint Slot_Neck = Slot_Head + 12;
         public static uint Slot_Backpack = Slot_Head + 24;
         public static uint Slot_Armor = Slot_Head + 36;
@@ -66,11 +66,11 @@ namespace Tibia.Addresses
 
 
 
-        public static uint CurrentTileToGo = 0x624C78; // 8.21
-        public static uint TilesToGo = 0x624C7C; // 8.21
+        public static uint CurrentTileToGo = 0x626C78; // 8.22
+        public static uint TilesToGo = 0x626C7C; // 8.22
 
 
-        public static uint RedSquare = 0x624C3C; // 8.21
+        public static uint RedSquare = 0x626C3C; // 8.22
         public static uint GreenSquare = RedSquare - 4;
         public static uint WhiteSquare = GreenSquare - 8;
 

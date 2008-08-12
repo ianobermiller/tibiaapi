@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x634610; // 8.21
+        public static uint MapPointer = 0x636610; // 8.22
 
         /// <summary>
         /// Step between squares on the map.
