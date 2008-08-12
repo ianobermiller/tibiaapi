@@ -29,8 +29,9 @@ namespace Tibia.Objects
         public bool InParty()
         {
             Constants.Party party = Party;
-            return (party == Constants.Party.Member || party == Constants.Party.Leader);
+            return (party == Constants.Party.Member || party == Constants.Party.Leader || party == Constants.Party.LeaderSharedExp || party == Constants.Party.LeaderSharedExpInactive || party == Constants.Party.MemberSharedExp || party == Constants.Party.MemberSharedExpInactive);
         }
+
 
         /// <summary>
         /// Check if the current creature is actually yourself.
