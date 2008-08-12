@@ -5,7 +5,7 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Player
     {
-        public static uint Exp = 0x624C64; // 8.21
+        public static uint Exp = 0x626C64; // 8.22
 
         public static uint GoTo_X = Exp + 80;
         public static uint GoTo_Y = Exp + 76;
@@ -85,6 +85,6 @@ namespace Tibia.Addresses
         /// <summary>
         /// Static address for player Z, used for level spy
         /// </summary>
-        public static uint Z = 0x624E3C; // 8.21
+        public static uint Z = 0x631AF8; // 8.22
     }
 }

@@ -88,13 +88,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4E9539; // 8.21
+        public static uint NameSpy1 = 0x4E95F9; // 8.22
 
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4E9543;  // 8.21
+        public static uint NameSpy2 = 0x4E9603;  // 8.22
 
 
         /// <summary>
@@ -109,25 +109,25 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4EB3EA;
+        public static uint LevelSpy1 = 0x4EB4AA;  // 8.22
 
 
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4EB4EF; 
+        public static uint LevelSpy2 = 0x4EB5AF;  // 8.22
 
 
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4EB570; 
+        public static uint LevelSpy3 = 0x4EB630;  // 8.22
 
 
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x62C754;
+        public static uint LevelSpyPtr = 0x62E754;  // 8.22
 
         /// <summary>
         /// Defaults for level spy.
@@ -146,12 +146,23 @@ namespace Tibia.Addresses
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x45C003; 
+        public static uint RevealInvisible1 = 0x45BF63;  // 8.22
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
 
-        public static uint RevealInvisible2 = 0x4E8805;
+        public static uint RevealInvisible2 = 0x4E88C5;  // 8.22
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
+
+        /// <summary>
+        /// Global light, all floors, used for improving levelspy
+        /// </summary>
+        public static uint FullLightNop = 0x4E1DA9;  // 8.22
+        public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
+        public static byte[] FullLightNopEdited = { 0x90, 0x90 };
+
+        public static uint FullLightAdr = 0x4E1DAC;  // 8.22
+        public static byte FullLightAdrDefault = 0x80;
+        public static byte FullLightAdrEdited = 0xFF;
     }
 }
