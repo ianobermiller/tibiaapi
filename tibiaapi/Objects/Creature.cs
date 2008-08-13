@@ -54,7 +54,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAttacking()
         {
-            return BlackSquare > (Environment.TickCount - client.StartTime);
+            return BlackSquare == 0;
         }
 
         /// <summary>
@@ -78,6 +78,15 @@ namespace Tibia.Objects
         public bool Look()
         {
             return client.Send(Packets.LookAtPacket.Create(client, Location, 0x63, 1));
+        }
+
+        /// <summary>
+        /// Gets the distance between player and creature / player.
+        /// </summary>
+        /// <returns></returns>
+        public int DistanceTo(Location l)
+        {
+            return Location.DistanceTo(l);
         }
 
         public uint Address

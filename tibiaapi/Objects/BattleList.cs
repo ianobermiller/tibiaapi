@@ -124,6 +124,48 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get list of creatures around location.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="radius"></param>
+        /// <param name="floor"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesAroundLocation(Location location, int maxDistance)
+        {
+            return GetCreaturesAroundLocation(location, maxDistance, true, true);
+        }
+
+        /// <summary>
+        /// Get list of creatures around location.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="radius"></param>
+        /// <param name="floor"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesAroundLocation(Location location, int maxDistance, bool sameFloor)
+        {
+            return GetCreaturesAroundLocation(location, maxDistance, sameFloor, true);
+        }
+
+        /// <summary>
+        /// Get list of creatures around location.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="radius"></param>
+        /// <param name="floor"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        public List<Creature> GetCreaturesAroundLocation(Location location, int maxDistance, bool sameFloor, bool onlyMonsters)
+        {
+            return GetCreatures().FindAll(delegate(Creature c)
+            {
+                return c.DistanceTo(location) <= maxDistance && (c.Z == location.Z || !sameFloor) && (c.Type == Tibia.Constants.CreatureType.NPC || !onlyMonsters) && (!c.IsSelf());
+            });
+        }
+
+        /// <summary>
         /// Get a list of creatures with the specified name, ignoring spaces.
         /// </summary>
         /// <param name="creatureName"></param>

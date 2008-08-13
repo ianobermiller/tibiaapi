@@ -657,6 +657,16 @@ namespace Tibia.Objects
                 return false;
         }
 
+        /// <summary>
+        /// Gets or sets the follow mode.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.Follow FollowMode
+        {
+            get { return (Constants.Follow)ReadByte(Addresses.Client.FollowMode); }
+            set { WriteByte(Addresses.Client.FollowMode, (byte)value); }
+        }
+
         #region Transform Items
         /// <summary>
         /// Transform the specified item with the default options.
