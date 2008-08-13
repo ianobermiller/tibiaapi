@@ -71,6 +71,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets the distance between locations.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
+        public int DistanceTo(Location l)
+        {
+            return (Math.Abs(X - l.X) > Math.Abs(Y - l.Y) ? Math.Abs(X - l.X) : Math.Abs(Y - l.Y));
+        }
+
+        /// <summary>
         /// Return a Location structure from a string.
         /// </summary>
         /// <param name="s"></param>
