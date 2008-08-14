@@ -14,7 +14,7 @@
  * [CodeSamples#Change_your_players_outfit_type_and_addon Change your players outfit type and addon]
  * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
  * [CodeSamples#Make_a_simple_lighthack Make a simple lighthack]
- * [CodeSamples#Draw_player's_hitpoints_ in_percents_above_his_name Draw player's hitpoints in percents above his name]
+ * [CodeSamples#Draw_players_hitpoints_in_percents_above_his_name Draw players hitpoints in percents above his name]
 
 == Get a client object to work with ==
 *C#*
@@ -259,7 +259,7 @@ player.Light = Tibia.Constants.LightSize.Full;
 player.LightColor = Tibia.Constants.LightColor.White;
 }}}
 
-== Draw player's hitpoints in percents above his name ==
+== Draw players hitpoints in percents above his name ==
 *C#*
 {{{
 Player player=client.GetPlayer();
