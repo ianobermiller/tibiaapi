@@ -69,7 +69,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAdjacentTo(Location loc)
         {
-            return DistanceTo(loc) &&
+            return DistanceTo(loc) <= 1 &&
                 loc.Z == Z;
         }
 
