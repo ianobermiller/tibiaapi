@@ -52,9 +52,10 @@ namespace SmartPacketAnalyzer
             else
             {
                 client.StartProxy();
-                client.Proxy.ReceivedPacketFromClient += (Proxy.PacketListener)PacketFromClient;
-                client.Proxy.ReceivedPacketFromServer += (Proxy.PacketListener)PacketFromServer;
-                client.Proxy.SplitPacketFromServer += (Proxy.PacketListener)SplitPacketFromServer;
+                client.Proxy.ReceivedPacketFromClient += PacketFromClient;
+                client.Proxy.ReceivedPacketFromServer += PacketFromServer;
+                client.Proxy.SplitPacketFromServer += SplitPacketFromServer;
+                client.Proxy.ReceivedStatusMessagePacket += ReceivedStatusMessagePacket;
                 uxTimerShort.Enabled = true;
             }
 
@@ -122,6 +123,21 @@ namespace SmartPacketAnalyzer
                 {
                     LogPacket(packet.Data, "SERVER", "CLIENT");
                 }
+            }
+            return true;
+        }
+
+        private bool ReceivedStatusMessagePacket(Packet packet)
+        {
+            StatusMessagePacket p = (StatusMessagePacket)packet;
+            if (p.Color == StatusMessageType.Description && p.Message.StartsWith("You see "))
+            {
+                client.Send(
+                    StatusMessagePacket.Create(
+                        client,
+                        StatusMessageType.Description,
+                        p.Message + " [" + client.ReadInt(Tibia.Addresses.Client.Click_Id) + "]"));
+                return false;
             }
             return true;
         }
