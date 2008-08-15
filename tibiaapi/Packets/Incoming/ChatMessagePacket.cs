@@ -66,7 +66,7 @@ namespace Tibia.Packets
                     case ChatType.Whisper:
                     case ChatType.Yell:
                     case ChatType.Monster:
-                    case ChatType.NPC:
+                    case ChatType.PrivateNpcToPlayer:
                     case ChatType.MonsterYell:
                         location = p.GetLocation();
                         break;
