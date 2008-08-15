@@ -529,9 +529,9 @@ namespace Tibia.Constants
 
     public enum CreatureType : byte
     {
-        Player = 0,
-        Target = 1,
-        NPC = 64
+        Player = 0x0,
+        Target = 0x1,
+        NPC = 0x40
     }
 
     #endregion

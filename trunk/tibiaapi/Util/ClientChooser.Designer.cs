@@ -54,6 +54,7 @@ namespace Tibia.Util
             // uxChoose
             // 
             this.uxChoose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxChoose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.uxChoose.Location = new System.Drawing.Point(221, 3);
             this.uxChoose.Name = "uxChoose";
             this.uxChoose.Size = new System.Drawing.Size(62, 23);
@@ -131,6 +132,7 @@ namespace Tibia.Util
             // 
             // ClientChooser
             // 
+            this.AcceptButton = this.uxChoose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(287, 110);
