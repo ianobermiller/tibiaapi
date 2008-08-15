@@ -160,17 +160,15 @@ namespace Tibia.Packets
 
     public enum StatusMessageType : byte
     {
-	    ConsoleYellow	    = 0x01, //Yellow, console
-	    ConsoleLightBlue    = 0x04, //Light blue, console
-	    ConsoleOrange	    = 0x11, //Orange, console
-	    Warning			    = 0x12, //Red, center, console
-	    EventAdvance		= 0x13, //White, center, console
-	    EventDefault		= 0x14, //White, bottom, console
-	    Default			    = 0x15, //White, bottom, console
-	    Description			= 0x16, //Green, center, console
-	    SmallStatus			= 0x17, //White, bottom
-	    ConsoleBlue		    = 0x18, //Blue, console
-	    ConsoleRed		    = 0x19, //Red, console
+        ConsoleRed          = 0x11, //Red, console
+        ConsoleOrange       = 0x13, //Orange, console
+	    Warning			    = 0x14, //Red, center, console
+	    EventAdvance		= 0x15, //White, center, console
+	    EventDefault		= 0x16, //White, bottom, console
+	    Default			    = 0x17, //White, bottom, console
+	    Description			= 0x18, //Green, center, console
+	    SmallStatus			= 0x19, //White, bottom
+	    ConsoleBlue		    = 0x1A, //Blue, console
     }
 
     public enum TextColor : byte
