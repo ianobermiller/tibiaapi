@@ -56,18 +56,29 @@ namespace Tibia.Util
             timer = new System.Threading.Timer(new TimerCallback(Tick), null, 0, interval);
         }
 
+        /// <summary>
+        /// Starts the timer with a specified delay.
+        /// </summary>
+        /// <param name="delayBeforeStart"></param>
         public void Start(int delayBeforeStart)
         {
             timerState = TimerState.Running;
             timer.Change(delayBeforeStart, timerInterval);
         }
 
+        /// <summary>
+        /// Starts the timer instantly.
+        /// </summary>
         public void Start()
         {
             timerState = TimerState.Running;
             timer.Change(0, timerInterval);
         }
 
+        /// <summary>
+        /// Stops the timer.
+        /// Note: Running threads won't be closed.
+        /// </summary>
         public void Stop()
         {
             timerState = TimerState.Stopped;
@@ -85,6 +96,9 @@ namespace Tibia.Util
             }
         }
 
+        /// <summary>
+        /// Gets the state of the timer.
+        /// </summary>
         public TimerState State
         {
             get
@@ -93,6 +107,9 @@ namespace Tibia.Util
             }
         }
 
+        /// <summary>
+        /// Gets or sets the timer interval.
+        /// </summary>
         public long Interval
         {
             get

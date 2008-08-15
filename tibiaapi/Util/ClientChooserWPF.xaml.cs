@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Tibia.Objects;
 using Microsoft.Win32;
 
@@ -34,6 +35,9 @@ namespace Tibia.Util
         private const string LoginServerEnabled = "Enabled";
         private const string LoginServerDisabled = "Disabled";
 
+        private string _filename = "";
+
+        private ClientChooserOptions options;
         
         public ClientChooserWPF()
         {
@@ -60,7 +64,7 @@ namespace Tibia.Util
         /// <returns></returns>
         public static Client ShowBox(ClientChooserOptions options)
         {
-            List<Objects.Client> clients = null;
+              List<Objects.Client> clients = null;
             if (options.LookUpClients)
                 clients = Objects.Client.GetClients();
             if (options.Smart && options.LookUpClients && !options.ShowOTOption && clients != null && clients.Count == 1)
@@ -80,6 +84,35 @@ namespace Tibia.Util
                         newClientChooser.uxClients.Items.Add(NewClientDefaultText);
                     }
                 }
+
+                //TODO HERE LOADING PART
+                /*##############################*/
+                if (options.SaveClientPath == true)
+                {
+                    if (File.Exists(options.SavedClientPathsLocation))
+                    {
+                        try
+                        {
+                            XmlDocument document = new XmlDocument();
+                            document.Load(options.SavedClientPathsLocation);
+                            string path;
+                            string version;
+                            foreach (XmlElement clientPath in document["clientPaths"]){
+                                path = clientPath.GetAttribute("location");
+                                version = clientPath.GetAttribute("version");
+                                newClientChooser.uxClients.Items.Add(new ClientPathInfo(path, version));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+
+
+                /*###############################*/
+
                 newClientChooser.uxClients.Items.Add(NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
@@ -90,6 +123,7 @@ namespace Tibia.Util
                 }
                 if (newClientChooser.uxLoginServer.Items.Count > 0)
                     newClientChooser.uxLoginServer.SelectedIndex = 0;
+                newClientChooser.options = options;
                 newClientChooser.ShowDialog();
                 return client;
             }
@@ -97,7 +131,7 @@ namespace Tibia.Util
 
         private void uxChoose_Click(object sender, RoutedEventArgs e)
         {
-            ChooseClient();
+            ChooseClient(newClientChooser.options);
         }
 
         private void uxUseOT_Expanded(object sender, RoutedEventArgs e)
@@ -114,7 +148,7 @@ namespace Tibia.Util
             uxLoginServerLabel.Foreground = Brushes.PaleVioletRed;
         }
 
-        private void ChooseClient()
+        private void ChooseClient(ClientChooserOptions options)
         {
             if (uxClients.SelectedItem.GetType() == typeof(string))
             {
@@ -135,6 +169,61 @@ namespace Tibia.Util
                             if (fvi.ProductName.Equals("Tibia Player"))
                             {
                                 client = Client.Open(dialog.FileName);
+                                _filename = dialog.FileName;
+                                if (options.SaveClientPath == true)
+                                {
+                                    //Save file in XML format
+                                    XmlDocument document = new XmlDocument();
+                                    XmlElement clientPaths = null;
+                                    bool exists = false;
+                                    if (File.Exists(options.SavedClientPathsLocation))
+                                    {
+                                        document.Load(options.SavedClientPathsLocation);
+                                        clientPaths = document["clientPaths"];
+                                        foreach (XmlElement clientPath in clientPaths){
+                                            if (clientPath.GetAttribute("location").Equals(dialog.FileName))
+                                            {
+                                                if (document["clientPaths"].FirstChild != clientPath)
+                                                {
+                                                    document["clientPaths"].RemoveChild(clientPath);
+                                                    document["clientPaths"].InsertBefore(clientPath, document["clientPaths"].FirstChild);
+                                                }
+                                                document.Save(options.SavedClientPathsLocation);
+                                                if (!clientPath.GetAttribute("version").Equals(fvi.FileVersion))
+                                                {
+                                                    clientPath.SetAttribute("version", fvi.FileVersion);
+                                                    document.Save(options.SavedClientPathsLocation);
+                                                    exists = true;
+                                                    break;
+                                                }
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        XmlDeclaration Declaration = document.CreateXmlDeclaration("1.0", "", "");
+                                        document.AppendChild(Declaration);
+                                        clientPaths = document.CreateElement("clientPaths");
+                                        document.AppendChild(clientPaths);
+                                    }
+                                    if (!exists)
+                                    {
+                                        XmlElement clientPath = document.CreateElement("clientPath");
+                                        XmlAttribute location = document.CreateAttribute("location");
+                                        location.InnerText = dialog.FileName;
+                                        XmlAttribute version = document.CreateAttribute("version");
+                                        version.InnerText = fvi.FileVersion;
+
+                                        clientPath.Attributes.Append(location);
+                                        clientPath.Attributes.Append(version);
+                                        clientPaths.AppendChild(clientPath);
+
+                                        document.Save(options.SavedClientPathsLocation);
+                                    }
+                                }
+
                             }
                             else
                             {
@@ -154,6 +243,10 @@ namespace Tibia.Util
                 //if (client != null)
                 //    System.Threading.Thread.Sleep(1000);
             }
+            else if (uxClients.SelectedItem.GetType() == typeof(ClientPathInfo))
+            {
+                client = Client.Open(((ClientPathInfo)uxClients.SelectedItem).Path);
+            }
             else
             {
                 client = (Client)uxClients.SelectedItem;
@@ -170,10 +263,20 @@ namespace Tibia.Util
             newClientChooser.Close();
         }
 
+
+
+        public string FileName
+        {
+            get
+            {
+                return _filename;
+            }
+        }
+
         private void CommonKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-                ChooseClient();
+                ChooseClient(newClientChooser.options);
         }
     }
 }

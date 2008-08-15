@@ -64,9 +64,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Attack()
         {
-            int creatureId = Id;
-            client.WriteInt(Addresses.Player.Target_ID, creatureId);
-            return client.Send(Packets.AttackPacket.Create(client, creatureId));
+            client.WriteInt(Addresses.Player.Target_ID, Id);
+            return client.Send(Packets.AttackPacket.Create(client, Id));
         }
 
         /// <summary>

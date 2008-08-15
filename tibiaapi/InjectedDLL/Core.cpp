@@ -143,7 +143,7 @@ void __declspec(noreturn) UninjectSelf(HMODULE Module)
    }
 }
 
-void PipeOnRead(){
+inline void PipeOnRead(){
 	int position=0;
 	WORD len  = 0;
 	len = Packet::ReadWord(Buffer, &position);

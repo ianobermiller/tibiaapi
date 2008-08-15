@@ -177,9 +177,20 @@ namespace Tibia.Util
         public bool LookUpClients = true;
 
         /// <summary>
-        /// Default
+        /// Saves the selected client's path
         /// </summary>
-        public string[] addresses = new string[]{
+        public bool SaveClientPath = true;
+
+        /// <summary>
+        /// Location of where to read/save the selected client's path. Default: %APPDATA%\TibiaAPI\clientPaths.xml.
+        /// </summary>
+        public string SavedClientPathsLocation = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"TibiaAPI\clientPaths.xml");
+
+        public List<string> addresses;
+
+        public ClientChooserOptions(){
+            clientPaths = new List<string>();
+            addresses = new List<string>(new string[]{
             "login01.tibia.com:7171",
             "login02.tibia.com:7171",
             "login03.tibia.com:7171",
@@ -190,11 +201,13 @@ namespace Tibia.Util
             "tibia03.cipsoft.com:7171",
             "tibia04.cipsoft.com:7171",
             "tibia05.cipsoft.com:7171"
-        };
+            });
+
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public string[] clientPaths = new string[]{""};
+        public List<string> clientPaths;
     }
 }

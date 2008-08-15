@@ -118,4 +118,22 @@ namespace Tibia.Objects
             height = r.bottom - r.top;
         }
     }
+
+    public struct ClientPathInfo
+    {
+        public string Path;
+        public string Version;
+
+        public ClientPathInfo(string path, string version)
+        {
+            Path = path;
+            Version = version;
+        }
+
+
+        public override string ToString()
+        {
+            return Path + " [" + Version + "]";
+        }
+    }
 }
