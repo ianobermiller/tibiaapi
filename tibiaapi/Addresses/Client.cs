@@ -69,12 +69,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x76DB78; //8.1, 8.0 = 0x7686A8
+        public static uint LastMSGText = 0x7814C0; //8.22
 
         /// <summary>
         /// The last player to send a message to the default channel.
         /// </summary>
-        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.1, 8.0 = 0x768680
+        public static uint LastMSGAuthor = LastMSGText - 0x28; //8.22
 
         /// <summary>
         /// The statusbar text to be displayed.
