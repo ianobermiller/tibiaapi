@@ -392,7 +392,7 @@ void PipeThreadProc(HMODULE Module){
 			}
 		}
 	} else {
-		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?.", "TibiaTekBot Injected DLL - Fatal Error", 0);
+		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?.", "TibiaAPI Injected DLL - Fatal Error", 0);
 	}
 }
 
