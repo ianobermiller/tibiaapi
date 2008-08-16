@@ -125,6 +125,7 @@ namespace Tibia.Util
 
     public enum TimerState {
         Stopped,
-        Running
+        Running,
+        Paused
     }
 }
