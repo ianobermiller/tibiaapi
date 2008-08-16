@@ -76,6 +76,16 @@ namespace Tibia.Util
         }
 
         /// <summary>
+        /// Pauses the timer.
+        /// Note: Running threads won't be closed.
+        /// </summary>
+        public void Pause()
+        {
+            timerState = TimerState.Paused;
+            timer.Change(Timeout.Infinite, timerInterval);
+        }
+
+        /// <summary>
         /// Stops the timer.
         /// Note: Running threads won't be closed.
         /// </summary>
