@@ -667,6 +667,16 @@ namespace Tibia.Objects
             set { WriteByte(Addresses.Client.FollowMode, (byte)value); }
         }
 
+        /// <summary>
+        /// Gets or sets the action state.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.ActionState ActionState
+        {
+            get { return (Constants.ActionState)ReadByte(Addresses.Client.ActionState); }
+            set { WriteByte(Addresses.Client.ActionState, (byte)value); }
+        }
+
         #region Transform Items
         /// <summary>
         /// Transform the specified item with the default options.
