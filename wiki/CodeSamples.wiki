@@ -151,22 +151,20 @@ Put the following in a button's click event. This example captures the hotkey Ct
 if (!KeyboardHook.Enabled)
 {
 	KeyboardHook.Enable();
-	KeyboardHook.KeyDown = null;
-	KeyboardHook.KeyDown += new KeyboardHook.HookHandler(delegate(Keys key)
-	{
-		if (client.IsActive())
-		{
-			if (KeyboardHook.Control && KeyboardHook.Alt && key == Keys.A)
-			{
-				string text = "You want to capture the hotkey " +
-				KeyboardHook.KeyToString(key) + " in Tibia!";
-				MessageBox.Show(text);
-				return false;
-			}
-		}
-		return true;
-	});
-	KeyboardHook.KeyDown += null;
+	KeyboardHook.Add(Keys.A, new KeyboardHook.KeyPressed(delegate()
+      {
+      	if (Client.IsActive)
+            {
+            	if (KeyboardHook.Control && KeyboardHook.Alt)
+                  {
+                        string text = "You want to capture the hotkey " +
+                        Tibia.KeyboardHook.KeyToString(Keys.A) + " in Tibia!";
+                        MessageBox.Show(text);
+            	      return false;
+      	      }
+            }
+      	return true;
+      }));
 }
 else
 {
