@@ -34,6 +34,16 @@ namespace Tibia
         public static bool Win = false;
 
         /// <summary>
+        /// The function prototype for keypresses.
+        /// </summary>
+        public delegate bool KeyPressed();
+
+        /// <summary>
+        /// Keys handled and their callbacks
+        /// </summary>
+        private static System.Collections.Generic.Dictionary<Keys, KeyPressed> handledKeys = new System.Collections.Generic.Dictionary<Keys, KeyPressed>();
+
+        /// <summary>
         /// Delegate for handling a key down event.
         /// </summary>
         /// <param name="key">The key that was pressed. Check Control, Shift, Alt, and Win for modifiers.</param>
@@ -149,10 +159,35 @@ namespace Tibia
             return result ? Hooks.CallNextHookEx(hHook, nCode, wParam, lParam) : new IntPtr(1);
         }
 
+        /// <summary>
+        /// Adds a key to the hook.
+        /// </summary>
+        /// <param name="key">The key to be added.</param>
+        /// <param name="callback">The function to be called when the key is pressed.</param>
+        public static bool Add(Keys key, KeyPressed callback)
+        {
+            if (!handledKeys.ContainsKey(key))
+            {
+                handledKeys.Add(key, callback);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Removes a key from the hook.
+        /// </summary>
+        /// <param name="key">The key to be removed.</param>
+        public static bool Remove(Keys key)
+        {
+            return handledKeys.Remove(key);
+        }
+
         private static bool OnKeyDown(Keys key)
         {
-            if (KeyDown != null)
-                return KeyDown(key);
+            if (handledKeys.ContainsKey(key))
+                return handledKeys[key]();
             else
                 return true;
         }
