@@ -145,6 +145,8 @@ namespace Tibia.Util
         public PacketListener ReceivedMapItemAddPacket;
         public PacketListener ReceivedMapItemRemovePacket;
         public PacketListener ReceivedMapItemUpdatePacket;
+        public PacketListener ReceivedNpcTradeListPacket;
+        public PacketListener ReceivedNpcTradeGoldCountPacket;
         public PacketListener ReceivedPartyInvitePacket;
         public PacketListener ReceivedPrivateChannelOpenPacket;
         public PacketListener ReceivedProjectilePacket;
@@ -668,6 +670,18 @@ namespace Tibia.Util
                     length = p.Index;
                     if (ReceivedMapItemUpdatePacket != null)
                         return ReceivedMapItemUpdatePacket(p);
+                    break;
+                case PacketType.NpcTradeList:
+                    p = new NpcTradeListPacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedNpcTradeListPacket != null)
+                        return ReceivedNpcTradeListPacket(p);
+                    break;
+                case PacketType.NpcTradeGoldCount:
+                    p = new NpcTradeGoldCountPacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedNpcTradeGoldCountPacket != null)
+                        return ReceivedNpcTradeGoldCountPacket(p);
                     break;
                 case PacketType.PartyInvite:
                     p = new PartyInvitePacket(client, packet);

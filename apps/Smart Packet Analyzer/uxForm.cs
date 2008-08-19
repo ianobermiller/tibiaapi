@@ -306,6 +306,20 @@ namespace SmartPacketAnalyzer
         {
             DisplayPacket();
         }
+
+        private void uxPacketList_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (uxPacketList.SelectedItems.Count > 0)
+                {
+                    foreach (ListViewItem item in uxPacketList.SelectedItems)
+                    {
+                        uxPacketList.Items.Remove(item);
+                    }
+                }
+            }
+        }
     }
 
     public struct CapturedPacket

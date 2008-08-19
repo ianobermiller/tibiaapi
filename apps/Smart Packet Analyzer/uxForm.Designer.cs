@@ -374,6 +374,7 @@ namespace SmartPacketAnalyzer
             this.uxPacketList.UseCompatibleStateImageBehavior = false;
             this.uxPacketList.View = System.Windows.Forms.View.Details;
             this.uxPacketList.SelectedIndexChanged += new System.EventHandler(this.uxPacketList_SelectedIndexChanged);
+            this.uxPacketList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.uxPacketList_KeyUp);
             // 
             // TimeCol
             // 

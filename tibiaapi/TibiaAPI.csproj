@@ -102,6 +102,7 @@
     <Compile Include="Packets\Incoming\ContainerItemRemove.cs" />
     <Compile Include="Packets\Incoming\ContainerItemUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\BadLoginPacket.cs" />
+    <Compile Include="Packets\Incoming\NpcTradeGoldCountPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSkullPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSpeedPacket.cs" />
     <Compile Include="Packets\Incoming\FlagUpdatePacket.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Packets\Incoming\PartyInvitePacket.cs" />
     <Compile Include="Packets\Incoming\PrivateChannelOpenPacket.cs" />
     <Compile Include="Packets\Incoming\SkillUpdatePacket.cs" />
-    <Compile Include="Packets\Incoming\TradeBoxOpenPacket.cs" />
+    <Compile Include="Packets\Incoming\NpcTradeListPacket.cs" />
     <Compile Include="Packets\Incoming\VipAddPacket.cs" />
     <Compile Include="Packets\Incoming\VipLogoutPacket.cs" />
     <Compile Include="Packets\Incoming\WorldLightPacket.cs" />
