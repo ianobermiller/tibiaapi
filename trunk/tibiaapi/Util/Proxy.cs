@@ -41,7 +41,7 @@ namespace Tibia.Util
         private bool           isLoggedIn = false;
         private int            loginDelay = 250;
         private short          localPort;
-        public Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
+        private Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
         private Queue<byte[]>  clientSendQueue = new Queue<byte[]>();
         private Queue<byte[]>  serverSendQueue = new Queue<byte[]>();
@@ -426,7 +426,13 @@ namespace Tibia.Util
             netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
         }
 
-        public void ProcessServerReceiveQueue()
+        public void TestServerReceive(byte[] data)
+        {
+            serverReceiveQueue.Enqueue(data);
+            ProcessServerReceiveQueue();
+        }
+
+        private void ProcessServerReceiveQueue()
         {
             if (serverReceiveQueue.Count > 0)
             {
@@ -470,7 +476,7 @@ namespace Tibia.Util
                         // Process the packet
                         forward = RaiseIncomingEvents(decrypted, ref length);
 
-                        // If packet not found in database, forward the rest
+                        // If packet not found in database, skip the rest
                         if (length == -1)
                         {
                             SendToClient(decrypted);
@@ -675,6 +681,12 @@ namespace Tibia.Util
                     if (ReceivedPrivateChannelOpenPacket != null)
                         return ReceivedPrivateChannelOpenPacket(p);
                     break;
+                case PacketType.Projectile:
+                    p = new ProjectilePacket(client, packet);
+                    length = p.Index;
+                    if (ReceivedProjectilePacket != null)
+                        return ReceivedProjectilePacket(p);
+                    break;
                 case PacketType.SkillUpdate:
                     p = new SkillUpdatePacket(client, packet);
                     if (ReceivedSkillUpdatePacket != null)
@@ -822,6 +834,8 @@ namespace Tibia.Util
 
         private void Stop()
         {
+            if (netStreamClient == null) return;
+
             connected = false;
             netStreamClient.Close();
             if (netStreamServer != null)
