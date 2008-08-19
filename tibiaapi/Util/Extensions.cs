@@ -75,6 +75,19 @@ namespace Tibia
             return (byte)value;
         }
 
+        /// <summary>
+        /// Converts a string to a byte array
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static byte[] ToByteArray(this string s)
+        {
+            List<byte> value = new List<byte>();
+            foreach (char c in s.ToCharArray())
+                value.Add(c.ToByte());
+            return value.ToArray();
+        }
+
         /// <summary>Convert a string of hex digits (ex: E4 CA B2) to a byte array.</summary>
         /// <param name="s">The string containing the hex digits (with or without spaces).</param>
         /// <returns>Returns an array of bytes.</returns>

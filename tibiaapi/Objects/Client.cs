@@ -513,6 +513,11 @@ namespace Tibia.Objects
         {
             return Memory.WriteString(handle, address, str);
         }
+
+        public bool WriteStringNoEncoding(long address, string str)
+        {
+            return Memory.WriteStringNoEncoding(handle, address, str);
+        }
         #endregion
 
         #region Override Functions
@@ -1048,7 +1053,7 @@ namespace Tibia.Objects
             if (!File.Exists(filename)) return false;
             // Get a block of memory to store the filename in the client
             IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(process.Handle, IntPtr.Zero, (uint)filename.Length, Util.WinApi.MEM_COMMIT | Util.WinApi.MEM_RESERVE, Util.WinApi.PAGE_READWRITE);
-            WriteString(remoteAddress.ToInt32(), filename);
+            WriteStringNoEncoding(remoteAddress.ToInt32(), filename);
             IntPtr thread = Util.WinApi.CreateRemoteThread(process.Handle, IntPtr.Zero, 0, Util.WinApi.GetProcAddress(Util.WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"), remoteAddress, 0, IntPtr.Zero);
             Util.WinApi.VirtualFreeEx(process.Handle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
             return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
