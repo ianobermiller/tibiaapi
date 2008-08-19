@@ -4,7 +4,7 @@ using Tibia.Objects;
 
 namespace Tibia.Packets
 {
-    public class TradeBoxOpenPacket : Packet
+    public class NpcTradeListPacket : Packet
     {
         private byte itemCount;
         private List<TradeItem> items;
@@ -16,13 +16,13 @@ namespace Tibia.Packets
         {
             get { return items; }
         }
-        public TradeBoxOpenPacket(Client c)
+        public NpcTradeListPacket(Client c)
             : base(c)
         {
-            type = PacketType.TradeBoxOpen;
+            type = PacketType.NpcTradeList;
             destination = PacketDestination.Client;
         }
-        public TradeBoxOpenPacket(Client c, byte[] data)
+        public NpcTradeListPacket(Client c, byte[] data)
             : this(c)
         {
             ParseData(data);
@@ -31,18 +31,18 @@ namespace Tibia.Packets
         {
             if (base.ParseData(packet))
             {
-                if (type != PacketType.TradeBoxOpen) return false;
+                if (type != PacketType.NpcTradeList) return false;
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 itemCount = p.GetByte();
                 items = new List<TradeItem>(itemCount);
                 for (int i = 0; i < itemCount; i++)
                 {
-                    int tid = p.GetInt();
+                    int id = p.GetInt();
                     p.Skip(1);
-                    string tname = p.GetString();
-                    int tsprice = p.GetLong();
-                    int tbprice = p.GetLong();
-                    items.Add(new TradeItem(tid, tname, tsprice, tbprice));
+                    string name = p.GetString();
+                    int sellPrice = p.GetLong();
+                    int buyPrice = p.GetLong();
+                    items.Add(new TradeItem(id, name, sellPrice, buyPrice));
                 }
                 index = p.Index;
                 return true;
@@ -53,19 +53,19 @@ namespace Tibia.Packets
             }
         }
 
-        public static TradeBoxOpenPacket Create(Client c, List<TradeItem> items)
+        public static NpcTradeListPacket Create(Client c, List<TradeItem> items)
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.TradeBoxOpen);
+            PacketBuilder p = new PacketBuilder(c, PacketType.NpcTradeList);
             p.AddByte((byte)items.Count);
             foreach(TradeItem item in items)
             {
-                p.AddInt(item.Id);
+                p.AddShort(item.Id);
                 p.Skip(1);
                 p.AddString(item.Name);
                 p.AddLong(item.SellPrice);
                 p.AddLong(item.BuyPrice);
             }
-            return new TradeBoxOpenPacket(c, p.GetPacket());
+            return new NpcTradeListPacket(c, p.GetPacket());
         }
     }
     public class TradeItem
