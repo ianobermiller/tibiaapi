@@ -156,6 +156,20 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Write a string to memory without using econding.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool WriteStringNoEncoding(IntPtr handle, long address, string str)
+        {
+            str += '\0';
+            byte[] bytes = str.ToByteArray();
+            return WriteBytes(handle, address, bytes, (uint)bytes.Length);
+        }
+
+        /// <summary>
         /// Write a string to memory.
         /// </summary>
         /// <param name="handle"></param>
