@@ -26,6 +26,7 @@ namespace Tibia.Objects
         private bool usingProxy = false;
         private LoginServer openTibiaServer = null;
         private AutoResetEvent pipeIsReady;
+        int defBarY, defRectX, defRectY, defRectW, defRectH;
 
         // References to commonly used objects
         private BattleList battleList;
@@ -660,6 +661,49 @@ namespace Tibia.Objects
                 return food.Use();
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Gets or sets world only view.
+        /// </summary>
+        /// <returns></returns>
+        public bool WorldOnlyView
+        {
+            get
+            {
+                int screenBar;
+                screenBar = ReadInt(Addresses.Client.GameWindowBar);
+                return ReadInt(screenBar + 0x70) == Window.Height;
+            }
+            set
+            {
+                int screenRect, screenBar;
+                screenRect = ReadInt(Addresses.Client.GameWindowRectPointer);
+                screenRect = ReadInt(screenRect + 0x18 + 0x04);
+                screenBar = ReadInt(Addresses.Client.GameWindowBar);
+
+                if (value && ReadInt(screenBar + 0x70) != Window.Height)
+                {
+                    defBarY = ReadInt(screenBar + 0x70);
+                    defRectX = ReadInt(screenRect + 0x14);
+                    defRectY = ReadInt(screenRect + 0x18);
+                    defRectW = ReadInt(screenRect + 0x1C);
+                    defRectH = ReadInt(screenRect + 0x20);
+                    WriteInt(screenBar + 0x70, Window.Height);
+                    WriteInt(screenRect + 0x14, 0);
+                    WriteInt(screenRect + 0x18, 0);
+                    WriteInt(screenRect + 0x1C, Window.Width);
+                    WriteInt(screenRect + 0x20, Window.Height);
+                }
+                else if (!value)
+                {
+                    WriteInt(screenBar + 0x70, defBarY);
+                    WriteInt(screenRect + 0x14, defRectX);
+                    WriteInt(screenRect + 0x18, defRectY);
+                    WriteInt(screenRect + 0x1C, defRectW);
+                    WriteInt(screenRect + 0x20, defRectH);
+                }
+            }
         }
 
         /// <summary>

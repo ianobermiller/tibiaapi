@@ -171,7 +171,8 @@ namespace Tibia.Addresses
         /// it, it points to the game window rect 
         /// struct.
         /// </summary>
-        public static uint GameWindowRectPointer = 0x12D624; //8.1
+        public static uint GameWindowRectPointer = 0x62E754; //8.22
+        public static uint GameWindowBar = 0x631AC0; //8.22
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
