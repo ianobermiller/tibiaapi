@@ -54,7 +54,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAttacking()
         {
-            return BlackSquare == 0;
+            return BlackSquare != 0;
         }
 
         /// <summary>
