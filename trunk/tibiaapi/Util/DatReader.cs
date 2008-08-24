@@ -4,6 +4,7 @@ using Tibia.Objects;
 
 namespace Tibia.Util
 {
+    [Obsolete("Use the Item class instead. This class will be removed in future versions.")]
     public class DatReader
     {
         Client client;

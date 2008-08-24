@@ -156,6 +156,9 @@
     <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />
     <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
+    <Compile Include="Util\ClientChooserEx.xaml.cs">
+      <DependentUpon>ClientChooserEx.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\MapViewer.cs">
       <SubType>Component</SubType>
@@ -229,6 +232,10 @@
     <Content Include="CurrentForumPost.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Util\ClientChooserEx.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Util\ClientChooserWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

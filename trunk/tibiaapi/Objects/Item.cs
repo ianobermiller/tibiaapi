@@ -185,6 +185,19 @@ namespace Tibia.Objects
             get { return count; }
             set { count = value; }
         }
+
+        /// <summary>
+        /// Gets the total number of items/objects in Tibia.
+        /// </summary>
+        public uint TotalItemCount
+        {
+            get
+            {
+                uint baseAddr = (uint)client.ReadInt(Addresses.Client.DatPointer);
+                return (uint)client.ReadInt(baseAddr + 4);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the location of this item.
         /// </summary>
@@ -240,6 +253,190 @@ namespace Tibia.Objects
             return bytes;
         }
 
+        /// <summary>
+        /// Gets the DatAddress of the item in the dat structure.
+        /// </summary>
+        public uint DatAddress
+        {
+            get
+            {
+                uint baseAddr = (uint)client.ReadInt(Addresses.Client.DatPointer);
+                return (uint)client.ReadInt(baseAddr + 8) + 0x4C * (id - 100);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the visible width of the item.
+        /// </summary>
+        public int Width
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Width); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Width, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the visible height of the item.
+        /// </summary>
+        public int Height
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Height); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Height, value); }
+        }
+
+        public int Unknown1
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Unknown1); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Unknown1, value); }
+        }
+
+        public int Layers
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Layers); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Layers, value); }
+        }
+
+        public int PatternX
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternX); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternX, value); }
+        }
+
+        public int PatternY
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternY); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternY, value); }
+        }
+
+        public int PatternDepth
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternDepth); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternDepth, value); }
+        }
+
+        public int Phase
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Phase); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Phase, value); }
+        }
+
+        /// <summary>
+        /// Gets the DatAddress of the sprite structure of the item.
+        /// </summary>
+        public int Sprites
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Sprites); }
+            //set { client.WriteInt(DatAddress + Addresses.DatItem.Sprites, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the flags of the item.
+        /// </summary>
+        public int Flags
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Flags); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Flags, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the walking speed of the item. (Walkable tiles)
+        /// </summary>
+        public int WalkSpeed
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.WalkSpeed); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.WalkSpeed, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the text limit of the item. (Writable items)
+        /// </summary>
+        public int TextLimit
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.TextLimit); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.TextLimit, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the light radius of the item. (Light items)
+        /// </summary>
+        public int LightRadius
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.LightRadius); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.LightRadius, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the light color of the item. (Light items)
+        /// </summary>
+        public int LightColor
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.LightColor); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.LightColor, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets how many pixels the item is shifted horizontally from the lower
+        /// right corner of the tile.
+        /// </summary>
+        public int ShiftX
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.ShiftX); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.ShiftX, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets how many pixels the item is shifted vertically from the lower
+        /// right corner of the tile.
+        /// </summary>
+        public int ShiftY
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.ShiftY); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.ShiftY, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the height created by the item when a character walks over.
+        /// </summary>
+        public int WalkHeight
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.WalkHeight); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.WalkHeight, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the color shown by the item in the automap.
+        /// </summary>
+        public int AutomapColor
+        {
+            get { return client.ReadInt(DatAddress + Addresses.DatItem.Automap); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.Automap, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the help id for the item in Help mode.
+        /// </summary>
+        public Addresses.DatItem.Help LensHelp
+        {
+            get { return (Addresses.DatItem.Help)client.ReadInt(DatAddress + Addresses.DatItem.LensHelp); }
+            set { client.WriteInt(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
+        }
+        #endregion
+
+        #region Composite Properties
+
+        /// <summary>
+        /// Returns whether the item has an extra byte (count, fluid type, charges, etc).
+        /// </summary>
+        public bool HasExtraByte
+        {
+            get
+            {
+                return GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable) ||
+                       GetFlag(Tibia.Addresses.DatItem.Flag.IsRune) ||
+                       GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash) ||
+                       GetFlag(Tibia.Addresses.DatItem.Flag.IsFluidContainer);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -266,6 +463,21 @@ namespace Tibia.Objects
         {
             return Name;
         }
+
+        #region Flags
+        public bool GetFlag(Addresses.DatItem.Flag flag)
+        {
+            return (Flags & (int)flag) == (int)flag;
+        }
+
+        public void SetFlag(Addresses.DatItem.Flag flag, bool on)
+        {
+            if (on)
+                Flags |= (int)flag;
+            else
+                Flags &= ~(int)flag;
+        }
+        #endregion
     }
 
     #region Special Item Types
