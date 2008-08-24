@@ -3,7 +3,7 @@ using Tibia.Objects;
 
 namespace Tibia
 {
-    public class DatItem
+    [Obsolete("Use the Item class instead. This class will be removed in future versions.")] public class DatItem
     {
         Client client;
         uint id;
