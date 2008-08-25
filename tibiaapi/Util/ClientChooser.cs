@@ -182,6 +182,11 @@ namespace Tibia.Util
         public bool SaveClientPath = true;
 
         /// <summary>
+        /// Command-line arguments for client
+        /// </summary>
+        public string Arguments = "";
+
+        /// <summary>
         /// Location of where to read/save the selected client's path. Default: %APPDATA%\TibiaAPI\clientPaths.xml.
         /// </summary>
         public string SavedClientPathsLocation = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"TibiaAPI\clientPaths.xml");

@@ -85,8 +85,6 @@ namespace Tibia.Util
                     }
                 }
 
-                //TODO HERE LOADING PART
-                /*##############################*/
                 if (options.SaveClientPath == true)
                 {
                     if (File.Exists(options.SavedClientPathsLocation))
@@ -168,7 +166,7 @@ namespace Tibia.Util
                             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(dialog.FileName);
                             if (fvi.ProductName.Equals("Tibia Player"))
                             {
-                                client = Client.Open(dialog.FileName);
+                                client = Client.Open(dialog.FileName, options.Arguments);
                                 _filename = dialog.FileName;
                                 if (options.SaveClientPath == true)
                                 {
@@ -245,7 +243,7 @@ namespace Tibia.Util
             }
             else if (uxClients.SelectedItem.GetType() == typeof(ClientPathInfo))
             {
-                client = Client.Open(((ClientPathInfo)uxClients.SelectedItem).Path);
+                client = Client.Open(((ClientPathInfo)uxClients.SelectedItem).Path, options.Arguments);
             }
             else
             {
