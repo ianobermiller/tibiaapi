@@ -291,6 +291,8 @@ namespace Tibia.Packets
         GiantIce = 0x34,
         WaterSplash = 0x35,
         PlantAttack = 0x36,
+        BlueArrow = 0x38,
+        FlashSquare = 0x39  
     }
     public enum PartyType
     {
