@@ -206,10 +206,11 @@ namespace Tibia.Objects
 
             for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
             {
-                if (client.ReadInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount) > 1)
+                int objCount = client.ReadInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount);
+                if ( objCount > 1)
                 {
                     uint objectPointer = squarePointer + Addresses.Map.Distance_Square_Objects;
-                    for (uint j = 0; j < Addresses.Map.Max_Square_Objects; j++)
+                    for (uint j = 0; j < objCount; j++)
                     {
                         if (client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
                         {
