@@ -41,7 +41,8 @@ namespace Tibia
         /// <summary>
         /// Keys handled and their callbacks
         /// </summary>
-        private static System.Collections.Generic.Dictionary<Keys, KeyPressed> handledKeys = new System.Collections.Generic.Dictionary<Keys, KeyPressed>();
+        private static System.Collections.Generic.Dictionary<Keys, KeyPressed> handledKeysDown = new System.Collections.Generic.Dictionary<Keys, KeyPressed>();
+        private static System.Collections.Generic.Dictionary<Keys, KeyPressed> handledKeysUp = new System.Collections.Generic.Dictionary<Keys, KeyPressed>();
 
         /// <summary>
         /// Delegate for handling a key down event.
@@ -153,6 +154,8 @@ namespace Tibia
                     else if ((Keys)vkCode == Keys.RWin ||
                         (Keys)vkCode == Keys.LWin)
                         Win = false;
+                    else
+                        result = OnKeyUp((Keys)vkCode);
                 }
             }
 
@@ -160,19 +163,64 @@ namespace Tibia
         }
 
         /// <summary>
-        /// Adds a key to the hook.
+        /// Adds a key down to the hook.
+        /// </summary>
+        /// <param name="key">The key to be added.</param>
+        /// <param name="callback">The function to be called when the key is pressed.</param>
+        public static bool AddKeyDown(Keys key, KeyPressed callback)
+        {
+            KeyDown = null;
+            if (!handledKeysDown.ContainsKey(key))
+            {
+                handledKeysDown.Add(key, callback);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Adds a key up to the hook.
+        /// </summary>
+        /// <param name="key">The key to be added.</param>
+        /// <param name="callback">The function to be called when the key is pressed.</param>
+        public static bool AddKeyUp(Keys key, KeyPressed callback)
+        {
+            if (!handledKeysUp.ContainsKey(key))
+            {
+                handledKeysUp.Add(key, callback);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// AddKeyDown wrapper
         /// </summary>
         /// <param name="key">The key to be added.</param>
         /// <param name="callback">The function to be called when the key is pressed.</param>
         public static bool Add(Keys key, KeyPressed callback)
         {
-            if (!handledKeys.ContainsKey(key))
-            {
-                handledKeys.Add(key, callback);
-                return true;
-            }
-            else
-                return false;
+            return AddKeyDown(key, callback);
+        }
+
+        /// <summary>
+        /// Removes a key down from the hook.
+        /// </summary>
+        /// <param name="key">The key to be removed.</param>
+        public static bool RemoveDown(Keys key)
+        {
+            return handledKeysDown.Remove(key);
+        }
+
+        /// <summary>
+        /// Removes a key up from the hook.
+        /// </summary>
+        /// <param name="key">The key to be removed.</param>
+        public static bool RemoveUp(Keys key)
+        {
+            return handledKeysUp.Remove(key);
         }
 
         /// <summary>
@@ -181,13 +229,23 @@ namespace Tibia
         /// <param name="key">The key to be removed.</param>
         public static bool Remove(Keys key)
         {
-            return handledKeys.Remove(key);
+            return RemoveDown(key);
         }
 
         private static bool OnKeyDown(Keys key)
         {
-            if (handledKeys.ContainsKey(key))
-                return handledKeys[key]();
+            if (KeyDown != null)
+                return KeyDown(key);
+            if (handledKeysDown.ContainsKey(key))
+                return handledKeysDown[key]();
+            else
+                return true;
+        }
+
+        private static bool OnKeyUp(Keys key)
+        {
+            if (handledKeysUp.ContainsKey(key))
+                return handledKeysUp[key]();
             else
                 return true;
         }
