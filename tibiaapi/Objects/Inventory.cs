@@ -351,7 +351,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, Location onLocation)
         {
-            MapSquare square = client.Map.GetMapSquare(onLocation);
+            MapSquare square = client.Map.CreateMapSquare(onLocation);
             return UseItem(id, square.Tile);
         }
 

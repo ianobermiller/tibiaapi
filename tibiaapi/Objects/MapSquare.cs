@@ -8,41 +8,82 @@ namespace Tibia.Objects
     /// </summary>
     public class MapSquare
     {
-        private uint address;
         private Client client;
+        public uint Address;
+        public uint SquareNumber;
+        public Location MemoryLocation;
+        public int ObjectCount;
         public Tile Tile = new Tile();
-        public List<MapObject> Objects;
 
-        public MapSquare(Client c, uint addr, Location location)
+        public List<MapObject> Objects
         {
-            client = c;
-            address = addr;
-            Tile.Location = location;
-            GetData();
+            get
+            {
+                List<MapObject> objects = new List<MapObject>();
+
+                uint pointer = Address + Addresses.Map.Distance_Square_Objects;
+
+                for (int i = 0; i < ObjectCount; i++)
+                {
+                    // Go to the next object
+                    pointer += Addresses.Map.Step_Square_Object;
+
+                    objects.Add(new MapObject(
+                        client.ReadInt(pointer + 
+                            Addresses.Map.Distance_Object_Id),
+                        client.ReadInt(pointer + 
+                            Addresses.Map.Distance_Object_Data),
+                        client.ReadInt(pointer + 
+                            Addresses.Map.Distance_Object_Data_Ex),
+                        i));
+                }
+
+                return objects;
+            }
         }
 
-        private void GetData()
+        public MapSquare(Client client, uint address, uint squareNumber, Location location)
+            : this(client, address, squareNumber)
         {
-            uint pointer;
+            Tile.Location = location;
+        }
 
-            int objectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount) - 1; // -1 for Tile
+        public MapSquare(Client client, uint address, uint squareNumber)
+        {
+            this.client = client;
+            this.SquareNumber = squareNumber;
+            this.Address = address;
+            this.MemoryLocation = Map.ConvertSquareNumberToMemoryLocation(squareNumber);
+
+            ObjectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount) - 1; // -1 for Tile
 
             // Get the tile data (first object)
-            pointer = address + Addresses.Map.Distance_Square_Objects;
-            Tile.Id = Convert.ToUInt32(client.ReadInt(pointer + Addresses.Map.Distance_Object_Id));
+            Tile.Id = Convert.ToUInt32(client.ReadInt(address + 
+                Addresses.Map.Distance_Square_Objects + 
+                Addresses.Map.Distance_Object_Id));
+        }
 
-            Objects = new List<MapObject>(objectCount);
+        public void ReplaceTile(uint newId)
+        {
+            client.WriteInt(Address + 
+                Addresses.Map.Distance_Square_Objects + 
+                Addresses.Map.Distance_Object_Id, (int)newId);
+        }
 
-            for (uint i = 0; i < objectCount; i++)
-            {
-                // Go to the next object
-                pointer += Addresses.Map.Step_Square_Object;
-
-                Objects.Add(new MapObject(
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Id),
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Data),
-                    client.ReadInt(pointer + Addresses.Map.Distance_Object_Data_Ex)));
-            }
+        public void ReplaceObject(MapObject oldObject, MapObject newObject)
+        {
+            uint pointer = (uint)(Address +
+                (Addresses.Map.Distance_Square_Objects +
+                Addresses.Map.Step_Square_Object * (oldObject.Number + 1)));
+            client.WriteInt(pointer + 
+                Addresses.Map.Distance_Object_Id,
+                newObject.Id);
+            client.WriteInt(pointer +
+                Addresses.Map.Distance_Object_Data,
+                newObject.Data);
+            client.WriteInt(pointer +
+                Addresses.Map.Distance_Object_Data_Ex,
+                newObject.DataEx);
         }
     }
 
@@ -51,12 +92,16 @@ namespace Tibia.Objects
     /// </summary>
     public struct MapObject
     {
+        public int Number;
         public int Id;
         public int Data;
         public int DataEx;
-
         public MapObject(int id, int data, int dataex)
+            : this(id, data, dataex, 0)
+        { }
+        public MapObject(int id, int data, int dataex, int number)
         {
+            this.Number = number;
             this.Id = id;
             this.Data = data;
             this.DataEx = dataex;
