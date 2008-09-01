@@ -23,42 +23,272 @@ namespace Tibia.Objects
         }
         #endregion
 
-        #region Replace Tiles
-
+        #region Get Squares
         /// <summary>
-        /// Replace all the tile matching a certain criteria with a new id.
+        /// Get all the adjacent squares to a world location, including the square at that location
         /// </summary>
-        /// <param name="match"></param>
-        /// <param name="newTileId"></param>
+        /// <param name="loc"></param>
         /// <returns></returns>
-        public int ReplaceTile(Predicate<int> match, int newTileId)
+        public List<MapSquare> GetSquaresAdjacentTo(Location worldLocation)
         {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            int replacedTileCount = 0;
-
-            // search through map data
-            for (uint i = mapBegin; i < mapBegin + (Addresses.Map.Step_Square * Addresses.Map.Max_Squares); i += Addresses.Map.Step_Square)
+            MapSquare playerSquare = GetSquareWithPlayer();
+            List<MapSquare> squares = new List<MapSquare>(9);
+            for (int x = -1; x <= 1; x++)
             {
-                // get tile id from current tile data
-                uint j = i + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id;
-
-                // read tile id
-                int tileId = client.ReadInt(j);
-
-                // skip blank ids
-                if (tileId == 0)
-                    continue;
-
-                // tile id matches old tile id
-                if (match(tileId))
+                for (int y = -1; y <= 1; y++)
                 {
-                    // replace current tile id with new tile id
-                    client.WriteInt(j, newTileId);
-                    replacedTileCount++;
+                    Location offset = new Location(
+                        worldLocation.X + x, 
+                        worldLocation.Y + y, 
+                        worldLocation.Z);
+                    squares.Add(CreateMapSquare(offset, playerSquare));
                 }
             }
+            return squares;
+        }
 
-            return replacedTileCount;
+        public MapSquare GetSquareWithPlayer()
+        {
+            int playerId = client.ReadInt(Addresses.Player.Id);
+            return GetSingleSquare(GetSquaresWithObject(new MapObject(
+                0x63,
+                playerId,
+                0), false, false));
+        }
+
+        public List<MapSquare> GetSquaresWithTile(uint tileId, bool sameFloor)
+        {
+            return GetSquares(delegate(MapSquare square)
+            {
+                if (square.Tile.Id == tileId)
+                    return true;
+                return false;
+            }, sameFloor);
+        }
+
+        private List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor)
+        {
+            return GetSquaresWithObject(testObject, sameFloor, true);
+        }
+
+        private List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor, bool getWorldLocation)
+        {
+            return GetSquares(delegate(MapSquare square)
+            {
+                foreach (MapObject oldObject in square.Objects)
+                {
+                    if ((testObject.Id == 0 ||
+                            oldObject.Id == testObject.Id) &&
+                        (testObject.Data == 0 ||
+                            oldObject.Data == testObject.Data) &&
+                        (testObject.DataEx == 0 ||
+                            oldObject.DataEx == testObject.DataEx))
+                        return true;
+                }
+                return false;
+            }, sameFloor, getWorldLocation, Addresses.Map.Max_Squares);
+        }
+
+        public MapSquare GetSquare(Predicate<MapSquare> match, bool sameFloor)
+        {
+            return GetSingleSquare(GetSquares(match, sameFloor, true, 1));
+        }
+
+        private MapSquare GetSingleSquare(List<MapSquare> squares)
+        {
+            if (squares.Count > 0)
+            {
+                return squares[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor)
+        {
+            return GetSquares(match, sameFloor, true, Addresses.Map.Max_Squares);
+        }
+
+        private List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor, bool getWorldLocation, uint maxSquares)
+        {
+            List<MapSquare> squares = new List<MapSquare>();
+            MapSquare playerSquare = null;
+            uint startNumber = 0;
+            uint endNumber = Addresses.Map.Max_Squares + 1;
+
+            if (sameFloor)
+            {
+                playerSquare = GetSquareWithPlayer();
+                int playerFloor = playerSquare.MemoryLocation.Z;
+                startNumber = Map.ConvertMemoryLocationToSquareNumber(
+                    new Location(0, 0, playerFloor));
+                endNumber = Map.ConvertMemoryLocationToSquareNumber(
+                    new Location(0, 0, playerFloor + 1));
+            }
+
+            for (uint i = startNumber; i < endNumber; i++)
+            {
+                MapSquare mapSquare;
+                if (getWorldLocation)
+                {
+                    if (playerSquare == null)
+                    {
+                        playerSquare = GetSquareWithPlayer();
+                    }
+                    mapSquare = CreateMapSquare(i, playerSquare);
+                }
+                else
+                {
+                    mapSquare = CreateMapSquare(i);
+                }
+
+                if (match(mapSquare))
+                {
+                    squares.Add(mapSquare);
+                }
+                if (squares.Count >= maxSquares) break;
+            }
+
+            return squares;
+        }
+        #endregion
+
+        #region Conversions
+        public static Location ConvertSquareNumberToMemoryLocation(uint squareNumber)
+        {
+            Location l = new Location();
+
+            l.Z = Convert.ToInt32(squareNumber / (14 * 18));
+            l.Y = Convert.ToInt32((squareNumber - l.Z * 14 * 18) / 18);
+            l.X = Convert.ToInt32((squareNumber - l.Z * 14 * 18) - l.Y * 18);
+
+            return l;
+        }
+
+        /// <summary>
+        /// Convert a local location to a square number.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
+        public static uint ConvertMemoryLocationToSquareNumber(Location l)
+        {
+            return Convert.ToUInt32(l.X + l.Y * 18 + l.Z * 14 * 18);
+        }
+
+        public Location ConvertMemoryLocationToWorldLocation(Location loc, MapSquare playerSquare)
+        {
+            Location globalPlayerLoc = client.GetPlayer().Location;
+            Location localPlayerLoc = playerSquare.MemoryLocation;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+            return new Location(
+                loc.X + xAdjustment,
+                loc.Y + yAdjustment,
+                loc.Z + zAdjustment);
+        }
+
+        public Location ConvertWorldLocationToMemoryLocation(Location loc, MapSquare playerSquare)
+        {
+            Location globalPlayerLoc = client.GetPlayer().Location;
+            Location localPlayerLoc = playerSquare.MemoryLocation;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+            return new Location(
+                loc.X - xAdjustment,
+                loc.Y - yAdjustment,
+                loc.Z - zAdjustment);
+        }
+
+        public uint ConvertSquareNumberToMapSquareAddress(uint squareNumber)
+        {
+            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
+            return address;
+        }
+
+        public Location OffsetMemoryLocation(Location loc, int offsetX, int offsetY)
+        {
+            Location newLoc = new Location();
+
+            newLoc.X = loc.X + offsetX;
+            if (newLoc.X < 0) newLoc.X += 18;
+            if (newLoc.X > 17) newLoc.X -= 18;
+
+            newLoc.Y = loc.Y + offsetY;
+            if (newLoc.Y < 0) newLoc.Y += 14;
+            if (newLoc.Y > 13) newLoc.Y -= 14;
+
+            newLoc.Z = loc.Z;
+
+            return newLoc;
+        }
+        #endregion
+
+        #region Create MapSquare
+        /// <summary>
+        /// Get the map square at the specified world location.
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public MapSquare CreateMapSquare(Location worldLocation)
+        {
+            return CreateMapSquare(worldLocation, GetSquareWithPlayer());
+        }
+
+        public MapSquare CreateMapSquare(Location worldLocation, MapSquare playerSquare)
+        {
+            Location memoryLocation = ConvertWorldLocationToMemoryLocation(worldLocation, playerSquare);
+            uint squareNumber = ConvertMemoryLocationToSquareNumber(memoryLocation);
+            return new MapSquare(
+                client, 
+                ConvertSquareNumberToMapSquareAddress(squareNumber), 
+                squareNumber, 
+                worldLocation);
+        }
+
+        private MapSquare CreateMapSquare(uint squareNumber)
+        {
+            return new MapSquare(
+                client,
+                ConvertSquareNumberToMapSquareAddress(squareNumber),
+                squareNumber);
+        }
+
+        private MapSquare CreateMapSquare(uint squareNumber, MapSquare playerSquare)
+        {
+            Location worldLocation = ConvertMemoryLocationToWorldLocation(
+                ConvertSquareNumberToMemoryLocation(squareNumber), playerSquare);
+            return new MapSquare(
+                client,
+                ConvertSquareNumberToMapSquareAddress(squareNumber),
+                squareNumber,
+                worldLocation);
+        }
+        #endregion
+
+        #region Replace
+        /// <summary>
+        /// Replace all tiles in a list with a new id.
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <param name="newTileId"></param>
+        /// <param name="sameFloor"></param>
+        /// <returns></returns>
+        public int ReplaceTiles(List<uint> idList, uint newTileId, bool sameFloor)
+        {
+            return GetSquares(delegate(MapSquare mapSquare)
+            {
+                if (idList.Contains(mapSquare.Tile.Id))
+                {
+                    mapSquare.ReplaceTile(newTileId);
+                    return true;
+                }
+                return false;
+            }, sameFloor).Count;
         }
 
         /// <summary>
@@ -66,100 +296,43 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="oldTileId"></param>
         /// <param name="newTileId"></param>
+        /// <param name="sameFloor"></param>
         /// <returns></returns>
-        public int ReplaceTile(int oldTileId, int newTileId)
+        public int ReplaceTile(uint oldTileId, uint newTileId, bool sameFloor)
         {
-            return ReplaceTile(delegate(int i)
-            {
-                return i == oldTileId;
-            }, newTileId);
+            return ReplaceTiles(new List<uint>() { oldTileId }, newTileId, sameFloor);
         }
 
-        /// <summary>
-        /// Replace all tiles in a list with a new id.
-        /// </summary>
-        /// <param name="idList"></param>
-        /// <param name="newTileId"></param>
-        /// <returns></returns>
-        public int ReplaceTile(List<int> idList, int newTileId)
+        public int ReplaceObjects(List<MapObject> objectList, MapObject newObject, bool sameFloor)
         {
-            return ReplaceTile(delegate(int i)
+            return GetSquares(delegate(MapSquare mapSquare)
             {
-                return idList.Contains(i);
-            }, newTileId);
-        }
-
-        #endregion
-
-        #region Replace Objects
-
-        /// <summary>
-        /// Replace all the object matching a certain criteria with a new id.
-        /// Checks the 2nd and 3rd objects (skips 1st because that is the tile).
-        /// </summary>
-        /// <param name="match"></param>
-        /// <param name="newObjectId"></param>
-        /// <returns></returns>
-        public int ReplaceObject(Predicate<int> match, int newObjectId)
-        {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            int replacedObjectCount = 0;
-
-            // search through map data
-            for (uint i = mapBegin; i < mapBegin + (Addresses.Map.Step_Square * Addresses.Map.Max_Squares); i += Addresses.Map.Step_Square)
-            {
-                uint addressId = i + Addresses.Map.Distance_Square_Objects + Addresses.Map.Distance_Object_Id;
-                for (int j = 2; j <= 3; j++)
+                foreach (MapObject oldObject in mapSquare.Objects)
                 {
-                    // get object id from current object data
-                    addressId += Addresses.Map.Step_Square_Object;
-
-                    // read object id
-                    int objectId = client.ReadInt(addressId);
-
-                    // skip blank ids
-                    if (objectId > 0)
+                    foreach (MapObject testObject in objectList)
                     {
-                        // object id matches old object id
-                        if (match(objectId))
+                        if ((testObject.Id == 0 || 
+                                oldObject.Id == testObject.Id) &&
+                            (testObject.Data == 0 || 
+                                oldObject.Data == testObject.Data) &&
+                            (testObject.DataEx == 0 || 
+                                oldObject.DataEx == testObject.DataEx))
                         {
-                            // replace current object id with new object id
-                            client.WriteInt(addressId, newObjectId);
-                            replacedObjectCount++;
+                            mapSquare.ReplaceObject(oldObject, newObject);
+                            return true;
                         }
                     }
                 }
-            }
-
-            return replacedObjectCount;
+                return false;
+            }, sameFloor).Count;
         }
 
-        /// <summary>
-        /// Replace all objects matching the old id with the new id.
-        /// </summary>
-        /// <param name="oldObjectId"></param>
-        /// <param name="newObjectId"></param>
-        /// <returns></returns>
-        public int ReplaceObject(int oldObjectId, int newObjectId)
+        public int ReplaceObject(MapObject testObject, MapObject newObject, bool sameFloor)
         {
-            return ReplaceObject(delegate(int i)
-            {
-                return i == oldObjectId;
-            }, newObjectId);
-        }
-
-        /// <summary>
-        /// Replace all objects in a list with a new id.
-        /// </summary>
-        /// <param name="idList"></param>
-        /// <param name="newObjectId"></param>
-        /// <returns></returns>
-        public int ReplaceObject(List<int> idList, int newObjectId)
-        {
-            return ReplaceObject(delegate(int i)
-            {
-                return idList.Contains(i);
-            }, newObjectId);
+            return ReplaceObjects(
+                new List<MapObject>() { testObject }, 
+                newObject, 
+                sameFloor);
         }
 
         /// <summary>
@@ -174,354 +347,31 @@ namespace Tibia.Objects
                 3626, 3632, 3633, 3634, 3636,
                 3637, 3638, 3639, 3640, 3641,
                 3647, 3649 };
-            List<int> trees = new List<int>(treearray);
-            return ReplaceObject(trees, 3682);
-        }
-
-        #endregion
-
-        #region Find Creatures in Map
-        /// <summary>
-        /// Find player on local map
-        /// </summary>
-        /// <returns></returns>
-        public Tile GetPlayerSquare()
-        {
-            return GetCreatureSquare(client.ReadInt(Addresses.Player.Id));
-            //return new Tile((uint)client.ReadShort(Addresses.Map.Player_Tile));
-        }
-
-        /// <summary>
-        /// Find a creature on the map
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        public Tile GetCreatureSquare(int Id)
-        {
-            Tile playerLocation = new Tile();
-
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-
-            uint squarePointer = mapBegin;
-
-            for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
+            List<MapObject> trees = new List<MapObject>(treearray.Length);
+            foreach (int id in treearray)
             {
-                int objCount = client.ReadInt(squarePointer + Addresses.Map.Distance_Square_ObjectCount);
-                if ( objCount > 1)
-                {
-                    uint objectPointer = squarePointer + Addresses.Map.Distance_Square_Objects;
-                    for (uint j = 0; j < objCount; j++)
-                    {
-                        if (client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Id) == 99)
-                        {
-                            int objectId = client.ReadInt(objectPointer + Addresses.Map.Distance_Object_Data);
-                            
-                            if (objectId == Id)
-                            {
-                                playerLocation.Number = i;
-                                playerLocation.Location = SquareNumberToLocation(playerLocation.Number);
-                                return playerLocation;
-                            }
-                        }
-                        objectPointer += Addresses.Map.Step_Square_Object;
-                    }
-                }
-                squarePointer += Addresses.Map.Step_Square;
+                trees.Add(new MapObject(id, 0, 0));
             }
-
-            return playerLocation;
+            MapObject smallFirTree = new MapObject(3682, 0, 0);
+            return ReplaceObjects(trees, smallFirTree, true);
         }
         #endregion
 
-        #region Square Number <=> Location
-        /// <summary>
-        /// Convert a tiles number to a local map location.
-        /// </summary>
-        /// <param name="squareNumber"></param>
-        /// <returns></returns>
-        public static Location SquareNumberToLocation(uint squareNumber)
-        {
-            Location l = new Location();
-
-            l.Z = Convert.ToInt32(squareNumber / (14 * 18));
-            l.Y = Convert.ToInt32((squareNumber - l.Z * 14 * 18) / 18);
-            l.X = Convert.ToInt32((squareNumber - l.Z * 14 * 18) - l.Y * 18);
-
-            return l;
-        }
-        
-        /// <summary>
-        /// Convert a local location to a square number.
-        /// </summary>
-        /// <param name="l"></param>
-        /// <returns></returns>
-        public static uint LocationToSquareNumber(Location l)
-        {
-            return Convert.ToUInt32(l.X + l.Y * 18 + l.Z * 14 * 18);
-        }
-        #endregion
-
-        #region Helper Functions
-        private Location OffsetLocalLocation(Location loc, int offsetX, int offsetY)
-        {
-            Location newLoc = new Location();
-
-            newLoc.X = loc.X + offsetX;
-            if (newLoc.X < 0)  newLoc.X += 18;
-            if (newLoc.X > 17) newLoc.X -= 18;
-
-            newLoc.Y = loc.Y + offsetY;
-            if (newLoc.Y < 0)  newLoc.Y += 14;
-            if (newLoc.Y > 13) newLoc.Y -= 14;
-
-            newLoc.Z = loc.Z;
-
-            return newLoc;
-        }
-
-        public uint GetMapSquareAddress(uint squareNumber)
-        {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-            uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
-            return address;
-        }
-        #endregion
-
-        #region Local <=> Global
-        private Location ConvertLocalToGlobal(Location loc)
-        {
-            Location globalPlayerLoc = client.GetPlayer().Location;
-            Location localPlayerLoc = GetPlayerSquare().Location;
-            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
-            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
-            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
-            return new Location(
-                loc.X + xAdjustment,
-                loc.Y + yAdjustment,
-                loc.Z + zAdjustment);
-        }
-
-        private Location ConvertGlobalToLocal(Location loc)
-        {
-            Location globalPlayerLoc = client.GetPlayer().Location;
-            Location localPlayerLoc = GetPlayerSquare().Location;
-            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
-            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
-            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
-            return new Location(
-                loc.X - xAdjustment,
-                loc.Y - yAdjustment,
-                loc.Z - zAdjustment);
-        }
-        #endregion
-
-        #region Get Map Square
-        /// <summary>
-        /// Get the map square at the specified global location.
-        /// </summary>
-        /// <param name="loc"></param>
-        /// <returns></returns>
-        public MapSquare GetMapSquare(Location loc)
-        {
-            Location local = ConvertGlobalToLocal(loc);
-            uint squareNumber = LocationToSquareNumber(local);
-            return new MapSquare(client, GetMapSquareAddress(squareNumber), loc);
-        }
-
-        /// <summary>
-        /// Get all the adjacent tiles to a global location, including the tile at that location
-        /// </summary>
-        /// <param name="loc"></param>
-        /// <returns></returns>
-        public List<MapSquare> GetAdjacentMapSquares(Location loc)
-        {
-            List<MapSquare> squares = new List<MapSquare>(9);
-            for (int x = -1; x <= 1; x++)
-            {
-                for (int y = -1; y <= 1; y++)
-                {
-                    Location offset = new Location(loc.X + x, loc.Y + y, loc.Z);
-                    squares.Add(GetMapSquare(offset));
-                }
-            }
-            return squares;
-        }
-        #endregion
-
-        #region GetTiles
-        /// <summary>
-        /// Get the tile at the specified global location.
-        /// </summary>
-        /// <param name="loc"></param>
-        /// <returns></returns>
-        public Tile GetTile(Location loc)
-        {
-            return GetMapSquare(loc).Tile;
-        }
-
-        /// <summary>
-        /// Get the tile around the specified creature.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="offsetX"></param>
-        /// <param name="offsetY"></param>
-        /// <returns></returns>
-        public Tile GetTileAroundCreature(Creature creature, int offsetX, int offsetY)
-        {
-            Location localOffset = OffsetLocalLocation(ConvertGlobalToLocal(creature.Location), offsetX, offsetY);
-            return GetMapSquare(localOffset).Tile;
-        }
-
-        /// <summary>
-        /// Get tiles on the same floor as the player. Automatically gets the absolute location of each tile.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public List<Tile> GetTiles(uint id)
-        {
-            return GetTiles(id, true);
-        }
-
-        /// <summary>
-        /// Get tiles with specified id. Automatically gets the absolute location of each tile.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="sameFloor"></param>
-        /// <returns></returns>
-        public List<Tile> GetTiles(uint id, bool sameFloor)
-        {
-            return GetTiles(delegate(uint i)
-            {
-                return i == id;
-            }, sameFloor);
-        }
-
-        /// <summary>
-        /// Get tiles whose id is in the specified list.
-        /// </summary>
-        /// <param name="idList"></param>
-        /// <returns></returns>
-        public List<Tile> GetTiles(List<uint> idList)
-        {
-            return GetTiles(idList, true);
-        }
-
-        /// <summary>
-        /// Get tiles whose id is in the specified list.
-        /// </summary>
-        /// <param name="idList"></param>
-        /// <param name="sameFloor"></param>
-        /// <returns></returns>
-        public List<Tile> GetTiles(List<uint> idList, bool sameFloor)
-        {
-            return GetTiles(delegate(uint i)
-            {
-                return idList.Contains(i);
-            }, sameFloor);
-        }
-
-        /// <summary>
-        /// Return a list of tiles that match the specified predicate.
-        /// </summary>
-        /// <param name="match"></param>
-        /// <param name="sameFloor"></param>
-        /// <returns></returns>
-        public List<Tile> GetTiles(Predicate<uint> match, bool sameFloor)
-        {
-            List<Tile> tiles = new List<Tile>();
-            Location loc = new Location();
-            Tile playerTile = new Tile();
-            uint squareNumber;
-
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
-
-            uint squarePointer = mapBegin
-                + Addresses.Map.Distance_Square_Objects
-                + Addresses.Map.Distance_Object_Id;
-
-            playerTile = GetPlayerSquare();
-
-            // Fast, only check the player z
-            if (sameFloor)
-            {
-                loc.Z = SquareNumberToLocation(playerTile.Number).Z;
-
-                for (int y = 0; y < 14; y++)
-                {
-                    loc.Y = y;
-                    for (int x = 0; x < 18; x++)
-                    {
-                        loc.X = x;
-                        squareNumber = LocationToSquareNumber(loc);
-                        uint id = Convert.ToUInt32(client.ReadInt(squarePointer +
-                            squareNumber * Addresses.Map.Step_Square));
-                        if (match(id))
-                        {
-                            Tile temp = new Tile(squareNumber);
-                            temp.Id = id;
-                            temp.Location = ConvertLocalToGlobal(loc);
-                            tiles.Add(temp);
-                        }
-                    }
-                }
-            }
-            else // Slow way
-            {
-                for (uint i = 0; i < Addresses.Map.Max_Squares; i++)
-                {
-                    uint id = Convert.ToUInt32(client.ReadInt(squarePointer));
-                    if (match(id))
-                    {
-                        Tile temp = new Tile(i);
-                        temp.Id = id;
-                        temp.Location = ConvertLocalToGlobal(SquareNumberToLocation(i));
-                        tiles.Add(temp);
-                    }
-                    squarePointer += Addresses.Map.Step_Square;
-                }
-            }
-
-            return tiles;
-        }
-        #endregion
-
-        #region Tile Filters
-        /// <summary>
-        /// Returns all of the tiles in a list of tiles that are within
-        /// viewing range of the centerTile.
-        /// </summary>
-        /// <param name="tiles">List to look through.</param>
-        /// <param name="centerTile">The center tile.</param>
-        /// <returns>The list that contains all of the tiles within viewing range.</returns>
-        public static List<Tile> FilterTilesWithinView(List<Tile> tiles, Location center)
-        {
-            List<Tile> newtiles = new List<Tile>();
-
-            for (int i = 0; i < tiles.Count; ++i)
-            {
-                //Not counting the center square we can see 7 squares to the
-                //right and left and 5 squares to the top and bottom.
-                int x = Math.Abs(tiles[i].Location.X - center.X);
-                int y = Math.Abs(tiles[i].Location.Y - center.Y);
-
-                if (x <= 7 && y <= 5)
-                    newtiles.Add(tiles[i]);
-            }
-
-            return newtiles;
-        }
-        #endregion
-
-        #region Special Get Tiles
-        /// <summary>
-        /// Get all the water tiles with fish.
-        /// </summary>
-        /// <returns></returns>
+        #region Special Purpose
         public List<Tile> GetFishTiles()
         {
-            return FilterTilesWithinView(
-                GetTiles(Constants.Tiles.Water.GetFishIds()), 
-                ConvertLocalToGlobal(GetPlayerSquare().Location));
+            List<Tile> tiles = new List<Tile>();
+            List<uint> fishIds = Constants.Tiles.Water.GetFishIds();
+            GetSquares(delegate(MapSquare square)
+            {
+                if (fishIds.Contains(square.Tile.Id))
+                {
+                    tiles.Add(square.Tile);
+                    return true;
+                }
+                return false;
+            }, true);
+            return tiles;
         }
         #endregion
 

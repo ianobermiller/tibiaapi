@@ -136,7 +136,7 @@ namespace SmartPacketAnalyzer
                     StatusMessagePacket.Create(
                         client,
                         StatusMessageType.Description,
-                        p.Message + " [" + client.ReadInt(Tibia.Addresses.Client.Click_Id) + "]"));
+                        p.Message + " [" + Tibia.Addresses.Client.See_Id + "]"));
                 return false;
             }
             return true;

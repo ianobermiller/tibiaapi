@@ -88,7 +88,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Location onLocation)
         {
-            MapSquare square = client.Map.GetMapSquare(onLocation);
+            MapSquare square = client.Map.CreateMapSquare(onLocation);
             return Use(square.Tile);
         }
 
