@@ -78,7 +78,14 @@ namespace Tibia.Util
 
             // Pad the packet with extra bytes for encryption
             int pad = packet.Length % 8;
-            byte[] packetprep = new byte[packet.Length + (8 - pad)];
+			
+            byte[] packetprep;
+			
+			if (pad == 0)
+				packetprep = new byte[packet.Length];
+			else
+ 				packetprep = new byte[packet.Length + (8 - pad)];
+
             Array.Copy(packet, packetprep, packet.Length);
 
             uint[] payloadprep = packetprep.ToUintArray();
