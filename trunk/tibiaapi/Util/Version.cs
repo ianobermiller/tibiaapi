@@ -9,7 +9,228 @@ namespace Tibia
     {
         public static void Set(string version)
         {
-            #region 8.21 Addresses
+                #region 8.22 Addresses
+            if (version == "8.22")
+            {
+                BattleList.Step_Creatures = 0xA0;
+                BattleList.Max_Creatures = 150;
+                BattleList.Start = Player.Exp + 108;
+                BattleList.End = BattleList.Start + (BattleList.Step_Creatures * BattleList.Max_Creatures);
+
+                Client.StartTime = 0x781258;
+                Client.XTeaKey = 0x77BDB4;
+                Client.FrameRatePointer = 0x77FF3C;
+                Client.FrameRateCurrentOffset = 0x0;
+                Client.FrameRateLimitOffset = 0x58;
+                Client.MultiClient = 0x102B94;
+                Client.MultiClientValue = 0xEB;
+                Client.Status = 0x77F3F8;
+                Client.SafeMode = 0x77C1D0;
+                Client.FollowMode = Client.SafeMode + 4;
+                Client.AttackMode = Client.FollowMode + 4;
+                Client.ActionState = 0x77F458;
+                Client.LastMSGText = 0x7814C0; //8.1, 8.0 = 0x7686A8
+                Client.LastMSGAuthor = Client.LastMSGText - 0x28; //8.1, 8.0 = 0x768680
+                Client.Statusbar_Text = 0x781270;
+                Client.Statusbar_Time = Client.Statusbar_Text - 4;
+                Client.Click_Id = 0x77F494;
+                Client.Click_Count = Client.Click_Id + 4;
+                Client.Click_Z = Client.Click_Id - 0x68;
+                Client.See_Text = Client.Click_Id + 12;
+                Client.LoginServerStart = 0x776CF0;
+                Client.Step_LoginServer = 112;
+                Client.Distance_Port = 100;
+                Client.Max_LoginServers = 10;
+                Client.RSA = 0x5A7610;
+                Client.LoginCharList = 0x77F3BC;
+                Client.LoginSelectedChar = 0x77F3B8;
+                Client.GameWindowRectPointer = 0x62E754;
+                Client.GameWindowBar = 0x631AC0;
+                Client.DatPointer = 0x77BDD4;
+                Client.DialogBegin = 0x631ABC;
+                Client.DialogLeft = 0x14;
+                Client.DialogTop = 0x18;
+                Client.DialogWidth = 0x1C;
+                Client.DialogHeight = 0x20;
+                Client.DialogCaption = 0x50;
+                Client.LoginPassword = 0x77F3E4;
+                Client.LoginAccountStr = Client.LoginPassword + 32;
+                Client.LoginAccountNum = Client.LoginAccountStr + 12;
+                Client.Nop = 0x90;
+                Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
+                Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+
+                Container.Start = 0x62F208;
+                Container.End = Container.Start + (Container.Max_Containers * Container.Step_Container);
+                Container.Step_Container = 492;
+                Container.Step_Slot = 12;
+                Container.Max_Containers = 16;
+                Container.Max_Stack = 100;
+                Container.Distance_IsOpen = 0;
+                Container.Distance_Id = 4;
+                Container.Distance_Name = 16;
+                Container.Distance_Volume = 48;
+                Container.Distance_Amount = 56;
+                Container.Distance_Item_Id = 60;
+                Container.Distance_Item_Count = 64;
+
+                Creature.Distance_Id = 0;
+                Creature.Distance_Type = 3;
+                Creature.Distance_Name = 4;
+                Creature.Distance_X = 36;
+                Creature.Distance_Y = 40;
+                Creature.Distance_Z = 44;
+                Creature.Distance_ScreenOffsetHoriz = 48;
+                Creature.Distance_ScreenOffsetVert = 52;
+                Creature.Distance_IsWalking = 76;
+                Creature.Distance_WalkSpeed = 140;
+                Creature.Distance_Direction = 80;
+                Creature.Distance_IsVisible = 144;
+                Creature.Distance_BlackSquare = 128;
+                Creature.Distance_Light = 120;
+                Creature.Distance_LightColor = 124;
+                Creature.Distance_HPBar = 136;
+                Creature.Distance_Skull = 148;
+                Creature.Distance_Party = 152;
+                Creature.Distance_Outfit = 96;
+                Creature.Distance_Color_Head = 100;
+                Creature.Distance_Color_Body = 104;
+                Creature.Distance_Color_Legs = 108;
+                Creature.Distance_Color_Feet = 112;
+                Creature.Distance_Addon = 116;
+
+                Addresses.DatItem.Width = 0;
+                Addresses.DatItem.Height = 4;
+                Addresses.DatItem.Unknown1 = 8;
+                Addresses.DatItem.Layers = 12;
+                Addresses.DatItem.PatternX = 16;
+                Addresses.DatItem.PatternY = 20;
+                Addresses.DatItem.PatternDepth = 24;
+                Addresses.DatItem.Phase = 28;
+                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Flags = 36;
+                Addresses.DatItem.WalkSpeed = 40;
+                Addresses.DatItem.TextLimit = 44;
+                Addresses.DatItem.LightRadius = 48;
+                Addresses.DatItem.LightColor = 52;
+                Addresses.DatItem.ShiftX = 56;
+                Addresses.DatItem.ShiftY = 60;
+                Addresses.DatItem.WalkHeight = 64;
+                Addresses.DatItem.Automap = 68;
+                Addresses.DatItem.LensHelp = 72;
+
+                Hotkey.SendAutomaticallyStart = 0x77C3C8;
+                Hotkey.SendAutomaticallyStep = 0x1;
+                Hotkey.TextStart = 0x77C3F0;
+                Hotkey.TextStep = 0x100;
+                Hotkey.ObjectStart = 0x77C2A8;
+                Hotkey.ObjectStep = 0x4;
+                Hotkey.ObjectUseTypeStart = 0x77C218;
+                Hotkey.ObjectUseTypeStep = 0x4;
+                Hotkey.MaxHotkeys = 36;
+
+                Map.MapPointer = 0x636610;
+                Map.Step_Square = 172;
+                Map.Step_Square_Object = 12;
+                Map.Distance_Square_ObjectCount = 0;
+                Map.Distance_Square_Objects = 4;
+                Map.Distance_Object_Id = 0;
+                Map.Distance_Object_Data = 4;
+                Map.Distance_Object_Data_Ex = 8;
+                Map.Max_Square_Objects = 13;
+                Map.Max_X = 18;
+                Map.Max_Y = 14;
+                Map.Max_Z = 8;
+                Map.Max_Squares = 2016;
+                Map.Z_Axis_Default = 7;
+                Map.Player_Tile = 0x3E3A08;
+                Map.NameSpy1 = 0x4E95F9;
+                Map.NameSpy2 = 0x4E9603;
+                Map.NameSpy1Default = 19061;
+                Map.NameSpy2Default = 16501;
+                Map.LevelSpy1 = 0x4EB4AA;
+                Map.LevelSpy2 = 0x4EB5AF;
+                Map.LevelSpy3 = 0x4EB630;
+                Map.LevelSpyPtr = 0x62E754;
+                Map.LevelSpyAdd2 = 0x25D8;
+                Map.RevealInvisible1 = 0x45BF63;
+                Map.RevealInvisible2 = 0x4E88C5;
+
+                Player.Exp = 0x626C64;
+                Player.GoTo_X = Player.Exp + 80;
+                Player.GoTo_Y = Player.Exp + 76;
+                Player.GoTo_Z = Player.Exp + 72;
+                Player.Id = Player.Exp + 12;
+                Player.HP = Player.Exp + 8;
+                Player.HP_Max = Player.Exp + 4;
+                Player.Level = Player.Exp - 4;
+                Player.MagicLevel = Player.Exp - 8;
+                Player.Level_Percent = Player.Exp - 12;
+                Player.MagicLevel_Percent = Player.Exp - 16;
+                Player.Mana = Player.Exp - 20;
+                Player.Mana_Max = Player.Exp - 24;
+                Player.Soul = Player.Exp - 28;
+                Player.Stamina = Player.Exp - 32;
+                Player.Cap = Player.Exp - 36;
+                Player.Fishing = Player.Exp - 52;
+                Player.Shielding = Player.Exp - 56;
+                Player.Distance = Player.Exp - 60;
+                Player.Axe = Player.Exp - 64;
+                Player.Sword = Player.Exp - 68;
+                Player.Club = Player.Exp - 72;
+                Player.Fist = Player.Exp - 76;
+                Player.Fishing_Percent = Player.Exp - 80;
+                Player.Shielding_Percent = Player.Exp - 84;
+                Player.Distance_Percent = Player.Exp - 88;
+                Player.Axe_Percent = Player.Exp - 92;
+                Player.Sword_Percent = Player.Exp - 96;
+                Player.Club_Percent = Player.Exp - 100;
+                Player.Fist_Percent = Player.Exp - 104;
+                Player.Flags = Player.Exp - 108;
+                Player.Max_Slots = 11;
+                Player.Slot_Head = 0x62D190;
+                Player.Slot_Neck = Player.Slot_Head + 12;
+                Player.Slot_Backpack = Player.Slot_Head + 24;
+                Player.Slot_Armor = Player.Slot_Head + 36;
+                Player.Slot_Right = Player.Slot_Head + 48;
+                Player.Slot_Left = Player.Slot_Head + 60;
+                Player.Slot_Legs = Player.Slot_Head + 72;
+                Player.Slot_Feet = Player.Slot_Head + 84;
+                Player.Slot_Ring = Player.Slot_Head + 96;
+                Player.Slot_Ammo = Player.Slot_Head + 108;
+                Player.Distance_Slot_Count = 4;
+                Player.Slot_Right_Count = Player.Slot_Right + Player.Distance_Slot_Count;
+                Player.Slot_Left_Count = Player.Slot_Left + Player.Distance_Slot_Count;
+                Player.Slot_Ammo_Count = Player.Slot_Ammo + Player.Distance_Slot_Count;
+                Player.CurrentTileToGo = 0x626C78;
+                Player.TilesToGo = 0x626C7C;
+                Player.RedSquare = 0x626C3C;
+                Player.GreenSquare = Player.RedSquare - 4;
+                Player.WhiteSquare = Player.GreenSquare - 8;
+                Player.AccessN = 0x766DF4;
+                Player.AccessS = 0x766DC4;
+                Player.Target_ID = Player.RedSquare;
+                Player.Target_BList_ID = Player.Target_ID - 8;
+                Player.Target_BList_Type = Player.Target_ID - 5;
+                Player.Target_Type = Player.Target_ID + 3;
+
+                TextDisplay.PrintName = 0x4EC5E1;
+                TextDisplay.PrintFPS = 0x4563C8;
+                TextDisplay.ShowFPS = 0x624974;
+                TextDisplay.PrintTextFunc = 0x4AC490;
+                TextDisplay.NopFPS = 0x456304;
+
+                Vip.Start = 0x624990;
+                Vip.End = 0x625228;
+                Vip.Step_Players = 0x2C;
+                Vip.Max_Players = 100;
+                Vip.Distance_Id = 0;
+                Vip.Distance_Name = 4;
+                Vip.Distance_Status = 34;
+                Vip.Distance_Icon = 40;
+            }
+                #endregion
+                #region 8.21 Addresses
             if (version == "8.21")
             {
                 BattleList.Step_Creatures = 0xA0;
