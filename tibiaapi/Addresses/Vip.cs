@@ -5,7 +5,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the VipList.
         /// </summary>
-        public static uint Start = 0x624990; // 8.22
+        public static uint Start = 0x628A10; // 8.31
 
         
         /// <summary>
