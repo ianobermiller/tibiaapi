@@ -48,6 +48,7 @@ namespace Tibia.Objects
             this.Add(Spells.AnimateDead);
             this.Add(Spells.Antidote);
             this.Add(Spells.AntidoteRune);
+            this.Add(Spells.AvalancheRune);
             this.Add(Spells.Berserk);
             this.Add(Spells.CancelInvisibility);
             this.Add(Spells.Challenge);
