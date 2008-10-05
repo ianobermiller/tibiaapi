@@ -198,35 +198,27 @@ namespace Tibia.Packets
 
         #region Sending Packets with packet.dll
         [DllImport("packet.dll")]
-        private static extern bool SendPacket(uint processID, byte[] packet, byte encrypt, byte safeArray);
-
-        /// <summary>
-        /// Send a packet through the client using encryption and packet.dll.
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public static bool SendPacketWithDLL(Objects.Client client, Byte[] packet)
-        {
-            return SendPacketWithDLL(client, packet, true);
-        }
+        private static extern bool SendPacket(uint processID, byte[] packet);
 
         /// <summary>
         /// Send a packet through the client using packet.dll.
         /// </summary>
         /// <param name="client"></param>
         /// <param name="packet"></param>
-        /// <param name="encrypt"></param>
         /// <returns></returns>
-        public static bool SendPacketWithDLL(Objects.Client client, Byte[] packet, Boolean encrypt)
+        public static bool SendPacketWithDLL(Objects.Client client, Byte[] packet)
         {
             try
             {
-                return SendPacket((uint)client.Process.Id, packet, Convert.ToByte(encrypt), 0);
+                return SendPacket((uint)client.Process.Id, packet);
             }
-            catch
+            catch (DllNotFoundException dnfe)
             {
                 throw new Exceptions.PacketDllNotFoundException();
+            }
+            catch (AccessViolationException ave)
+            {
+                return true;
             }
         }
         #endregion
