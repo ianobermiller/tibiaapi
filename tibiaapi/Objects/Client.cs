@@ -801,6 +801,7 @@ namespace Tibia.Objects
                     Item newItem = new Item(item.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
 
                     // Move the rune back to it's original location
+                    Thread.Sleep(200);
                     allClear = allClear & newItem.Move(oldLocation);
                     // Check if we moved an item to the ammo slot
                     // If we did, move it back
