@@ -768,7 +768,7 @@ namespace Tibia.Objects
                     ItemLocation oldLocation = original.Loc;
 
                     // The location where the item will be made
-                    ItemLocation newLocation;
+                    ItemLocation newLocation = null;
 
                     // Determine the location to make the item
                     /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
@@ -776,18 +776,23 @@ namespace Tibia.Objects
                     else*/
                     if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
                         newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
-                    {
-                        // If no hands are open, but the ammo slot is, 
-                        // move the right hand item to clear the ammo slot
-                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                        itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
-                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
-                    }
+                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
+                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
+                    if (newLocation == null)
+                        if(!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
+                        {
+                            // If no hands are free, but the ammo slot is, 
+                            // move the right hand item to clear the ammo slot
+                            newLocation = new ItemLocation(Constants.SlotNumber.Right);
+                            itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
+                            itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
+                        }
+
                     else
                         return false; // No where to put the item!
 
                     // Move the original and say the magic words, make sure everything went well
+                    Thread.Sleep(200);
                     allClear = allClear & original.Move(newLocation);
                     Thread.Sleep(200);
                     allClear = allClear & console.Say(item.Spell.Words);
@@ -798,13 +803,14 @@ namespace Tibia.Objects
                     // Build an item object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newItem = new Item(item.Id, 0, new ItemLocation(Constants.SlotNumber.Right), this, true);
+                    Item newItem = new Item(item.Id, 0, newLocation, this, true);
 
                     // Move the rune back to it's original location
-                    Thread.Sleep(200);
+                    Thread.Sleep(300);
                     allClear = allClear & newItem.Move(oldLocation);
                     // Check if we moved an item to the ammo slot
                     // If we did, move it back
+                    Thread.Sleep(200);
                     if (itemMovedToAmmo != null)
                     {
                         itemMovedToAmmo.Loc = new ItemLocation(Tibia.Constants.SlotNumber.Ammo);
