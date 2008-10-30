@@ -360,15 +360,17 @@ namespace Tibia.Objects
         #region Special Purpose
         public List<Tile> GetFishTiles()
         {
+            Player player = client.GetPlayer();
             List<Tile> tiles = new List<Tile>();
             List<uint> fishIds = Constants.Tiles.Water.GetFishIds();
             GetSquares(delegate(MapSquare square)
             {
                 if (fishIds.Contains(square.Tile.Id))
-                {
-                    tiles.Add(square.Tile);
-                    return true;
-                }
+                    if (square.Tile.Location.Z == player.Location.Z && square.Tile.Location.X - player.Location.X < 7 && square.Tile.Location.Y - player.Location.Y < 6)
+                    {
+                        tiles.Add(square.Tile);
+                        return true;
+                    }
                 return false;
             }, true);
             return tiles;
