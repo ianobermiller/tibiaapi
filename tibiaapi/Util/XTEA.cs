@@ -1,4 +1,5 @@
 using System;
+using Tibia;
 
 namespace Tibia.Util
 {
@@ -13,15 +14,54 @@ namespace Tibia.Util
          * Encode/Decode routines from: http://www.codeproject.com/KB/mobile/teaencryption.aspx
          * */
 
-        public static byte DecryptType(byte[] packet, byte[] key)
+        public static byte[] RemoveAdlerChecksum(byte[] packet)
+        {
+            byte[] packet_WithoutCRC = new byte[packet.Length - 4];
+            packet_WithoutCRC[0] = Tibia.Packets.Packet.Lo(packet.Length - 6);
+            packet_WithoutCRC[1] = Tibia.Packets.Packet.Hi(packet.Length - 6);
+            Array.Copy(packet, 6, packet_WithoutCRC, 2, packet.Length - 6);
+            return packet_WithoutCRC;
+        }
+
+        public static byte[] AddAdlerChecksum(byte[] packet)
+        {
+            byte[] packet_WithCRC = new byte[packet.Length + 4];
+            byte[] packet_WithoutHeader = new byte[packet.Length - 2];
+            AdlerChecksum acs = new AdlerChecksum();
+            Array.Copy(packet, 2, packet_WithoutHeader, 0, packet_WithoutHeader.Length);
+            packet_WithCRC[0] = Tibia.Packets.Packet.Lo(packet.Length + 2);
+            packet_WithCRC[1] = Tibia.Packets.Packet.Hi(packet.Length + 2);
+            if (acs.MakeForBuff(packet_WithoutHeader))
+            {
+                Array.Copy(BitConverter.GetBytes(acs.ChecksumValue), 0, packet_WithCRC, 2, 4);
+                Array.Copy(packet_WithoutHeader, 0, packet_WithCRC, 6, packet_WithoutHeader.Length);
+                return packet_WithCRC;
+            }
+            else
+                return null;
+        }
+
+        public static byte DecryptType(byte[] packet, byte[] key, bool hasAdler)
         {
             if (packet.Length == 0)
                 return 0;
-            
+            byte[] packet_ready;
+
+            if (hasAdler)
+            {
+                packet_ready = new byte[packet.Length - 4];
+                Array.Copy(RemoveAdlerChecksum(packet), 0, packet_ready, 0, packet.Length - 4);
+            }
+            else
+            {
+                packet_ready = new byte[packet.Length];
+                Array.Copy(packet, 0, packet_ready, 0, packet.Length);
+            }
+
             uint[] keyprep = key.ToUintArray();
 
             byte[] start = new byte[8];
-            Array.Copy(packet, 2, start, 0, 8);
+            Array.Copy(packet_ready, 2, start, 0, 8);
             uint[] startprep = start.ToUintArray();
 
             Decode(startprep, 0, keyprep);
@@ -36,15 +76,27 @@ namespace Tibia.Util
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="key"></param>
-        public static byte[] Decrypt(byte[] packet, byte[] key)
+        public static byte[] Decrypt(byte[] packet, byte[] key, bool hasAdler)
         {
             if (packet.Length == 0)
                 return packet;
 
-            // The first two bytes are the length
-            byte[] payload = new byte[packet.Length - 2];
+            byte[] packet_ready;
+            if (hasAdler)
+            {
+                packet_ready = new byte[packet.Length - 4];
+                Array.Copy(RemoveAdlerChecksum(packet), 0, packet_ready, 0, packet_ready.Length);
+            }
+            else
+            {
+                packet_ready = new byte[packet.Length];
+                Array.Copy(packet, 0, packet_ready, 0, packet.Length);
+            }
 
-            Array.Copy(packet, 2, payload, 0, payload.Length);
+            // The first two bytes are the length
+            byte[] payload = new byte[packet_ready.Length - 2];
+
+            Array.Copy(packet_ready, 2, payload, 0, payload.Length);
 
             uint[] payloadprep = payload.ToUintArray();
             uint[] keyprep = key.ToUintArray();
@@ -69,7 +121,7 @@ namespace Tibia.Util
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="key"></param>
-        public static byte[] Encrypt(byte[] packet, byte[] key)
+        public static byte[] Encrypt(byte[] packet, byte[] key, bool addAdler)
         {
             if (packet.Length == 0)
                 return packet;
@@ -78,13 +130,13 @@ namespace Tibia.Util
 
             // Pad the packet with extra bytes for encryption
             int pad = packet.Length % 8;
-			
+
             byte[] packetprep;
-			
-			if (pad == 0)
-				packetprep = new byte[packet.Length];
-			else
- 				packetprep = new byte[packet.Length + (8 - pad)];
+
+            if (pad == 0)
+                packetprep = new byte[packet.Length];
+            else
+                packetprep = new byte[packet.Length + (8 - pad)];
 
             Array.Copy(packet, packetprep, packet.Length);
 
@@ -101,7 +153,15 @@ namespace Tibia.Util
 
             Array.Copy(BitConverter.GetBytes((short)packetprep.Length), 0, encrypted, 0, 2);
 
-            return encrypted;
+            if (addAdler)
+            {
+
+                byte[] encrypted_ready = new byte[encrypted.Length + 4];
+                Array.Copy(AddAdlerChecksum(encrypted), 0, encrypted_ready, 0, encrypted_ready.Length);
+                return encrypted_ready;
+            }
+            else
+                return encrypted;
         }
 
         private static void Encode(uint[] v, int index, uint[] k)

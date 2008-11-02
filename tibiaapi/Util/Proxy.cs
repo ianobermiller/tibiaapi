@@ -18,7 +18,6 @@ namespace Tibia.Util
         /// Static client for checking open ports.
         /// </summary>
         private static TcpListener tcpScan;
-
         private Socket socketClient;
 
         private NetworkStream netStreamClient;
@@ -26,37 +25,39 @@ namespace Tibia.Util
         private NetworkStream netStreamLogin;
 
         private TcpListener tcpClient;
-        private TcpClient   tcpServer;
-        private TcpClient   tcpLogin;
+        private TcpClient tcpServer;
+        private TcpClient tcpLogin;
 
         private const string Localhost = "127.0.0.1";
-        private byte[]       LocalhostBytes = new byte[] { 127, 0, 0, 1 };
-        private const short  DefaultPort = 7171;
+        private byte[] LocalhostBytes = new byte[] { 127, 0, 0, 1 };
+        private const short DefaultPort = 7171;
         private const int BufferSize = 8192;
 
-        private Client         client;
+        private Client client;
+        private bool Adler;
+        private int i = 0;
         private CharListPacket charList;
-        private byte           selectedChar;
-        private bool           connected = false;
-        private bool           isLoggedIn = false;
-        private int            loginDelay = 250;
-        private short          localPort;
-        private Queue<byte[]>  serverReceiveQueue = new Queue<byte[]>();
-        private Queue<byte[]>  clientReceiveQueue = new Queue<byte[]>();
-        private Queue<byte[]>  clientSendQueue = new Queue<byte[]>();
-        private Queue<byte[]>  serverSendQueue = new Queue<byte[]>();
+        private byte selectedChar;
+        private bool connected = false;
+        private bool isLoggedIn = false;
+        private int loginDelay = 250;
+        private short localPort;
+        private Queue<byte[]> serverReceiveQueue = new Queue<byte[]>();
+        private Queue<byte[]> clientReceiveQueue = new Queue<byte[]>();
+        private Queue<byte[]> clientSendQueue = new Queue<byte[]>();
+        private Queue<byte[]> serverSendQueue = new Queue<byte[]>();
         private byte[] dataServer = new byte[BufferSize];
         private byte[] dataClient = new byte[BufferSize];
-        private bool           writingToClient = false;
-        private bool           writingToServer = false;
-        private DateTime       lastServerWrite = DateTime.UtcNow;
-        private PacketBuilder  partial;
-        private int            partialRemaining = 0;
+        private bool writingToClient = false;
+        private bool writingToServer = false;
+        private DateTime lastServerWrite = DateTime.UtcNow;
+        private PacketBuilder partial;
+        private int partialRemaining = 0;
         private Util.DatReader dat;
         private byte[] tempArray = new byte[BufferSize];
         private int tempLen = 0;
 
-        private LoginServer[]  loginServers = new LoginServer[] {
+        private LoginServer[] loginServers = new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
             new LoginServer("login02.tibia.com", 7171),
             new LoginServer("login03.tibia.com", 7171),
@@ -193,16 +194,31 @@ namespace Tibia.Util
         /// Create a new proxy and start listening for the client to connect.
         /// </summary>
         /// <param name="c"></param>
-        public Proxy(Client c) : this(c, null) { }
+        public Proxy(Client c) : this(c, null, true) { }
 
         /// <summary>
         /// Create a new proxy with the specified login server.
         /// </summary>
         /// <param name="c"></param>
         /// <param name="ls"></param>
-        public Proxy(Client c, LoginServer ls)
+        public Proxy(Client c, LoginServer ls) : this(c, ls, true) { }        
+        
+        /// <summary>
+        /// Create a new proxy with/without the Adler-32 checksum.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="ls"></param>
+        public Proxy(Client c, bool checksum) : this(c, null, checksum) { }
+
+        /// <summary>
+        /// Create a new proxy with the specified login server and with/without the Adler-32 checksum.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="ls"></param>
+        public Proxy(Client c, LoginServer ls, bool checksum)
         {
             client = c;
+            Adler = checksum;
             dat = new DatReader(client);
             client.UsingProxy = true;
             if (ls != null)
@@ -227,6 +243,7 @@ namespace Tibia.Util
 
         private void StartClientListener()
         {
+            if (Adler) i = 4;
             tcpClient = new TcpListener(IPAddress.Any, localPort);
             tcpClient.Start();
             tcpClient.BeginAcceptSocket((AsyncCallback)ClientConnected, null);
@@ -234,6 +251,7 @@ namespace Tibia.Util
 
         private void ClientConnected(IAsyncResult ar)
         {
+            //log.WriteLine("        ClientConnected    ");
             socketClient = tcpClient.EndAcceptSocket(ar);
 
             if (socketClient.Connected)
@@ -251,16 +269,17 @@ namespace Tibia.Util
 
         private void ClientLoginReceived(IAsyncResult ar)
         {
+            //log.WriteLine("        ClientLoginReceived   ");
             int bytesRead = netStreamClient.EndRead(ar);
 
             if (bytesRead > 0)
             {
                 // Check whether this is a char list request or game server login
-                if (dataClient[2] == (byte)PacketType.AddCreature)
+                if (dataClient[2 + i] == (byte)PacketType.AddCreature)
                 {
                     ConnectClientToGameWorld(bytesRead);
                 }
-                else if (dataClient[2] == (byte)PacketType.CharListLoginData)
+                else if (dataClient[2 + i] == (byte)PacketType.CharListLoginData)
                 {
                     // Relay the login details to the Login Server
                     netStreamLogin.BeginWrite(dataClient, 0, bytesRead, null, null);
@@ -273,6 +292,7 @@ namespace Tibia.Util
 
         private void CharListReceived(IAsyncResult ar)
         {
+            //log.WriteLine("        CharListReceived   ");
             int bytesRead = netStreamLogin.EndRead(ar);
 
             if (bytesRead > 0)
@@ -306,7 +326,7 @@ namespace Tibia.Util
             byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
 
             Array.Copy(data, packet, length);
-            packet = XTEA.Decrypt(packet, key);
+            packet = XTEA.Decrypt(packet, key, Adler);
 
             if (ReceivedPacketFromServer != null)
                 ReceivedPacketFromServer.BeginInvoke(new Packet(client, packet), null, null);
@@ -317,7 +337,7 @@ namespace Tibia.Util
                     charList = new CharListPacket(client);
                     charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
 
-                    packet = XTEA.Encrypt(charList.Data, key);
+                    packet = XTEA.Encrypt(charList.Data, key, Adler);
 
                     // Send the modified char list to the client
                     netStreamClient.Write(packet, 0, packet.Length);
@@ -330,13 +350,13 @@ namespace Tibia.Util
                     BadLoginPacket badLogin = new BadLoginPacket(client, packet);
                     if (OnBadLogin != null)
                         OnBadLogin.BeginInvoke(badLogin.Message, null, null);
-                    packet = XTEA.Encrypt(packet, key);
+                    packet = XTEA.Encrypt(packet, key, Adler);
                     netStreamClient.Write(packet, 0, packet.Length);
                     Stop();
                     Restart();
                     break;
                 default:
-                    packet = XTEA.Encrypt(packet, key);
+                    packet = XTEA.Encrypt(packet, key, Adler);
                     netStreamClient.Write(packet, 0, packet.Length);
                     Stop();
                     Restart();
@@ -346,6 +366,7 @@ namespace Tibia.Util
 
         private void RefreshClientListener()
         {
+            //log.WriteLine("        RefreshClientListener   ");
             // Refresh the client listener
             tcpClient.Stop();
             tcpClient.Start();
@@ -354,6 +375,7 @@ namespace Tibia.Util
 
         private void ClientReconnected(IAsyncResult ar)
         {
+            //log.WriteLine("        ClientReconnected   ");
             socketClient = tcpClient.EndAcceptSocket(ar);
 
             if (socketClient.Connected)
@@ -368,6 +390,7 @@ namespace Tibia.Util
 
         private void ClientGameLoginReceived(IAsyncResult ar)
         {
+            //log.WriteLine("       ClientGameLoginReceived   ");
             int bytesRead = netStreamClient.EndRead(ar);
 
             if (bytesRead > 0)
@@ -378,6 +401,7 @@ namespace Tibia.Util
 
         private void ConnectClientToGameWorld(int bytesRead)
         {
+            //log.WriteLine("  ConnectClientToGameWorld   ");
             // Read the selection index from memory
             selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
 
@@ -401,25 +425,25 @@ namespace Tibia.Util
         private void ReceiveFromServer(IAsyncResult ar)
         {
             if (!netStreamServer.CanRead) return;
-                
+
             int bytesRead = netStreamServer.EndRead(ar);
             if (bytesRead == 0) return;
             int offset = 0;
 
+            
             while (bytesRead - offset > 0)
             {
                 // Get the packet length
                 int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
-
                 // Parse the data into a single packet
                 byte[] packet = new byte[packetlength];
                 Array.Copy(dataServer, offset, packet, 0, packetlength);
                 
-                // Enqueue the packet for processing
                 serverReceiveQueue.Enqueue(packet);
 
                 offset += packetlength;
             }
+
 
             ProcessServerReceiveQueue();
 
@@ -438,8 +462,11 @@ namespace Tibia.Util
         {
             if (serverReceiveQueue.Count > 0)
             {
+
                 byte[] original = serverReceiveQueue.Dequeue();
                 byte[] decrypted = DecryptPacket(original);
+
+
 
                 int remaining = 0; // the bytes worth of logical packets left
 
@@ -451,12 +478,11 @@ namespace Tibia.Util
                 if (partialRemaining > 0)
                 {
                     // Not sure if this works yet...
-                    // Yes, tack it onto the end of the partial packet
+                    // Yes, stack it onto the end of the partial packet
                     partial.AddBytes(decrypted);
 
                     // Subtract from the remaining needed
                     partialRemaining -= decrypted.Length;
-                    
                 }
                 else
                 {
@@ -475,7 +501,6 @@ namespace Tibia.Util
                     // Keep going until no more logical packets
                     while (remaining > 0)
                     {
-                        // Process the packet
                         forward = RaiseIncomingEvents(decrypted, ref length);
 
                         // If packet not found in database, skip the rest
@@ -512,6 +537,8 @@ namespace Tibia.Util
                     ProcessServerReceiveQueue();
             }
         }
+
+
 
         private bool RaiseIncomingEvents(byte[] packet, ref int length)
         {
@@ -713,7 +740,7 @@ namespace Tibia.Util
                         return ReceivedStatusMessagePacket(p);
                     break;
                 case PacketType.StatusUpdate:
-                    p = new StatusUpdatePacket(client, packet);
+                    p = new StatusUpdatePacket(client, packet,Adler);
                     length = p.Index;
                     if (ReceivedStatusUpdatePacket != null)
                         return ReceivedStatusUpdatePacket(p);
@@ -759,8 +786,8 @@ namespace Tibia.Util
                 byte[] packet = clientSendQueue.Dequeue();
                 writingToClient = true;
                 try
-                {
-                    netStreamClient.BeginWrite(packet, 0, packet.Length, ClientWriteDone, null);
+                {                                      
+                    netStreamClient.BeginWrite(packet, 0, packet.Length,(AsyncCallback) ClientWriteDone, null);
                 }
                 catch
                 {
@@ -819,7 +846,7 @@ namespace Tibia.Util
                     // We don't care about the return to this
                     OnLogOut.BeginInvoke("The client has logged out.", null, null);
                 }
-                    
+
                 return;
             }
 
@@ -956,11 +983,10 @@ namespace Tibia.Util
         /// <param name="packet"></param>
         public void SendToClient(byte[] packet)
         {
-            //MessageBox.Show(Packet.ByteArrayToHexString(packet));
-            //return;
-            byte[] encrypted = EncryptPacket(packet);
-            clientSendQueue.Enqueue(encrypted);
-            ProcessClientSendQueue();
+                byte[] encrypted = EncryptPacket(packet);
+                clientSendQueue.Enqueue(encrypted);
+                ProcessClientSendQueue();
+            
         }
         #endregion
 
@@ -972,7 +998,7 @@ namespace Tibia.Util
         /// <returns></returns>
         public byte[] EncryptPacket(byte[] packet)
         {
-            return XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+            return XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
         }
 
         /// <summary>
@@ -982,7 +1008,7 @@ namespace Tibia.Util
         /// <returns></returns>
         public byte[] DecryptPacket(byte[] packet)
         {
-            return XTEA.Decrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+            return XTEA.Decrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
         }
 
         /// <summary>
@@ -992,7 +1018,7 @@ namespace Tibia.Util
         /// <returns></returns>
         private byte GetPacketType(byte[] packet)
         {
-            return XTEA.DecryptType(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16));
+            return XTEA.DecryptType(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
         }
         #endregion
 

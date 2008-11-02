@@ -60,6 +60,11 @@ namespace Tibia.Objects
 
         #region Constructor/Destructor
         /// <summary>
+        /// "Support" constructor
+        /// </summary>
+        /// <param name="p">used when necessary to use classes such as packet builder when working clientless</param>
+        public Client() { }
+        /// <summary>
         /// Main constructor
         /// </summary>
         /// <param name="p">the client's process object</param>
@@ -101,6 +106,7 @@ namespace Tibia.Objects
         /// </summary>
         ~Client()
         {
+            // Close the process handle
             // Close the process handle
             Util.WinApi.CloseHandle(handle);
         }
@@ -1080,6 +1086,28 @@ namespace Tibia.Objects
         public bool StartProxy(LoginServer ls)
         {
             proxy = new Util.Proxy(this, ls);
+            return UsingProxy;
+        }
+
+        /// <summary>
+        /// Start the proxy using or not the Adler-32 checksum on packets.
+        /// </summary>
+        /// <param name="ls"></param>
+        /// <returns></returns>
+        public bool StartProxy(bool Adler)
+        {
+            proxy = new Util.Proxy(this, Adler);
+            return UsingProxy;
+        }
+
+        /// <summary>
+        /// Start the proxy using the given login server and with/without the Adler-32 checksum on packets.
+        /// </summary>
+        /// <param name="ls"></param>
+        /// <returns></returns>
+        public bool StartProxy(LoginServer ls,bool Adler)
+        {
+            proxy = new Util.Proxy(this,ls, Adler);
             return UsingProxy;
         }
 

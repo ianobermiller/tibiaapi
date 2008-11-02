@@ -67,13 +67,13 @@ namespace Tibia.Packets
             destination = PacketDestination.Client;
         }
 
-        public StatusUpdatePacket(Client c, byte[] data)
+        public StatusUpdatePacket(Client c, byte[] data,bool longcap)
             :this(c)
         {
-            ParseData(data);
+            ParseData(data,longcap);
         }
 
-        public new bool ParseData(byte[] packet)
+        public new bool ParseData(byte[] packet,bool longcap)
         {
             if (base.ParseData(packet))
             {
@@ -81,7 +81,10 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 hp = p.GetInt();
                 maxHp = p.GetInt();
-                cap = p.GetInt();
+                if (longcap)                
+                    cap = p.GetLong();
+                else
+                    cap = p.GetInt();
                 exp = p.GetLong();
                 level = p.GetInt();
                 xpbar = p.GetByte();
@@ -115,12 +118,15 @@ namespace Tibia.Packets
         /// <param name="soul"></param>
         /// <param name="stamina">in seconds</param>
         /// <returns></returns>
-        public static StatusUpdatePacket Create(Client c, int hp, int maxHp, int cap, int exp, int level, byte xpbar, int mana, int maxMana, byte magicLvl, byte soul, int stamina)
+        public static StatusUpdatePacket Create(Client c, int hp, int maxHp, int cap, bool longcap, int exp, int level, byte xpbar, int mana, int maxMana, byte magicLvl, byte soul, int stamina)
         {
             PacketBuilder p = new PacketBuilder(c, PacketType.StatusUpdate);
             p.AddInt(hp);
             p.AddInt(maxHp);
-            p.AddInt(cap);
+            if (longcap)
+                p.AddLong(cap);
+            else
+                p.AddInt(cap);
             p.AddLong(exp);
             p.AddInt(level);
             p.AddByte(xpbar);
@@ -130,7 +136,7 @@ namespace Tibia.Packets
             p.AddByte(0x00); // ?
             p.AddByte(soul);
             p.AddInt(stamina);
-            return new StatusUpdatePacket(c, p.GetPacket());
+            return new StatusUpdatePacket(c, p.GetPacket(),longcap);
         }
     }
 }

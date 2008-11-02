@@ -215,7 +215,7 @@ namespace Tibia.Constants
             public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball Rune", Spells.GreatFireball, 3);
             public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile Rune", Spells.HeavyMagicMissile, 2);
             public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle Rune", Spells.Icicle, 3);
-            public static Objects.Rune IntenseHealingRune = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealingRune, 2);
+            public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealingRune, 2);
             public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile Rune", Spells.LightMagicMissile, 1);
             public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall Rune", Spells.MagicWall, 5);
             public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze Rune", Spells.Paralyze, 3);
