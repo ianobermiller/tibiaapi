@@ -212,11 +212,11 @@ namespace Tibia.Packets
             {
                 return SendPacket((uint)client.Process.Id, packet);
             }
-            catch (DllNotFoundException dnfe)
+            catch (DllNotFoundException)
             {
                 throw new Exceptions.PacketDllNotFoundException();
             }
-            catch (AccessViolationException ave)
+            catch (AccessViolationException)
             {
                 return true;
             }

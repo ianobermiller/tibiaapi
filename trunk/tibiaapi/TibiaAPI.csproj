@@ -156,6 +156,7 @@
     <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />
     <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
+    <Compile Include="Util\AdlerCheckSum.cs" />
     <Compile Include="Util\ClientChooserEx.xaml.cs">
       <DependentUpon>ClientChooserEx.xaml</DependentUpon>
     </Compile>

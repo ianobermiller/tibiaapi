@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="InjectedDLL"
 	ProjectGUID="{6EDB8131-F2B1-4763-8E2F-6AE9BD4D76FC}"
 	RootNamespace="TibiaTekBotInjectedDLL"
