@@ -13,15 +13,42 @@ namespace Tibia.Constants
         #region All Items
         public static Dictionary<uint, Item> AllItems = new Dictionary<uint, Item>
         {
-            			{ Items.Ammunition.Spear.Id, Items.Ammunition.Spear },
-			{ Items.Ammunition.SmallStone.Id, Items.Ammunition.SmallStone },
-			{ Items.Ammunition.ThrowingStar.Id, Items.Ammunition.ThrowingStar },
-			{ Items.Ammunition.Bolts.Id, Items.Ammunition.Bolts },
 			{ Items.Ammunition.Arrow.Id, Items.Ammunition.Arrow },
+			{ Items.Ammunition.Bolts.Id, Items.Ammunition.Bolts },
 			{ Items.Ammunition.BurstArrow.Id, Items.Ammunition.BurstArrow },
+			{ Items.Ammunition.EarthArrow.Id, Items.Ammunition.EarthArrow },
+            { Items.Ammunition.EnchantedSpear.Id, Items.Ammunition.EnchantedSpear },
+            { Items.Ammunition.FlamingArrow.Id, Items.Ammunition.FlamingArrow },
+            { Items.Ammunition.FlashArrow.Id, Items.Ammunition.FlashArrow },
+            { Items.Ammunition.HuntingSpear.Id, Items.Ammunition.HuntingSpear },
+            { Items.Ammunition.PiercingBolt.Id, Items.Ammunition.PiercingBolt },
 			{ Items.Ammunition.PoisonedArrow.Id, Items.Ammunition.PoisonedArrow },
 			{ Items.Ammunition.PowerBolt.Id, Items.Ammunition.PowerBolt },
-			
+            { Items.Ammunition.RoyalSpear.Id, Items.Ammunition.RoyalSpear },
+            { Items.Ammunition.ShiverArrow.Id, Items.Ammunition.ShiverArrow },
+			{ Items.Ammunition.SmallStone.Id, Items.Ammunition.SmallStone },
+            { Items.Ammunition.SniperArrow.Id, Items.Ammunition.SniperArrow },
+            { Items.Ammunition.Spear.Id, Items.Ammunition.Spear },
+            { Items.Ammunition.ThrowingKnife.Id, Items.Ammunition.ThrowingKnife },
+			{ Items.Ammunition.ThrowingStar.Id, Items.Ammunition.ThrowingStar },
+
+            { Items.Neck.AmuletOfLoss.Id, Items.Neck.AmuletOfLoss },
+            { Items.Neck.BronzeAmulet.Id, Items.Neck.BronzeAmulet },
+            { Items.Neck.BronzeNecklace.Id, Items.Neck.BronzeNecklace },
+            { Items.Neck.CrystalNecklace.Id, Items.Neck.CrystalNecklace },
+            { Items.Neck.DragonNecklace.Id, Items.Neck.DragonNecklace },
+            { Items.Neck.ElvenAmulet.Id, Items.Neck.ElvenAmulet },
+            { Items.Neck.GarlicNecklace.Id, Items.Neck.GarlicNecklace },
+            { Items.Neck.GoldenAmulet.Id, Items.Neck.GoldenAmulet },
+            { Items.Neck.PlatinumAmulet.Id, Items.Neck.PlatinumAmulet },
+            { Items.Neck.ProtectionAmulet.Id, Items.Neck.ProtectionAmulet },
+            { Items.Neck.Scarf.Id, Items.Neck.Scarf },
+            { Items.Neck.SilverAmulet.Id, Items.Neck.SilverAmulet },
+            { Items.Neck.StarAmulet.Id, Items.Neck.StarAmulet },
+            { Items.Neck.StoneSkinAmulet.Id, Items.Neck.StoneSkinAmulet },
+            { Items.Neck.StrangeTalisman.Id, Items.Neck.StrangeTalisman },
+            { Items.Neck.WolfToothChain.Id, Items.Neck.WolfToothChain },
+
 			{ Items.Container.BackpackBlack.Id, Items.Container.BackpackBlack },
 			{ Items.Container.BackpackBlue.Id, Items.Container.BackpackBlue },
 			{ Items.Container.BackpackBrown.Id, Items.Container.BackpackBrown },
@@ -150,14 +177,46 @@ namespace Tibia.Constants
         #region Ammunitions
         public static Dictionary<uint, Item> Ammunitions = new Dictionary<uint, Item>
         {
-			{ Items.Ammunition.Spear.Id, Items.Ammunition.Spear },
-			{ Items.Ammunition.SmallStone.Id, Items.Ammunition.SmallStone },
-			{ Items.Ammunition.ThrowingStar.Id, Items.Ammunition.ThrowingStar },
-			{ Items.Ammunition.Bolts.Id, Items.Ammunition.Bolts },
 			{ Items.Ammunition.Arrow.Id, Items.Ammunition.Arrow },
+			{ Items.Ammunition.Bolts.Id, Items.Ammunition.Bolts },
 			{ Items.Ammunition.BurstArrow.Id, Items.Ammunition.BurstArrow },
+			{ Items.Ammunition.EarthArrow.Id, Items.Ammunition.EarthArrow },
+            { Items.Ammunition.EnchantedSpear.Id, Items.Ammunition.EnchantedSpear },
+            { Items.Ammunition.FlamingArrow.Id, Items.Ammunition.FlamingArrow },
+            { Items.Ammunition.FlashArrow.Id, Items.Ammunition.FlashArrow },
+            { Items.Ammunition.HuntingSpear.Id, Items.Ammunition.HuntingSpear },
+            { Items.Ammunition.PiercingBolt.Id, Items.Ammunition.PiercingBolt },
 			{ Items.Ammunition.PoisonedArrow.Id, Items.Ammunition.PoisonedArrow },
 			{ Items.Ammunition.PowerBolt.Id, Items.Ammunition.PowerBolt },
+            { Items.Ammunition.RoyalSpear.Id, Items.Ammunition.RoyalSpear },
+            { Items.Ammunition.ShiverArrow.Id, Items.Ammunition.ShiverArrow },
+			{ Items.Ammunition.SmallStone.Id, Items.Ammunition.SmallStone },
+            { Items.Ammunition.SniperArrow.Id, Items.Ammunition.SniperArrow },
+            { Items.Ammunition.Spear.Id, Items.Ammunition.Spear },
+            { Items.Ammunition.ThrowingKnife.Id, Items.Ammunition.ThrowingKnife },
+			{ Items.Ammunition.ThrowingStar.Id, Items.Ammunition.ThrowingStar },
+        };
+        #endregion
+
+        #region Necks
+        public static Dictionary<uint, Item> Necks = new Dictionary<uint, Item>
+        {
+			{ Items.Neck.AmuletOfLoss.Id, Items.Neck.AmuletOfLoss },
+            { Items.Neck.BronzeAmulet.Id, Items.Neck.BronzeAmulet },
+            { Items.Neck.BronzeNecklace.Id, Items.Neck.BronzeNecklace },
+            { Items.Neck.CrystalNecklace.Id, Items.Neck.CrystalNecklace },
+            { Items.Neck.DragonNecklace.Id, Items.Neck.DragonNecklace },
+            { Items.Neck.ElvenAmulet.Id, Items.Neck.ElvenAmulet },
+            { Items.Neck.GarlicNecklace.Id, Items.Neck.GarlicNecklace },
+            { Items.Neck.GoldenAmulet.Id, Items.Neck.GoldenAmulet },
+            { Items.Neck.PlatinumAmulet.Id, Items.Neck.PlatinumAmulet },
+            { Items.Neck.ProtectionAmulet.Id, Items.Neck.ProtectionAmulet },
+            { Items.Neck.Scarf.Id, Items.Neck.Scarf },
+            { Items.Neck.SilverAmulet.Id, Items.Neck.SilverAmulet },
+            { Items.Neck.StarAmulet.Id, Items.Neck.StarAmulet },
+            { Items.Neck.StoneSkinAmulet.Id, Items.Neck.StoneSkinAmulet },
+            { Items.Neck.StrangeTalisman.Id, Items.Neck.StrangeTalisman },
+            { Items.Neck.WolfToothChain.Id, Items.Neck.WolfToothChain },
         };
         #endregion
 
@@ -299,6 +358,27 @@ namespace Tibia.Constants
         public static Dictionary<uint, Item> SpiritPotions = new Dictionary<uint, Item>
 		{
 			{ Items.Potion.GreatSpirit.Id, Items.Potion.GreatSpirit },
+        };
+        #endregion
+
+        #region Rings
+        public static Dictionary<uint, Item> Rings = new Dictionary<uint, Item>
+		{
+			{ Items.Ring.AxeRing.Id, Items.Ring.AxeRing },
+            { Items.Ring.ClubRing.Id, Items.Ring.ClubRing },
+            { Items.Ring.CrystalRing.Id, Items.Ring.CrystalRing },
+            { Items.Ring.DwarvenRing.Id, Items.Ring.DwarvenRing },
+            { Items.Ring.EnergyRing.Id, Items.Ring.EnergyRing },
+            { Items.Ring.GoldenRing.Id, Items.Ring.GoldenRing },
+            { Items.Ring.LifeRing.Id, Items.Ring.LifeRing },
+            { Items.Ring.MightRing.Id, Items.Ring.MightRing },
+            { Items.Ring.PowerRing.Id, Items.Ring.PowerRing },
+            { Items.Ring.RingOfHealing.Id, Items.Ring.RingOfHealing },
+            { Items.Ring.RingOfTheSkies.Id, Items.Ring.RingOfTheSkies },
+            { Items.Ring.StealthRing.Id, Items.Ring.StealthRing },
+            { Items.Ring.SwordRing.Id, Items.Ring.SwordRing },
+            { Items.Ring.TimeRing.Id, Items.Ring.TimeRing },
+            { Items.Ring.WeddingRing.Id, Items.Ring.WeddingRing },
         };
         #endregion
 
