@@ -293,7 +293,7 @@ namespace Tibia.Constants
 
         Hero = 73,
         Rabbit = 74,
-        GameMaster = 75,
+        GameMasterVoluntary = 75,
         SwampTroll = 76,
         Banshee = 78,
         AncientScarab = 79,
@@ -476,12 +476,26 @@ namespace Tibia.Constants
         IceGolem = 261,
         SilverRabbit = 262,
         FrostGiantess = 265,
-        CommunityManager = 266,
+        GameMasterCustomerSupport = 266,
         DragonSmallGreen = 271,
         DragonSmallRed = 272,
         SquirrelLarge = 274,
         WaterMonster = 275,
-        Cat = 276
+        Cat = 276,
+
+        MassiveEnergyElemental = 290,
+        Wyrm = 291,
+        Pumpkin = 292,
+        EnergyElemental = 293,
+        Wisp = 294,
+        RotwormQueen = 295,
+        GoblinAssassin = 296,
+        GoblinScavenger = 297,
+        SkeletonWarrior = 298,
+        BogRaider = 299,
+        GrimReaper = 300,
+        EarthElemental = 301,
+        CommunityManager = 302
 
         
     }
