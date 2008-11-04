@@ -160,6 +160,7 @@ namespace Tibia.Objects
         public Client Client
         {
             get { return client; }
+            set { client = value; }
         }
         /// <summary>
         /// Gets or sets the id of the item.
