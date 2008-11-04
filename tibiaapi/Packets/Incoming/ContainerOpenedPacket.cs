@@ -64,9 +64,12 @@ namespace Tibia.Packets
                 volume = p.GetInt();
                 itemCount = p.GetByte();
                 items = new List<Item>(itemCount);
-                for (int i = 0; i < itemCount; i++)
+                for (byte i = 0; i < itemCount; i++)
                 {
-                    items.Add(p.GetItem());
+                    Item item = p.GetItem();
+                    item.Client = client;
+                    item.Loc = new ItemLocation(number, i);
+                    items.Add(item);
                 }
                 index = p.Index;
                 return true;

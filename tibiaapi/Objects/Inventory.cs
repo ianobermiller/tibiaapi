@@ -22,6 +22,16 @@ namespace Tibia.Objects
             this.client = client;
         }
 
+        public Container GetContainer(byte number)
+        {
+            uint i = Addresses.Container.Start + (number * Addresses.Container.Step_Container);
+            if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+            {
+                return new Container(client, i, number);
+            }
+            return null;
+        }
+
         /// <summary>
         /// Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open.
         /// </summary>
@@ -33,7 +43,9 @@ namespace Tibia.Objects
             for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
             {
                 if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+                {
                     containers.Add(new Container(client, i, containerNumber));
+                }
                 containerNumber++;
             }
             // containers.Reverse();
