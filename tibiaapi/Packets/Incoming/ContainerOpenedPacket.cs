@@ -67,7 +67,6 @@ namespace Tibia.Packets
                 for (byte i = 0; i < itemCount; i++)
                 {
                     Item item = p.GetItem();
-                    item.Client = client;
                     item.Loc = new ItemLocation(number, i);
                     items.Add(item);
                 }

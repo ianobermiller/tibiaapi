@@ -347,6 +347,7 @@ namespace Tibia.Packets
             Item item = new Item(GetInt());
             if (client.DatReader.GetItem(item.Id).HasExtraByte())
                 item.Count = GetByte();
+            item.Client = client;
             return item;
         }
 
