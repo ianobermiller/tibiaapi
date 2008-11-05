@@ -151,6 +151,7 @@ namespace Tibia.Packets
                 {
                     addType = MapItemAddType.Item;
                     item = p.GetItem();
+                    item.Loc = new ItemLocation(loc);
                 }
                 index = p.Index;
                 return true;

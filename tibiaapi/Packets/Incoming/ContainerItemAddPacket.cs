@@ -34,6 +34,15 @@ namespace Tibia.Packets
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 container = p.GetByte();
                 item = p.GetItem();
+                
+                Tibia.Objects.Container c = client.Inventory.GetContainer(container);
+                byte slot = 0;
+                if (c != null)
+                {
+                    slot = (byte)c.Amount;
+                }
+
+                item.Loc = new ItemLocation(container, slot);
                 index = p.Index;
                 return true;
             }
