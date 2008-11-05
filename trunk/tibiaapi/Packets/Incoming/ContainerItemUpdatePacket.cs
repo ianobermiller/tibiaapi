@@ -40,6 +40,7 @@ namespace Tibia.Packets
                 container = p.GetByte();
                 slot = p.GetByte();
                 item = p.GetItem();
+                item.Loc = new ItemLocation(container, slot);
                 index = p.Index;
                 return true;
             }
