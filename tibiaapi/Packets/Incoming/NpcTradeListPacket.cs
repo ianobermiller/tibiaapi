@@ -38,13 +38,15 @@ namespace Tibia.Packets
                 for (int i = 0; i < itemCount; i++)
                 {
                     int id = p.GetInt();
-                    p.Skip(1);
+                    byte subType = p.GetByte();
                     string name = p.GetString();
+                    int weight = p.GetLong();
                     int sellPrice = p.GetLong();
                     int buyPrice = p.GetLong();
-                    items.Add(new TradeItem(id, name, sellPrice, buyPrice));
+                    items.Add(new TradeItem(id, subType, name, weight, sellPrice, buyPrice));
                 }
                 index = p.Index;
+                index = -1;
                 return true;
             }
             else
@@ -60,8 +62,9 @@ namespace Tibia.Packets
             foreach(TradeItem item in items)
             {
                 p.AddShort(item.Id);
-                p.Skip(1);
+                p.AddByte(item.SubType);
                 p.AddString(item.Name);
+                p.AddLong(item.Weight);
                 p.AddLong(item.SellPrice);
                 p.AddLong(item.BuyPrice);
             }
@@ -71,16 +74,26 @@ namespace Tibia.Packets
     public class TradeItem
     {
         private int id;
+        private byte subType;
         private string name;
+        private int weight;
         private int sellprice;
         private int buyprice;
         public int Id
         {
             get { return id; }
         }
+        public byte SubType
+        {
+            get { return subType; }
+        }
         public string Name
         {
             get { return name; }
+        }
+        public int Weight
+        {
+            get { return weight; }
         }
         public int SellPrice
         {
@@ -90,12 +103,14 @@ namespace Tibia.Packets
         {
             get { return buyprice; }
         }
-        public TradeItem(int Id, string Name, int SellPrice, int BuyPrice)
+        public TradeItem(int id, byte subtype, string name, int weight, int sellPrice, int buyPrice)
         {
-            id = Id;
-            name = Name;
-            sellprice = SellPrice;
-            buyprice = BuyPrice;
+            this.id = id;
+            this.subType = subtype;
+            this.name = name;
+            this.weight = weight;
+            this.sellprice = sellPrice;
+            this.buyprice = buyPrice;
         }
     }
 }
