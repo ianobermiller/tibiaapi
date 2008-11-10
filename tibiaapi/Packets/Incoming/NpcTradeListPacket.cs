@@ -46,7 +46,6 @@ namespace Tibia.Packets
                     items.Add(new TradeItem(id, subType, name, weight, sellPrice, buyPrice));
                 }
                 index = p.Index;
-                index = -1;
                 return true;
             }
             else
