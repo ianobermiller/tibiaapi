@@ -20,12 +20,12 @@ namespace Tibia.Util
         #region variables
         private Client client;
         private int pid;
-        private long remotePortAddress;
 
         private Socket mainSocket;
         private ushort localPort;
         private ushort remotePort;
-        private bool usingdefaultremote = true;
+        private ushort proxyPort=0;
+        private SocketMode mode=SocketMode.UsingDefaultRemotePort;
         private byte[] receive_buf = new byte[4096];
         private bool Adler;
         private bool log = false;
@@ -90,7 +90,15 @@ namespace Tibia.Util
         public PacketListener ReceivedVipLogoutPacket;
         public PacketListener ReceivedWorldLightPacket;
 #endregion
-        #region Structs
+        #region Structs and Enums
+
+        public enum SocketMode
+        {
+            UsingDefaultRemotePort,
+            UsingSpecialRemotePort,
+            UsingProxy
+        }
+
         public enum TCP_TABLE_CLASS
         {
             TCP_TABLE_BASIC_LISTENER,
@@ -185,9 +193,7 @@ namespace Tibia.Util
             this.Adler = Adler;
             this.client=client;
             pid = client.Process.Id;
-            remotePortAddress=(long)(Tibia.Addresses.Client.LoginServerStart+Tibia.Addresses.Client.Distance_Port);
             string strIP = null;
-            UpdatePorts();
 
             IPHostEntry HosyEntry = Dns.GetHostEntry((Dns.GetHostName()));
             if (HosyEntry.AddressList.Length > 0)
@@ -319,7 +325,6 @@ namespace Tibia.Util
                 flagServerToClientQueue.Clear();
                 IncomingGamePacketQueue.Enqueue(packet);
                 ProcessIncomingGamePacketQueue();
-                //ProcessGamePackets();
             }
             else
             {
@@ -721,44 +726,64 @@ namespace Tibia.Util
             set { log = value; }
         }
 
-        public ushort LocalPort
+        public ushort ProxyPort
         {
-            get { return localPort; }
-            set { localPort = value; }
+            get { return proxyPort; }
+            set { proxyPort = value; }
         }
 
-        public ushort RemotePort
+        public SocketMode Mode
         {
-            get { return remotePort; }
-            set { remotePort = value; }
+            get { return mode; }
+            set { mode = value; }
         }
 
-        public bool UsingDefaultRemote
-        {
-            get { return usingdefaultremote; }
-            set { usingdefaultremote = value; }
-        }
         #endregion
-        #region ports, flags and encryption/decryption 
+        #region ports, flags and encryption/decryption
+
         public void UpdatePorts()
         {
-            if (!usingdefaultremote)
+            MIB_TCPROW_OWNER_PID[] tcptable = GetAllTcpConnections();
+            switch (mode)
             {
-                remotePort = GetRemotePort();
-                localPort = GetLocalPort(pid);
-            }
-            else
-            {
-                MIB_TCPROW_OWNER_PID[] tcptable = GetAllTcpConnections();
-                for (int i = 0; i < tcptable.Length; i++)
-                {
-                    int remote_ = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2,tcptable[i].remotePort1}, 0);
-                    if (remote_ == 7171)
+                case SocketMode.UsingDefaultRemotePort:                
+                    for (int i = 0; i < tcptable.Length; i++)
                     {
-                        remotePort = 7171;
-                        localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1}, 0);
+                        ushort remote_ = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2,tcptable[i].remotePort1}, 0);
+                        if (remote_ == 7171 && tcptable[i].owningPid == pid)
+                        {
+                            remotePort = 7171;
+                            localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1}, 0);
+                            return;
+                        }
                     }
-                }
+                    break;
+                case SocketMode.UsingSpecialRemotePort:
+                    for (int i = 0; i < tcptable.Length; i++)
+                    {
+                        if (tcptable[i].owningPid == pid)
+                        {
+                            remotePort = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2,tcptable[i].remotePort1}, 0);
+                            localPort= BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 }, 0);
+                            return;
+                        }
+                    }
+                    localPort=0;
+                    break;
+                case SocketMode.UsingProxy:
+                    for (int i = 0; i < tcptable.Length; i++)
+                    {
+                        ushort remote_ = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2, tcptable[i].remotePort1 }, 0);
+                        if (remote_ == proxyPort && tcptable[i].owningPid == pid)
+                        {
+                            localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 }, 0);
+                            //:O?
+                            localPort++;
+                            remotePort = 7171;
+                            return;
+                        }
+                    }
+                    break;
             }
         }
 
@@ -804,24 +829,6 @@ namespace Tibia.Util
             return strFlags;
         }
                 
-        public static ushort GetLocalPort(int t_pid)
-        {
-            MIB_TCPROW_OWNER_PID[] tcptable = GetAllTcpConnections();
-            for (int i = 0; i < tcptable.Length; i++)
-            {
-                if (tcptable[i].owningPid == t_pid)
-                {
-                    byte[] port = new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 };
-                    return BitConverter.ToUInt16(port, 0);
-                }
-            }
-            return 0;
-        }
-
-        private ushort GetRemotePort()
-        {            
-            return BitConverter.ToUInt16(client.ReadBytes(remotePortAddress,2),0);
-        }
 
         public byte[] DecryptPacket(byte[] packet)
         {
@@ -836,7 +843,7 @@ namespace Tibia.Util
         }
         #endregion
 
-        
+
     }
 }
 
