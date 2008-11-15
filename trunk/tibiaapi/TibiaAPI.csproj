@@ -102,7 +102,7 @@
     <Compile Include="Packets\Incoming\ContainerItemRemove.cs" />
     <Compile Include="Packets\Incoming\ContainerItemUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\BadLoginPacket.cs" />
-    <Compile Include="Packets\Incoming\NpcTradeGoldCountPacket.cs" />
+    <Compile Include="Packets\Incoming\NpcTradeGoldCountSaleListPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSkullPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSpeedPacket.cs" />
     <Compile Include="Packets\Incoming\FlagUpdatePacket.cs" />

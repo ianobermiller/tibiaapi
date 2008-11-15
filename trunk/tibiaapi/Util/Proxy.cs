@@ -704,8 +704,8 @@ namespace Tibia.Util
                     if (ReceivedNpcTradeListPacket != null)
                         return ReceivedNpcTradeListPacket(p);
                     break;
-                case PacketType.NpcTradeGoldCount:
-                    p = new NpcTradeGoldCountPacket(client, packet);
+                case PacketType.NpcTradeGoldCountSaleList:
+                    p = new NpcTradeGoldCountSaleListPacket(client, packet);
                     length = p.Index;
                     if (ReceivedNpcTradeGoldCountPacket != null)
                         return ReceivedNpcTradeGoldCountPacket(p);

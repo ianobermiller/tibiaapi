@@ -27,7 +27,7 @@ namespace Tibia.Packets
         EqItemAdd           = 0x78,
         EqItemRemove        = 0x79,
         NpcTradeList        = 0x7A,
-        NpcTradeGoldCount   = 0x7B,
+        NpcTradeGoldCountSaleList   = 0x7B,
         WorldLight          = 0x82,
         TileAnimation       = 0x83,
         AnimatedText        = 0x84,

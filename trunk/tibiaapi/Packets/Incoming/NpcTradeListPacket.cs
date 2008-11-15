@@ -102,6 +102,12 @@ namespace Tibia.Packets
         {
             get { return buyprice; }
         }
+
+        public TradeItem(int id, byte subtype) : this(id, subtype, "", 0, 0, 0)
+        {
+
+        }
+
         public TradeItem(int id, byte subtype, string name, int weight, int sellPrice, int buyPrice)
         {
             this.id = id;
