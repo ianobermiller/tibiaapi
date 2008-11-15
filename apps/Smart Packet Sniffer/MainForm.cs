@@ -39,10 +39,6 @@ namespace SmartPacketSniffer
             SetSocket();
         }
 
-        private void chkProxy_CheckedChanged(object sender, EventArgs e)
-        {
-            sock.UsingDefaultRemote = chkDefRemote.Checked;
-        }
 
         private void btnReload_Click(object sender, EventArgs e)
         {
@@ -89,7 +85,8 @@ namespace SmartPacketSniffer
                     sock.ReceivedGamePacketFromClient += ClientPacket;
                     sock.ReceivedGamePacketFromServer += ServerPacket;
                     sock.SplitPacketFromServer+=SplitPacket;
-                    sock.UsingDefaultRemote = chkDefRemote.Checked;
+                    EventHandler e = new EventHandler(RadioChanged);
+                    e.Invoke(new Object(), new EventArgs());
                     sock.Enabled = true;
                 }
             }
@@ -259,6 +256,17 @@ namespace SmartPacketSniffer
             public override string ToString()
             {
                 return Time + "\t from " + Source;
+            }
+        }
+
+        private void RadioChanged(object sender, EventArgs e)
+        {
+            if (radioDefault.Checked) sock.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
+            else if (radioSpecial.Checked) sock.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
+            else if (radioProxy.Checked)
+            {
+                sock.Mode = RawSocket.SocketMode.UsingProxy;
+                sock.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
             }
         }
 

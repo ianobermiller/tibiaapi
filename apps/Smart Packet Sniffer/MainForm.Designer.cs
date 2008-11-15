@@ -32,7 +32,7 @@
             this.chkServer = new System.Windows.Forms.CheckBox();
             this.chkClient = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkDefRemote = new System.Windows.Forms.CheckBox();
+            this.chkSplit = new System.Windows.Forms.CheckBox();
             this.btnReload = new System.Windows.Forms.Button();
             this.btnLog = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
@@ -50,12 +50,16 @@
             this.LengthHeader = new System.Windows.Forms.ColumnHeader();
             this.TypeHeader = new System.Windows.Forms.ColumnHeader();
             this.txtPacket = new System.Windows.Forms.TextBox();
-            this.chkSplit = new System.Windows.Forms.CheckBox();
+            this.radioDefault = new System.Windows.Forms.RadioButton();
+            this.radioSpecial = new System.Windows.Forms.RadioButton();
+            this.radioProxy = new System.Windows.Forms.RadioButton();
+            this.numProxyPort = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -71,7 +75,7 @@
             this.chkServer.AutoSize = true;
             this.chkServer.Checked = true;
             this.chkServer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkServer.Location = new System.Drawing.Point(6, 80);
+            this.chkServer.Location = new System.Drawing.Point(6, 57);
             this.chkServer.Name = "chkServer";
             this.chkServer.Size = new System.Drawing.Size(83, 17);
             this.chkServer.TabIndex = 2;
@@ -83,7 +87,7 @@
             this.chkClient.AutoSize = true;
             this.chkClient.Checked = true;
             this.chkClient.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkClient.Location = new System.Drawing.Point(6, 103);
+            this.chkClient.Location = new System.Drawing.Point(6, 80);
             this.chkClient.Name = "chkClient";
             this.chkClient.Size = new System.Drawing.Size(78, 17);
             this.chkClient.TabIndex = 3;
@@ -95,8 +99,11 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.numProxyPort);
+            this.groupBox1.Controls.Add(this.radioProxy);
+            this.groupBox1.Controls.Add(this.radioSpecial);
+            this.groupBox1.Controls.Add(this.radioDefault);
             this.groupBox1.Controls.Add(this.chkSplit);
-            this.groupBox1.Controls.Add(this.chkDefRemote);
             this.groupBox1.Controls.Add(this.btnReload);
             this.groupBox1.Controls.Add(this.btnLog);
             this.groupBox1.Controls.Add(this.btnClear);
@@ -109,27 +116,24 @@
             this.groupBox1.Controls.Add(this.chkServer);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(183, 337);
+            this.groupBox1.Size = new System.Drawing.Size(183, 370);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Packet Options";
             // 
-            // chkDefRemote
+            // chkSplit
             // 
-            this.chkDefRemote.AutoSize = true;
-            this.chkDefRemote.Checked = true;
-            this.chkDefRemote.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDefRemote.Location = new System.Drawing.Point(6, 57);
-            this.chkDefRemote.Name = "chkDefRemote";
-            this.chkDefRemote.Size = new System.Drawing.Size(122, 17);
-            this.chkDefRemote.TabIndex = 1;
-            this.chkDefRemote.Text = "Default Remote Port";
-            this.chkDefRemote.UseVisualStyleBackColor = true;
-            this.chkDefRemote.CheckedChanged += new System.EventHandler(this.chkProxy_CheckedChanged);
+            this.chkSplit.AutoSize = true;
+            this.chkSplit.Location = new System.Drawing.Point(89, 57);
+            this.chkSplit.Name = "chkSplit";
+            this.chkSplit.Size = new System.Drawing.Size(88, 17);
+            this.chkSplit.TabIndex = 11;
+            this.chkSplit.Text = "Split Packets";
+            this.chkSplit.UseVisualStyleBackColor = true;
             // 
             // btnReload
             // 
-            this.btnReload.Location = new System.Drawing.Point(6, 221);
+            this.btnReload.Location = new System.Drawing.Point(6, 254);
             this.btnReload.Name = "btnReload";
             this.btnReload.Size = new System.Drawing.Size(167, 23);
             this.btnReload.TabIndex = 7;
@@ -139,7 +143,7 @@
             // 
             // btnLog
             // 
-            this.btnLog.Location = new System.Drawing.Point(6, 308);
+            this.btnLog.Location = new System.Drawing.Point(6, 341);
             this.btnLog.Name = "btnLog";
             this.btnLog.Size = new System.Drawing.Size(167, 23);
             this.btnLog.TabIndex = 10;
@@ -149,17 +153,17 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(6, 279);
+            this.btnClear.Location = new System.Drawing.Point(6, 312);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(167, 23);
             this.btnClear.TabIndex = 9;
-            this.btnClear.Text = "Clear Packet List";
+            this.btnClear.Text = "Clear Log";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnCopy
             // 
-            this.btnCopy.Location = new System.Drawing.Point(6, 250);
+            this.btnCopy.Location = new System.Drawing.Point(6, 283);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(167, 23);
             this.btnCopy.TabIndex = 8;
@@ -169,7 +173,7 @@
             // 
             // btnClient
             // 
-            this.btnClient.Location = new System.Drawing.Point(6, 192);
+            this.btnClient.Location = new System.Drawing.Point(6, 225);
             this.btnClient.Name = "btnClient";
             this.btnClient.Size = new System.Drawing.Size(167, 23);
             this.btnClient.TabIndex = 6;
@@ -179,7 +183,7 @@
             // 
             // txtType
             // 
-            this.txtType.Location = new System.Drawing.Point(98, 124);
+            this.txtType.Location = new System.Drawing.Point(98, 101);
             this.txtType.Name = "txtType";
             this.txtType.Size = new System.Drawing.Size(47, 20);
             this.txtType.TabIndex = 5;
@@ -187,7 +191,7 @@
             // chkType
             // 
             this.chkType.AutoSize = true;
-            this.chkType.Location = new System.Drawing.Point(6, 126);
+            this.chkType.Location = new System.Drawing.Point(6, 103);
             this.chkType.Name = "chkType";
             this.chkType.Size = new System.Drawing.Size(86, 17);
             this.chkType.TabIndex = 4;
@@ -202,7 +206,7 @@
             this.groupBox2.Controls.Add(this.splitContainer1);
             this.groupBox2.Location = new System.Drawing.Point(201, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(502, 338);
+            this.groupBox2.Size = new System.Drawing.Size(502, 371);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Packet Log";
@@ -221,8 +225,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.txtPacket);
-            this.splitContainer1.Size = new System.Drawing.Size(496, 319);
-            this.splitContainer1.SplitterDistance = 158;
+            this.splitContainer1.Size = new System.Drawing.Size(496, 352);
+            this.splitContainer1.SplitterDistance = 174;
             this.splitContainer1.TabIndex = 5;
             // 
             // PacketList
@@ -241,7 +245,7 @@
             this.PacketList.Location = new System.Drawing.Point(0, 0);
             this.PacketList.MultiSelect = false;
             this.PacketList.Name = "PacketList";
-            this.PacketList.Size = new System.Drawing.Size(496, 158);
+            this.PacketList.Size = new System.Drawing.Size(496, 174);
             this.PacketList.TabIndex = 11;
             this.PacketList.UseCompatibleStateImageBehavior = false;
             this.PacketList.View = System.Windows.Forms.View.Details;
@@ -288,24 +292,66 @@
             this.txtPacket.Multiline = true;
             this.txtPacket.Name = "txtPacket";
             this.txtPacket.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtPacket.Size = new System.Drawing.Size(496, 157);
+            this.txtPacket.Size = new System.Drawing.Size(496, 174);
             this.txtPacket.TabIndex = 12;
             // 
-            // chkSplit
+            // radioDefault
             // 
-            this.chkSplit.AutoSize = true;
-            this.chkSplit.Location = new System.Drawing.Point(89, 80);
-            this.chkSplit.Name = "chkSplit";
-            this.chkSplit.Size = new System.Drawing.Size(88, 17);
-            this.chkSplit.TabIndex = 11;
-            this.chkSplit.Text = "Split Packets";
-            this.chkSplit.UseVisualStyleBackColor = true;
+            this.radioDefault.AutoSize = true;
+            this.radioDefault.Checked = true;
+            this.radioDefault.Location = new System.Drawing.Point(6, 136);
+            this.radioDefault.Name = "radioDefault";
+            this.radioDefault.Size = new System.Drawing.Size(121, 17);
+            this.radioDefault.TabIndex = 12;
+            this.radioDefault.TabStop = true;
+            this.radioDefault.Text = "Default Remote Port";
+            this.radioDefault.UseVisualStyleBackColor = true;
+            this.radioDefault.CheckedChanged += new System.EventHandler(this.RadioChanged);
+            // 
+            // radioSpecial
+            // 
+            this.radioSpecial.AutoSize = true;
+            this.radioSpecial.Location = new System.Drawing.Point(6, 159);
+            this.radioSpecial.Name = "radioSpecial";
+            this.radioSpecial.Size = new System.Drawing.Size(122, 17);
+            this.radioSpecial.TabIndex = 13;
+            this.radioSpecial.Text = "Special Remote Port";
+            this.radioSpecial.UseVisualStyleBackColor = true;
+            this.radioSpecial.CheckedChanged += new System.EventHandler(this.RadioChanged);
+            // 
+            // radioProxy
+            // 
+            this.radioProxy.AutoSize = true;
+            this.radioProxy.Location = new System.Drawing.Point(6, 183);
+            this.radioProxy.Name = "radioProxy";
+            this.radioProxy.Size = new System.Drawing.Size(109, 17);
+            this.radioProxy.TabIndex = 14;
+            this.radioProxy.Text = "Using Proxy. Port:";
+            this.radioProxy.UseVisualStyleBackColor = true;
+            this.radioProxy.CheckedChanged += new System.EventHandler(this.RadioChanged);
+            // 
+            // numProxyPort
+            // 
+            this.numProxyPort.Location = new System.Drawing.Point(117, 183);
+            this.numProxyPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numProxyPort.Name = "numProxyPort";
+            this.numProxyPort.Size = new System.Drawing.Size(56, 20);
+            this.numProxyPort.TabIndex = 15;
+            this.numProxyPort.Value = new decimal(new int[] {
+            16000,
+            0,
+            0,
+            0});
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(711, 358);
+            this.ClientSize = new System.Drawing.Size(711, 391);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.MinimumSize = new System.Drawing.Size(719, 372);
@@ -319,6 +365,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -336,7 +383,6 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.Button btnReload;
-        private System.Windows.Forms.CheckBox chkDefRemote;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView PacketList;
@@ -348,6 +394,10 @@
         private System.Windows.Forms.ColumnHeader TypeHeader;
         private System.Windows.Forms.TextBox txtPacket;
         private System.Windows.Forms.CheckBox chkSplit;
+        private System.Windows.Forms.RadioButton radioProxy;
+        private System.Windows.Forms.RadioButton radioSpecial;
+        private System.Windows.Forms.RadioButton radioDefault;
+        private System.Windows.Forms.NumericUpDown numProxyPort;
     }
 }
 
