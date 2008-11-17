@@ -19,6 +19,7 @@ using namespace std;
 
 list<NormalText> DisplayTexts;		//Used for normal text displyaing
 list<PlayerText> CreatureTexts;		//Used for storing current text to display above creature
+list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
 DWORD OldPrintName = 0;				//Used for restoring PrintText when uninjecting DLL
 DWORD OldPrintFPS = 0;				//Used for restroring PrintFPS when uninjecting DLL
 BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
@@ -76,6 +77,8 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 	}
 	LeaveCriticalSection(&NormalTextCriticalSection);
 }
+
+//TODO:Context menus functions hooking and onclick event
 
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 {   
@@ -162,7 +165,17 @@ inline void PipeOnRead(){
 					PrintText = (_PrintText*)Packet::ReadDWord(Buffer, &position);
 				} else if (ConstantName == "ptrNopFPS") {
 					Consts::ptrNopFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
-				}
+				} else if (ConstantName == "ptrAddContextMenuFunc") {
+					AddContextMenu = (_AddContextMenu*)Packet::ReadDWord(Buffer, &position);
+				} else if (ConstantName == "ptrOnClickContextMenu") {
+					Consts::ptrOnClickContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+				} else if (ConstantName == "ptrSetOutfitContextMenu") {
+					Consts::ptrSetOutfitContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+				} else if (ConstantName == "ptrPartyActionContextMenu") {
+					Consts::ptrPartyActionContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+				} else if (ConstantName == "ptrCopyNameContextMenu") {
+					Consts::ptrCopyNameContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+				}				
 			}
 			break;
 		case 0x2: // DisplayText
@@ -358,6 +371,19 @@ inline void PipeOnRead(){
 				LeaveCriticalSection(&CreatureTextCriticalSection);
 			}
 			break;
+		case 0x9:
+			//TODO:add item to ContextMenus
+			break;
+		case 0xA:
+			//TODO:remove item from ContextMenus
+			break;
+		case 0xB:
+			//TODO:clear items from ContextMenus
+			break;
+		case 0xC:
+			//TODO:Nothing here?the injected dll should send this packet to tibiaapi containing the eventid
+			//and the matching contextmenu eventid would raise its the event
+			break;
 		default:
 			{
 				MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
@@ -429,6 +455,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			InitializeCriticalSection(&PipeReadCriticalSection);
 			InitializeCriticalSection(&NormalTextCriticalSection);
 			InitializeCriticalSection(&CreatureTextCriticalSection);
+			InitializeCriticalSection(&ContextMenuCriticalSection);
 			PipeConnected=false;
 			//Start new thread for Pipe
 			PipeThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)PipeThreadProc, hMod, NULL, NULL);
@@ -440,6 +467,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&PipeReadCriticalSection);
 			DeleteCriticalSection(&NormalTextCriticalSection);
 			DeleteCriticalSection(&CreatureTextCriticalSection);
+			DeleteCriticalSection(&ContextMenuCriticalSection);
 		}
 		break;
     }
