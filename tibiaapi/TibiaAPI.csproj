@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Addresses\ContextMenus.cs" />
     <Compile Include="Addresses\DatItem.cs" />
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Misc.cs" />
     <Compile Include="Exceptions\Version.cs" />
+    <Compile Include="Objects\ContextMenu.cs" />
     <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\Screen.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
@@ -148,9 +150,13 @@
     <Compile Include="Packets\Incoming\StatusUpdatePacket.cs" />
     <Compile Include="Packets\Incoming\TileAnimationPacket.cs" />
     <Compile Include="Packets\Incoming\VipLoginPacket.cs" />
+    <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayCreatureTextPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayTextPacket.cs" />
     <Compile Include="Packets\Pipes\InjectDisplayPacket.cs" />
+    <Compile Include="Packets\Pipes\OnClickContextMenuPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveAllContextMenusPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveAllTextPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveCreatureTextPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />

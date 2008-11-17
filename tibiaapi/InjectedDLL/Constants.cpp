@@ -10,6 +10,11 @@ namespace Consts {
 	DWORD ptrPrintFPS = 0;
 	DWORD ptrShowFPS = 0;
 	DWORD ptrNopFPS = 0;
+
+	DWORD ptrOnClickContextMenu=0;
+	DWORD ptrSetOutfitContextMenu=0;
+	DWORD ptrPartyActionContextMenu=0;
+	DWORD ptrCopyNameContextMenu=0;
 }
 
 /* DLL Injection Related Stuff */
@@ -24,5 +29,6 @@ BYTE Buffer[1024] = {0};
 CRITICAL_SECTION PipeReadCriticalSection;
 CRITICAL_SECTION NormalTextCriticalSection;
 CRITICAL_SECTION CreatureTextCriticalSection;
+CRITICAL_SECTION ContextMenuCriticalSection;
 
 

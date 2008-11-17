@@ -86,8 +86,13 @@ namespace Tibia.Packets
         InjectDisplayText   = 0x05,
         DisplayCreatureText = 0x06,
         RemoveCreatureText  = 0x07,
-        UpdateCreatureText  = 0x08
+        UpdateCreatureText  = 0x08,
+        AddContextMenu      = 0x09,
+        RemoveContextMenu   = 0x0A,
+        RemoveAllContextMenus=0x0B,
+        OnClickContextMenu  = 0x0C
     }
+    
 
 
     /// <summary>
