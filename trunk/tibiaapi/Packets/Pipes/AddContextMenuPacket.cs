@@ -6,11 +6,11 @@ using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
-    public class AddContextMenuPacket
+    public class AddContextMenuPacket : PipePacket
     {
         int eventId;
         string text;
-        ContextMenu.Type type;
+        ContextMenu.Type ctype;
         byte hasSeparator;
 
         public int EventId
@@ -25,12 +25,12 @@ namespace Tibia.Packets.Pipes
 
         public ContextMenu.Type MenuType
         {
-            get { return type; }
+            get { return ctype; }
         }
 
         public bool HasSeparator
         {
-            get { return hasSeparator; }
+            get { return Convert.ToBoolean(hasSeparator); }
         }
 
         public AddContextMenuPacket(Client c)
@@ -55,7 +55,7 @@ namespace Tibia.Packets.Pipes
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 eventId = p.GetLong();
                 text = p.GetString();
-                type = (ContextMenu.Type)p.GetByte();
+                ctype = (ContextMenu.Type)p.GetByte();
                 hasSeparator = p.GetByte();
 
                 index = p.Index;

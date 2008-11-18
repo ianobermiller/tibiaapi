@@ -13,6 +13,26 @@
 #pragma managed(push, off)
 #endif
 
+#define AddContextMenu(eventId, text, shortcut)   \
+		__asm push shortcut \
+		__asm push text \
+		__asm push eventId \
+		__asm mov ecx, esi \
+		__asm mov eax, 0x450AA0 \
+		__asm call eax
+
+#define AddContextMenuEx(eventId, text, shortcut)   \
+		__asm mov byte ptr[esi+0x30], 1 \
+		__asm push shortcut \
+		__asm push text \
+		__asm push eventId \
+		__asm mov ecx, esi \
+		__asm mov eax, 0x450AA0 \
+		__asm call eax
+
+
+
+
 using namespace std;
 
 /* DisplayText. Credits for Displaying text goes to Stiju and Zionz. Thanks for the help!*/
@@ -22,6 +42,9 @@ list<PlayerText> CreatureTexts;		//Used for storing current text to display abov
 list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
 DWORD OldPrintName = 0;				//Used for restoring PrintText when uninjecting DLL
 DWORD OldPrintFPS = 0;				//Used for restroring PrintFPS when uninjecting DLL
+DWORD OldSetOutfitContextMenu = 0;  //Used for restoring SetOutfitContextMenu ~
+DWORD OldPartyActionContextMenu = 0;//Used for restoring PartyActionContextMenu ~
+DWORD OldCopyNameContextMenu = 0;   //Used for restoring CopyNameContextMenu ~ 
 BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
 
 //Asynchronisation variables
@@ -79,6 +102,77 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 }
 
 //TODO:Context menus functions hooking and onclick event
+
+void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char* shortcut)
+{
+				//MessageBoxA(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
+	
+	list<ContextMenu>::iterator it;
+
+	AddContextMenu(eventId,text,shortcut);
+	
+	
+				//FIX HERE
+		for(it=ContextMenus.begin();it!=ContextMenus.end();++it){
+			//SetOutfitContextMenu or AllMenus
+			if(it->Type==0x01 || it->Type==0x00){
+				const char* custom=it->MenuText;
+				const char* shortcut_="";
+				if(it->HasSeparator==0x0){
+					AddContextMenu(it->EventId,custom,shortcut_);
+				} else if(it->HasSeparator==0x1){
+					AddContextMenuEx(it->EventId,it->MenuText,shortcut_);
+				}
+			}
+		}	
+}
+void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const char* shortcut)
+{
+			//	MessageBoxA(0, "MyPartyActionContextMenu", "Error!", MB_ICONERROR);
+	
+	list<ContextMenu>::iterator it;
+
+	AddContextMenu(eventId,text,shortcut);
+
+				//FIX HERE
+		for(it=ContextMenus.begin();it!=ContextMenus.end();++it){
+			//PartyActionContextMenu or AllMenus
+			if(it->Type==0x02 || it->Type==0x01){
+				const char* custom=it->MenuText;
+				const char* shortcut_="";
+				if(it->HasSeparator==0x00){
+					AddContextMenu(it->EventId,custom,shortcut_);
+				} else if(it->HasSeparator==0x01){
+					AddContextMenuEx(it->EventId,custom,shortcut_);
+				}
+			}
+		}
+}
+void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char* shortcut)
+{
+		//		MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+	
+	list<ContextMenu>::iterator it;
+
+	AddContextMenu(eventId,text,shortcut);
+
+				//FIX HERE
+	for(it=ContextMenus.begin();it!=ContextMenus.end();++it){
+			//CopyNameContextMenu or AllMenus
+			if(it->Type==0x03 || it->Type==0x01){
+				const char* custom=it->MenuText;
+				const char* shortcut_="";
+				if(it->HasSeparator==0x00){
+					AddContextMenu(it->EventId,custom,shortcut_);
+				} else if(it->HasSeparator==0x01){
+					AddContextMenuEx(it->EventId,custom,shortcut_);
+				}
+			}
+		}
+}
+
+
+
 
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 {   
@@ -165,8 +259,11 @@ inline void PipeOnRead(){
 					PrintText = (_PrintText*)Packet::ReadDWord(Buffer, &position);
 				} else if (ConstantName == "ptrNopFPS") {
 					Consts::ptrNopFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrAddContextMenuFunc") {
-					AddContextMenu = (_AddContextMenu*)Packet::ReadDWord(Buffer, &position);
+				} 
+				
+				  else if (ConstantName == "ptrAddContextMenuFunc") {
+					  Consts::ptrAddContextMenu=(DWORD)Packet::ReadDWord(Buffer, &position);
+
 				} else if (ConstantName == "ptrOnClickContextMenu") {
 					Consts::ptrOnClickContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
 				} else if (ConstantName == "ptrSetOutfitContextMenu") {
@@ -244,7 +341,8 @@ inline void PipeOnRead(){
 			{
 				BYTE Inject = Packet::ReadByte(Buffer, &position);
 				/* Testing that every constant contains a value */
-				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS ) {
+				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
+					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu) {
 					MessageBoxA(0, "Error. All the constant doesn't contain a value", "Error", MB_ICONERROR);
 					break;
 				}
@@ -255,6 +353,9 @@ inline void PipeOnRead(){
 					}
 					OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
 					OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
+					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu,(DWORD) &MySetOutfitContextMenu);
+					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu,(DWORD) &MyPartyActionContextMenu);
+					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu,(DWORD) &MyCopyNameContextMenu);
 					//TODO: Add Bytes nop to Constants
 					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
 					HookInjected = true;
@@ -267,6 +368,12 @@ inline void PipeOnRead(){
 						UnhookCall(Consts::ptrPrintName, OldPrintName);
 					if (OldPrintFPS)
 						UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
+					if(OldSetOutfitContextMenu)
+						UnhookCall(Consts::ptrSetOutfitContextMenu,OldSetOutfitContextMenu);
+					if(OldPartyActionContextMenu)
+						UnhookCall(Consts::ptrPartyActionContextMenu,OldPartyActionContextMenu);
+					if(OldCopyNameContextMenu)
+						UnhookCall(Consts::ptrCopyNameContextMenu,OldCopyNameContextMenu);
 					if (OldNopFPS)
 						UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 					HookInjected = false;
@@ -306,6 +413,7 @@ inline void PipeOnRead(){
 			break;
 		case 0x7: //Remove Text Above Creature
 			{
+				
 				int Id = Packet::ReadDWord(Buffer, &position);
 				string Name = Packet::ReadString(Buffer, &position);
 				
@@ -371,25 +479,64 @@ inline void PipeOnRead(){
 				LeaveCriticalSection(&CreatureTextCriticalSection);
 			}
 			break;
-		case 0x9:
-			//TODO:add item to ContextMenus
-			break;
-		case 0xA:
-			//TODO:remove item from ContextMenus
-			break;
-		case 0xB:
-			//TODO:clear items from ContextMenus
-			break;
+		case 0x9://add item to ContextMenus
+			{
+			int id = Packet::ReadDWord(Buffer, &position);
+			string text=Packet::ReadString(Buffer, &position);
+			BYTE type = Packet::ReadByte(Buffer,&position);
+			BYTE hasSeparator=Packet::ReadByte(Buffer,&position);
+			
+			ContextMenu ctxt;
+			ctxt.EventId=id;
+			ctxt.Type=type;
+			ctxt.HasSeparator=hasSeparator;		
+			ctxt.MenuText=new char[text.size()+1];
+
+			memcpy(ctxt.MenuText, text.c_str(), text.size() + 1);
+			EnterCriticalSection(&ContextMenuCriticalSection);
+				ContextMenus.push_back(ctxt);
+			LeaveCriticalSection(&ContextMenuCriticalSection);
+			break;}
+		case 0xA://remove item from ContextMenus
+			{
+			int id = Packet::ReadDWord(Buffer, &position);
+			string text=Packet::ReadString(Buffer, &position);
+			BYTE type = Packet::ReadByte(Buffer,&position);
+			BYTE hasSeparator=Packet::ReadByte(Buffer,&position);
+			list<ContextMenu>::iterator cmIT;
+			EnterCriticalSection(&ContextMenuCriticalSection);
+			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ) {
+				if (cmIT->EventId == id && cmIT->MenuText == text.c_str()
+					&& cmIT->Type == type && cmIT->HasSeparator == hasSeparator)
+				{
+					delete [] cmIT->MenuText;
+					cmIT = ContextMenus.erase(cmIT);
+				} else {
+					++cmIT;
+				}
+			}
+			LeaveCriticalSection(&ContextMenuCriticalSection);
+			break;}
+		case 0xB://clear items from ContextMenus
+			{
+			list<ContextMenu>::iterator cmIT;
+			EnterCriticalSection(&ContextMenuCriticalSection);
+			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
+			{
+				delete [] cmIT->MenuText;
+			}
+			ContextMenus.clear();
+			LeaveCriticalSection(&ContextMenuCriticalSection);
+			break;}
 		case 0xC:
 			//TODO:Nothing here?the injected dll should send this packet to tibiaapi containing the eventid
-			//and the matching contextmenu eventid would raise its the event
+			//and the matching contextmenu eventid would raise its event
 			break;
 		default:
 			{
 				MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			}
 			break;
-
 	}
 }
 
@@ -456,6 +603,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			InitializeCriticalSection(&NormalTextCriticalSection);
 			InitializeCriticalSection(&CreatureTextCriticalSection);
 			InitializeCriticalSection(&ContextMenuCriticalSection);
+			InitializeCriticalSection(&OnClickCriticalSection);
 			PipeConnected=false;
 			//Start new thread for Pipe
 			PipeThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)PipeThreadProc, hMod, NULL, NULL);
@@ -468,6 +616,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&NormalTextCriticalSection);
 			DeleteCriticalSection(&CreatureTextCriticalSection);
 			DeleteCriticalSection(&ContextMenuCriticalSection);
+			DeleteCriticalSection(&OnClickCriticalSection);
 		}
 		break;
     }

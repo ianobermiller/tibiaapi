@@ -1164,8 +1164,8 @@ namespace Tibia.Objects
             pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrAddContextMenuFunc", Tibia.Addresses.ContextMenus.AddContextMenuPtr));
             pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrOnClickContextMenu", Tibia.Addresses.ContextMenus.OnClickContextMenuVf));
             pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrSetOutfitContextMenu", Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPartyActionContextMenu", Tibia.Addresses.ContextMenus.AddContextMenuPtr));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrCopyNameContextMenu", Tibia.Addresses.ContextMenus.AddContextMenuPtr));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPartyActionContextMenu", Tibia.Addresses.ContextMenus.AddPartyActionContextMenu));
+            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrCopyNameContextMenu", Tibia.Addresses.ContextMenus.AddCopyNameContextMenu));
 
             //Hook Display functions
             pipe.Send(Tibia.Packets.Pipes.InjectDisplayPacket.Create(this, true));

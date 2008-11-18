@@ -11,10 +11,12 @@ namespace Consts {
 	DWORD ptrShowFPS = 0;
 	DWORD ptrNopFPS = 0;
 
-	DWORD ptrOnClickContextMenu=0;
-	DWORD ptrSetOutfitContextMenu=0;
-	DWORD ptrPartyActionContextMenu=0;
-	DWORD ptrCopyNameContextMenu=0;
+	/* Context Menu Stuff */
+	DWORD ptrAddContextMenu = 0;
+	DWORD ptrOnClickContextMenu = 0;
+	DWORD ptrSetOutfitContextMenu = 0;
+	DWORD ptrPartyActionContextMenu = 0;
+	DWORD ptrCopyNameContextMenu = 0;
 }
 
 /* DLL Injection Related Stuff */
@@ -30,5 +32,6 @@ CRITICAL_SECTION PipeReadCriticalSection;
 CRITICAL_SECTION NormalTextCriticalSection;
 CRITICAL_SECTION CreatureTextCriticalSection;
 CRITICAL_SECTION ContextMenuCriticalSection;
+CRITICAL_SECTION OnClickCriticalSection;
 
 

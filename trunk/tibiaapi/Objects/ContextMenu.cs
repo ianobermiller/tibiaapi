@@ -11,7 +11,7 @@ namespace Tibia.Objects
         int eventId;
         string text;
         ContextMenu.Type type;
-        byte hasSeparator;
+        bool hasSeparator;
         bool added=false;
 
 
@@ -88,7 +88,7 @@ namespace Tibia.Objects
 
 
 
-        public static enum Type : byte
+        public enum Type : byte
         {
             AllMenus=0x00,
             SetOutfitContextMenu = 0x01,
