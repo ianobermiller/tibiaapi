@@ -10,8 +10,8 @@ namespace Tibia.Packets.Pipes
     {
             int eventId;
             string text;
-            ContextMenu.Type type;
-            byte hasSeparator;
+            ContextMenu.Type ctype;
+            bool hasSeparator;
 
             public int EventId
             {
@@ -25,7 +25,7 @@ namespace Tibia.Packets.Pipes
 
             public ContextMenu.Type MenuType
             {
-                get { return type; }
+                get { return ctype; }
             }
 
             public bool HasSeparator
@@ -55,7 +55,7 @@ namespace Tibia.Packets.Pipes
                     PacketBuilder p = new PacketBuilder(client, packet, 3);
                     eventId = p.GetLong();
                     text = p.GetString();
-                    type = (ContextMenu.Type)p.GetByte();
+                    ctype = (ContextMenu.Type)p.GetByte();
                     hasSeparator = Convert.ToBoolean(p.GetByte());
 
                     index = p.Index;

@@ -13,6 +13,7 @@ namespace Consts {
 	extern DWORD ptrShowFPS;
 	extern DWORD ptrNopFPS;
 
+	extern DWORD ptrAddContextMenu;
 	extern DWORD ptrOnClickContextMenu;
 	extern DWORD ptrSetOutfitContextMenu;
 	extern DWORD ptrPartyActionContextMenu;
@@ -32,6 +33,7 @@ extern CRITICAL_SECTION PipeReadCriticalSection;
 extern CRITICAL_SECTION NormalTextCriticalSection;
 extern CRITICAL_SECTION CreatureTextCriticalSection;
 extern CRITICAL_SECTION ContextMenuCriticalSection;
+extern CRITICAL_SECTION OnClickCriticalSection;
 
 /* Structures */
 //Display Normal Text Strcture
@@ -59,12 +61,12 @@ struct PlayerText
 
 };
 
-//Add Context Menu structure
+//Context Menu structure
 struct ContextMenu
 {
 	int EventId;
 	char *MenuText;
-	int Type;
-	char hasSeparator;
-}
+	BYTE Type;
+	BYTE HasSeparator;
+};
 #endif
