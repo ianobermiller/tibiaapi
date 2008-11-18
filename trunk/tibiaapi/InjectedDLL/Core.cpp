@@ -118,10 +118,11 @@ void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char
 			if(it->Type==0x01 || it->Type==0x00){
 				const char* custom=it->MenuText;
 				const char* shortcut_="";
+				int eventid=it->EventId;
 				if(it->HasSeparator==0x0){
-					AddContextMenu(it->EventId,custom,shortcut_);
+					AddContextMenu(eventid,custom,shortcut_);
 				} else if(it->HasSeparator==0x1){
-					AddContextMenuEx(it->EventId,it->MenuText,shortcut_);
+					AddContextMenuEx(eventid,custom,shortcut_);
 				}
 			}
 		}	
@@ -137,13 +138,14 @@ void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const ch
 				//FIX HERE
 		for(it=ContextMenus.begin();it!=ContextMenus.end();++it){
 			//PartyActionContextMenu or AllMenus
-			if(it->Type==0x02 || it->Type==0x01){
+			if(it->Type==0x02 || it->Type==0x00){
 				const char* custom=it->MenuText;
 				const char* shortcut_="";
+				int eventid=it->EventId;
 				if(it->HasSeparator==0x00){
-					AddContextMenu(it->EventId,custom,shortcut_);
+					AddContextMenu(eventid,custom,shortcut_);
 				} else if(it->HasSeparator==0x01){
-					AddContextMenuEx(it->EventId,custom,shortcut_);
+					AddContextMenuEx(eventid,custom,shortcut_);
 				}
 			}
 		}
@@ -159,13 +161,14 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 				//FIX HERE
 	for(it=ContextMenus.begin();it!=ContextMenus.end();++it){
 			//CopyNameContextMenu or AllMenus
-			if(it->Type==0x03 || it->Type==0x01){
+			if(it->Type==0x03 || it->Type==0x00){
 				const char* custom=it->MenuText;
 				const char* shortcut_="";
+				int eventid=it->EventId;
 				if(it->HasSeparator==0x00){
-					AddContextMenu(it->EventId,custom,shortcut_);
+					AddContextMenu(eventid,custom,shortcut_);
 				} else if(it->HasSeparator==0x01){
-					AddContextMenuEx(it->EventId,custom,shortcut_);
+					AddContextMenuEx(eventid,custom,shortcut_);
 				}
 			}
 		}
@@ -499,6 +502,7 @@ inline void PipeOnRead(){
 			break;}
 		case 0xA://remove item from ContextMenus
 			{
+			MessageBoxA(0, "Remove", "Error!", MB_ICONERROR);
 			int id = Packet::ReadDWord(Buffer, &position);
 			string text=Packet::ReadString(Buffer, &position);
 			BYTE type = Packet::ReadByte(Buffer,&position);
@@ -506,7 +510,7 @@ inline void PipeOnRead(){
 			list<ContextMenu>::iterator cmIT;
 			EnterCriticalSection(&ContextMenuCriticalSection);
 			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ) {
-				if (cmIT->EventId == id && cmIT->MenuText == text.c_str()
+				if (cmIT->EventId == id && cmIT->MenuText == text
 					&& cmIT->Type == type && cmIT->HasSeparator == hasSeparator)
 				{
 					delete [] cmIT->MenuText;
