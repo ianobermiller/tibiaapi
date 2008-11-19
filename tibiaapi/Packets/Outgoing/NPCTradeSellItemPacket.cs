@@ -24,7 +24,7 @@ namespace Tibia.Packets
         public NPCTradeSellItemPacket(Client c)
             : base(c)
         {
-            type = PacketType.NpcTradeGoldCountSaleList;
+            type = PacketType.ItemSell;
             destination = PacketDestination.Server;
         }
 
@@ -38,7 +38,7 @@ namespace Tibia.Packets
         {
             if (base.ParseData(packet))
             {
-                if (type != PacketType.NpcTradeGoldCountSaleList) return false;
+                if (type != PacketType.ItemSell) return false;
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 itemId = p.GetInt();
                 count = p.GetByte();
@@ -53,7 +53,7 @@ namespace Tibia.Packets
 
         public static NPCTradeSellItemPacket Create(Client c, int itemId, byte count)
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.NpcTradeGoldCountSaleList);
+            PacketBuilder p = new PacketBuilder(c, PacketType.ItemSell);
             p.AddInt((int)itemId);
             p.AddByte(0x00);
             p.AddByte(count);

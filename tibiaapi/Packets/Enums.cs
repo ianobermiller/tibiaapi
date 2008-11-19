@@ -57,6 +57,8 @@ namespace Tibia.Packets
         // Outgoing
         Logout              = 0x14,
         ItemMove            = 0x78,
+        ItemBuy             = 0x7A,
+        ItemSell            = 0x7B,
         ItemUse             = 0x82,
         ItemUseOn           = 0x83,
         ItemUseBattlelist   = 0x84,
