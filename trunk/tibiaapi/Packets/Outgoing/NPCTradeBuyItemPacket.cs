@@ -24,7 +24,7 @@ namespace Tibia.Packets
         public NPCTradeBuyItemPacket(Client c)
             : base(c)
         {
-            type = PacketType.NpcTradeList;
+            type = PacketType.ItemBuy;
             destination = PacketDestination.Server;
         }
 
@@ -38,7 +38,7 @@ namespace Tibia.Packets
         {
             if (base.ParseData(packet))
             {
-                if (type != PacketType.NpcTradeList) return false;
+                if (type != PacketType.ItemBuy) return false;
                 PacketBuilder p = new PacketBuilder(client, packet, 3);
                 itemId = p.GetInt();
                 count = p.GetByte();
@@ -53,7 +53,7 @@ namespace Tibia.Packets
 
         public static NPCTradeBuyItemPacket Create(Client c, int itemId, byte count)
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.NpcTradeList);
+            PacketBuilder p = new PacketBuilder(c, PacketType.ItemBuy);
             p.AddInt((int)itemId);
             p.AddByte(0x00);
             p.AddByte(count);
