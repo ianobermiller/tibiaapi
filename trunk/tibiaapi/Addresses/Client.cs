@@ -42,6 +42,23 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint MultiClientValue = 0xEB;
 
+
+        /// <summary>
+        /// Address to activate multiclient.
+        /// </summary>
+        public static uint DMultiClient = 0x505894; //8.31
+
+
+        /// <summary>
+        /// Value to be written to the multiclient address(JMP).
+        /// </summary>
+        public static byte DMultiClientJMP = 0xEB;
+
+        ///<summary>
+        /// Original value of the multiclient address(JNZ).
+        /// </summary>
+        public static byte DMultiClientJNZ = 0x75; 
+
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
