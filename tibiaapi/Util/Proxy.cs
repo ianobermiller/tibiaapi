@@ -106,6 +106,11 @@ namespace Tibia.Util
         /// </summary>
         public ProxyNotification OnBadLogin;
 
+        ///<summary>
+        /// Called when the player dies
+        /// </summary>
+        public ProxyNotification OnPlayerDeathAccept;
+
         /// <summary>
         /// Called when a packet is received from the server.
         /// </summary>
@@ -811,10 +816,7 @@ namespace Tibia.Util
                 netStreamClient.EndWrite(ar);
                 if (badGameCon)
                 {
-                    Thread.Sleep(50);
-                    Stop();
-                    Thread.Sleep(500);
-                    Restart();
+                    RestartAll();
                 }
             }
             catch
@@ -845,24 +847,35 @@ namespace Tibia.Util
             // Special case, client is logging out
             if (client.LoggedIn)
             {
-                if (GetPacketType(dataClient) == (byte)PacketType.Logout &&
-                    !client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
+                if (GetPacketType(dataClient) == (byte)PacketType.Logout )
                 {
-                    // Notify the server
-                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-                    Stop();
-                    Restart();
-
-                    isLoggedIn = false;
-
-                    // Notify that the client has logged out
-                    if (OnLogOut != null)
+                    if (client.ReadInt(Tibia.Addresses.Player.HP) == 0)
                     {
-                        // We don't care about the return to this
-                        OnLogOut.BeginInvoke("The client has logged out.", null, null);
-                    }
+                        RestartAll();
 
+                        isLoggedIn = false;
+
+                        //occurs after pressing ok, cancel or esc on the "death dialog"
+                        if (OnPlayerDeathAccept != null)
+                            OnPlayerDeathAccept.BeginInvoke("The player had died.", null, null);
+                    }
+                    else if (!client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
+                    {
+                        // Notify the server
+                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
+
+                        Stop();
+                        Restart();
+
+                        isLoggedIn = false;
+
+                        // Notify that the client has logged out
+                        if (OnLogOut != null)
+                        {
+                            // We don't care about the return to this
+                            OnLogOut.BeginInvoke("The client has logged out.", null, null);
+                        }
+                    }
                     return;
                 }
             }
@@ -903,6 +916,14 @@ namespace Tibia.Util
             tcpClient.Stop();
             tcpLogin.Close();
             socketClient.Close();
+        }
+
+        public void RestartAll()
+        {
+            Thread.Sleep(50);
+            Stop();
+            Thread.Sleep(500);
+            Restart();
         }
 
         private void ProcessClientReceiveQueue()
@@ -1001,8 +1022,7 @@ namespace Tibia.Util
         {
                 byte[] encrypted = EncryptPacket(packet);
                 clientSendQueue.Enqueue(encrypted);
-                ProcessClientSendQueue();
-            
+                ProcessClientSendQueue();            
         }
         #endregion
 
