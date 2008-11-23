@@ -14,6 +14,7 @@ namespace Tibia.Packets
         BadLogin            = 0x0A,
         CharList            = 0x14,
         InformationBox      = 0x15,
+        WaitingList         = 0x16,//not added to incoming packets
         Ping                = 0x1E,
         MapItemAdd          = 0x6A,
         MapItemUpdate       = 0x6B,

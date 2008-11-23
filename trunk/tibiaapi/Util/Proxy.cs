@@ -40,6 +40,7 @@ namespace Tibia.Util
         private byte selectedChar;
         private bool connected = false;
         private bool isLoggedIn = false;
+        private bool badGameCon;
         private int loginDelay = 250;
         private short localPort;
         private Queue<byte[]> serverReceiveQueue = new Queue<byte[]>();
@@ -244,6 +245,7 @@ namespace Tibia.Util
         private void StartClientListener()
         {
             if (Adler) i = 4;
+            badGameCon = false;
             tcpClient = new TcpListener(IPAddress.Any, localPort);
             tcpClient.Start();
             tcpClient.BeginAcceptSocket((AsyncCallback)ClientConnected, null);
@@ -578,6 +580,11 @@ namespace Tibia.Util
                     if (ReceivedChannelOpenPacket != null)
                         return ReceivedChannelOpenPacket(p);
                     break;
+                    //We got an error message like banishment or waiting list
+                case PacketType.WaitingList:
+                case PacketType.CharList:
+                    badGameCon = true;
+                    break;
                 case PacketType.ChatMessage:
                     p = new ChatMessagePacket(client, packet);
                     length = p.Index;
@@ -802,6 +809,13 @@ namespace Tibia.Util
             try
             {
                 netStreamClient.EndWrite(ar);
+                if (badGameCon)
+                {
+                    Thread.Sleep(50);
+                    Stop();
+                    Thread.Sleep(500);
+                    Restart();
+                }
             }
             catch
             {
@@ -829,25 +843,28 @@ namespace Tibia.Util
             int bytesRead = netStreamClient.EndRead(ar);
 
             // Special case, client is logging out
-            if (GetPacketType(dataClient) == (byte)PacketType.Logout &&
-                !client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
+            if (client.LoggedIn)
             {
-                // Notify the server
-                netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-                Stop();
-                Restart();
-
-                isLoggedIn = false;
-
-                // Notify that the client has logged out
-                if (OnLogOut != null)
+                if (GetPacketType(dataClient) == (byte)PacketType.Logout &&
+                    !client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
                 {
-                    // We don't care about the return to this
-                    OnLogOut.BeginInvoke("The client has logged out.", null, null);
-                }
+                    // Notify the server
+                    netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
 
-                return;
+                    Stop();
+                    Restart();
+
+                    isLoggedIn = false;
+
+                    // Notify that the client has logged out
+                    if (OnLogOut != null)
+                    {
+                        // We don't care about the return to this
+                        OnLogOut.BeginInvoke("The client has logged out.", null, null);
+                    }
+
+                    return;
+                }
             }
 
             if (bytesRead > 0)
@@ -876,7 +893,6 @@ namespace Tibia.Util
         private void Stop()
         {
             if (netStreamClient == null) return;
-
             connected = false;
             netStreamClient.Close();
             if (netStreamServer != null)
