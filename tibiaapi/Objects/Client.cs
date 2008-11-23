@@ -460,6 +460,37 @@ namespace Tibia.Objects
         }
         #endregion
 
+        /// <summary>
+        /// Opens a client with dynamic multi-clienting support
+        /// </summary>
+        public static Client OpenMC(string path,string arguments)
+        {
+            Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
+            Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
+            if (arguments == null) arguments = "";
+            Util.WinApi.CreateProcess(path, 
+                " "+arguments,
+                IntPtr.Zero, 
+                IntPtr.Zero,
+                false,
+                Util.WinApi.CREATE_SUSPENDED, 
+                IntPtr.Zero,
+                System.IO.Path.GetDirectoryName(path), 
+                ref si, 
+                out pi);
+            IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
+            Process p = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
+            Memory.WriteByte(handle, (long)Tibia.Addresses.Client.DMultiClient, Tibia.Addresses.Client.DMultiClientJMP);
+            Util.WinApi.ResumeThread(pi.hThread);
+            p.WaitForInputIdle();
+            Memory.WriteByte(handle, (long)Tibia.Addresses.Client.DMultiClient, Tibia.Addresses.Client.DMultiClientJNZ);
+            Util.WinApi.CloseHandle(handle);
+            Util.WinApi.CloseHandle(pi.hProcess);
+            Util.WinApi.CloseHandle(pi.hThread);
+            return new Client(p);
+        }           
+        
+
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
         {

@@ -6,6 +6,7 @@ namespace Tibia.Util
 {
     public static class WinApi
     {
+
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -75,6 +76,62 @@ namespace Tibia.Util
 
         public const uint WM_LBUTTONDOWN = 0x201;
         public const uint WM_LBUTTONUP = 0x202;
+
+        public const uint CREATE_SUSPENDED =0x00000004;
+        
+        public struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public uint dwProcessId;
+            public uint dwThreadId;
+        }
+
+        public struct STARTUPINFO
+        {
+            public uint cb;
+            public string lpReserved;
+            public string lpDesktop;
+            public string lpTitle;
+            public uint dwX;
+            public uint dwY;
+            public uint dwXSize;
+            public uint dwYSize;
+            public uint dwXCountChars;
+            public uint dwYCountChars;
+            public uint dwFillAttribute;
+            public uint dwFlags;
+            public short wShowWindow;
+            public short cbReserved2;
+            public IntPtr lpReserved2;
+            public IntPtr hStdInput;
+            public IntPtr hStdOutput;
+            public IntPtr hStdError;
+        }
+
+
+
+        public struct SECURITY_ATTRIBUTES
+        {
+            public int length;
+            public IntPtr lpSecurityDescriptor;
+            public bool bInheritHandle;
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool CreateProcess(String imageName,
+                String cmdLine,
+                IntPtr lpProcessAttributes,
+                IntPtr lpThreadAttributes,
+                bool boolInheritHandles,
+                uint dwCreationFlags,
+                IntPtr lpEnvironment,
+                String lpszCurrentDir,
+                ref STARTUPINFO si,
+                out PROCESS_INFORMATION pi);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint ResumeThread(IntPtr hThread);
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
