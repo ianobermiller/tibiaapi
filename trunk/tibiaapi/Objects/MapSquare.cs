@@ -15,6 +15,25 @@ namespace Tibia.Objects
         public int ObjectCount;
         public Tile Tile = new Tile();
 
+        public List<Item> Items
+        {
+            get
+            {
+                List<Item> items = new List<Item>();
+
+                foreach (MapObject mo in Objects)
+                {
+                    Item item = new Item(new ItemLocation(Tile.Location, (byte)mo.StackOrder));
+                    item.Client = client;
+                    item.Id = (uint)mo.Id;
+                    item.Count = (byte)mo.Data;
+                    items.Add(item);
+                }
+
+                return items;
+            }
+        }
+
         public List<MapObject> Objects
         {
             get
@@ -35,7 +54,7 @@ namespace Tibia.Objects
                             Addresses.Map.Distance_Object_Data),
                         client.ReadInt(pointer + 
                             Addresses.Map.Distance_Object_Data_Ex),
-                        i));
+                        i + 1));
                 }
 
                 return objects;
@@ -74,7 +93,7 @@ namespace Tibia.Objects
         {
             uint pointer = (uint)(Address +
                 (Addresses.Map.Distance_Square_Objects +
-                Addresses.Map.Step_Square_Object * (oldObject.Number + 1)));
+                Addresses.Map.Step_Square_Object * oldObject.StackOrder));
             client.WriteInt(pointer + 
                 Addresses.Map.Distance_Object_Id,
                 newObject.Id);
@@ -92,16 +111,16 @@ namespace Tibia.Objects
     /// </summary>
     public struct MapObject
     {
-        public int Number;
+        public int StackOrder;
         public int Id;
         public int Data;
         public int DataEx;
         public MapObject(int id, int data, int dataex)
             : this(id, data, dataex, 0)
         { }
-        public MapObject(int id, int data, int dataex, int number)
+        public MapObject(int id, int data, int dataex, int stackOrder)
         {
-            this.Number = number;
+            this.StackOrder = stackOrder;
             this.Id = id;
             this.Data = data;
             this.DataEx = dataex;
