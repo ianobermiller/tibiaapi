@@ -458,25 +458,24 @@ namespace Tibia.Objects
             p.EnableRaisingEvents = true;
             return new Client(p);
         }
-        #endregion
 
         /// <summary>
         /// Opens a client with dynamic multi-clienting support
         /// </summary>
-        public static Client OpenMC(string path,string arguments)
+        public static Client OpenMC(string path, string arguments)
         {
             Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
             Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
             if (arguments == null) arguments = "";
-            Util.WinApi.CreateProcess(path, 
-                " "+arguments,
-                IntPtr.Zero, 
+            Util.WinApi.CreateProcess(path,
+                " " + arguments,
+                IntPtr.Zero,
                 IntPtr.Zero,
                 false,
-                Util.WinApi.CREATE_SUSPENDED, 
+                Util.WinApi.CREATE_SUSPENDED,
                 IntPtr.Zero,
-                System.IO.Path.GetDirectoryName(path), 
-                ref si, 
+                System.IO.Path.GetDirectoryName(path),
+                ref si,
                 out pi);
             IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
             Process p = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
@@ -489,7 +488,8 @@ namespace Tibia.Objects
             Util.WinApi.CloseHandle(pi.hThread);
             return new Client(p);
         }           
-        
+
+        #endregion        
 
         #region Memory Methods
         public byte[] ReadBytes(long address, uint bytesToRead)
@@ -732,7 +732,8 @@ namespace Tibia.Objects
                     WriteInt(screenRect + 0x1C, Window.Width);
                     WriteInt(screenRect + 0x20, Window.Height);
                 }
-                else if (!value)
+                else if (!value && defBarY != 0 && defRectX!= 0 &&
+                    defRectY != 0 && defRectW != 0 && defRectH != 0)
                 {
                     WriteInt(screenBar + 0x70, defBarY);
                     WriteInt(screenRect + 0x14, defRectX);
@@ -742,6 +743,43 @@ namespace Tibia.Objects
                 }
             }
         }
+
+        /// <sumary>
+        /// Gets or sets wide screen view
+        /// </sumary>
+        public bool WideScreenView
+        {
+            get
+            {
+                int screenRect, screenBar;
+                screenRect = ReadInt(Addresses.Client.GameWindowRectPointer);
+                screenRect = ReadInt(screenRect + 0x18 + 0x04);
+                screenBar = ReadInt(Addresses.Client.GameWindowBar);
+                return this.ReadInt(screenRect + 0x14) == 5;
+            }
+            set
+            {
+                int screenRect, screenBar;
+                screenRect = this.ReadInt(Tibia.Addresses.Client.GameWindowRectPointer);
+                screenRect = this.ReadInt(screenRect + 0x18 + 0x4);
+                screenBar = this.ReadInt(Tibia.Addresses.Client.GameWindowBar);
+
+                if (value && !this.WideScreenView)
+                {
+                    defRectX = ReadInt(screenRect + 0x14);
+                    defRectW = ReadInt(screenRect + 0x1C);
+                    this.WriteInt(screenRect + 0x14, 5);
+                    this.WriteInt(screenRect + 0x1C, this.ReadInt(screenBar + 0x74) - 10);
+                }
+                else if (!value && defRectX != 0 && defRectW != 0)
+                {
+                    this.WriteInt(screenRect + 0x14, defRectX);
+                    this.WriteInt(screenRect + 0x1C, defRectW);
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// Gets or sets the follow mode.
