@@ -283,7 +283,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(Item item)
         {
-            return UseItem(item.Id);
+            return client.Send(Packets.ItemUsePacket.Create(client, ItemLocation.Hotkey(), item.Id, item.Count, 0x0F));
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(Item item)
         {
-            return UseItem(item.Id, client.ReadInt(Addresses.Player.Id));
+            return UseItem(item, client.ReadInt(Addresses.Player.Id));
         }
 
         /// <summary>
@@ -351,7 +351,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(Item item, int creatureId)
         {
-            return UseItem(item.Id, creatureId);
+            return client.Send(Packets.ItemUseBattlelistPacket.Create(
+                client, ItemLocation.Hotkey(), item.Id, item.Count, creatureId));
         }
 
         /// <summary>
@@ -400,6 +401,18 @@ namespace Tibia.Objects
         public bool UseItem(Item item, Tile onTile)
         {
             return UseItem(item.Id, onTile);
+        }
+
+        /// <summary>
+        /// Use an item on another item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="onTile"></param>
+        /// <returns></returns>
+        public bool UseItem(Item item, Item onItem)
+        {
+            return client.Send(Packets.ItemUseOnPacket.Create(
+                client, ItemLocation.Hotkey(), item.Id, item.Count, onItem.Loc, onItem.Id, onItem.Loc.stackOrder));
         }
 
         /// <summary>
