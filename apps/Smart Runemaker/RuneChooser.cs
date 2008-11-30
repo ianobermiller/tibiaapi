@@ -21,7 +21,7 @@ namespace SmartRunemaker
 
         public static Tibia.Objects.Rune ShowBox()
         {
-            ICollection<Tibia.Objects.Rune> runeList = Tibia.Constants.ItemLists.Runes.Values;
+            IList<Tibia.Objects.Rune> runeList = new List<Tibia.Objects.Rune>(Tibia.Constants.ItemLists.Runes.Values);
             newRuneChooser = new RuneChooser();
             newRuneChooser.uxRunes.DataSource = runeList;
             newRuneChooser.uxRunes.SelectedItem = Tibia.Constants.Items.Rune.SuddenDeath.Id;

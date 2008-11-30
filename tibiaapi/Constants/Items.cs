@@ -196,10 +196,10 @@ namespace Tibia.Constants
 
         public static class Rune
         {
+            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", null, 0);
             public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead Rune", Spells.AnimateDead, 5);
             public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote Rune", Spells.AntidoteRune, 1);
             public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche Rune", Spells.AvalancheRune, 3);
-            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", null, 0);
             public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon Rune", Spells.Chameleon, 2);
             public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature Rune", Spells.ConvinceCreature, 3);
             public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate Rune", Spells.Desintegrate, 3);
