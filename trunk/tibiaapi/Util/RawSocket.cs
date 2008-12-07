@@ -29,6 +29,9 @@ namespace Tibia.Util
         private byte[] receive_buf = new byte[4096];
         private bool Adler;
         private bool log = false;
+        private bool moreToCome = false;
+        private int bytesLeftToCome = 0;
+        private byte[] toJoin;
         private Queue<byte[]> IncomingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> OutgoingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> packetServerToClientQueue=new Queue<byte[]>();
@@ -404,14 +407,48 @@ namespace Tibia.Util
             int bytesRead = gamePacket.Length;
             while (bytesRead - offset > 0)
             {
-                int packetlength = BitConverter.ToInt16(gamePacket, offset) + 2;
-                byte[] packet = new byte[packetlength];
-                Array.Copy(gamePacket, offset, packet, 0, packetlength);
+                // Parse the data into a single packet
+                if (moreToCome)
+                {
+                    if (bytesRead >= bytesLeftToCome)
+                    {
+                        Array.Copy(gamePacket, offset, toJoin, toJoin.Length - bytesLeftToCome, bytesLeftToCome);
+                        IncomingGamePacketQueue.Enqueue(toJoin);
 
-                IncomingGamePacketQueue.Enqueue(packet);
+                        offset += bytesLeftToCome;
+                        moreToCome = false;
+                    }
+                    else
+                    {
+                        Array.Copy(gamePacket, offset, toJoin,
+                            toJoin.Length - bytesLeftToCome + bytesRead, bytesRead);
 
-                offset += packetlength;
+                        bytesLeftToCome -= bytesRead;
+                        offset += bytesRead;
+                    }
+                }
+                else
+                {
+                    // Get the packet length
+                    int packetlength = BitConverter.ToInt16(gamePacket, offset) + 2;
+                    if (packetlength <= bytesRead)
+                    {
+                        byte[] packet= new byte[packetlength];
+                        Array.Copy(gamePacket, offset, packet, 0, packetlength);
+
+                        IncomingGamePacketQueue.Enqueue(packet);
+                    }
+                    else
+                    {
+                        toJoin = new byte[packetlength];
+                        Array.Copy(gamePacket, offset, toJoin, 0, packetlength);
+                        bytesLeftToCome = packetlength - bytesRead;
+                        moreToCome = true;
+                    }
+                    offset += packetlength;
+                }
             }
+            if (!moreToCome) 
             ProcessIncomingGamePacketQueue();
         }
 
