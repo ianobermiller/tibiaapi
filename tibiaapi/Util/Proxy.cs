@@ -41,6 +41,9 @@ namespace Tibia.Util
         private bool connected = false;
         private bool isLoggedIn = false;
         private bool badGameCon;
+        private bool moreToCome = false;
+        private int bytesLeftToCome = 0;
+        private byte[] toJoin;
         private int loginDelay = 250;
         private short localPort;
         private Queue<byte[]> serverReceiveQueue = new Queue<byte[]>();
@@ -436,23 +439,53 @@ namespace Tibia.Util
             int bytesRead = netStreamServer.EndRead(ar);
             if (bytesRead == 0) return;
             int offset = 0;
-
             
             while (bytesRead - offset > 0)
             {
-                // Get the packet length
-                int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
                 // Parse the data into a single packet
-                byte[] packet = new byte[packetlength];
-                Array.Copy(dataServer, offset, packet, 0, packetlength);
-                
-                serverReceiveQueue.Enqueue(packet);
+                if (moreToCome)
+                {
+                    if (bytesRead >= bytesLeftToCome)
+                    {
+                        Array.Copy(dataServer, offset, toJoin, toJoin.Length - bytesLeftToCome, bytesLeftToCome);
+                        serverReceiveQueue.Enqueue(toJoin);
 
-                offset += packetlength;
+                        offset += bytesLeftToCome;
+                        moreToCome = false;
+                    }
+                    else
+                    {
+                        Array.Copy(dataServer, offset, toJoin,
+                            toJoin.Length - bytesLeftToCome + bytesRead, bytesRead);    
+
+                        bytesLeftToCome -= bytesRead;
+                        offset += bytesRead;
+                    }
+                }
+                else
+                {
+                    // Get the packet length
+                    int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
+                    if (packetlength <= bytesRead )
+                    {
+                        byte[] packet = new byte[packetlength];
+                        Array.Copy(dataServer, offset, packet, 0, packetlength);
+
+                        serverReceiveQueue.Enqueue(packet);
+                    }
+                    else
+                    {
+                        toJoin=new byte[packetlength];
+                        Array.Copy(dataServer, offset, toJoin, 0, packetlength);
+                        bytesLeftToCome=packetlength-bytesRead;
+                        moreToCome = true;
+                    }
+                    offset += packetlength;
+                }     
+
             }
 
-
-            ProcessServerReceiveQueue();
+            if(!moreToCome) ProcessServerReceiveQueue();
 
             if (!netStreamServer.CanRead) return;
 
