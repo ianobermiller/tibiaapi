@@ -130,7 +130,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x77BC80;
+        public static uint See_Text = 0x77BC80; //8.31
         
         // Login Server addresses
         public static uint LoginServerStart = 0x77FC48; //8.40
@@ -212,11 +212,20 @@ namespace Tibia.Addresses
         public static uint DialogHeight = 0x20;
         public static uint DialogCaption = 0x50;
 
+        /// <summary>
+        /// Last Received Packet
+        /// </summary>
+        private static uint LastRcvPacket = 0x7804C0;
+
+        /// <summary>
+        /// Call to decrypt packet
+        /// </summary>
+        private static uint DecryptCall = 0x45A745;
 
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x78348C; // 8.31
+        public static uint LoginPassword = 0x516C40; 
         public static uint LoginAccountStr = LoginPassword + 32;
         public static uint LoginAccountNum = LoginAccountStr + 12;
 

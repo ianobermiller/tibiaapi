@@ -10,30 +10,30 @@ namespace Tibia.Addresses
         /// <summary>
         /// Add Context Menu Function
         /// 
-        public static int AddContextMenuPtr = 0x450AA0;
+        public static int AddContextMenuPtr = 0x450B00;
 
         /// <summary>
         /// Menu Events handler
         /// 
-        public static int OnClickContextMenuVf = 0x5AF950;
+        public static int OnClickContextMenuVf = 0x5B0980;
 
         /// <summary>
         /// Called only when you right-click on yourself
         /// To be overwritten.
         /// 
-        public static int AddSetOutfitContextMenu = 0x4519D2;
+        public static int AddSetOutfitContextMenu = 0x451A32;
 
         /// <summary>
         /// Called only when you right-click on other players(invite or revoke invitation)
         /// To be overwritten.
         /// 
-        public static int AddPartyActionContextMenu = 0x451A23;
+        public static int AddPartyActionContextMenu = 0x451A83;
 
         /// <summary>
         /// Called only when you right-click on any creature
         /// To be overwritten.
         /// 
-        public static int AddCopyNameContextMenu = 0x451A3A;
+        public static int AddCopyNameContextMenu = 0x451A9A;
 
 
     }
