@@ -15,7 +15,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum number of creatures.
         /// </summary>
-        public static uint Max_Creatures = 150;
+        public static uint Max_Creatures = 250;
 
         /// <summary>
         /// Start of the battle list.

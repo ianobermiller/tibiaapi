@@ -127,7 +127,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x6376A8;  // 8.31
+        public static uint LevelSpyPtr = 0x6376A8;  // 8.40
 
         /// <summary>
         /// Defaults for level spy.
