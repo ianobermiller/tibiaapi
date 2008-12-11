@@ -39,9 +39,9 @@ namespace Tibia
                 Client.Click_Id = 0x78354C;
                 Client.Click_Count = Client.Click_Id + 4;
                 Client.Click_Z = Client.Click_Id - 0x68;
-                Client.See_Id = Click_Id + 12;
-                Client.See_Count = See_Id + 4;
-                Client.See_Z = See_Id - 0x68;
+                Client.See_Id = Client.Click_Id + 12;
+                Client.See_Count = Client.See_Id + 4;
+                Client.See_Z = Client.See_Id - 0x68;
                 Client.See_Text = 0x77BC80;
                 Client.LoginServerStart = 0x77AD88;
                 Client.Step_LoginServer = 112;
