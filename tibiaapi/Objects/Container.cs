@@ -105,6 +105,23 @@ namespace Tibia.Objects
                 return false;
         }
 
+        public override string ToString()
+        {
+            return "[" + Number.ToString() + "] " + Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Container)
+            {
+                return ((Container)obj).Number == Number;
+            }
+            else
+            {
+                return base.Equals(obj);
+            }
+        }
+
         #region Get/Set Properties
         /// <summary>
         /// Gets the client this container is associated with.
