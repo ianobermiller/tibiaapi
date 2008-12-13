@@ -153,6 +153,11 @@ namespace Tibia.Objects
                 client, loc, id, loc.ToBytes()[4],toItem.Loc, count));
         }
 
+        public bool Look()
+        {
+            return client.Send(Packets.LookAtPacket.Create(client, loc.groundLocation, (int)id, loc.stackOrder));
+        }
+
         #region Get/Set Properties
         /// <summary>
         /// Gets the client associated with this item;
