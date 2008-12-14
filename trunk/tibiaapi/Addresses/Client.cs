@@ -149,6 +149,11 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint LoginCharList = 0x788324; // 8.40
 
+        /// <summary>
+        /// Login character list length, specifies how many characters the upper address leads to
+        /// </summary>
+        public static uint LoginCharListLength = 0x788328; // 8.40
+
         /* Character List Format
         
         30 bytes - Character name, null terminated string
