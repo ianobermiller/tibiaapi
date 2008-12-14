@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Tibia.Addresses
+﻿namespace Tibia.Addresses
 {
     public static class ContextMenus
     {
