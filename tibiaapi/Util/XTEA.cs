@@ -7,6 +7,7 @@ namespace Tibia.Util
     /// Contains functions for decrypting/encrypting packets
     /// using XTEA encryption
     /// </summary>
+    [Obsolete("This class will be removed, please use NetworkMessage.")]
     public static class XTEA
     {
         /*

@@ -218,7 +218,7 @@ namespace Tibia.Objects
                               Addresses.Container.Step_Container * (int)location.container +
                               Addresses.Container.Step_Slot * (int)location.slot;
                 return new Item(
-                    (uint)client.ReadInt(address + Addresses.Container.Distance_Item_Id),
+                    (uint)client.ReadInt32(address + Addresses.Container.Distance_Item_Id),
                     client.ReadByte(address + Addresses.Container.Distance_Item_Count),
                     location,
                     client,
@@ -315,7 +315,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(uint id)
         {
-            return UseItem(id, client.ReadInt(Addresses.Player.Id));
+            return UseItem(id, client.ReadInt32(Addresses.Player.Id));
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(Item item)
         {
-            return UseItem(item, client.ReadInt(Addresses.Player.Id));
+            return UseItem(item, client.ReadInt32(Addresses.Player.Id));
         }
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace Tibia.Objects
             Item item;
             uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
             byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
-            uint id = (uint)client.ReadInt(address);
+            uint id = (uint)client.ReadInt32(address);
             if (id > 0)
             {
                 item = new Item(id, count, new ItemLocation(s), client, true);
@@ -449,7 +449,7 @@ namespace Tibia.Objects
             for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
             {
                 item = new Item(
-                    Convert.ToUInt32(client.ReadInt(address)), 
+                    Convert.ToUInt32(client.ReadInt32(address)), 
                     client.ReadByte(address +  + Addresses.Player.Distance_Slot_Count), 
                     new ItemLocation((Constants.SlotNumber) i), 
                     client, 

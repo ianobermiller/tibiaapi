@@ -14,13 +14,13 @@ namespace Tibia.Util
         public DatReader(Client c)
         {
             client = c;
-            baseAddr = (uint)client.ReadInt(Addresses.Client.DatPointer);
-            itemInfoAddr = (uint)client.ReadInt(baseAddr + 8);
+            baseAddr = (uint)client.ReadInt32(Addresses.Client.DatPointer);
+            itemInfoAddr = (uint)client.ReadInt32(baseAddr + 8);
         }
 
         public int ItemCount()
         {
-            return client.ReadInt(baseAddr + 4);
+            return client.ReadInt32(baseAddr + 4);
         }
 
         public DatItem GetItem(Item item)

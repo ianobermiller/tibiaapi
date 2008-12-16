@@ -19,6 +19,12 @@ namespace Tibia.Objects
             client = c;
         }
 
+
+        public List<Creature> GetCreatures(int floor)
+        {
+            return GetCreatures(delegate(Creature creature) { return creature.Z == floor; });
+        }
+
         /// <summary>
         /// Get a list of all the creatures on the battlelist that match with match.
         /// </summary>

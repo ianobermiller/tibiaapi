@@ -19,8 +19,10 @@ namespace Tibia.Objects
     public class Client
     {
         #region Variables
+
         private Process process;
-        private IntPtr handle;
+        private IntPtr processHandle;
+
         private int startTime;
         private bool isVisible;
         private bool usingProxy = false;
@@ -38,32 +40,32 @@ namespace Tibia.Objects
         private Util.Proxy proxy;
         private Util.Pipe pipe = null; //For Displaying Text
         private Screen screen;
+        private Util.PathFinder pathFinder;
         #endregion
 
         #region Events
-        /// <summary>
-        /// Prototype for client notifications.
-        /// </summary>
-        public delegate void ClientNotification();
 
         /// <summary>
         /// Event raised when the Tibia client is exited.
         /// </summary>
-        public ClientNotification OnExit;
+        public event EventHandler ClientExited;
 
-        private void ClientExited(object sender, EventArgs e)
+        private void process_Exited(object sender, EventArgs e)
         {
-            if (OnExit != null)
-                OnExit.Invoke();
+            if (ClientExited != null)
+                ClientExited.BeginInvoke(this, e, null, null);
         }
+
         #endregion
 
         #region Constructor/Destructor
+
         /// <summary>
         /// "Support" constructor
         /// </summary>
         /// <param name="p">used when necessary to use classes such as packet builder when working clientless</param>
         public Client() { }
+
         /// <summary>
         /// Main constructor
         /// </summary>
@@ -71,22 +73,24 @@ namespace Tibia.Objects
         public Client(Process p)
         {
             process = p;
-            p.Exited += new EventHandler(ClientExited);
+            process.Exited += new EventHandler(process_Exited);
+            process.EnableRaisingEvents = true;
             
             // Wait until we can really access the process
-            p.WaitForInputIdle();
-            while (p.MainWindowHandle == IntPtr.Zero)
+            process.WaitForInputIdle();
+
+            while (process.MainWindowHandle == IntPtr.Zero)
             {
-                p.Refresh();
-                System.Threading.Thread.Sleep(1);
+                process.Refresh();
+                System.Threading.Thread.Sleep(5);
             }
 
             // Save the start time (it isn't changing)
-            startTime = ReadInt(Addresses.Client.StartTime);
+            startTime = ReadInt32(Addresses.Client.StartTime);
 
             // Save a copy of the handle so the process doesn't have to be opened
             // every read/write operation
-            handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
+            processHandle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
             pipeIsReady = new AutoResetEvent(false);
 
@@ -98,6 +102,8 @@ namespace Tibia.Objects
             random = new Random();
             dat = new Util.DatReader(this);
             screen = new Screen(this);
+
+            pathFinder = new Tibia.Util.PathFinder(this);
         }
 
         /// <summary>
@@ -107,12 +113,17 @@ namespace Tibia.Objects
         ~Client()
         {
             // Close the process handle
-            // Close the process handle
-            Util.WinApi.CloseHandle(handle);
+            Util.WinApi.CloseHandle(processHandle);
         }
         #endregion
 
         #region Properties
+
+        public Util.PathFinder PathFinder
+        {
+            get { return pathFinder; }
+        }
+
         public LoginServer OpenTibiaServer
         {
             get { return openTibiaServer; }
@@ -124,14 +135,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Title
         {
-            get
-            {
-                return process.MainWindowTitle;
-            }
-            set
-            {
-                Util.WinApi.SetWindowText(MainWindowHandle, value);
-            }
+            get { return process.MainWindowTitle; }
+            set { Util.WinApi.SetWindowText(MainWindowHandle, value); }
         }
 
         /// <summary>
@@ -139,10 +144,8 @@ namespace Tibia.Objects
         /// </summary>
         public bool IsTopMost
         {
-            set
-            {
-                Util.WinApi.SetWindowPos(MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST : Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE);
-            }
+            set { Util.WinApi.SetWindowPos(MainWindowHandle, (value) ? Util.WinApi.HWND_TOPMOST :
+                Util.WinApi.HWND_NOTOPMOST, 0, 0, 0, 0, Util.WinApi.SWP_NOMOVE | Util.WinApi.SWP_NOSIZE); }
         }
 
         /// <summary>
@@ -159,10 +162,7 @@ namespace Tibia.Objects
         /// </summary>
         public bool LoggedIn
         {
-            get
-            {
-                return Status == Constants.LoginStatus.LoggedIn;
-            }
+            get { return Status == Constants.LoginStatus.LoggedIn; }
         }
 
         /// <summary>
@@ -171,7 +171,12 @@ namespace Tibia.Objects
         public string Statusbar
         {
             get { return ReadString(Addresses.Client.Statusbar_Text); }
-            set { WriteByte(Addresses.Client.Statusbar_Time, 50); WriteString(Addresses.Client.Statusbar_Text, value); WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); }
+            set 
+            { 
+                WriteByte(Addresses.Client.Statusbar_Time, 50);
+                WriteString(Addresses.Client.Statusbar_Text, value);
+                WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); 
+            }
         }
 
         /// <summary>
@@ -179,11 +184,7 @@ namespace Tibia.Objects
         /// </summary>
         public ushort LastSeenId
         {
-            get
-            {
-                byte[] bytes = ReadBytes(Addresses.Client.See_Id, 2);
-                return BitConverter.ToUInt16(bytes, 0);
-            }
+            get { return BitConverter.ToUInt16(ReadBytes(Addresses.Client.See_Id, 2), 0); }
         }
 
         /// <summary>
@@ -192,11 +193,7 @@ namespace Tibia.Objects
         /// </summary>
         public ushort LastSeenCount
         {
-            get
-            {
-                byte[] bytes = ReadBytes(Addresses.Client.See_Count, 2);
-                return BitConverter.ToUInt16(bytes, 0);
-            }
+            get { return BitConverter.ToUInt16(ReadBytes(Addresses.Client.See_Count, 2), 0); }
         }
 
         /// <summary>
@@ -213,10 +210,7 @@ namespace Tibia.Objects
         public bool IsActive
         {
             get
-            {
-
-                return MainWindowHandle == Util.WinApi.GetForegroundWindow();
-            }
+            { return MainWindowHandle == Util.WinApi.GetForegroundWindow(); }
             set
             {
                 if (value)
@@ -232,6 +226,7 @@ namespace Tibia.Objects
             get {
                 if (process.MainWindowHandle == IntPtr.Zero)
                     process.Refresh();
+
                 return process.MainWindowHandle;
             }
         }
@@ -279,14 +274,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public string RSA
         {
-            get
-            {
-                return ReadString(Addresses.Client.RSA);
-            }
-            set
-            {
-                Memory.WriteRSA(handle, Addresses.Client.RSA, value);
-            }
+            get { return ReadString(Addresses.Client.RSA, 309); }
+            set { Memory.WriteRSA(processHandle, Addresses.Client.RSA, value); }
         }
 
         /// <summary>
@@ -296,7 +285,7 @@ namespace Tibia.Objects
         {
             get
             {
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
                 return ReadDouble(frameRateBegin + Addresses.Client.FrameRateCurrentOffset);
             }
         }
@@ -309,13 +298,13 @@ namespace Tibia.Objects
         {
             get
             {
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
                 return ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
             }
             set
             {
                 if (value <= 0) value = 1;
-                int frameRateBegin = ReadInt(Addresses.Client.FrameRatePointer);
+                int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
                 WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
             }
         }
@@ -362,7 +351,7 @@ namespace Tibia.Objects
         {
             set
             {
-                WriteInt(Addresses.Client.LoginAccountNum, value);
+                WriteInt32(Addresses.Client.LoginAccountNum, value);
                 WriteString(Addresses.Client.LoginAccountStr, value.ToString());
             }
         }
@@ -385,7 +374,7 @@ namespace Tibia.Objects
         {
             get
             {
-                return (ReadInt(Addresses.Client.DialogBegin) != 0);
+                return (ReadInt32(Addresses.Client.DialogBegin) != 0);
             }
         }
 
@@ -396,10 +385,10 @@ namespace Tibia.Objects
         {
             get
             {
-                int DialogB = ReadInt(Addresses.Client.DialogBegin);
+                int DialogB = ReadInt32(Addresses.Client.DialogBegin);
                 if (DialogB == 0)
                     return new System.Drawing.Point(0, 0);
-                return new System.Drawing.Point(ReadInt(DialogB + Addresses.Client.DialogLeft), ReadInt(DialogB + Addresses.Client.DialogTop));
+                return new System.Drawing.Point(ReadInt32(DialogB + Addresses.Client.DialogLeft), ReadInt32(DialogB + Addresses.Client.DialogTop));
             }
         }
 
@@ -492,69 +481,93 @@ namespace Tibia.Objects
         #endregion        
 
         #region Memory Methods
+
         public byte[] ReadBytes(long address, uint bytesToRead)
         {
-            return Memory.ReadBytes(handle, address, bytesToRead);
+            return Memory.ReadBytes(processHandle, address, bytesToRead);
         }
 
         public byte ReadByte(long address)
         {
-            return Memory.ReadByte(handle, address);
+            return Memory.ReadByte(processHandle, address);
         }
 
+        public short ReadInt16(long address)
+        {
+            return Memory.ReadInt16(processHandle, address);
+        }
+
+        [Obsolete("Please use ReadInt16")]
         public short ReadShort(long address)
         {
-            return Memory.ReadShort(handle, address);
+            return Memory.ReadInt16(processHandle, address);
         }
 
+        public int ReadInt32(long address)
+        {
+            return Memory.ReadInt32(processHandle, address);
+        }
+
+        [Obsolete("Please use ReadInt32")]
         public int ReadInt(long address)
         {
-            return Memory.ReadInt(handle, address);
+            return Memory.ReadInt32(processHandle, address);
         }
 
         public double ReadDouble(long address)
         {
-            return Memory.ReadDouble(handle, address);
+            return Memory.ReadDouble(processHandle, address);
         }
 
         public string ReadString(long address)
         {
-            return Memory.ReadString(handle, address);
+            return Memory.ReadString(processHandle, address);
         }
 
         public string ReadString(long address, uint length)
         {
-            return Memory.ReadString(handle, address, length);
+            return Memory.ReadString(processHandle, address, length);
         }
 
         public bool WriteBytes(long address, byte[] bytes, uint length)
         {
-            return Memory.WriteBytes(handle, address, bytes, length);
+            return Memory.WriteBytes(processHandle, address, bytes, length);
         }
 
+        public bool WriteInt16(long address, short value)
+        {
+            return Memory.WriteInt16(processHandle, address, value);
+        }
+
+        public bool WriteInt32(long address, int value)
+        {
+            return Memory.WriteInt32(processHandle, address, value);
+        }
+
+        [Obsolete("Please use WriteInt32")]
         public bool WriteInt(long address, int value)
         {
-            return Memory.WriteInt(handle, address, value);
+            return Memory.WriteInt32(processHandle, address, value);
         }
 
         public bool WriteDouble(long address, double value)
         {
-            return Memory.WriteDouble(handle, address, value);
+            return Memory.WriteDouble(processHandle, address, value);
         }
 
         public bool WriteByte(long address, byte value)
         {
-            return Memory.WriteByte(handle, address, value);
+            return Memory.WriteByte(processHandle, address, value);
         }
 
         public bool WriteString(long address, string str)
         {
-            return Memory.WriteString(handle, address, str);
+            return Memory.WriteString(processHandle, address, str);
         }
 
         public bool WriteStringNoEncoding(long address, string str)
         {
-            return Memory.WriteStringNoEncoding(handle, address, str);
+            return Memory.WriteStringNoEncoding(processHandle, address, str);
         }
         #endregion
 
@@ -570,6 +583,7 @@ namespace Tibia.Objects
                 s += "Not logged in.";
             else
                 s += GetPlayer().Name;
+
             return s;
         }
         #endregion
@@ -610,7 +624,7 @@ namespace Tibia.Objects
         public Player GetPlayer()
         {
             if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.GetCreature(ReadInt(Addresses.Player.Id));
+            Creature creature = battleList.GetCreature(ReadInt32(Addresses.Player.Id));
             return new Player(this, creature.Address);
         }
 
@@ -709,37 +723,37 @@ namespace Tibia.Objects
             get
             {
                 int screenBar;
-                screenBar = ReadInt(Addresses.Client.GameWindowBar);
-                return ReadInt(screenBar + 0x70) == Window.Height;
+                screenBar = ReadInt32(Addresses.Client.GameWindowBar);
+                return ReadInt32(screenBar + 0x70) == Window.Height;
             }
             set
             {
                 int screenRect, screenBar;
-                screenRect = ReadInt(Addresses.Client.GameWindowRectPointer);
-                screenRect = ReadInt(screenRect + 0x18 + 0x04);
-                screenBar = ReadInt(Addresses.Client.GameWindowBar);
+                screenRect = ReadInt32(Addresses.Client.GameWindowRectPointer);
+                screenRect = ReadInt32(screenRect + 0x18 + 0x04);
+                screenBar = ReadInt32(Addresses.Client.GameWindowBar);
 
-                if (value && ReadInt(screenBar + 0x70) != Window.Height)
+                if (value && ReadInt32(screenBar + 0x70) != Window.Height)
                 {
-                    defBarY = ReadInt(screenBar + 0x70);
-                    defRectX = ReadInt(screenRect + 0x14);
-                    defRectY = ReadInt(screenRect + 0x18);
-                    defRectW = ReadInt(screenRect + 0x1C);
-                    defRectH = ReadInt(screenRect + 0x20);
-                    WriteInt(screenBar + 0x70, Window.Height);
-                    WriteInt(screenRect + 0x14, 0);
-                    WriteInt(screenRect + 0x18, 0);
-                    WriteInt(screenRect + 0x1C, Window.Width);
-                    WriteInt(screenRect + 0x20, Window.Height);
+                    defBarY = ReadInt32(screenBar + 0x70);
+                    defRectX = ReadInt32(screenRect + 0x14);
+                    defRectY = ReadInt32(screenRect + 0x18);
+                    defRectW = ReadInt32(screenRect + 0x1C);
+                    defRectH = ReadInt32(screenRect + 0x20);
+                    WriteInt32(screenBar + 0x70, Window.Height);
+                    WriteInt32(screenRect + 0x14, 0);
+                    WriteInt32(screenRect + 0x18, 0);
+                    WriteInt32(screenRect + 0x1C, Window.Width);
+                    WriteInt32(screenRect + 0x20, Window.Height);
                 }
                 else if (!value && defBarY != 0 && defRectX!= 0 &&
                     defRectY != 0 && defRectW != 0 && defRectH != 0)
                 {
-                    WriteInt(screenBar + 0x70, defBarY);
-                    WriteInt(screenRect + 0x14, defRectX);
-                    WriteInt(screenRect + 0x18, defRectY);
-                    WriteInt(screenRect + 0x1C, defRectW);
-                    WriteInt(screenRect + 0x20, defRectH);
+                    WriteInt32(screenBar + 0x70, defBarY);
+                    WriteInt32(screenRect + 0x14, defRectX);
+                    WriteInt32(screenRect + 0x18, defRectY);
+                    WriteInt32(screenRect + 0x1C, defRectW);
+                    WriteInt32(screenRect + 0x20, defRectH);
                 }
             }
         }
@@ -752,29 +766,29 @@ namespace Tibia.Objects
             get
             {
                 int screenRect, screenBar;
-                screenRect = ReadInt(Addresses.Client.GameWindowRectPointer);
-                screenRect = ReadInt(screenRect + 0x18 + 0x04);
-                screenBar = ReadInt(Addresses.Client.GameWindowBar);
-                return this.ReadInt(screenRect + 0x14) == 5;
+                screenRect = ReadInt32(Addresses.Client.GameWindowRectPointer);
+                screenRect = ReadInt32(screenRect + 0x18 + 0x04);
+                screenBar = ReadInt32(Addresses.Client.GameWindowBar);
+                return this.ReadInt32(screenRect + 0x14) == 5;
             }
             set
             {
                 int screenRect, screenBar;
-                screenRect = this.ReadInt(Tibia.Addresses.Client.GameWindowRectPointer);
-                screenRect = this.ReadInt(screenRect + 0x18 + 0x4);
-                screenBar = this.ReadInt(Tibia.Addresses.Client.GameWindowBar);
+                screenRect = this.ReadInt32(Tibia.Addresses.Client.GameWindowRectPointer);
+                screenRect = this.ReadInt32(screenRect + 0x18 + 0x4);
+                screenBar = this.ReadInt32(Tibia.Addresses.Client.GameWindowBar);
 
                 if (value && !this.WideScreenView)
                 {
-                    defRectX = ReadInt(screenRect + 0x14);
-                    defRectW = ReadInt(screenRect + 0x1C);
-                    this.WriteInt(screenRect + 0x14, 5);
-                    this.WriteInt(screenRect + 0x1C, this.ReadInt(screenBar + 0x74) - 10);
+                    defRectX = ReadInt32(screenRect + 0x14);
+                    defRectW = ReadInt32(screenRect + 0x1C);
+                    this.WriteInt32(screenRect + 0x14, 5);
+                    this.WriteInt32(screenRect + 0x1C, this.ReadInt32(screenBar + 0x74) - 10);
                 }
                 else if (!value && defRectX != 0 && defRectW != 0)
                 {
-                    this.WriteInt(screenRect + 0x14, defRectX);
-                    this.WriteInt(screenRect + 0x1C, defRectW);
+                    this.WriteInt32(screenRect + 0x14, defRectX);
+                    this.WriteInt32(screenRect + 0x1C, defRectW);
                 }
             }
 
@@ -973,7 +987,7 @@ namespace Tibia.Objects
                 {
                     servers[i] = new LoginServer(
                         ReadString(address),
-                        (short)ReadInt(address + Addresses.Client.Distance_Port)
+                        (short)ReadInt32(address + Addresses.Client.Distance_Port)
                     );
                     address += Addresses.Client.Step_LoginServer;
                 }
@@ -988,7 +1002,7 @@ namespace Tibia.Objects
                     for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
                     {
                         WriteString(address, value[0].Server);
-                        WriteInt(address + Addresses.Client.Distance_Port, value[0].Port);
+                        WriteInt32(address + Addresses.Client.Distance_Port, value[0].Port);
                         address += Addresses.Client.Step_LoginServer;
                     }
                 }
@@ -999,7 +1013,7 @@ namespace Tibia.Objects
                     {
                         server = value[i].Server + (char)0;
                         WriteString(address, server);
-                        WriteInt(address + Addresses.Client.Distance_Port, value[0].Port);
+                        WriteInt32(address + Addresses.Client.Distance_Port, value[0].Port);
                         address += Addresses.Client.Step_LoginServer;
                     }
                 }
@@ -1022,7 +1036,7 @@ namespace Tibia.Objects
             for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
             {
                 result &= WriteString(pointer, ip);
-                result &= WriteInt(pointer + Addresses.Client.Distance_Port, port);
+                result &= WriteInt32(pointer + Addresses.Client.Distance_Port, port);
                 pointer += Addresses.Client.Step_LoginServer;
             }
             return result;

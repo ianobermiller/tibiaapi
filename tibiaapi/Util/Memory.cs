@@ -9,8 +9,6 @@ namespace Tibia
     /// </summary>
     public static class Memory
     {
-        public static System.Text.ASCIIEncoding encoding = null;
-
         /// <summary>
         /// Read a specified number of bytes from a process.
         /// </summary>
@@ -40,22 +38,34 @@ namespace Tibia
         }
 
         /// <summary>
-        /// Read a short from memory.
+        /// Read a short from memory (16-bits).
         /// </summary>
         /// <param name="handle"></param>
         /// <param name="address"></param>
         /// <returns></returns>
+        public static short ReadInt16(IntPtr handle, long address)
+        {
+            return BitConverter.ToInt16(ReadBytes(handle, address, 2), 0);
+        }
+
+        [Obsolete("Please use ReadInt16")]
         public static short ReadShort(IntPtr handle, long address)
         {
             return BitConverter.ToInt16(ReadBytes(handle, address, 2), 0);
         }
 
         /// <summary>
-        /// Read an integer from the process (actually a short because it is only 4 bytes)
+        /// Read an integer from the process (32-bits)
         /// </summary>
         /// <param name="handle"></param>
         /// <param name="address"></param>
         /// <returns></returns>
+        public static int ReadInt32(IntPtr handle, long address)
+        {
+            return BitConverter.ToInt32(ReadBytes(handle, address, 4), 0);
+        }
+
+        [Obsolete("Please use ReadInt32.")]
         public static int ReadInt(IntPtr handle, long address)
         {
             return BitConverter.ToInt32(ReadBytes(handle, address, 4), 0);
@@ -92,9 +102,7 @@ namespace Tibia
         /// <returns></returns>
         public static string ReadString(IntPtr handle, long address, uint length)
         {
-            if (encoding == null) encoding = new System.Text.ASCIIEncoding();
-            String str = encoding.GetString(ReadBytes(handle, address, length)).Split(new Char())[0];
-            return str;
+            return System.Text.ASCIIEncoding.Default.GetString(ReadBytes(handle, address, length)).Split(new Char())[0];
         }
 
         /// <summary>
@@ -108,21 +116,38 @@ namespace Tibia
         public static bool WriteBytes(IntPtr handle, long address, byte[] bytes, uint length)
         {
             IntPtr bytesWritten;
-            int result;
 
             // Write to memory
-            result = Util.WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, length, out bytesWritten);
+            int result = Util.WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, length, out bytesWritten);
 
-            return (result != 0);
+            return result != 0;
         }
 
         /// <summary>
-        /// Write an integer to memory.
+        /// Write an integer (32-bits) to memory.
         /// </summary>
         /// <param name="handle"></param>
         /// <param name="address"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        public static bool WriteInt32(IntPtr handle, long address, int value)
+        {
+            return WriteBytes(handle, address, BitConverter.GetBytes(value), 4);
+        }
+
+        /// <summary>
+        /// Write an integer (16-bits) to memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool WriteInt16(IntPtr handle, long address, short value)
+        {
+            return WriteBytes(handle, address, BitConverter.GetBytes(value), 2);
+        }
+
+        [Obsolete("Please use WriteInt32.")]
         public static bool WriteInt(IntPtr handle, long address, int value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
@@ -151,8 +176,7 @@ namespace Tibia
         /// <returns></returns>
         public static bool WriteByte(IntPtr handle, long address, byte value)
         {
-            byte[] bytes = { value };
-            return WriteBytes(handle, address, bytes, 1);
+            return WriteBytes(handle, address, new byte[] { value }, 1);
         }
 
         /// <summary>
@@ -179,8 +203,7 @@ namespace Tibia
         public static bool WriteString(IntPtr handle, long address, string str)
         {
             str += '\0';
-            if (encoding == null) encoding = new System.Text.ASCIIEncoding();
-            byte[] bytes = encoding.GetBytes(str);
+            byte[] bytes = System.Text.ASCIIEncoding.Default.GetBytes(str);
             return WriteBytes(handle, address, bytes, (uint)bytes.Length);
         }
 

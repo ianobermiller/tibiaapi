@@ -49,7 +49,7 @@ namespace Tibia.Objects
             for (uint i = address; i <= address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
             {
                 byte itemCount = client.ReadByte(i + Addresses.Container.Distance_Item_Count);
-                uint itemId = (uint) client.ReadInt(i + Addresses.Container.Distance_Item_Id);
+                uint itemId = (uint) client.ReadInt32(i + Addresses.Container.Distance_Item_Id);
                 if (itemId > 0)
                     items.Add(new Item(
                         itemId,
@@ -59,7 +59,7 @@ namespace Tibia.Objects
                         true));
                 slot++;
             }
-            // items.Reverse();
+
             return items;
         }
 
@@ -80,9 +80,7 @@ namespace Tibia.Objects
         {
             //Return true if it is not open because there was no error
             if (!IsOpen)
-            {
                 return true;
-            }
 
             return client.Send(Packets.ContainerClosePacket.Create(client, number));
         }
@@ -107,19 +105,20 @@ namespace Tibia.Objects
 
         public override string ToString()
         {
-            return "[" + Number.ToString() + "] " + Name;
+            return string.Format("[{0}] {1}", Number.ToString(), Name);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is Container)
-            {
                 return ((Container)obj).Number == Number;
-            }
             else
-            {
                 return base.Equals(obj);
-            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         #region Get/Set Properties
@@ -130,6 +129,7 @@ namespace Tibia.Objects
         {
             get { return client; }
         }
+
         /// <summary>
         /// Gets the container's number.
         /// </summary>
@@ -137,6 +137,7 @@ namespace Tibia.Objects
         {
             get { return number; }
         }
+
         /// <summary>
         /// Get the container's address.
         /// </summary>
@@ -144,31 +145,35 @@ namespace Tibia.Objects
         {
             get { return address; }
         }
+
         /// <summary>
         /// Gets the container's id.
         /// </summary>
         public int Id
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Id); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Id, value); }
+            get { return client.ReadInt32(address + Addresses.Container.Distance_Id); }
+            set { client.WriteInt32(address + Addresses.Container.Distance_Id, value); }
         }
+
         /// <summary>
         /// Gets whether the container is open. Setting this value often times
         /// crashes the Tibia client.
         /// </summary>
         public bool IsOpen
         {
-            get { return Convert.ToBoolean(client.ReadInt(address + Addresses.Container.Distance_IsOpen)); }
-            set { client.WriteInt(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
+            get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Container.Distance_IsOpen)); }
+            set { client.WriteInt32(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
         }
+
         /// <summary>
         /// Gets the amount of items that are currently in the container.
         /// </summary>
         public int Amount
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Amount); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Amount, value); }
+            get { return client.ReadInt32(address + Addresses.Container.Distance_Amount); }
+            set { client.WriteInt32(address + Addresses.Container.Distance_Amount, value); }
         }
+
         /// <summary>
         /// Gets the name or caption of the container. Setting this value usually
         /// does not update the UI immediately.
@@ -178,13 +183,14 @@ namespace Tibia.Objects
             get { return client.ReadString(address + Addresses.Container.Distance_Name); }
             set { client.WriteString(address + Addresses.Container.Distance_Name, value); }
         }
+
         /// <summary>
         /// The total amount of items this container can contain.
         /// </summary>
         public int Volume
         {
-            get { return client.ReadInt(address + Addresses.Container.Distance_Volume); }
-            set { client.WriteInt(address + Addresses.Container.Distance_Volume, value); }
+            get { return client.ReadInt32(address + Addresses.Container.Distance_Volume); }
+            set { client.WriteInt32(address + Addresses.Container.Distance_Volume, value); }
         }
         #endregion
     }

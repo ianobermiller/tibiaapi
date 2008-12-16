@@ -882,7 +882,7 @@ namespace Tibia.Util
             {
                 if (GetPacketType(dataClient) == (byte)PacketType.Logout )
                 {
-                    if (client.ReadInt(Tibia.Addresses.Player.HP) == 0)
+                    if (client.ReadInt32(Tibia.Addresses.Player.HP) == 0)
                     {
                         RestartAll();
 
