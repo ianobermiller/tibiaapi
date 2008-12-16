@@ -50,11 +50,11 @@ namespace Tibia.Packets.Pipes
             }
         }
 
-        public static SetConstantPacket Create(Client c, string ConstantName, int Value)
+        public static SetConstantPacket Create(Client c, string ConstantName, uint Value)
         {
             PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.SetConstant);
             p.AddString(ConstantName);
-            p.AddLong(Value);
+            p.AddLong(unchecked((int)Value));
             return new SetConstantPacket(c, p.GetPacket());
         }
     }
