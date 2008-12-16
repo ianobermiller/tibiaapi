@@ -123,7 +123,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseOnSelf()
         {
-            int playerID = client.ReadInt(Addresses.Player.Id);
+            int playerID = client.ReadInt32(Addresses.Player.Id);
             byte stack = 0;
             if (id == Constants.Items.Bottle.Vial.Id) stack = count;
             return client.Send(Packets.ItemUseBattlelistPacket.Create(
@@ -157,70 +157,6 @@ namespace Tibia.Objects
         {
             return client.Send(Packets.LookAtPacket.Create(client, loc.groundLocation, (int)id, loc.stackOrder));
         }
-
-        #region Get/Set Properties
-        /// <summary>
-        /// Gets the client associated with this item;
-        /// </summary>
-        public Client Client
-        {
-            get { return client; }
-            set { client = value; }
-        }
-        /// <summary>
-        /// Gets or sets the id of the item.
-        /// </summary>
-        public uint Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
-        /// <summary>
-        /// Gets or sets the name of the item.
-        /// </summary>
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-        /// <summary>
-        /// Gets or sets the amount stacked of this item.
-        /// </summary>
-        public byte Count
-        {
-            get { return count; }
-            set { count = value; }
-        }
-
-        /// <summary>
-        /// Gets the total number of items/objects in Tibia.
-        /// </summary>
-        public uint TotalItemCount
-        {
-            get
-            {
-                uint baseAddr = (uint)client.ReadInt(Addresses.Client.DatPointer);
-                return (uint)client.ReadInt(baseAddr + 4);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the location of this item.
-        /// </summary>
-        public ItemLocation Loc
-        {
-            get { return loc; }
-            set { loc = value; }
-        }
-        /// <summary>
-        /// Gets or sets whether this item is found.
-        /// </summary>
-        public bool Found
-        {
-            get { return found; }
-            set { found = value; }
-        }
-        #endregion
 
         /// <summary>
         /// Get the packet bytes for an item location.
@@ -266,8 +202,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = (uint)client.ReadInt(Addresses.Client.DatPointer);
-                return (uint)client.ReadInt(baseAddr + 8) + 0x4C * (id - 100);
+                uint baseAddr = (uint)client.ReadInt32(Addresses.Client.DatPointer);
+                return (uint)client.ReadInt32(baseAddr + 8) + 0x4C * (id - 100);
             }
         }
 
@@ -276,8 +212,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Width
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Width); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Width, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Width); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Width, value); }
         }
 
         /// <summary>
@@ -285,44 +221,44 @@ namespace Tibia.Objects
         /// </summary>
         public int Height
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Height); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Height, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Height); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Height, value); }
         }
 
         public int Unknown1
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Unknown1); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Unknown1, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Unknown1); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Unknown1, value); }
         }
 
         public int Layers
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Layers); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Layers, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Layers); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Layers, value); }
         }
 
         public int PatternX
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternX); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternX, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternX); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternX, value); }
         }
 
         public int PatternY
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternY); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternY, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternY); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternY, value); }
         }
 
         public int PatternDepth
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.PatternDepth); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.PatternDepth, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternDepth); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternDepth, value); }
         }
 
         public int Phase
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Phase); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Phase, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Phase); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Phase, value); }
         }
 
         /// <summary>
@@ -330,7 +266,7 @@ namespace Tibia.Objects
         /// </summary>
         public int Sprites
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Sprites); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Sprites); }
             //set { client.WriteInt(DatAddress + Addresses.DatItem.Sprites, value); }
         }
 
@@ -339,8 +275,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Flags
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Flags); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Flags, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Flags); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Flags, value); }
         }
 
         /// <summary>
@@ -348,8 +284,8 @@ namespace Tibia.Objects
         /// </summary>
         public int WalkSpeed
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.WalkSpeed); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.WalkSpeed, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.WalkSpeed); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.WalkSpeed, value); }
         }
 
         /// <summary>
@@ -357,8 +293,8 @@ namespace Tibia.Objects
         /// </summary>
         public int TextLimit
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.TextLimit); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.TextLimit, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.TextLimit); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.TextLimit, value); }
         }
 
         /// <summary>
@@ -366,8 +302,8 @@ namespace Tibia.Objects
         /// </summary>
         public int LightRadius
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.LightRadius); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.LightRadius, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.LightRadius); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.LightRadius, value); }
         }
 
         /// <summary>
@@ -375,8 +311,8 @@ namespace Tibia.Objects
         /// </summary>
         public int LightColor
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.LightColor); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.LightColor, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.LightColor); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.LightColor, value); }
         }
 
         /// <summary>
@@ -385,8 +321,8 @@ namespace Tibia.Objects
         /// </summary>
         public int ShiftX
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.ShiftX); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.ShiftX, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.ShiftX); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.ShiftX, value); }
         }
 
         /// <summary>
@@ -395,8 +331,8 @@ namespace Tibia.Objects
         /// </summary>
         public int ShiftY
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.ShiftY); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.ShiftY, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.ShiftY); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.ShiftY, value); }
         }
 
         /// <summary>
@@ -404,8 +340,8 @@ namespace Tibia.Objects
         /// </summary>
         public int WalkHeight
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.WalkHeight); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.WalkHeight, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.WalkHeight); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.WalkHeight, value); }
         }
 
         /// <summary>
@@ -413,8 +349,8 @@ namespace Tibia.Objects
         /// </summary>
         public int AutomapColor
         {
-            get { return client.ReadInt(DatAddress + Addresses.DatItem.Automap); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.Automap, value); }
+            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Automap); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.Automap, value); }
         }
 
         /// <summary>
@@ -422,8 +358,72 @@ namespace Tibia.Objects
         /// </summary>
         public Addresses.DatItem.Help LensHelp
         {
-            get { return (Addresses.DatItem.Help)client.ReadInt(DatAddress + Addresses.DatItem.LensHelp); }
-            set { client.WriteInt(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
+            get { return (Addresses.DatItem.Help)client.ReadInt32(DatAddress + Addresses.DatItem.LensHelp); }
+            set { client.WriteInt32(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
+        }
+        #endregion
+
+        #region Get/Set Properties
+        /// <summary>
+        /// Gets the client associated with this item;
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
+            set { client = value; }
+        }
+        /// <summary>
+        /// Gets or sets the id of the item.
+        /// </summary>
+        public uint Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        /// <summary>
+        /// Gets or sets the name of the item.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        /// <summary>
+        /// Gets or sets the amount stacked of this item.
+        /// </summary>
+        public byte Count
+        {
+            get { return count; }
+            set { count = value; }
+        }
+
+        /// <summary>
+        /// Gets the total number of items/objects in Tibia.
+        /// </summary>
+        public uint TotalItemCount
+        {
+            get
+            {
+                uint baseAddr = (uint)client.ReadInt32(Addresses.Client.DatPointer);
+                return (uint)client.ReadInt32(baseAddr + 4);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of this item.
+        /// </summary>
+        public ItemLocation Loc
+        {
+            get { return loc; }
+            set { loc = value; }
+        }
+        /// <summary>
+        /// Gets or sets whether this item is found.
+        /// </summary>
+        public bool Found
+        {
+            get { return found; }
+            set { found = value; }
         }
         #endregion
 

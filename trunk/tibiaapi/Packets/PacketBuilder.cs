@@ -7,6 +7,7 @@ namespace Tibia.Packets
     /// <summary>
     /// Class for building and parsing packets.
     /// </summary>
+    [Obsolete("This class will be removed, please use NetworkMessage.")]
     public class PacketBuilder
     {
         public const int MaxLength = 15360;

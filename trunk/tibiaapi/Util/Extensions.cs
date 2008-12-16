@@ -31,6 +31,45 @@ namespace Tibia
         #endregion
 
         #region Packets
+
+        public static byte[] ToByteArray(this uint[] unsignedIntegers)
+        {
+            byte[] temp = new byte[unsignedIntegers.Length * 4];
+
+            for (int i = 0; i < unsignedIntegers.Length; i++)
+                Array.Copy(BitConverter.GetBytes(unsignedIntegers[i]), 0, temp, i * 4, 4);
+
+            return temp;
+        }
+
+        public static uint[] ToUInt32Array(this byte[] bytes)
+        {
+            if (bytes.Length % 4 > 0)
+                throw new Exception();
+
+            uint[] temp = new uint[bytes.Length / 4];
+
+            for (int i = 0; i < temp.Length; i++)
+                temp[i] = BitConverter.ToUInt32(bytes, i * 4);
+
+            return temp;
+        }
+
+        /// <summary>
+        /// Convert an array of byte to a IP String (exemple: 127.0.0.1)
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToIPString(this byte[] value)
+        {
+            string ret = "";
+
+            for (int i = 0; i < value.Length; i++)
+                ret += value[i] + ".";
+
+            return ret.TrimEnd('.');
+        }
+
         /// <summary>
         /// Convert an array of byte to a printable string.
         /// </summary>
@@ -162,6 +201,34 @@ namespace Tibia
         }
         #endregion
 
+        #region Map
+
+        public static Objects.MapSquare GetPlayerMapSquare(this List<Objects.MapSquare> squares, Objects.Client client)
+        {
+            int playerId = client.ReadInt32(Addresses.Player.Id);
+
+            return squares.Find(delegate(Objects.MapSquare square)
+            {
+                return square.Objects.Find(delegate(Objects.MapObject obj)
+                {
+                    return obj.Id == 0x63 && obj.Data == playerId;
+                }) != null;
+            });
+        }
+
+        public static Objects.MapSquare GetCreatureMapSquare(this List<Objects.MapSquare> squares, int creatureId)
+        {
+            return squares.Find(delegate(Objects.MapSquare square)
+            {
+                return square.Objects.Find(delegate(Objects.MapObject obj)
+                {
+                    return obj.Data == creatureId;
+                }) != null;
+            });
+        }
+
+        #endregion
+
         #region General
         public static string ToStringDeep(this object obj)
         {
@@ -223,5 +290,8 @@ namespace Tibia
             return s.ToString();
         }
         #endregion
+
+
+
     }
 }

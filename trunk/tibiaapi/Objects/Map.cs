@@ -49,7 +49,7 @@ namespace Tibia.Objects
 
         public MapSquare GetSquareWithPlayer()
         {
-            int playerId = client.ReadInt(Addresses.Player.Id);
+            int playerId = client.ReadInt32(Addresses.Player.Id);
             return GetSingleSquare(GetSquaresWithObject(new MapObject(
                 0x63,
                 playerId,
@@ -66,12 +66,12 @@ namespace Tibia.Objects
             }, sameFloor);
         }
 
-        private List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor)
+        public List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor)
         {
             return GetSquaresWithObject(testObject, sameFloor, true);
         }
 
-        private List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor, bool getWorldLocation)
+        public List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor, bool getWorldLocation)
         {
             return GetSquares(delegate(MapSquare square)
             {
@@ -111,7 +111,7 @@ namespace Tibia.Objects
             return GetSquares(match, sameFloor, true, Addresses.Map.Max_Squares);
         }
 
-        private List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor, bool getWorldLocation, uint maxSquares)
+        public List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor, bool getWorldLocation, uint maxSquares)
         {
             List<MapSquare> squares = new List<MapSquare>();
             MapSquare playerSquare = null;
@@ -205,7 +205,7 @@ namespace Tibia.Objects
 
         public uint ConvertSquareNumberToMapSquareAddress(uint squareNumber)
         {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt(Addresses.Map.MapPointer));
+            uint mapBegin = Convert.ToUInt32(client.ReadInt32(Addresses.Map.MapPointer));
             uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
             return address;
         }
@@ -415,19 +415,19 @@ namespace Tibia.Objects
                 client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
                 client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
 
-                tempPtr = client.ReadInt(Addresses.Map.LevelSpyPtr);
+                tempPtr = client.ReadInt32(Addresses.Map.LevelSpyPtr);
                 tempPtr += Addresses.Map.LevelSpyAdd1;
-                tempPtr = client.ReadInt(tempPtr);
+                tempPtr = client.ReadInt32(tempPtr);
                 tempPtr += (int)Addresses.Map.LevelSpyAdd2;
 
-                playerZ = client.ReadInt(Addresses.Player.Z);
+                playerZ = client.ReadInt32(Addresses.Player.Z);
 
                 if (playerZ <= 7)
                 {
                     if (playerZ - floor >= 0 && playerZ - floor <= 7)
                     {
                         playerZ = 7 - playerZ;
-                        client.WriteInt(tempPtr, playerZ + floor);
+                        client.WriteInt32(tempPtr, playerZ + floor);
                         return true;
                     }
                 }
@@ -435,7 +435,7 @@ namespace Tibia.Objects
                 {
                     if (floor >= -2 && floor <= 2 && playerZ - floor < 16)
                     {
-                        client.WriteInt(tempPtr, 2 + floor);
+                        client.WriteInt32(tempPtr, 2 + floor);
                         return true;
                     }
                 }

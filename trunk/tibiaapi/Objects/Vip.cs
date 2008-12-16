@@ -26,8 +26,8 @@ namespace Tibia.Objects
 
         public int Id
         {
-            get { return client.ReadInt(address + Addresses.Vip.Distance_Id); }
-            set { client.WriteInt(address + Addresses.Vip.Distance_Icon, value); }
+            get { return client.ReadInt32(address + Addresses.Vip.Distance_Id); }
+            set { client.WriteInt32(address + Addresses.Vip.Distance_Icon, value); }
         }
         public string Name
         {

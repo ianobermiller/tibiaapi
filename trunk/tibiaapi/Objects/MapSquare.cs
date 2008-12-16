@@ -48,11 +48,11 @@ namespace Tibia.Objects
                     pointer += Addresses.Map.Step_Square_Object;
 
                     objects.Add(new MapObject(
-                        client.ReadInt(pointer + 
+                        client.ReadInt32(pointer + 
                             Addresses.Map.Distance_Object_Id),
-                        client.ReadInt(pointer + 
+                        client.ReadInt32(pointer + 
                             Addresses.Map.Distance_Object_Data),
-                        client.ReadInt(pointer + 
+                        client.ReadInt32(pointer + 
                             Addresses.Map.Distance_Object_Data_Ex),
                         i + 1));
                 }
@@ -74,17 +74,17 @@ namespace Tibia.Objects
             this.Address = address;
             this.MemoryLocation = Map.ConvertSquareNumberToMemoryLocation(squareNumber);
 
-            ObjectCount = client.ReadInt(address + Addresses.Map.Distance_Square_ObjectCount) - 1; // -1 for Tile
+            ObjectCount = client.ReadInt32(address + Addresses.Map.Distance_Square_ObjectCount) - 1; // -1 for Tile
 
             // Get the tile data (first object)
-            Tile.Id = Convert.ToUInt32(client.ReadInt(address + 
+            Tile.Id = Convert.ToUInt32(client.ReadInt32(address + 
                 Addresses.Map.Distance_Square_Objects + 
                 Addresses.Map.Distance_Object_Id));
         }
 
         public void ReplaceTile(uint newId)
         {
-            client.WriteInt(Address + 
+            client.WriteInt32(Address + 
                 Addresses.Map.Distance_Square_Objects + 
                 Addresses.Map.Distance_Object_Id, (int)newId);
         }
@@ -94,13 +94,13 @@ namespace Tibia.Objects
             uint pointer = (uint)(Address +
                 (Addresses.Map.Distance_Square_Objects +
                 Addresses.Map.Step_Square_Object * oldObject.StackOrder));
-            client.WriteInt(pointer + 
+            client.WriteInt32(pointer + 
                 Addresses.Map.Distance_Object_Id,
                 newObject.Id);
-            client.WriteInt(pointer +
+            client.WriteInt32(pointer +
                 Addresses.Map.Distance_Object_Data,
                 newObject.Data);
-            client.WriteInt(pointer +
+            client.WriteInt32(pointer +
                 Addresses.Map.Distance_Object_Data_Ex,
                 newObject.DataEx);
         }
@@ -109,21 +109,23 @@ namespace Tibia.Objects
     /// <summary>
     /// Represents an object on a MapSquare
     /// </summary>
-    public struct MapObject
+    public class MapObject
     {
-        public int StackOrder;
-        public int Id;
-        public int Data;
-        public int DataEx;
-        public MapObject(int id, int data, int dataex)
-            : this(id, data, dataex, 0)
-        { }
-        public MapObject(int id, int data, int dataex, int stackOrder)
+        public int StackOrder { get; set; }
+        public int Id { get; set; }
+        public int Data { get; set; }
+        public int DataEx { get; set; }
+
+        public MapObject(int id, int data, int dataEx)
+            : this(id, data, dataEx, 0) { }
+
+
+        public MapObject(int id, int data, int dataEx, int stackOrder)
         {
-            this.StackOrder = stackOrder;
-            this.Id = id;
-            this.Data = data;
-            this.DataEx = dataex;
+            StackOrder = stackOrder;
+            Id = id;
+            Data = data;
+            DataEx = dataEx;
         }
     }
 }

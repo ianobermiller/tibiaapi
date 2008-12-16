@@ -35,6 +35,7 @@ namespace Tibia.Util
     ///  where D is the string of bytes for which the checksum is to be calculated,
     ///  and N is the length of D.
     /// </summary>
+    [Obsolete("This class will be removed, please use NetworkMessage.")]
     public class AdlerChecksum
     {
         // parameters
