@@ -33,6 +33,10 @@ namespace Tibia.Objects
             return (party == Constants.Party.Member || party == Constants.Party.Leader || party == Constants.Party.LeaderSharedExp || party == Constants.Party.LeaderSharedExpInactive || party == Constants.Party.MemberSharedExp || party == Constants.Party.MemberSharedExpInactive);
         }
 
+        /// <summary>
+        /// Check if have a path to the creature.
+        /// </summary>
+        /// <returns></returns>
         public bool IsReachable()
         {
             var squareList = client.Map.GetSquares(delegate(MapSquare square) { return true; }, true, false, Addresses.Map.Max_Squares);
@@ -132,7 +136,7 @@ namespace Tibia.Objects
         public bool Attack()
         {
             client.WriteInt32(Addresses.Player.Target_ID, Id);
-            return client.Send(Packets.AttackPacket.Create(client, Id));
+            return Packets.Outgoing.AttackPacket.Send(client, (uint)Id);
         }
 
         /// <summary>
@@ -143,7 +147,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Look()
         {
-            return client.Send(Packets.LookAtPacket.Create(client, Location, 0x63, 1));
+            return Packets.Outgoing.LookAtPacket.Send(client, Location, 0x63, 1);
         }
 
         /// <summary>
@@ -255,9 +259,9 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Creature.Distance_BlackSquare); }
         }
 
-        public Constants.Skull Skull
+        public Constants.Skulls_t Skull
         {
-            get { return (Constants.Skull)client.ReadInt32(address + Addresses.Creature.Distance_Skull); }
+            get { return (Constants.Skulls_t)client.ReadInt32(address + Addresses.Creature.Distance_Skull); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Skull, (int)value); }
         }
         public Constants.Party Party

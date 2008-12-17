@@ -1,39 +1,42 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Outgoing
 {
-    public class LogoutPacket : Packet
+    public class LogoutPacket : OutgoingPacket
     {
-        public LogoutPacket(Client c) : base(c)
+        public LogoutPacket(Objects.Client c)
+            : base(c)
         {
-            type = PacketType.Logout;
-            destination = PacketDestination.Server;
+            Type = OutgoingPacketType_t.LOGOUT;
+            Destination = PacketDestination_t.SERVER;
         }
 
-        public LogoutPacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.Logout) return false;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)OutgoingPacketType_t.LOGOUT)
                 return false;
-            }
+
+            Destination = destination;
+            Type = OutgoingPacketType_t.LOGOUT;
+
+            return true;
         }
 
-        public static LogoutPacket Create(Client c)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.Logout);
-            return new LogoutPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+            msg.AddByte((byte)Type);
+
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client)
+        {
+            LogoutPacket p = new LogoutPacket(client);
+            return p.Send();
         }
     }
 }

@@ -12,6 +12,10 @@ using Tibia.Util;
 
 namespace Tibia.Util
 {
+
+    //FIXME: Update to new packet system.
+
+    /*
     public class RawSocket
     {
         [DllImport("iphlpapi.dll", SetLastError = true)]
@@ -882,6 +886,7 @@ namespace Tibia.Util
 
 
     }
+     * */
 }
 
 

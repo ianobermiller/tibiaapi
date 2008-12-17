@@ -1,63 +1,46 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureHealthPacket : Packet
+    public class CreatureHealthPacket : IncomingPacket
     {
-        private int creatureId;
-        private byte creatureHP;
+        public uint CreatureId { get; set; }
+        public byte CREATURE_HEALTH { get; set; }
 
-        public int CreatureId
+        public CreatureHealthPacket(Objects.Client c)
+            : base(c)
         {
-            get { return creatureId; }
+            Type = IncomingPacketType_t.CREATURE_HEALTH;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public byte CreatureHP
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return creatureHP; }
-        }
-
-        public CreatureHealthPacket(Client c) : base(c)
-        {
-            type = PacketType.CreatureHealth;
-            destination = PacketDestination.Client;
-        }
-
-        public CreatureHealthPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureHealth) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureId = p.GetLong();
-                creatureHP = p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_HEALTH)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_HEALTH;
+
+            CreatureId = msg.GetUInt32();
+            CREATURE_HEALTH = msg.GetByte();
+
+            return true;
         }
 
-        public static CreatureHealthPacket Create(Client c, Objects.Creature creature, byte hp)
+        public override byte[] ToByteArray()
         {
-            return Create(c, creature.Id, hp);
-        }
+            NetworkMessage msg = new NetworkMessage(0);
 
-        public static CreatureHealthPacket Create(Client c, int id, byte hp)
-        {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureHealth);
-            p.AddLong(id);
-            p.AddByte(hp);
-            return new CreatureHealthPacket(c, p.GetPacket());
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddByte(CREATURE_HEALTH);
+
+            return msg.Packet;
         }
     }
 }

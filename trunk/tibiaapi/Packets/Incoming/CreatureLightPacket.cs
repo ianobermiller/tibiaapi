@@ -1,61 +1,49 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureLightPacket : Packet 
+    public class CreatureLightPacket : IncomingPacket
     {
-        private int creatureId;
-        private byte light;
-        private byte color;
+        public uint CreatureId { get; set; }
+        public byte LightColor { get; set; }
+        public byte LightLevel { get; set; }
 
-        public int CreatureId
+        public CreatureLightPacket(Objects.Client c)
+            : base(c)
         {
-            get { return creatureId; }
+            Type = IncomingPacketType_t.CREATURE_LIGHT;
+            Destination = PacketDestination_t.CLIENT;
         }
-        public byte Light
+
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return light; }
-        }
-        public byte Color
-        {
-            get { return color; }
-        }
-        public CreatureLightPacket(Client c) : base(c)
-        {
-            type = PacketType.CreatureLight;
-            destination = PacketDestination.Client;
-        }
-        public CreatureLightPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureLight) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureId=p.GetLong();
-                light = p.GetByte();
-                color = p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_LIGHT)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_LIGHT;
+
+            CreatureId = msg.GetUInt32();
+            LightLevel = msg.GetByte();
+            LightColor = msg.GetByte();
+
+            return true;
         }
 
-        public static CreatureLightPacket Create(Client c, Creature creature, byte light, byte color)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureLight);
-            p.AddLong(creature.Id);
-            p.AddByte(light);
-            p.AddByte(color);
-            return new CreatureLightPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddByte(LightLevel);
+            msg.AddByte(LightColor);
+
+            return msg.Packet;
         }
     }
 }

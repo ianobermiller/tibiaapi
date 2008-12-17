@@ -497,6 +497,11 @@ namespace Tibia.Objects
             return Memory.ReadInt16(processHandle, address);
         }
 
+        public ushort ReadUInt16(long address)
+        {
+            return Memory.ReadUInt16(processHandle, address);
+        }
+
         [Obsolete("Please use ReadInt16")]
         public short ReadShort(long address)
         {
@@ -506,6 +511,11 @@ namespace Tibia.Objects
         public int ReadInt32(long address)
         {
             return Memory.ReadInt32(processHandle, address);
+        }
+
+        public uint ReadUInt32(long address)
+        {
+            return Memory.ReadUInt32(processHandle, address);
         }
 
         [Obsolete("Please use ReadInt32")]
@@ -539,9 +549,19 @@ namespace Tibia.Objects
             return Memory.WriteInt16(processHandle, address, value);
         }
 
+        public bool WriteUInt16(long address, ushort value)
+        {
+            return Memory.WriteUInt16(processHandle, address, value);
+        }
+
         public bool WriteInt32(long address, int value)
         {
             return Memory.WriteInt32(processHandle, address, value);
+        }
+
+        public bool WriteUInt32(long address, uint value)
+        {
+            return Memory.WriteUInt32(processHandle, address, value);
         }
 
         [Obsolete("Please use WriteInt32")]
@@ -934,6 +954,10 @@ namespace Tibia.Objects
             }
             return false;
         }
+
+
+
+
         #endregion
 
         #region Client Functions
@@ -951,7 +975,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Logout()
         {
-            return Send(LogoutPacket.Create(this));
+            return Packets.Outgoing.LogoutPacket.Send(this);
         }
 
         #region Account Info
@@ -970,6 +994,7 @@ namespace Tibia.Objects
             WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
         }
         #endregion
+
         #endregion
 
         #region Login Server
@@ -1051,7 +1076,6 @@ namespace Tibia.Objects
         public bool SetOT(string ip, short port)
         {
             bool result = SetServer(ip, port);
-            
             RSA = Constants.RSAKey.OpenTibia;
 
             return result;
@@ -1066,79 +1090,98 @@ namespace Tibia.Objects
         {
             return SetOT(ls.Server, ls.Port);
         }
-        #endregion
 
-        #region Sending Packets
-        /// <summary>
-        /// Send a packet to the server.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Send(Packet packet)
+        public void SetCharListServer(byte[] ipAddress, ushort port)
         {
-            if (packet.Destination == PacketDestination.Server)
+            byte count = CharListCount;
+            uint pointer = ReadUInt32(Addresses.Client.LoginCharList);
+
+            for (int i = 0; i < count; i++)
             {
-                return Send(packet.Data);
-            }
-            else
-            {
-                return SendToClient(packet.Data);
+                pointer += 60;
+                WriteBytes(pointer, ipAddress, 4);
+                pointer += 4;
+                WriteString(pointer, ipAddress.ToIPString());
+                pointer += 16;
+                WriteUInt16(pointer, port);
+                pointer += 4; // 2 padding bytes..
             }
         }
 
-        /// <summary>
-        /// Send a packet to the server.
-        /// Uses the proxy if UsingProxy is true, and the dll otherwise.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
+        public bool SetCharListServer(CharList[] charList)
+        {
+            byte count = CharListCount;
+
+            if (count != charList.Length)
+                return false;
+
+            uint pointer = ReadUInt32(Addresses.Client.LoginCharList);
+
+            for (int i = 0; i < count; i++)
+            {
+                pointer += 60;
+                WriteUInt32(pointer, charList[i].WorldIP);
+                pointer += 4;
+                WriteString(pointer, BitConverter.GetBytes(charList[i].WorldIP).ToIPString());
+                pointer += 16;
+                WriteUInt16(pointer, charList[i].WorldPort);
+                pointer += 4; // 2 padding bytes..
+            }
+
+            return true;
+        }
+
+        public CharList[] CharList
+        {
+            get
+            {
+                CharList[] charList = new CharList[CharListCount];
+
+                uint pointer = ReadUInt32(Addresses.Client.LoginCharList);
+
+                for (int i = 0; i < charList.Length; i++)
+                {
+                    charList[i].CharName = ReadString(pointer);
+                    pointer += 30;
+                    charList[i].WorldName = ReadString(pointer);
+                    pointer += 30;
+                    charList[i].WorldIP = ReadUInt32(pointer);
+                    pointer += 4;
+                    charList[i].WorldIPString = ReadString(pointer);
+                    pointer += 16;
+                    charList[i].WorldPort = ReadUInt16(pointer);
+                    pointer += 4; // 2 padding bytes..
+                }
+
+                return charList;
+            }
+        }
+
+        public byte CharListCount
+        {
+            get { return ReadByte(Addresses.Client.LoginCharListLength); }
+        }
+
+        #endregion
+
+        #region Proxy wrappers
+
         public bool Send(byte[] packet)
         {
             if (UsingProxy)
             {
-                if (proxy.Connected)
-                {
-                    proxy.SendToServer(packet);
-                    return true;
-                }
-                else
-                    throw new Exceptions.ProxyDisconnectedException();
-            }
-            else
-            {
-                return Packet.SendPacketWithDLL(this, packet);
-            }
-        }
+                Packets.NetworkMessage msg = new NetworkMessage();
+                msg.AddBytes(packet);
+                msg.PrepareToSend();
 
-        /// <summary>
-        /// Send the specified packet to the client using the proxy.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        [Obsolete("Send filters by destination.")] 
-        public bool SendToClient(Packet packet)
-        {
-            return SendToClient(packet.Data);
-        }
+                proxy.SendToServer(msg);
 
-        /// <summary>
-        /// Sends a packet to the client using the proxy (not available if not using proxy).
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool SendToClient(byte[] packet)
-        {
-            if (proxy.Connected)
-            {
-                proxy.SendToClient(packet);
                 return true;
             }
             else
-                throw new Exceptions.ProxyRequiredException();
+                return Packets.OutgoingPacket.SendPacketWithDLL(this, packet);
         }
-        #endregion
 
-        #region Proxy wrappers
         /// <summary>
         /// Whether or not the client is connected using a proxy.
         /// </summary>
@@ -1154,43 +1197,7 @@ namespace Tibia.Objects
         /// <returns>True if the proxy initialized correctly.</returns>
         public bool StartProxy()
         {
-            if (openTibiaServer != null)
-                proxy = new Util.Proxy(this, openTibiaServer);
-            else
-                proxy = new Util.Proxy(this);
-            return UsingProxy;
-        }
-
-        /// <summary>
-        /// Start the proxy using the given login server.
-        /// </summary>
-        /// <param name="ls"></param>
-        /// <returns></returns>
-        public bool StartProxy(LoginServer ls)
-        {
-            proxy = new Util.Proxy(this, ls);
-            return UsingProxy;
-        }
-
-        /// <summary>
-        /// Start the proxy using or not the Adler-32 checksum on packets.
-        /// </summary>
-        /// <param name="ls"></param>
-        /// <returns></returns>
-        public bool StartProxy(bool Adler)
-        {
-            proxy = new Util.Proxy(this, Adler);
-            return UsingProxy;
-        }
-
-        /// <summary>
-        /// Start the proxy using the given login server and with/without the Adler-32 checksum on packets.
-        /// </summary>
-        /// <param name="ls"></param>
-        /// <returns></returns>
-        public bool StartProxy(LoginServer ls,bool Adler)
-        {
-            proxy = new Util.Proxy(this,ls, Adler);
+            proxy = new Tibia.Util.Proxy(this);
             return UsingProxy;
         }
 
@@ -1202,6 +1209,7 @@ namespace Tibia.Objects
         {
             get { return proxy; }
         }
+
         #endregion
 
         #region DLL Injection

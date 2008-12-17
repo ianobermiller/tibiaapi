@@ -289,6 +289,17 @@ namespace Tibia
 
             return s.ToString();
         }
+
+        public static byte Low(this int value)
+        {
+            return BitConverter.GetBytes(value)[0];
+        }
+
+        public static byte High(this int value)
+        {
+            return BitConverter.GetBytes(value)[1];
+        }
+
         #endregion
 
 

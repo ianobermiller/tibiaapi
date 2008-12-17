@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class MessageStream
     {

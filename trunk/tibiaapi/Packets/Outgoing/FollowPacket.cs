@@ -1,54 +1,50 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Outgoing
 {
-    /// <summary>
-    /// Packet sent to the server to indicate which creature is to be followed.
-    /// </summary>
-    public class FollowPacket : Packet
+    public class FollowPacket : OutgoingPacket
     {
-        int id;
+        public uint CreatureId { get; set; }
 
-        public int Id
-        {
-            get { return id; }
-        }
-
-        public FollowPacket(Client c)
+        public FollowPacket(Objects.Client c)
             : base(c)
         {
-            type = PacketType.FlagUpdate;
-            destination = PacketDestination.Server;
+            Type = OutgoingPacketType_t.FOLLOW;
+            Destination = PacketDestination_t.SERVER;
         }
 
-        public FollowPacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.FlagUpdate) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                id = p.GetLong();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)OutgoingPacketType_t.FOLLOW)
                 return false;
-            }
+
+            Destination = destination;
+            Type = OutgoingPacketType_t.FOLLOW;
+
+            CreatureId = msg.GetUInt32();
+
+            return true;
         }
 
-        public static FollowPacket Create(Client c, int id)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.FlagUpdate);
-            p.AddLong(id);
-            return new FollowPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client,uint creatureId)
+        {
+            FollowPacket p = new FollowPacket(client);
+            p.CreatureId = creatureId;
+            return p.Send();
         }
     }
 }

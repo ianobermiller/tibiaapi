@@ -1,63 +1,46 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureSquarePacket : Packet
+    public class CreatureSquarePacket : IncomingPacket
     {
-        private int creatureId;
-        private SquareColor color;
+        public uint CreatureId { get; set; }
+        public SquareColor Color { get; set; }
 
-        public int CreatureId
+        public CreatureSquarePacket(Objects.Client c)
+            : base(c)
         {
-            get { return creatureId; }
+            Type = IncomingPacketType_t.CREATURE_SQUARE;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public SquareColor Color
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return color; }
-        }
-
-        public CreatureSquarePacket(Client c) : base(c)
-        {
-            type = PacketType.CreatureSquare;
-            destination = PacketDestination.Client;
-        }
-
-        public CreatureSquarePacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureSquare) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureId = p.GetLong();
-                color = (SquareColor)p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_SQUARE)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_SQUARE;
+
+            CreatureId = msg.GetUInt32();
+            Color = (SquareColor)msg.GetByte();
+
+            return true;
         }
 
-        public static CreatureSquarePacket Create(Client c, Objects.Creature creature, SquareColor color)
+        public override byte[] ToByteArray()
         {
-            return Create(c, creature.Id, color);
-        }
+            NetworkMessage msg = new NetworkMessage(0);
 
-        public static CreatureSquarePacket Create(Client c, int id, SquareColor color)
-        {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureSquare);
-            p.AddLong(id);
-            p.AddByte((byte)color);
-            return new CreatureSquarePacket(c, p.GetPacket());
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddByte((byte)Color);
+
+            return msg.Packet;
         }
     }
 }

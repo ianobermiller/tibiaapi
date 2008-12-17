@@ -1,1139 +1,2009 @@
+﻿//#define _DEBUG
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Windows.Forms;
-using Tibia.Objects;
+using System.Diagnostics;
 using Tibia.Packets;
-using System.IO;
+using Tibia.Objects;
 
 namespace Tibia.Util
 {
     public class Proxy
     {
-        #region Variables
-        /// <summary>
-        /// Static client for checking open ports.
-        /// </summary>
-        private static TcpListener tcpScan;
-        private Socket socketClient;
+        static byte[] localHostBytes = new byte[] { 127, 0, 0, 1 };
+        static Random randon = new Random();
 
-        private NetworkStream netStreamClient;
-        private NetworkStream netStreamServer;
-        private NetworkStream netStreamLogin;
+        private Objects.Client client;
 
-        private TcpListener tcpClient;
-        private TcpClient tcpServer;
-        private TcpClient tcpLogin;
+        private LoginServer[] loginServers;
+        private uint selectedLoginServer = 0;
+        public bool IsOtServer { get; set; }
 
-        private const string Localhost = "127.0.0.1";
-        private byte[] LocalhostBytes = new byte[] { 127, 0, 0, 1 };
-        private const short DefaultPort = 7171;
-        private const int BufferSize = 8192;
+        private TcpListener tcpServer;
+        private Socket socketServer;
+        private NetworkStream networkStreamServer;
+        private byte[] bufferServer = new byte[2];
+        private int readBytesServer;
+        private int packetSizeServer;
+        private bool writingServer;
+        private Queue<NetworkMessage> serverSendQueue = new Queue<NetworkMessage> { };
+        private Queue<NetworkMessage> serverReceiveQueue = new Queue<NetworkMessage> { };
+        private ushort portServer = 7272;
+        private bool isFirstMsg;
 
-        private Client client;
-        private bool Adler;
-        private int i = 0;
-        private CharListPacket charList;
-        private byte selectedChar;
-        private bool connected = false;
-        private bool isLoggedIn = false;
-        private bool badGameCon;
-        private bool moreToCome = false;
-        private int bytesLeftToCome = 0;
-        private byte[] toJoin;
-        private int loginDelay = 250;
-        private short localPort;
-        private Queue<byte[]> serverReceiveQueue = new Queue<byte[]>();
-        private Queue<byte[]> clientReceiveQueue = new Queue<byte[]>();
-        private Queue<byte[]> clientSendQueue = new Queue<byte[]>();
-        private Queue<byte[]> serverSendQueue = new Queue<byte[]>();
-        private byte[] dataServer = new byte[BufferSize];
-        private byte[] dataClient = new byte[BufferSize];
-        private bool writingToClient = false;
-        private bool writingToServer = false;
-        private DateTime lastServerWrite = DateTime.UtcNow;
-        private PacketBuilder partial;
-        private int partialRemaining = 0;
-        private Util.DatReader dat;
-        private byte[] tempArray = new byte[BufferSize];
-        private int tempLen = 0;
+        private TcpClient tcpClient;
+        private NetworkStream networkStreamClient;
+        private byte[] bufferClient = new byte[2];
+        private int readBytesClient;
+        private int packetSizeClient;
+        private bool writingClient;
+        private DateTime lastClientWrite = DateTime.UtcNow;
+        private Queue<NetworkMessage> clientSendQueue = new Queue<NetworkMessage> { };
+        private Queue<NetworkMessage> clientReceiveQueue = new Queue<NetworkMessage> { };
 
-        private LoginServer[] loginServers = new LoginServer[] {
-            new LoginServer("login01.tibia.com", 7171),
-            new LoginServer("login02.tibia.com", 7171),
-            new LoginServer("login03.tibia.com", 7171),
-            new LoginServer("login04.tibia.com", 7171),
-            new LoginServer("login05.tibia.com", 7171),
-            new LoginServer("tibia01.cipsoft.com", 7171),
-            new LoginServer("tibia02.cipsoft.com", 7171),
-            new LoginServer("tibia03.cipsoft.com", 7171),
-            new LoginServer("tibia04.cipsoft.com", 7171),
-            new LoginServer("tibia05.cipsoft.com", 7171)
-        };
-        #endregion
+        private bool acceptingConnection;
+        private CharList[] charList;
 
-        #region Events
-        /// <summary>
-        /// A generic function prototype for packet events.
-        /// </summary>
-        /// <param name="packet">The unencrypted packet that was received.</param>
-        /// <returns>true to continue forwarding the packet, false to drop the packet</returns>
-        public delegate bool PacketListener(Packet packet);
+        private Objects.Player player;
+        private bool isConnected;
 
-        /// <summary>
-        /// A function prototype for proxy notifications.
-        /// </summary>
-        /// <returns></returns>
-        public delegate void ProxyNotification(string message);
+        #region "Contrutor/Destrutor"
 
-        /// <summary>
-        /// Called when the client has logged in.
-        /// </summary>
-        public ProxyNotification OnLogIn;
-
-        /// <summary>
-        /// Called when the client has logged out.
-        /// </summary>
-        public ProxyNotification OnLogOut;
-
-        /// <summary>
-        /// Called when the client crashes.
-        /// </summary>
-        public ProxyNotification OnCrash;
-
-        /// <summary>
-        /// Called when the user enters bad login details.
-        /// </summary>
-        public ProxyNotification OnBadLogin;
-
-        ///<summary>
-        /// Called when the player dies
-        /// </summary>
-        public ProxyNotification OnPlayerDeathAccept;
-
-        /// <summary>
-        /// Called when a packet is received from the server.
-        /// </summary>
-        public PacketListener ReceivedPacketFromServer;
-
-        /// <summary>
-        /// Used for debugging, called for each logical packet in a combined packet.
-        /// </summary>
-        public PacketListener SplitPacketFromServer;
-
-        /// <summary>
-        /// Called when a packet is received from the client.
-        /// </summary>
-        public PacketListener ReceivedPacketFromClient;
-
-        // Incoming
-        public PacketListener ReceivedAnimatedTextPacket;
-        public PacketListener ReceivedBookOpenPacket;
-        public PacketListener ReceivedCancelAutoWalkPacket;
-        public PacketListener ReceivedChannelListPacket;
-        public PacketListener ReceivedChannelOpenPacket;
-        public PacketListener ReceivedChatMessagePacket;
-        public PacketListener ReceivedContainerClosedPacket;
-        public PacketListener ReceivedContainerItemAddPacket;
-        public PacketListener ReceivedContainerItemRemovePacket;
-        public PacketListener ReceivedContainerItemUpdatePacket;
-        public PacketListener ReceivedContainerOpenedPacket;
-        public PacketListener ReceivedCreatureHealthPacket;
-        public PacketListener ReceivedCreatureLightPacket;
-        public PacketListener ReceivedCreatureMovePacket;
-        public PacketListener ReceivedCreatureOutfitPacket;
-        public PacketListener ReceivedCreatureSpeedPacket;
-        public PacketListener ReceivedCreatureSkullPacket;
-        public PacketListener ReceivedCreatureSquarePacket;
-        public PacketListener ReceivedEqItemAddPacket;
-        public PacketListener ReceivedEqItemRemovePacket;
-        public PacketListener ReceivedFlagUpdatePacket;
-        public PacketListener ReceivedInformationBoxPacket;
-        public PacketListener ReceivedMapItemAddPacket;
-        public PacketListener ReceivedMapItemRemovePacket;
-        public PacketListener ReceivedMapItemUpdatePacket;
-        public PacketListener ReceivedNpcTradeListPacket;
-        public PacketListener ReceivedNpcTradeGoldCountPacket;
-        public PacketListener ReceivedPartyInvitePacket;
-        public PacketListener ReceivedPrivateChannelOpenPacket;
-        public PacketListener ReceivedProjectilePacket;
-        public PacketListener ReceivedSkillUpdatePacket;
-        public PacketListener ReceivedStatusMessagePacket;
-        public PacketListener ReceivedStatusUpdatePacket;
-        public PacketListener ReceivedTileAnimationPacket;
-        public PacketListener ReceivedVipAddPacket;
-        public PacketListener ReceivedVipLoginPacket;
-        public PacketListener ReceivedVipLogoutPacket;
-        public PacketListener ReceivedWorldLightPacket;
-
-
-        // Outgoing
-        public PacketListener ReceivedPlayerSpeechPacket;
-
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Returns true if the proxy is connected
-        /// </summary>
-        public bool Connected
-        {
-            get { return connected; }
-        }
-
-        /// <summary>
-        /// Returns true if the client is logged in.
-        /// </summary>
-        public bool IsLoggedIn
-        {
-            get { return isLoggedIn; }
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Default constructor, does nothing.
-        /// </summary>
-        public Proxy() { }
-
-        /// <summary>
-        /// Create a new proxy and start listening for the client to connect.
-        /// </summary>
-        /// <param name="c"></param>
-        public Proxy(Client c) : this(c, null, true) { }
-
-        /// <summary>
-        /// Create a new proxy with the specified login server.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="ls"></param>
-        public Proxy(Client c, LoginServer ls) : this(c, ls, true) { }        
-        
-        /// <summary>
-        /// Create a new proxy with/without the Adler-32 checksum.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="ls"></param>
-        public Proxy(Client c, bool checksum) : this(c, null, checksum) { }
-
-        /// <summary>
-        /// Create a new proxy with the specified login server and with/without the Adler-32 checksum.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="ls"></param>
-        public Proxy(Client c, LoginServer ls, bool checksum)
+        public Proxy(Client c)
         {
             client = c;
-            Adler = checksum;
-            dat = new DatReader(client);
+
+            loginServers = client.LoginServers;
+            client.SetServer("localhost", (short)portServer);
+
+            if (client.RSA == Constants.RSAKey.OpenTibia)
+                IsOtServer = true;
+            else
+            {
+                client.RSA = Constants.RSAKey.OpenTibia;
+                IsOtServer = false;
+            }
+
+            if (client.CharListCount != 0)
+            {
+                charList = client.CharList;
+                client.SetCharListServer(localHostBytes, portServer);
+            }
+
+            Start();
+
+            //events
+            ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
+
             client.UsingProxy = true;
-            if (ls != null)
-            {
-                loginServers = new LoginServer[] { ls };
-            }
-            localPort = (short)GetFreePort();
-            client.SetServer(Localhost, localPort);
-            StartClientListener();
         }
+
+        ~Proxy()
+        {
+            if (!client.Process.HasExited)
+            {
+                client.LoginServers = loginServers;
+
+                if (!IsOtServer)
+                   client.RSA = Constants.RSAKey.RealTibia;
+
+                if (client.CharListCount != 0 && client.CharListCount == charList.Length)
+                {
+                    client.SetCharListServer(charList);
+                }
+            }
+
+            client.UsingProxy = false;
+        }
+
         #endregion
 
-        #region Startup
-        /// <summary>
-        /// Restart the proxy.
-        /// </summary>
-        public void Restart()
+        #region "Eventos"
+
+        public delegate void ProxyNotification(string message);
+        public event ProxyNotification PrintDebug;
+
+        public delegate void MessageListener(NetworkMessage message);
+        public event MessageListener ServerMessageArrived;
+        public event MessageListener ClientMessageArrived;
+
+        public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
+        public delegate bool OutgoingPacketListener(Packets.OutgoingPacket packet);
+
+
+        //incoming
+        public event IncomingPacketListener ReceivedAnimatedTextIncomingPacket;
+        public event IncomingPacketListener ReceivedItemTextWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeakIncomingPacket;
+        public event IncomingPacketListener ReceivedOpenChannelIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelListIncomingPacket;
+        public event IncomingPacketListener ReceivedTextMessageIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerCancelWalkIncomingPacket;
+        public event IncomingPacketListener ReceivedTileAddThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileTransformThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileRemoveThingIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureOutfitIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureLightIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureHealthIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeedIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSquareIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureMoveIncomingPacket;
+        public event IncomingPacketListener ReceivedCloseContainerIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerAddItemIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerRemoveItemIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerUpdateItemIncomingPacket;
+        public event IncomingPacketListener ReceivedOpenContainerIncomingPacket;
+        public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
+        public event IncomingPacketListener ReceivedDistanceShotIncomingPacket;
+        public event IncomingPacketListener ReceivedMapDescriptionIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveNorthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveSouthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveEastIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveWestIncomingPacket;
+        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
+        public event IncomingPacketListener ReceivedMagicEffectIncomingPacket;
+        public event IncomingPacketListener ReceivedFloorChangeDownIncomingPacket;
+        public event IncomingPacketListener ReceivedFloorChangeUpIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerStatsIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSkullsIncomingPacket;
+        public event IncomingPacketListener ReceivedWaitingListIncomingPacket;
+        public event IncomingPacketListener ReceivedPingIncomingPacket;
+        public event IncomingPacketListener ReceivedDeathIncomingPacket;
+        public event IncomingPacketListener ReceivedCanReportBugsIncomingPacket;
+        public event IncomingPacketListener ReceivedUpdateTileIncomingPacket;
+        public event IncomingPacketListener ReceivedFYIMessageIncomingPacket;
+        public event IncomingPacketListener ReceivedInventorySetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedInventoryResetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerSkillsIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerIconsIncomingPacket;
+        public event IncomingPacketListener ReceivedOpenPrivatePlayerChatIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatePrivateChannelIncomingPacket;
+        public event IncomingPacketListener ReceivedClosePrivateChannelIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLogoutIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLoginIncomingPacket;
+        public event IncomingPacketListener ReceivedVipStateIncomingPacket;
+        public event IncomingPacketListener ReceivedShopSaleItemListIncomingPacket;
+        public event IncomingPacketListener ReceivedOpenShopWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedCloseShopWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedOutfitWindowIncomingPacket;
+
+        //outgoing
+        public event OutgoingPacketListener ReceivedCloseChannelOutgoingPacket;
+        public event OutgoingPacketListener ReceivedOpenChannelOutgoingPacket;
+        public event OutgoingPacketListener ReceivedSayOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
+        public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
+        public event OutgoingPacketListener ReceivedUseItemOutgoingPacket;
+        public event OutgoingPacketListener ReceivedUseItemExOutgoingPacket;
+        public event OutgoingPacketListener ReceivedThrowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
+        public event OutgoingPacketListener ReceivedCloseContainerOutgoingPacket;
+        public event OutgoingPacketListener ReceivedUpArrowContainerOutgoingPacket;
+
+        private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
-            System.Threading.Thread.Sleep(500);
-            StartClientListener();
-        }
-
-        private void StartClientListener()
-        {
-            if (Adler) i = 4;
-            badGameCon = false;
-            tcpClient = new TcpListener(IPAddress.Any, localPort);
-            tcpClient.Start();
-            tcpClient.BeginAcceptSocket((AsyncCallback)ClientConnected, null);
-        }
-
-        private void ClientConnected(IAsyncResult ar)
-        {
-            //log.WriteLine("        ClientConnected    ");
-            socketClient = tcpClient.EndAcceptSocket(ar);
-
-            if (socketClient.Connected)
-            {
-                netStreamClient = new NetworkStream(socketClient);
-
-                //Connect the proxy to the login server.
-                tcpLogin = new TcpClient(loginServers[0].Server, loginServers[0].Port);
-                netStreamLogin = tcpLogin.GetStream();
-
-                //Listen for the client to request the character list
-                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, ClientLoginReceived, null);
-            }
-        }
-
-        private void ClientLoginReceived(IAsyncResult ar)
-        {
-            //log.WriteLine("        ClientLoginReceived   ");
-            int bytesRead = netStreamClient.EndRead(ar);
-
-            if (bytesRead > 0)
-            {
-                // Check whether this is a char list request or game server login
-                if (dataClient[2 + i] == (byte)PacketType.AddCreature)
-                {
-                    ConnectClientToGameWorld(bytesRead);
-                }
-                else if (dataClient[2 + i] == (byte)PacketType.CharListLoginData)
-                {
-                    // Relay the login details to the Login Server
-                    netStreamLogin.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-                    // Begin read for the character list
-                    netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
-                }
-            }
-        }
-
-        private void CharListReceived(IAsyncResult ar)
-        {
-            //log.WriteLine("        CharListReceived   ");
-            int bytesRead = netStreamLogin.EndRead(ar);
-
-            if (bytesRead > 0)
-            {
-                int getTheLen = BitConverter.ToInt16(dataServer, 0);
-                if (bytesRead == getTheLen + 2)
-                {
-                    // Process the character list
-                    ProcessCharListPacket(dataServer, bytesRead);
-                }
-                else
-                {
-                    if (tempLen == 0)
-                    {
-                        Array.Copy(dataServer, tempArray, bytesRead);
-                        tempLen = bytesRead;
-                        netStreamLogin.BeginRead(dataServer, 0, dataServer.Length, CharListReceived, null);
-                    }
-                    else
-                    {
-                        Array.Copy(dataServer, 0, tempArray, tempLen, bytesRead);
-                        ProcessCharListPacket(tempArray, bytesRead + tempLen);
-                    }
-                }
-            }
-        }
-
-        private void ProcessCharListPacket(byte[] data, int length)
-        {
-            byte[] packet = new byte[length];
-            byte[] key = client.ReadBytes(Addresses.Client.XTeaKey, 16);
-
-            Array.Copy(data, packet, length);
-            packet = XTEA.Decrypt(packet, key, Adler);
-
-            if (ReceivedPacketFromServer != null)
-                ReceivedPacketFromServer.BeginInvoke(new Packet(client, packet), null, null);
-
-            switch ((PacketType)packet[2])
-            {
-                case PacketType.CharList:
-                    charList = new CharListPacket(client);
-                    charList.ParseData(packet, LocalhostBytes, BitConverter.GetBytes((short)localPort));
-
-                    packet = XTEA.Encrypt(charList.Data, key, Adler);
-
-                    // Send the modified char list to the client
-                    netStreamClient.Write(packet, 0, packet.Length);
-
-                    // Refresh the client listener because the client reconnects on a
-                    // different port with the game server
-                    RefreshClientListener();
-                    break;
-                case PacketType.BadLogin:
-                    BadLoginPacket badLogin = new BadLoginPacket(client, packet);
-                    if (OnBadLogin != null)
-                        OnBadLogin.BeginInvoke(badLogin.Message, null, null);
-                    packet = XTEA.Encrypt(packet, key, Adler);
-                    netStreamClient.Write(packet, 0, packet.Length);
-                    Stop();
-                    Restart();
-                    break;
-                default:
-                    packet = XTEA.Encrypt(packet, key, Adler);
-                    netStreamClient.Write(packet, 0, packet.Length);
-                    Stop();
-                    Restart();
-                    break;
-            }
-        }
-
-        private void RefreshClientListener()
-        {
-            //log.WriteLine("        RefreshClientListener   ");
-            // Refresh the client listener
-            tcpClient.Stop();
-            tcpClient.Start();
-            tcpClient.BeginAcceptSocket((AsyncCallback)ClientReconnected, null);
-        }
-
-        private void ClientReconnected(IAsyncResult ar)
-        {
-            //log.WriteLine("        ClientReconnected   ");
-            socketClient = tcpClient.EndAcceptSocket(ar);
-
-            if (socketClient.Connected)
-            {
-                // The client has successfully reconnected
-                netStreamClient = new NetworkStream(socketClient);
-
-                // Begint to read the game login packet from the client
-                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, ClientGameLoginReceived, null);
-            }
-        }
-
-        private void ClientGameLoginReceived(IAsyncResult ar)
-        {
-            //log.WriteLine("       ClientGameLoginReceived   ");
-            int bytesRead = netStreamClient.EndRead(ar);
-
-            if (bytesRead > 0)
-            {
-                ConnectClientToGameWorld(bytesRead);
-            }
-        }
-
-        private void ConnectClientToGameWorld(int bytesRead)
-        {
-            //log.WriteLine("  ConnectClientToGameWorld   ");
-            // Read the selection index from memory
-            selectedChar = client.ReadByte(Addresses.Client.LoginSelectedChar);
-
-            // Connect to the selected game world
-            tcpServer = new TcpClient(charList.chars[selectedChar].worldIP, charList.chars[selectedChar].worldPort);
-            netStreamServer = tcpServer.GetStream();
-
-            // Begin to write the login data to the game server
-            netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-            // Start asynchronous reading
-            netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
-            netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
-
-            // The proxy is now connected
-            connected = true;
-        }
-        #endregion
-
-        #region Server -> Client
-        private void ReceiveFromServer(IAsyncResult ar)
-        {
-            if (!netStreamServer.CanRead) return;
-
-            int bytesRead = netStreamServer.EndRead(ar);
-            if (bytesRead == 0) return;
-            int offset = 0;
-            
-            while (bytesRead - offset > 0)
-            {
-                // Parse the data into a single packet
-                if (moreToCome)
-                {
-                    if (bytesRead >= bytesLeftToCome)
-                    {
-                        Array.Copy(dataServer, offset, toJoin, toJoin.Length - bytesLeftToCome, bytesLeftToCome);
-                        serverReceiveQueue.Enqueue(toJoin);
-
-                        offset += bytesLeftToCome;
-                        moreToCome = false;
-                    }
-                    else
-                    {
-                        Array.Copy(dataServer, offset, toJoin,
-                            toJoin.Length - bytesLeftToCome + bytesRead, bytesRead);    
-
-                        bytesLeftToCome -= bytesRead;
-                        offset += bytesRead;
-                    }
-                }
-                else
-                {
-                    // Get the packet length
-                    int packetlength = BitConverter.ToInt16(dataServer, offset) + 2;
-                    if (packetlength <= bytesRead )
-                    {
-                        byte[] packet = new byte[packetlength];
-                        Array.Copy(dataServer, offset, packet, 0, packetlength);
-
-                        serverReceiveQueue.Enqueue(packet);
-                    }
-                    else
-                    {
-                        toJoin=new byte[packetlength];
-                        Array.Copy(dataServer, offset, toJoin, 0, packetlength);
-                        bytesLeftToCome=packetlength-bytesRead;
-                        moreToCome = true;
-                    }
-                    offset += packetlength;
-                }     
-
-            }
-
-            if(!moreToCome) ProcessServerReceiveQueue();
-
-            if (!netStreamServer.CanRead) return;
-
-            netStreamServer.BeginRead(dataServer, 0, dataServer.Length, (AsyncCallback)ReceiveFromServer, null);
-        }
-
-        public void TestServerReceive(byte[] data)
-        {
-            serverReceiveQueue.Enqueue(data);
-            ProcessServerReceiveQueue();
-        }
-
-        private void ProcessServerReceiveQueue()
-        {
-            if (serverReceiveQueue.Count > 0)
-            {
-
-                byte[] original = serverReceiveQueue.Dequeue();
-                byte[] decrypted = DecryptPacket(original);
-
-
-
-                int remaining = 0; // the bytes worth of logical packets left
-
-                // Always call the default (if attached to)
-                if (ReceivedPacketFromServer != null)
-                    ReceivedPacketFromServer.BeginInvoke(new Packet(client, decrypted), null, null);
-
-                // Is this a part of a larger packet?
-                if (partialRemaining > 0)
-                {
-                    // Not sure if this works yet...
-                    // Yes, stack it onto the end of the partial packet
-                    partial.AddBytes(decrypted);
-
-                    // Subtract from the remaining needed
-                    partialRemaining -= decrypted.Length;
-                }
-                else
-                {
-                    // No, create a new partial packet
-                    partial = new PacketBuilder(client, decrypted);
-                    remaining = partial.GetInt();
-                    partialRemaining = remaining - (decrypted.Length - 2); // packet length - part we already have
-                }
-
-                // Do we have a complete packet now?
-                if (partialRemaining == 0)
-                {
-                    int length = 0;
-                    bool forward;
-
-                    // Keep going until no more logical packets
-                    while (remaining > 0)
-                    {
-                        forward = RaiseIncomingEvents(decrypted, ref length);
-
-                        // If packet not found in database, skip the rest
-                        if (length == -1)
-                        {
-                            SendToClient(decrypted);
-                            break;
-                        }
-
-                        length++;
-                        if (forward)
-                        {
-                            if (SplitPacketFromServer != null)
-                                SplitPacketFromServer.BeginInvoke(new Packet(client, Packet.Repackage(decrypted, 2, length)), null, null);
-
-                            // Repackage it and send
-                            SendToClient(Packet.Repackage(decrypted, 2, length));
-                        }
-
-                        // Subtract the amount that was parsed
-                        remaining -= length;
-
-                        // Repackage decrypted without the first logical packet
-                        if (remaining > 0)
-                            decrypted = Packet.Repackage(decrypted, length + 2);
-                    }
-
-                    // Start processing the queue
-                    ProcessClientSendQueue();
-                }
-                // else, delay processing until the rest of the packet arrives
-
-                if (serverReceiveQueue.Count > 0)
-                    ProcessServerReceiveQueue();
-            }
-        }
-
-
-
-        private bool RaiseIncomingEvents(byte[] packet, ref int length)
-        {
-            length = -1;
-            if (packet.Length < 3) return true;
-            Packet p;
-            PacketType type = (PacketType)packet[2];
-            switch (type)
-            {
-                case PacketType.AnimatedText:
-                    p = new AnimatedTextPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedAnimatedTextPacket != null)
-                        return ReceivedAnimatedTextPacket(p);
-                    break;
-                case PacketType.BookOpen:
-                    p = new BookOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedBookOpenPacket != null)
-                        return ReceivedBookOpenPacket(p);
-                    break;
-                case PacketType.CancelAutoWalk:
-                    p = new CancelAutoWalkPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCancelAutoWalkPacket != null)
-                        return ReceivedCancelAutoWalkPacket(p);
-                    break;
-                case PacketType.ChannelList:
-                    p = new ChannelListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChannelListPacket != null)
-                        return ReceivedChannelListPacket(p);
-                    break;
-                case PacketType.ChannelOpen:
-                    p = new ChannelOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChannelOpenPacket != null)
-                        return ReceivedChannelOpenPacket(p);
-                    break;
-                    //We got an error message like banishment or waiting list
-                case PacketType.WaitingList:
-                case PacketType.CharList:
-                    badGameCon = true;
-                    break;
-                case PacketType.ChatMessage:
-                    p = new ChatMessagePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChatMessagePacket != null)
-                        return ReceivedChatMessagePacket(p);
-                    break;
-                case PacketType.ContainerClosed:
-                    p = new ContainerClosedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerClosedPacket != null)
-                        return ReceivedContainerClosedPacket(p);
-                    break;
-                case PacketType.ContainerItemAdd:
-                    p = new ContainerItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemAddPacket != null)
-                        return ReceivedContainerItemAddPacket(p);
-                    break;
-                case PacketType.ContainerItemRemove:
-                    p = new ContainerItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemRemovePacket != null)
-                        return ReceivedContainerItemRemovePacket(p);
-                    break;
-                case PacketType.ContainerItemUpdate:
-                    p = new ContainerItemUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemUpdatePacket != null)
-                        return ReceivedContainerItemUpdatePacket(p);
-                    break;
-                case PacketType.ContainerOpened:
-                    p = new ContainerOpenedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerOpenedPacket != null)
-                        return ReceivedContainerOpenedPacket(p);
-                    break;
-                case PacketType.CreatureHealth:
-                    p = new CreatureHealthPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureHealthPacket != null)
-                        return ReceivedCreatureHealthPacket(p);
-                    break;
-                case PacketType.CreatureLight:
-                    p = new CreatureLightPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureLightPacket != null)
-                        return ReceivedCreatureLightPacket(p);
-                    break;
-                case PacketType.CreatureMove:
-                    p = new CreatureMovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureMovePacket != null)
-                        return ReceivedCreatureMovePacket(p);
-                    break;
-                case PacketType.CreatureOutfit:
-                    p = new CreatureOutfitPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureOutfitPacket != null)
-                        return ReceivedCreatureOutfitPacket(p);
-                    break;
-                case PacketType.CreatureSkull:
-                    p = new CreatureSkullPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSkullPacket != null)
-                        return ReceivedCreatureSkullPacket(p);
-                    break;
-                case PacketType.CreatureSpeed:
-                    p = new CreatureSpeedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSpeedPacket != null)
-                        return ReceivedCreatureSpeedPacket(p);
-                    break;
-                case PacketType.CreatureSquare:
-                    p = new CreatureSquarePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSquarePacket != null)
-                        return ReceivedCreatureSquarePacket(p);
-                    break;
-                case PacketType.EqItemAdd:
-                    p = new EqItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedEqItemAddPacket != null)
-                        return ReceivedEqItemAddPacket(p);
-                    break;
-                case PacketType.EqItemRemove:
-                    p = new EqItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedEqItemRemovePacket != null)
-                        return ReceivedEqItemRemovePacket(p);
-                    break;
-                case PacketType.FlagUpdate:
-                    p = new FlagUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedFlagUpdatePacket != null)
-                        return ReceivedFlagUpdatePacket(p);
-                    break;
-                case PacketType.InformationBox:
-                    p = new InformationBoxPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedInformationBoxPacket != null)
-                        return ReceivedInformationBoxPacket(p);
-                    break;
-                case PacketType.MapItemAdd:
-                    p = new MapItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemAddPacket != null)
-                        return ReceivedMapItemAddPacket(p);
-                    break;
-                case PacketType.MapItemRemove:
-                    p = new MapItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemRemovePacket != null)
-                        return ReceivedMapItemRemovePacket(p);
-                    break;
-                case PacketType.MapItemUpdate:
-                    p = new MapItemUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemUpdatePacket != null)
-                        return ReceivedMapItemUpdatePacket(p);
-                    break;
-                case PacketType.NpcTradeList:
-                    p = new NpcTradeListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedNpcTradeListPacket != null)
-                        return ReceivedNpcTradeListPacket(p);
-                    break;
-                case PacketType.NpcTradeGoldCountSaleList:
-                    p = new NpcTradeGoldCountSaleListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedNpcTradeGoldCountPacket != null)
-                        return ReceivedNpcTradeGoldCountPacket(p);
-                    break;
-                case PacketType.PartyInvite:
-                    p = new PartyInvitePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedPartyInvitePacket != null)
-                        return ReceivedPartyInvitePacket(p);
-                    break;
-                case PacketType.PrivateChannelOpen:
-                    p = new PrivateChannelOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedPrivateChannelOpenPacket != null)
-                        return ReceivedPrivateChannelOpenPacket(p);
-                    break;
-                case PacketType.Projectile:
-                    p = new ProjectilePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedProjectilePacket != null)
-                        return ReceivedProjectilePacket(p);
-                    break;
-                case PacketType.SkillUpdate:
-                    p = new SkillUpdatePacket(client, packet);
-                    if (ReceivedSkillUpdatePacket != null)
-                        return ReceivedSkillUpdatePacket(p);
-                    break;
-                case PacketType.StatusMessage:
-                    p = new StatusMessagePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedStatusMessagePacket != null)
-                        return ReceivedStatusMessagePacket(p);
-                    break;
-                case PacketType.StatusUpdate:
-                    p = new StatusUpdatePacket(client, packet,Adler);
-                    length = p.Index;
-                    if (ReceivedStatusUpdatePacket != null)
-                        return ReceivedStatusUpdatePacket(p);
-                    break;
-                case PacketType.TileAnimation:
-                    p = new TileAnimationPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedTileAnimationPacket != null)
-                        return ReceivedTileAnimationPacket(p);
-                    break;
-                case PacketType.VipAdd:
-                    p = new VipAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipAddPacket != null)
-                        return ReceivedVipAddPacket(p);
-                    break;
-                case PacketType.VipLogin:
-                    p = new VipLoginPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipLoginPacket != null)
-                        return ReceivedVipLoginPacket(p);
-                    break;
-                case PacketType.VipLogout:
-                    p = new VipLogoutPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipLogoutPacket != null)
-                        return ReceivedVipLogoutPacket(p);
-                    break;
-                case PacketType.WorldLight:
-                    p = new WorldLightPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedWorldLightPacket != null)
-                        return ReceivedWorldLightPacket(p);
-                    break;
-            }
+            isConnected = true;
             return true;
         }
 
-        private void ProcessClientSendQueue()
-        {
-            if (clientSendQueue.Count > 0 && !writingToClient)
-            {
-                byte[] packet = clientSendQueue.Dequeue();
-                writingToClient = true;
-                try
-                {                                      
-                    netStreamClient.BeginWrite(packet, 0, packet.Length,(AsyncCallback) ClientWriteDone, null);
-                }
-                catch
-                {
-                    // Client crash
-                    ClientCrashed();
-                }
-            }
-        }
-
-        private void ClientWriteDone(IAsyncResult ar)
-        {
-            try
-            {
-                netStreamClient.EndWrite(ar);
-                if (badGameCon)
-                {
-                    RestartAll();
-                }
-            }
-            catch
-            {
-                // Client crash
-                ClientCrashed();
-            }
-
-            writingToClient = false;
-            ProcessClientSendQueue();
-        }
-
-        private void ClientCrashed()
-        {
-            Stop();
-            if (OnCrash != null)
-                OnCrash.BeginInvoke("The client has crashed.", null, null);
-        }
         #endregion
 
-        #region Client -> Server
-        private void ReceiveFromClient(IAsyncResult ar)
+        #region "Propriedades"
+
+        public Objects.Client Client
         {
-            if (!netStreamClient.CanRead) return;
+            get { return client; }
+        }
 
-            int bytesRead = netStreamClient.EndRead(ar);
+        public bool Connected
+        {
+            get { return isConnected; }
+        }
 
-            // Special case, client is logging out
-            if (client.LoggedIn)
+        #endregion
+
+  
+        public void SendToClient(NetworkMessage msg)
+        {
+            serverSendQueue.Enqueue(msg);
+            processServerSendQueue();
+        }
+
+        public void SendToServer(NetworkMessage msg)
+        {
+            clientSendQueue.Enqueue(msg);
+            processClientSendQueue();
+        }
+
+        private void Close()
+        {
+
+#if _DEBUG
+            WRITE_DEBUG("Close Function.");
+#endif
+
+            if (tcpClient != null)
+                tcpClient.Close();
+
+            if (tcpServer != null)
+                tcpServer.Stop();
+
+            if (socketServer != null)
+                socketServer.Close();
+
+            acceptingConnection = false;
+        }
+
+        private void Restart()
+        {
+#if _DEBUG
+            WRITE_DEBUG("Restart Function.");
+#endif
+
+            lock ("acceptingConnection")
             {
-                if (GetPacketType(dataClient) == (byte)PacketType.Logout )
+                if (acceptingConnection)
+                    return;
+
+                isConnected = false;
+
+                Close();
+                Start();
+            }
+        }
+
+        #region "Server"
+
+        public void Start()
+        {
+#if _DEBUG
+            WRITE_DEBUG("Start Function");
+#endif
+
+            if (acceptingConnection)
+                return;
+
+            acceptingConnection = true;
+
+            serverReceiveQueue.Clear();
+            serverSendQueue.Clear();
+            clientReceiveQueue.Clear();
+            clientSendQueue.Clear();
+
+            tcpServer = new TcpListener(System.Net.IPAddress.Any, portServer);
+            tcpServer.Start();
+            tcpServer.BeginAcceptSocket((AsyncCallback)socketAcepted, null);
+        }
+
+        private void socketAcepted(IAsyncResult ar)
+        {
+#if _DEBUG
+            WRITE_DEBUG("OnSocketAcepted Function.");
+#endif
+
+            socketServer = tcpServer.EndAcceptSocket(ar);
+
+            if (socketServer.Connected)
+                networkStreamServer = new NetworkStream(socketServer);
+
+            acceptingConnection = false;
+
+            isFirstMsg = true;
+            networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+        }
+
+        private void serverReadPacket(IAsyncResult ar)
+        {
+            if (acceptingConnection)
+                return;
+
+            try
+            {
+                readBytesServer = networkStreamServer.EndRead(ar);
+            }
+            catch (Exception) 
+            {
+                return;
+            }
+
+            if (readBytesServer == 0)
+            {
+                Restart();
+                return;
+            }
+
+            packetSizeServer = (int)BitConverter.ToUInt16(bufferServer, 0) + 2;
+            NetworkMessage msg = new NetworkMessage(packetSizeServer);
+            Array.Copy(bufferServer, msg.GetBuffer(), 2);
+
+            while (readBytesServer < packetSizeServer)
+            {
+                if (networkStreamServer.CanRead)
+                    readBytesServer += networkStreamServer.Read(msg.GetBuffer(), readBytesServer, packetSizeServer - readBytesServer);
+                else
                 {
-                    if (client.ReadInt32(Tibia.Addresses.Player.HP) == 0)
-                    {
-                        RestartAll();
-
-                        isLoggedIn = false;
-
-                        //occurs after pressing ok, cancel or esc on the "death dialog"
-                        if (OnPlayerDeathAccept != null)
-                            OnPlayerDeathAccept.BeginInvoke("The player had died.", null, null);
-                    }
-                    else if (!client.GetPlayer().HasFlag(Tibia.Constants.Flag.Battle))
-                    {
-                        // Notify the server
-                        netStreamServer.BeginWrite(dataClient, 0, bytesRead, null, null);
-
-                        Stop();
-                        Restart();
-
-                        isLoggedIn = false;
-
-                        // Notify that the client has logged out
-                        if (OnLogOut != null)
-                        {
-                            // We don't care about the return to this
-                            OnLogOut.BeginInvoke("The client has logged out.", null, null);
-                        }
-                    }
+                    Restart();
                     return;
                 }
             }
 
-            if (bytesRead > 0)
-            {
-                // Parse the data into a single packet
-                byte[] packet = new byte[bytesRead];
-                Array.Copy(dataClient, packet, bytesRead);
+            if (ClientMessageArrived != null)
+                ClientMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
 
-                // Enqueue the packet for processing
-                clientReceiveQueue.Enqueue(packet);
+            if (isFirstMsg)
+            {
+                isFirstMsg = false;
+                serverParseFirstMsg(msg);
             }
-
-            ProcessClientReceiveQueue();
-
-            try
+            else
             {
-                netStreamClient.BeginRead(dataClient, 0, dataClient.Length, (AsyncCallback)ReceiveFromClient, null);
-            }
-            catch
-            {
-                // Client crash
-                ClientCrashed();
+                serverReceiveQueue.Enqueue(msg);
+                processServerReceiveQueue();
+
+                if (networkStreamServer.CanRead)
+                    networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+                else
+                    Restart();
             }
         }
 
-        private void Stop()
+        private void serverParseFirstMsg(NetworkMessage msg)
         {
-            if (netStreamClient == null) return;
-            connected = false;
-            netStreamClient.Close();
-            if (netStreamServer != null)
-                netStreamServer.Close();
-            if (tcpServer != null)
-                tcpServer.Close();
-            netStreamLogin.Close();
-            tcpClient.Stop();
-            tcpLogin.Close();
-            socketClient.Close();
+#if _DEBUG
+            WRITE_DEBUG("ServerParseFirstMsg Function.");
+#endif
+
+            msg.Position = 6;
+
+            byte protocolId = msg.GetByte();
+            uint[] key = new uint[4];
+
+            int pos;
+
+            switch (protocolId)
+            {
+                case 0x01: //login server
+
+                    ushort osVersion = msg.GetUInt16();
+                    ushort clientVersion = msg.GetUInt16();
+
+                    msg.GetUInt32();
+                    msg.GetUInt32();
+                    msg.GetUInt32();
+
+                    pos = msg.Position;
+
+                    msg.RsaOTDecrypt();
+
+                    if (msg.GetByte() != 0)
+                    {
+                        //TODO: ...
+                    }
+
+                    key[0] = msg.GetUInt32();
+                    key[1] = msg.GetUInt32();
+                    key[2] = msg.GetUInt32();
+                    key[3] = msg.GetUInt32();
+
+                    NetworkMessage.XTEAKey = key;
+
+                    if (clientVersion != 840)
+                    {
+                        disconnectClient(0x0A, "This proxy requires client 8.40");
+                        return;
+                    }
+
+                    try
+                    {
+                        tcpClient = new TcpClient(loginServers[selectedLoginServer].Server, loginServers[selectedLoginServer].Port);
+                        networkStreamClient = tcpClient.GetStream();
+                    }
+                    catch (Exception)
+                    {
+                        disconnectClient(0x0A, "Connection time out.");
+                        return;
+                    }
+
+
+                    if (IsOtServer)
+                        msg.RsaOTEncrypt(pos);
+                    else
+                        msg.RsaCipEncrypt(pos);
+
+                    msg.InsertAdler32();
+                    msg.InsertPacketHeader();
+
+                    networkStreamClient.BeginWrite(msg.Packet, 0, msg.Length, null, null);
+                    networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)charListReceived, null);
+
+                    break;
+
+                case 0x0A: // world server
+
+                    msg.GetUInt16(); //os
+                    msg.GetUInt16(); //version
+
+                    pos = msg.Position;
+
+                    msg.RsaOTDecrypt();
+                    msg.GetByte();
+
+                    key[0] = msg.GetUInt32();
+                    key[1] = msg.GetUInt32();
+                    key[2] = msg.GetUInt32();
+                    key[3] = msg.GetUInt32();
+
+                    NetworkMessage.XTEAKey = key;
+
+                    msg.GetByte();
+                    msg.GetString();
+                    string name = msg.GetString();
+
+                    int selectedChar = getSelectedChar(name);
+
+                    if (selectedChar >= 0)
+                    {
+                        try
+                        {
+                            tcpClient = new TcpClient(BitConverter.GetBytes(charList[selectedChar].WorldIP).ToIPString(), charList[selectedChar].WorldPort);
+                            networkStreamClient = tcpClient.GetStream();
+                        }
+                        catch (Exception)
+                        {
+                            disconnectClient(0x14, "Connection timeout.");
+                            return;
+                        }
+
+                        if (IsOtServer)
+                            msg.RsaOTEncrypt(pos);
+                        else
+                            msg.RsaCipEncrypt(pos);
+
+                        msg.InsertAdler32();
+                        msg.InsertPacketHeader();
+
+                        networkStreamClient.Write(msg.Packet, 0, msg.Length);
+
+                        networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)clientReadPacket, null);
+                        networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+
+                        return;
+
+                    }
+                    else
+                    {
+                        disconnectClient(0x14, "Unknow character, please relogin..");
+                        return;
+                    }
+
+                default:
+                    {
+                        Restart();
+                        return;
+                    }
+            }
         }
 
-        public void RestartAll()
+        private void charListReceived(IAsyncResult ar)
         {
-            Thread.Sleep(50);
-            Stop();
-            Thread.Sleep(500);
+#if _DEBUG
+            WRITE_DEBUG("OnCharListReceived Function.");
+#endif
+
+            readBytesClient = networkStreamClient.EndRead(ar);
+
+            if (readBytesClient == 2)
+            {
+                packetSizeClient = (int)BitConverter.ToUInt16(bufferClient, 0) + 2;
+                NetworkMessage msg = new NetworkMessage(packetSizeClient);
+                Array.Copy(bufferClient, msg.GetBuffer(), 2);
+
+                while (readBytesClient < packetSizeClient)
+                {
+                    if (networkStreamClient.CanRead)
+                        readBytesClient += networkStreamClient.Read(msg.GetBuffer(), readBytesClient, packetSizeClient - readBytesClient);
+                    else
+                        Restart();
+                }
+
+                if (ServerMessageArrived != null)
+                    ServerMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
+
+                msg.PrepareToRead();
+                msg.GetUInt16(); //packet size..
+
+                while (msg.Position < msg.Length)
+                {
+                    byte cmd = msg.GetByte();
+
+                    switch (cmd)
+                    {
+                        case 0x0A: //Error message
+                            {
+                                msg.GetString();
+                                break;
+                            }
+                        case 0x0B: //For your information
+                            {
+                                msg.GetString();
+                                break;
+                            }
+                        case 0x14: //MOTD
+                            {
+                                msg.GetString();
+                                break;
+                            }
+                        case 0x1E: //Patching exe/dat/spr messages
+                        case 0x1F:
+                        case 0x20:
+                            {
+                                disconnectClient(0x0A, "A new client are avalible, please download it first!");
+                                return;
+                            }
+                        case 0x28: //Select other login server
+                            {
+                                selectedLoginServer = (uint)randon.Next(0, loginServers.Length - 1);
+                                break;
+                            }
+                        case 0x64: //character list
+                            {
+                                int nChar = (int)msg.GetByte();
+                                charList = new CharList[nChar];
+
+                                for (int i = 0; i < nChar; i++)
+                                {
+                                    charList[i].CharName = msg.GetString();
+                                    charList[i].WorldName = msg.GetString();
+                                    charList[i].WorldIP = msg.PeekUInt32();
+                                    msg.AddBytes(localHostBytes);
+                                    charList[i].WorldPort = msg.PeekUInt16();
+                                    msg.AddUInt16(portServer);
+                                }
+
+                                //ushort premmy = msg.GetUInt16();
+                                //send this data to client
+
+                                msg.PrepareToSend();
+
+                                if (networkStreamServer.CanWrite)
+                                    networkStreamServer.Write(msg.Packet, 0, msg.Length);
+
+                                Restart();
+                                return;
+                            }
+                        default:
+                            break;
+                    }
+                }
+
+                msg.PrepareToSend();
+                networkStreamServer.Write(msg.Packet, 0, msg.Length);
+
+                Restart();
+                return;
+
+            }
+            else
+                Restart();
+
+        }
+
+        private void disconnectClient(byte cmd, string message)
+        {
+#if _DEBUG
+            WRITE_DEBUG("DisconnectClient Function.");
+#endif
+
+            NetworkMessage msg = new NetworkMessage();
+            msg.AddByte(cmd);
+            msg.AddString(message);
+
+            msg.InsetLogicalPacketHeader();
+            msg.PrepareToSend();
+
+            networkStreamServer.Write(msg.Packet, 0, msg.Length);
+
             Restart();
         }
 
-        private void ProcessClientReceiveQueue()
+        private void processServerReceiveQueue()
         {
-            if (clientReceiveQueue.Count > 0)
+            while (serverReceiveQueue.Count > 0)
             {
-                byte[] original = clientReceiveQueue.Dequeue();
-                byte[] decrypted = DecryptPacket(original);
+                NetworkMessage msg = serverReceiveQueue.Dequeue();
+                NetworkMessage output = new NetworkMessage();
+                bool haveContent = false;
 
-                // Always call the default (if attached to)
-                if (ReceivedPacketFromClient != null)
-                    ReceivedPacketFromClient.BeginInvoke(new Packet(client, decrypted), null, null);
+                msg.PrepareToRead();
+                msg.GetUInt16(); //logical packet size
 
-                bool forward = RaiseOutgoingEvents(decrypted);
-                if (forward)
+                Objects.Location pos = /*GetPlayerPosition()*/ Location.GetInvalid();
+
+                while (msg.Position < msg.Length)
                 {
-                    serverSendQueue.Enqueue(original);
-                    ProcessServerSendQueue();
-                }
+                    OutgoingPacket packet = parseServerPacket(msg, pos);
 
-                if (clientReceiveQueue.Count > 0)
-                    ProcessClientReceiveQueue();
-            }
-        }
-
-        private bool RaiseOutgoingEvents(byte[] packet)
-        {
-            if (packet.Length < 3) return true;
-            switch ((PacketType)packet[2])
-            {
-                case PacketType.PlayerSpeech:
-                    if (ReceivedPlayerSpeechPacket != null)
-                        return ReceivedPlayerSpeechPacket(new PlayerSpeechPacket(client, packet));
-                    break;
-                case PacketType.ClientLoggedIn:
-                    if (!isLoggedIn)
+                    if (packet == null)
                     {
-                        isLoggedIn = true;
-                        if (OnLogIn != null)
+#if _DEBUG
+                        WRITE_DEBUG("Unknow outgoing packet.. skping the rest! type: " + msg.PeekByte());
+#endif
+
+                        //skip the rest...
+                        haveContent = true;
+                        output.AddBytes(msg.GetBytes(msg.Length - msg.Position));
+                        break;
+                    }
+                    else
+                    {
+                        if (packet.Forward)
                         {
-                            // Call OnLogIn on a seperate thread after a little time to make sure
-                            // the client has initialized the GUI
-                            MethodInvoker invoker = new MethodInvoker(BeginOnLogIn);
-                            invoker.BeginInvoke(null, null);
+                            haveContent = true;
+                            output.AddBytes(packet.ToByteArray());
                         }
                     }
+
+                }
+
+                if (haveContent)
+                {
+                    output.InsetLogicalPacketHeader();
+                    output.PrepareToSend();
+                    clientSendQueue.Enqueue(output);
+                    processClientSendQueue();
+                }
+            }
+
+        }
+
+        private OutgoingPacket parseServerPacket(NetworkMessage msg, Location pos)
+        {
+            OutgoingPacket packet;
+            OutgoingPacketType_t type = (OutgoingPacketType_t)msg.PeekByte();
+
+            switch (type)
+            {
+                case OutgoingPacketType_t.CLOSE_CHANNEL:
+                    {
+                        packet = new Packets.Outgoing.CloseChannelPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedCloseChannelOutgoingPacket != null)
+                                packet.Forward = ReceivedCloseChannelOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.OPEN_CHANNEL:
+                    {
+                        packet = new Packets.Outgoing.OpenChannelPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedOpenChannelOutgoingPacket != null)
+                                packet.Forward = ReceivedOpenChannelOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.SAY:
+                    {
+                        packet = new Packets.Outgoing.SayPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedSayOutgoingPacket != null)
+                                packet.Forward = ReceivedSayOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.ATTACK:
+                    {
+                        packet = new Packets.Outgoing.AttackPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedAttackOutgoingPacket != null)
+                                packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.FOLLOW:
+                    {
+                        packet = new Packets.Outgoing.FollowPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedFollowOutgoingPacket != null)
+                                packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.LOOK_AT:
+                    {
+                        packet = new Packets.Outgoing.LookAtPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedLookAtOutgoingPacket != null)
+                                packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.USE_ITEM:
+                    {
+                        packet = new Packets.Outgoing.UseItemPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedUseItemOutgoingPacket != null)
+                                packet.Forward = ReceivedUseItemOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.USE_ITEM_EX:
+                    {
+                        packet = new Packets.Outgoing.UseItemExPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedUseItemExOutgoingPacket != null)
+                                packet.Forward = ReceivedUseItemExOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.THROW:
+                    {
+                        packet = new Packets.Outgoing.ThrowPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedThrowOutgoingPacket != null)
+                                packet.Forward = ReceivedThrowOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.CANCEL_MOVE:
+                    {
+                        packet = new Packets.Outgoing.CancelMovePacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedCancelMoveOutgoingPacket != null)
+                                packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.BATTLE_WINDOW:
+                    {
+                        packet = new Packets.Outgoing.BattleWindowPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedBattleWindowOutgoingPacket != null)
+                                packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.LOGOUT:
+                    {
+                        packet = new Packets.Outgoing.LogoutPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedLogoutOutgoingPacket != null)
+                                packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.CLOSE_CONTAINER:
+                    {
+                        packet = new Packets.Outgoing.CloseContainerPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedCloseContainerOutgoingPacket != null)
+                                packet.Forward = ReceivedCloseContainerOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType_t.UP_ARROW_CONTAINER:
+                    {
+                        packet = new Packets.Outgoing.UpArrowContainerPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        {
+                            if (ReceivedUpArrowContainerOutgoingPacket != null)
+                                packet.Forward = ReceivedUpArrowContainerOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                default:
                     break;
             }
-            return true;
+
+            return null;
         }
 
-        private void BeginOnLogIn()
+        private void processServerSendQueue()
         {
-            Thread.Sleep(loginDelay);
-            OnLogIn("The client has logged in.");
-        }
 
-        private void ProcessServerSendQueue()
-        {
-            if (serverSendQueue.Count > 0 && !writingToServer)
+            if (writingServer)
+                return;
+
+            if (serverSendQueue.Count > 0)
             {
-                TimeSpan diff = DateTime.UtcNow - lastServerWrite;
-                if (diff.TotalMilliseconds < 125)
-                    Thread.Sleep((int)diff.TotalMilliseconds);
-                byte[] packet = serverSendQueue.Dequeue();
-                writingToServer = true;
-                netStreamServer.BeginWrite(packet, 0, packet.Length, ServerWriteDone, null);
+                NetworkMessage msg = serverSendQueue.Dequeue();
+                serverWrite(msg.Packet);
             }
         }
 
-        private void ServerWriteDone(IAsyncResult ar)
+        private void serverWrite(byte[] buffer)
         {
-            netStreamServer.EndWrite(ar);
-            lastServerWrite = DateTime.UtcNow;
-            writingToServer = false;
-            ProcessServerSendQueue();
+
+            if (!writingServer)
+            {
+                writingServer = true;
+
+                if (networkStreamServer.CanWrite)
+                    networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)serverWriteDone, null);
+                else
+                {
+                    //TODO: Handle the error.
+                }
+            }
         }
+
+        private void serverWriteDone(IAsyncResult ar)
+        {
+            networkStreamServer.EndWrite(ar);
+            writingServer = false;
+
+            if (serverSendQueue.Count > 0)
+                processServerSendQueue();
+        }
+
         #endregion
 
-        #region Inject Packets
-        /// <summary>
-        /// Encrypts and sends a packet to the server
-        /// </summary>
-        /// <param name="packet"></param>
-        public void SendToServer(byte[] packet)
+        #region "Client"
+
+        private void clientReadPacket(IAsyncResult ar)
         {
-            byte[] encrypted = EncryptPacket(packet);
-            serverSendQueue.Enqueue(encrypted);
-            ProcessServerSendQueue();
+            if (acceptingConnection)
+                return;
+
+            readBytesClient = networkStreamClient.EndRead(ar);
+
+            if (readBytesClient == 0)
+            {
+                Restart();
+                return;
+            }
+
+            packetSizeClient = (int)BitConverter.ToUInt16(bufferClient, 0) + 2;
+            NetworkMessage msg = new NetworkMessage(packetSizeClient);
+            Array.Copy(bufferClient, msg.GetBuffer(), 2);
+
+            while (readBytesClient < packetSizeClient)
+            {
+                if (networkStreamClient.CanRead)
+                    readBytesClient += networkStreamClient.Read(msg.GetBuffer(), readBytesClient, packetSizeClient - readBytesClient);
+                else
+                    Restart();
+            }
+
+            if (ServerMessageArrived != null)
+                ServerMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
+
+            clientReceiveQueue.Enqueue(msg);
+            processClientReceiveQueue();
+
+            if (networkStreamClient.CanRead)
+                networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)clientReadPacket, null);
+            else
+                Restart();
+
         }
-        /// <summary>
-        /// Encrypts and sends a packet to the client
-        /// </summary>
-        /// <param name="packet"></param>
-        public void SendToClient(byte[] packet)
+
+        private void processClientReceiveQueue()
         {
-                byte[] encrypted = EncryptPacket(packet);
-                clientSendQueue.Enqueue(encrypted);
-                ProcessClientSendQueue();            
+            while (clientReceiveQueue.Count > 0)
+            {
+                NetworkMessage msg = clientReceiveQueue.Dequeue();
+                NetworkMessage output = new NetworkMessage();
+                bool haveContent = false;
+
+                msg.PrepareToRead();
+                msg.GetUInt16(); //logical packet size
+
+                Objects.Location pos = GetPlayerPosition();
+
+                while (msg.Position < msg.Length)
+                {
+                    IncomingPacket packet = parseClientPacket(msg, pos);
+
+                    if (packet == null)
+                    {
+                        WRITE_DEBUG("Unknow incoming packet.. skping the rest! type: " + msg.PeekByte());
+
+                        //skip the rest...
+                        haveContent = true;
+                        output.AddBytes(msg.GetBytes(msg.Length - msg.Position));
+                        break;
+                    }
+                    else
+                    {
+                        if (packet.Forward)
+                        {
+                            haveContent = true;
+                            output.AddBytes(packet.ToByteArray());
+                        }
+                    }
+
+                }
+
+                if (haveContent)
+                {
+                    output.InsetLogicalPacketHeader();
+                    output.PrepareToSend();
+                    serverSendQueue.Enqueue(output);
+                    processServerSendQueue();
+                }
+            }
         }
+
+        private void processClientSendQueue()
+        {
+            if (writingClient)
+                return;
+
+            if (clientSendQueue.Count > 0)
+            {
+                NetworkMessage msg = clientSendQueue.Dequeue();
+
+                if (msg != null)
+                    clientWrite(msg.Packet);
+            }
+        }
+
+        private void clientWrite(byte[] buffer)
+        {
+            if (!writingClient)
+            {
+                writingClient = true;
+
+                if (lastClientWrite.AddMilliseconds(125) > DateTime.UtcNow)
+                    System.Threading.Thread.Sleep(125);
+
+                if (networkStreamClient.CanWrite)
+                    networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)clientWriteDone, null);
+            }
+        }
+
+        private void clientWriteDone(IAsyncResult ar)
+        {
+            networkStreamClient.EndWrite(ar);
+            writingClient = false;
+
+            if (clientSendQueue.Count > 0)
+                processClientSendQueue();
+        }
+
+        private IncomingPacket parseClientPacket(NetworkMessage msg, Objects.Location pos)
+        {
+            IncomingPacket packet;
+            IncomingPacketType_t type = (IncomingPacketType_t)msg.PeekByte();
+
+            switch (type)
+            {
+                case IncomingPacketType_t.ANIMATED_TEXT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("ANIMATED_TEXT");
+#endif
+                        packet = new Packets.Incoming.AnimatedTextPacket(Client);
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedAnimatedTextIncomingPacket != null)
+                                packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CLOSE_CONTAINER:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CLOSE_CONTAINER");
+#endif
+                        packet = new Packets.Incoming.CloseContainerPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCloseContainerIncomingPacket != null)
+                                packet.Forward = ReceivedCloseContainerIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_SPEAK:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_SPEAK");
+#endif
+                        packet = new Packets.Incoming.CreatureSpeakPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureSpeakIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureSpeakIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.OPEN_CHANNEL:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("OPEN_CHANNEL");
+#endif
+                        packet = new Packets.Incoming.OpenChannelPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedOpenChannelIncomingPacket != null)
+                                packet.Forward = ReceivedOpenChannelIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.PLAYER_CANCEL_WALK:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("PLAYER_CANCEL_WALK");
+#endif
+                        packet = new Packets.Incoming.PlayerCancelWalkPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedPlayerCancelWalkIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerCancelWalkIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CHANNEL_LIST:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CHANNEL_LIST");
+#endif
+                        packet = new Packets.Incoming.ChannelListPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedChannelListIncomingPacket != null)
+                                packet.Forward = ReceivedChannelListIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_MOVE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_MOVE");
+#endif
+                        packet = new Packets.Incoming.CreatureMovePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureMoveIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureMoveIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.TEXT_MESSAGE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("TEXT_MESSAGE");
+#endif
+                        packet = new Packets.Incoming.TextMessagePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedTextMessageIncomingPacket != null)
+                                packet.Forward = ReceivedTextMessageIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.TILE_ADD_THING:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("TILE_ADD_THING");
+#endif
+                        packet = new Packets.Incoming.TileAddThingPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedTileAddThingIncomingPacket != null)
+                                packet.Forward = ReceivedTileAddThingIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_OUTFIT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_OUTFIT");
+#endif
+                        packet = new Packets.Incoming.CreatureOutfitPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureOutfitIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureOutfitIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_LIGHT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_LIGHT");
+#endif
+                        packet = new Packets.Incoming.CreatureLightPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureLightIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureLightIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_HEALTH:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_HEALTH");
+#endif
+                        packet = new Packets.Incoming.CreatureHealthPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureHealthIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureHealthIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_SPEED:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_SPEED");
+#endif
+                        packet = new Packets.Incoming.CreatureSpeedPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureSpeedIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureSpeedIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_SQUARE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_SQUARE");
+#endif
+                        packet = new Packets.Incoming.CreatureSquarePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureSquareIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureSquareIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.TILE_TRANSFORM_THING:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("TILE_TRANSFORM_THING");
+#endif
+                        packet = new Packets.Incoming.TileTransformThingPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedTileTransformThingIncomingPacket != null)
+                                packet.Forward = ReceivedTileTransformThingIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.TILE_REMOVE_THING:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("TILE_REMOVE_THING");
+#endif
+                        packet = new Packets.Incoming.TileRemoveThingPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedTileRemoveThingIncomingPacket != null)
+                                packet.Forward = ReceivedTileRemoveThingIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CONTAINER_ADD_ITEM:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CONTAINER_ADD_ITEM");
+#endif
+                        packet = new Packets.Incoming.ContainerAddItemPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedContainerAddItemIncomingPacket != null)
+                                packet.Forward = ReceivedContainerAddItemIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CONTAINER_REMOVE_ITEM:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CONTAINER_REMOVE_ITEM");
+#endif
+                        packet = new Packets.Incoming.ContainerRemoveItemPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedContainerRemoveItemIncomingPacket != null)
+                                packet.Forward = ReceivedContainerRemoveItemIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CONTAINER_UPDATE_ITEM:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CONTAINER_UPDATE_ITEM");
+#endif
+                        packet = new Packets.Incoming.ContainerUpdateItemPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedContainerUpdateItemIncomingPacket != null)
+                                packet.Forward = ReceivedContainerUpdateItemIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.OPEN_CONTAINER:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("OPEN_CONTAINER");
+#endif
+                        packet = new Packets.Incoming.OpenContainerPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedOpenContainerIncomingPacket != null)
+                                packet.Forward = ReceivedOpenContainerIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.ITEM_TEXT_WINDOW:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("ITEM_TEXT_WINDOW");
+#endif
+                        packet = new Packets.Incoming.ItemTextWindowPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedItemTextWindowIncomingPacket != null)
+                                packet.Forward = ReceivedItemTextWindowIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.WORLD_LIGHT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("WORLD_LIGHT");
+#endif
+                        packet = new Packets.Incoming.WorldLightPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedWorldLightIncomingPacket != null)
+                                packet.Forward = ReceivedWorldLightIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.DISTANCE_SHOT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("DistanceEffect");
+#endif
+                        packet = new Packets.Incoming.DistanceShotPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedDistanceShotIncomingPacket != null)
+                                packet.Forward = ReceivedDistanceShotIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+
+                case IncomingPacketType_t.MAP_DESCRIPTION:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MAP_DESCRIPTION");
+#endif
+                        packet = new Packets.Incoming.MapDescriptionPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMapDescriptionIncomingPacket != null)
+                                packet.Forward = ReceivedMapDescriptionIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.MOVE_NORTH:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MOVE_NORTH");
+#endif
+                        packet = new Packets.Incoming.MoveNorthPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMoveNorthIncomingPacket != null)
+                                packet.Forward = ReceivedMoveNorthIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.MOVE_SOUTH:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MOVE_SOUTH");
+#endif
+                        packet = new Packets.Incoming.MoveSouthPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMoveSouthIncomingPacket != null)
+                                packet.Forward = ReceivedMoveSouthIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.MOVE_EAST:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MOVE_EAST");
+#endif
+                        packet = new Packets.Incoming.MoveEastPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMoveEastIncomingPacket != null)
+                                packet.Forward = ReceivedMoveEastIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.MOVE_WEST:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MOVE_WEST");
+#endif
+                        packet = new Packets.Incoming.MoveWestPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMoveWestIncomingPacket != null)
+                                packet.Forward = ReceivedMoveWestIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.SELF_APPEAR:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("SELF_APPEAR");
+#endif
+                        packet = new Packets.Incoming.SelfAppearPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedSelfAppearIncomingPacket != null)
+                                packet.Forward = ReceivedSelfAppearIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.MAGIC_EFFECT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("MAGIC_EFFECT");
+#endif
+                        packet = new Packets.Incoming.MagicEffectPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedMagicEffectIncomingPacket != null)
+                                packet.Forward = ReceivedMagicEffectIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.FLOOR_CHANGE_DOWN:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("FLOOR_CHANGE_DOWN");
+#endif
+                        packet = new Packets.Incoming.FloorChangeDownPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedFloorChangeDownIncomingPacket != null)
+                                packet.Forward = ReceivedFloorChangeDownIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.FLOOR_CHANGE_UP:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("FLOOR_CHANGE_UP");
+#endif
+                        packet = new Packets.Incoming.FloorChangeUpPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedFloorChangeUpIncomingPacket != null)
+                                packet.Forward = ReceivedFloorChangeUpIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.PLAYER_STATS:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("PLAYER_STATS");
+#endif
+                        packet = new Packets.Incoming.PlayerStatsPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedPlayerStatsIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerStatsIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATURE_SKULLS:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATURE_SKULLS");
+#endif
+                        packet = new Packets.Incoming.CreatureSkullsPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatureSkullsIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureSkullsIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.WAITING_LIST:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("WAITING_LIST");
+#endif
+                        packet = new Packets.Incoming.WaitingListPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedWaitingListIncomingPacket != null)
+                                packet.Forward = ReceivedWaitingListIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.PING:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("PING");
+#endif
+                        packet = new Packets.Incoming.PingPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedPingIncomingPacket != null)
+                                packet.Forward = ReceivedPingIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.DEATH:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("DEATH");
+#endif
+                        packet = new Packets.Incoming.DeathPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedDeathIncomingPacket != null)
+                                packet.Forward = ReceivedDeathIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CAN_REPORT_BUGS:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("DEATH");
+#endif
+                        packet = new Packets.Incoming.CanReportBugsPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCanReportBugsIncomingPacket != null)
+                                packet.Forward = ReceivedCanReportBugsIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.UPDATE_TILE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("UPDATE_TILE");
+#endif
+                        packet = new Packets.Incoming.UpdateTilePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedUpdateTileIncomingPacket != null)
+                                packet.Forward = ReceivedUpdateTileIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.FYI_MESSAGE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("FYI_MESSAGE");
+#endif
+                        packet = new Packets.Incoming.FYIMessagePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedFYIMessageIncomingPacket != null)
+                                packet.Forward = ReceivedFYIMessageIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.INVENTORY_SET_SLOT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("INVENTORY_SET_SLOT");
+#endif
+                        packet = new Packets.Incoming.InventorySetSlotPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedInventorySetSlotIncomingPacket != null)
+                                packet.Forward = ReceivedInventorySetSlotIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.INVENTORY_RESET_SLOT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("INVENTORY_RESET_SLOT");
+#endif
+                        packet = new Packets.Incoming.InventoryResetSlotPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedInventoryResetSlotIncomingPacket != null)
+                                packet.Forward = ReceivedInventoryResetSlotIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.SAFE_TRADE_REQUEST_ACK:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("SAFE_TRADE_REQUEST_ACK");
+#endif
+                        packet = new Packets.Incoming.SafeTradeRequestAckPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedSafeTradeRequestAckIncomingPacket != null)
+                                packet.Forward = ReceivedSafeTradeRequestAckIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.SAFE_TRADE_REQUEST_NO_ACK:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("SAFE_TRADE_REQUEST_NO_ACK");
+#endif
+                        packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedSafeTradeRequestNoAckIncomingPacket != null)
+                                packet.Forward = ReceivedSafeTradeRequestNoAckIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.SAFE_TRADE_CLOSE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("SAFE_TRADE_CLOSE");
+#endif
+                        packet = new Packets.Incoming.SafeTradeClosePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedSafeTradeCloseIncomingPacket != null)
+                                packet.Forward = ReceivedSafeTradeCloseIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.PLAYER_SKILLS:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("PLAYER_SKILLS");
+#endif
+                        packet = new Packets.Incoming.PlayerSkillsPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedPlayerSkillsIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerSkillsIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.PLAYER_ICONS:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("PLAYER_ICONS");
+#endif
+                        packet = new Packets.Incoming.PlayerIconsPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedPlayerIconsIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerIconsIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.OPEN_PRIVATE_PLAYER_CHAT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("OPEN_PRIVATE_PLAYER_CHAT");
+#endif
+                        packet = new Packets.Incoming.OpenPrivatePlayerChatPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedOpenPrivatePlayerChatIncomingPacket != null)
+                                packet.Forward = ReceivedOpenPrivatePlayerChatIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CREATE_PRIVATE_CHANNEL:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CREATE_PRIVATE_CHANNEL");
+#endif
+                        packet = new Packets.Incoming.CreatePrivateChannelPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCreatePrivateChannelIncomingPacket != null)
+                                packet.Forward = ReceivedCreatePrivateChannelIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CLOSE_PRIVATE_CHANNEL:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CLOSE_PRIVATE_CHANNEL");
+#endif
+                        packet = new Packets.Incoming.ClosePrivateChannelPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedClosePrivateChannelIncomingPacket != null)
+                                packet.Forward = ReceivedClosePrivateChannelIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.VIP_STATE:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("VIP_STATE");
+#endif
+                        packet = new Packets.Incoming.VipStatePacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedVipStateIncomingPacket != null)
+                                packet.Forward = ReceivedVipStateIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.VIP_LOGIN:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("VIP_LOGIN");
+#endif
+                        packet = new Packets.Incoming.VipLoginPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedVipLoginIncomingPacket != null)
+                                packet.Forward = ReceivedVipLoginIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.VIP_LOGOUT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("VIP_LOGOUT");
+#endif
+                        packet = new Packets.Incoming.VipLogoutPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedVipLogoutIncomingPacket != null)
+                                packet.Forward = ReceivedVipLogoutIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.SHOP_SALE_ITEM_LIST:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("SHOP_SALE_ITEM_LIST");
+#endif
+                        packet = new Packets.Incoming.ShopSaleItemListPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedShopSaleItemListIncomingPacket != null)
+                                packet.Forward = ReceivedShopSaleItemListIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.OPEN_SHOP_WINDOW:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("OPEN_SHOP_WINDOW");
+#endif
+                        packet = new Packets.Incoming.OpenShopWindowPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedOpenShopWindowIncomingPacket != null)
+                                packet.Forward = ReceivedOpenShopWindowIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CLOSE_SHOP_WINDOW:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CLOSE_SHOP_WINDOW");
+#endif
+                        packet = new Packets.Incoming.CloseShopWindowPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCloseShopWindowIncomingPacket != null)
+                                packet.Forward = ReceivedCloseShopWindowIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.OUTFIT_WINDOW:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("OUTFIT_WINDOW");
+#endif
+                        packet = new Packets.Incoming.OutfitWindowPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedOutfitWindowIncomingPacket != null)
+                                packet.Forward = ReceivedOutfitWindowIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+
+
+                default:
+                    break;
+            }
+
+            return null;
+        }
+
         #endregion
 
-        #region Encryption
-        /// <summary>
-        /// Wrapper for XTEA.Encrypt
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public byte[] EncryptPacket(byte[] packet)
+        #region "Debug"
+
+        private void WRITE_DEBUG(string message)
         {
-            return XTEA.Encrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
+            if (PrintDebug != null)
+                PrintDebug.BeginInvoke(message, null, null);
         }
 
-        /// <summary>
-        /// Wrapper for XTEA.Decrypt
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public byte[] DecryptPacket(byte[] packet)
-        {
-            return XTEA.Decrypt(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
-        }
-
-        /// <summary>
-        /// Get the type of an encrypted packet
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        private byte GetPacketType(byte[] packet)
-        {
-            return XTEA.DecryptType(packet, client.ReadBytes(Addresses.Client.XTeaKey, 16), Adler);
-        }
         #endregion
 
-        #region Port Checking
-        /// <summary>
-        /// Check if a port is open on localhost
-        /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public static bool CheckPort(int port)
+        #region "Outras Funções"
+
+        private int getSelectedChar(string name)
+        {
+            for (int i = 0; i < charList.Length; i++)
+            {
+                if (charList[i].CharName == name)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public Objects.Player GetPlayer()
         {
             try
             {
-                tcpScan = new TcpListener(IPAddress.Any, port);
-                tcpScan.Start();
-                tcpScan.Stop();
-                return true;
+                if (player == null)
+                    player = client.GetPlayer();
             }
-            catch
-            {
-                return false;
-            }
+            catch (Exception) { }
+
+            return player;
         }
 
-        /// <summary>
-        /// Get the first free port on localhost starting at the default 7171
-        /// </summary>
-        /// <returns></returns>
-        public static short GetFreePort()
+        public Objects.Location GetPlayerPosition()
         {
-            return GetFreePort(DefaultPort);
+            Location pos = Location.GetInvalid();
+
+            try
+            {
+                pos = GetPlayer().Location;
+            }
+            catch (Exception) { }
+
+            return pos;
         }
 
-        /// <summary>
-        /// Get the first free port on localhost beginning at start
-        /// </summary>
-        /// <param name="start"></param>
-        /// <returns></returns>
-        public static short GetFreePort(short start)
-        {
-            while (!CheckPort(start))
-            {
-                start++;
-            }
-            return start;
-        }
         #endregion
+
     }
 }

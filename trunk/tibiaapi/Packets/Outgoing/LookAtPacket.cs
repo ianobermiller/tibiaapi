@@ -1,66 +1,59 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Outgoing
 {
-    public class LookAtPacket : Packet
+    public class LookAtPacket : OutgoingPacket
     {
-        Location loc;
-        int itemId;
-        byte stackPos;
 
-        public Location Location
+        public Objects.Location Position { get; set; }
+        public ushort SpriteId { get; set; }
+        public byte StackPosition { get; set; }
+
+        public LookAtPacket(Objects.Client c)
+            : base(c)
         {
-            get { return loc; }
+            Type = OutgoingPacketType_t.LOOK_AT;
+            Destination = PacketDestination_t.SERVER;
         }
 
-        public int ItemId
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return itemId; }
-        }
-
-        public byte StackPos
-        {
-            get { return stackPos; }
-        }
-
-        public LookAtPacket(Client c) : base(c)
-        {
-            type = PacketType.LookAt;
-            destination = PacketDestination.Server;
-        }
-
-        public LookAtPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.LookAt) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                loc = p.GetLocation();
-                itemId = p.GetInt();
-                stackPos = p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)OutgoingPacketType_t.LOOK_AT)
                 return false;
-            }
+
+            Destination = destination;
+            Type = OutgoingPacketType_t.LOOK_AT;
+
+            Position = msg.GetLocation();
+            SpriteId = msg.GetUInt16();
+            StackPosition = msg.GetByte();
+
+            return true;
         }
 
-        public static LookAtPacket Create(Client c, Location loc, int itemId, byte stackPos)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.LookAt);
-            p.AddLocation(loc);
-            p.AddInt(itemId);
-            p.AddByte(stackPos);
-            return new LookAtPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddLocation(Position);
+            msg.AddUInt16(SpriteId);
+            msg.AddByte(StackPosition);
+
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, Objects.Location position, ushort spriteId, byte stackPosition)
+        {
+            LookAtPacket p = new LookAtPacket(client);
+            p.Position = position;
+            p.SpriteId = spriteId;
+            p.StackPosition = stackPosition;
+            return p.Send();
         }
     }
 }

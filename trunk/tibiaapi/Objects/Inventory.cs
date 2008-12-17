@@ -273,7 +273,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id)
         {
-            return client.Send(Packets.ItemUsePacket.Create(client, ItemLocation.Hotkey(), id, 0, 0x0F));
+            return Packets.Outgoing.UseItemPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, 0x0F);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(Item item)
         {
-            return client.Send(Packets.ItemUsePacket.Create(client, ItemLocation.Hotkey(), item.Id, item.Count, 0x0F));
+            return Packets.Outgoing.UseItemPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, 0x0F); 
         }
 
         /// <summary>
@@ -338,9 +338,11 @@ namespace Tibia.Objects
         {
             byte stack = 0;
             byte count = 0;
-            if (id == Constants.Items.Bottle.Vial.Id) stack = count;
-            return client.Send(Packets.ItemUseBattlelistPacket.Create(
-                client, ItemLocation.Hotkey(), id, stack, creatureId));
+
+            if (id == Constants.Items.Bottle.Vial.Id)
+                stack = count;
+
+            return Packets.Outgoing.BattleWindowPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, (uint)creatureId);
         }
 
         /// <summary>
@@ -351,8 +353,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(Item item, int creatureId)
         {
-            return client.Send(Packets.ItemUseBattlelistPacket.Create(
-                client, ItemLocation.Hotkey(), item.Id, item.Count, creatureId));
+            return Packets.Outgoing.BattleWindowPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, (uint)creatureId);
         }
 
         /// <summary>
@@ -388,8 +389,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, Tile onTile)
         {
-            return client.Send(Packets.ItemUseOnPacket.Create(
-                client, ItemLocation.Hotkey(), id, 0, onTile.Location, onTile.Id, 0));
+            return Packets.Outgoing.UseItemExPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
         }
 
         /// <summary>
@@ -411,8 +411,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(Item item, Item onItem)
         {
-            return client.Send(Packets.ItemUseOnPacket.Create(
-                client, ItemLocation.Hotkey(), item.Id, item.Count, onItem.Loc, onItem.Id, onItem.Loc.stackOrder));
+            return Packets.Outgoing.UseItemExPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, onItem.Loc.ToLocation(), (ushort)onItem.Id, onItem.Loc.stackOrder);
         }
 
         /// <summary>

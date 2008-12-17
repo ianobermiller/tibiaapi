@@ -1,39 +1,41 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Outgoing
 {
-    public class CancelMovePacket : Packet
+    public class CancelMovePacket : OutgoingPacket
     {
-        public CancelMovePacket(Client c) : base(c)
+        public CancelMovePacket(Objects.Client c)
+            : base(c)
         {
-            type = PacketType.CancelMove;
-            destination = PacketDestination.Server;
+            Type = OutgoingPacketType_t.CANCEL_MOVE;
+            Destination = PacketDestination_t.SERVER;
         }
 
-        public CancelMovePacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CancelMove) return false;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)OutgoingPacketType_t.CANCEL_MOVE)
                 return false;
-            }
+
+            Destination = destination;
+            Type = OutgoingPacketType_t.CANCEL_MOVE;
+
+            return true;
         }
 
-        public static CancelMovePacket Create(Client c)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CancelMove);
-            return new CancelMovePacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+            msg.AddByte((byte)Type);
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client)
+        {
+            AttackPacket p = new AttackPacket(client);
+            return p.Send();
         }
     }
 }

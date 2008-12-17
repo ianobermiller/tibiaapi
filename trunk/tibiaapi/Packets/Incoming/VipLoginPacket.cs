@@ -1,54 +1,44 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class VipLoginPacket: Packet
+    public class VipLoginPacket : IncomingPacket
     {
-        private int playerId;
-        public int PlayerId
+
+        public uint PlayerId { get; set; }
+
+        public VipLoginPacket(Objects.Client c)
+            : base(c)
         {
-            get { return playerId; }
-        }
-        
-        public VipLoginPacket(Client c) : base(c)
-        {
-            type = PacketType.VipLogin;
-            destination = PacketDestination.Client;
+            Type = IncomingPacketType_t.VIP_LOGIN;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public VipLoginPacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.VipLogin) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                playerId = p.GetLong();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.VIP_LOGIN)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.VIP_LOGIN;
+
+            PlayerId = msg.GetUInt32();
+
+            return true;
         }
 
-        public static VipLoginPacket Create(Client c, Objects.Vip player)
+        public override byte[] ToByteArray()
         {
-            return Create(c, player.Id);
-        }
+            NetworkMessage msg = new NetworkMessage(0);
 
-        public static VipLoginPacket Create(Client c, int id)
-        {
-            PacketBuilder p = new PacketBuilder(c, PacketType.VipLogin);
-            p.AddLong(id);
-            return new VipLoginPacket(c, p.GetPacket());
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(PlayerId);
+
+            return msg.Packet;
         }
     }
 }
