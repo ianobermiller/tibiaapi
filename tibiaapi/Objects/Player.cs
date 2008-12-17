@@ -104,7 +104,7 @@ namespace Tibia.Objects
             // if a destination has been chosen
             GoTo_X = 0;
 
-            return client.Send(CancelMovePacket.Create(client));
+            return Packets.Outgoing.CancelMovePacket.Send(client);
         }
 
         /// <summary>

@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Tibia.Util;
+using System.Runtime.InteropServices;
+
+namespace Tibia.Packets
+{
+    public class OutgoingPacket
+    {
+        public OutgoingPacket(Objects.Client c)
+        {
+            Client = c;
+            Forward = true;
+        }
+
+        public bool Forward { get; set; }
+        public PacketDestination_t Destination { get; set; }
+        public OutgoingPacketType_t Type { get; set; }
+        public Objects.Client Client { get; set; }
+
+        public virtual byte[] ToByteArray() { return null; }
+
+        public bool Send() 
+        {
+            if (Client.UsingProxy)
+            {
+                NetworkMessage msg = new NetworkMessage();
+                msg.AddBytes(ToByteArray());
+                msg.InsetLogicalPacketHeader();
+                msg.PrepareToSend();
+
+                if (Destination == PacketDestination_t.CLIENT)
+                    Client.Proxy.SendToClient(msg);
+                else if (Destination == PacketDestination_t.SERVER)
+                    Client.Proxy.SendToServer(msg);
+                else
+                    return false;
+
+                return true;
+
+            }
+            else if(Destination == PacketDestination_t.SERVER)
+            {
+                // send with dll.
+                return SendPacketWithDLL(Client, ToByteArray());
+            }
+
+            return false;
+        }
+
+        #region Sending Packets with packet.dll
+        [DllImport("packet.dll")]
+        private static extern bool SendPacket(uint processID, byte[] packet);
+
+        /// <summary>
+        /// Send a packet through the client using packet.dll.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public static bool SendPacketWithDLL(Objects.Client client, Byte[] packet)
+        {
+            try
+            {
+                return SendPacket((uint)client.Process.Id, packet);
+            }
+            catch (DllNotFoundException)
+            {
+                throw new Exceptions.PacketDllNotFoundException();
+            }
+            catch (AccessViolationException)
+            {
+                return true;
+            }
+        }
+        #endregion
+
+        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos) { return false; }
+    }
+}

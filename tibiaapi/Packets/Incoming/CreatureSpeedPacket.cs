@@ -1,59 +1,46 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureSpeedPacket : Packet
+    public class CreatureSpeedPacket : IncomingPacket
     {
-        private int creatureId;
-        private int speed;
+        public uint CreatureId { get; set; }
+        public ushort CREATURE_SPEED { get; set; }
 
-        public int CreatureId
-        {
-            get { return creatureId; }
-        }
-        public int Speed
-        {
-            get { return speed; }
-        }
-        public CreatureSpeedPacket(Client c)
+        public CreatureSpeedPacket(Objects.Client c)
             : base(c)
         {
-            type = PacketType.CreatureSpeed;
-            destination = PacketDestination.Client;
-        }
-        public CreatureSpeedPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureSpeed) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureId = p.GetLong();
-                speed = p.GetInt();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            Type = IncomingPacketType_t.CREATURE_SPEED;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public static CreatureSpeedPacket Create(Client c, Creature creature, int speed)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            return Create(c, creature.Id, speed);
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_SPEED)
+                return false;
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_SPEED;
+
+            CreatureId = msg.GetUInt32();
+            CREATURE_SPEED = msg.GetUInt16();
+
+            return true;
         }
-        public static CreatureSpeedPacket Create(Client c, int id, int speed)
+
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureSpeed);
-            p.AddLong(id);
-            p.AddInt(speed);
-            return new CreatureSpeedPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddUInt16(CREATURE_SPEED);
+
+            return msg.Packet;
         }
     }
 }

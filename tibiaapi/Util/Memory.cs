@@ -48,6 +48,17 @@ namespace Tibia
             return BitConverter.ToInt16(ReadBytes(handle, address, 2), 0);
         }
 
+        /// <summary>
+        /// Read a ushort from memory (16-bits).
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static ushort ReadUInt16(IntPtr handle, long address)
+        {
+            return BitConverter.ToUInt16(ReadBytes(handle, address, 2), 0);
+        }
+
         [Obsolete("Please use ReadInt16")]
         public static short ReadShort(IntPtr handle, long address)
         {
@@ -63,6 +74,17 @@ namespace Tibia
         public static int ReadInt32(IntPtr handle, long address)
         {
             return BitConverter.ToInt32(ReadBytes(handle, address, 4), 0);
+        }
+
+        /// <summary>
+        /// Read an uinteger from the process (32-bits)
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static uint ReadUInt32(IntPtr handle, long address)
+        {
+            return BitConverter.ToUInt32(ReadBytes(handle, address, 4), 0);
         }
 
         [Obsolete("Please use ReadInt32.")]
@@ -136,6 +158,18 @@ namespace Tibia
         }
 
         /// <summary>
+        /// Write an uinteger (32-bits) to memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool WriteUInt32(IntPtr handle, long address, uint value)
+        {
+            return WriteBytes(handle, address, BitConverter.GetBytes(value), 4);
+        }
+
+        /// <summary>
         /// Write an integer (16-bits) to memory.
         /// </summary>
         /// <param name="handle"></param>
@@ -143,6 +177,18 @@ namespace Tibia
         /// <param name="value"></param>
         /// <returns></returns>
         public static bool WriteInt16(IntPtr handle, long address, short value)
+        {
+            return WriteBytes(handle, address, BitConverter.GetBytes(value), 2);
+        }
+
+        /// <summary>
+        /// Write an uinteger (16-bits) to memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool WriteUInt16(IntPtr handle, long address, ushort value)
         {
             return WriteBytes(handle, address, BitConverter.GetBytes(value), 2);
         }

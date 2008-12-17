@@ -1,61 +1,47 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class AnimatedTextPacket : Packet
+    public class AnimatedTextPacket : IncomingPacket
     {
-        private Objects.Location loc;
-        private string message;
-        private TextColor color;
+        public Objects.Location Position { get; set; }
+        public string Message { get; set; }
+        public TextColor Color { get; set; }
 
-        public string Message
+        public AnimatedTextPacket(Objects.Client c)
+            : base(c)
         {
-            get { return message; }
-        }
-        public TextColor Color
-        {
-            get { return color; }
-        }
-        public Objects.Location Loc
-        {
-            get { return loc; }
+            Type = IncomingPacketType_t.ANIMATED_TEXT;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public AnimatedTextPacket(Client c) : base(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            type = PacketType.AnimatedText;
-            destination = PacketDestination.Client;
-        }
-        public AnimatedTextPacket(Client c, byte[] data) : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.AnimatedText) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                loc = p.GetLocation();
-                color = (TextColor)p.GetByte();
-                message = p.GetString();
-                index = p.Index;
-                return true;
-            }
-            else 
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.ANIMATED_TEXT)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.ANIMATED_TEXT;
+            Position = msg.GetLocation();
+            Color = (TextColor)msg.GetByte();
+            Message = msg.GetString();
+
+            return true;
         }
 
-        public static AnimatedTextPacket Create(Client c, string message, TextColor Color, Objects.Location loc)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.AnimatedText);
-            p.AddLocation(loc);
-            p.AddByte((byte)Color);
-            p.AddString(message);
-            return new AnimatedTextPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+            msg.AddLocation(Position);
+            msg.AddByte((byte)Color);
+            msg.AddString(Message);
+
+            return msg.Packet;
         }
     }
 }

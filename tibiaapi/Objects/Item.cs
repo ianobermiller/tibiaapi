@@ -17,6 +17,14 @@ namespace Tibia.Objects
         protected bool found;
 
         #region Constructors
+
+        public Item(Client client, uint id, byte count)
+        {
+            this.client = client;
+            this.id = id;
+            this.count = count;
+        }
+
         public Item() : this(0) { }
         public Item(Client client, bool found) : this(0, "", 0, null, client, found) { }
         public Item(uint id) : this(id, "") { }
@@ -53,8 +61,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenContainer(byte container)
         {
-            return client.Send(Packets.ItemUsePacket.Create(
-                client, loc, id, loc.stackOrder, container));
+            return Packets.Outgoing.UseItemPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, container);
         }
 
         /// <summary>
@@ -63,8 +70,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use()
         {
-            return client.Send(Packets.ItemUsePacket.Create(
-                client, loc, id, loc.stackOrder, 0x0F));
+            return Packets.Outgoing.UseItemPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, 0x0F);
         }
 
         /// <summary>
@@ -74,8 +80,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            return client.Send(Packets.ItemUseOnPacket.Create(
-                client, loc, id, 0, onTile.Location, onTile.Id, 0));
+            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
         }
 
 
@@ -100,8 +105,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            return client.Send(Packets.ItemUseOnPacket.Create(
-                client, loc, id, 0, onItem.Loc, onItem.Id, 0));
+            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onItem.Loc.ToLocation(), (ushort)onItem.Id, 0); 
         }
 
         /// <summary>
@@ -113,8 +117,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Creature onCreature)
         {
-            return client.Send(Packets.ItemUseOnPacket.Create(
-                client, loc, id, loc.ToBytes()[4], onCreature.Location, 0x63, 0));
+            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], onCreature.Location, 0x63, 0);
         }
 
         /// <summary>
@@ -123,11 +126,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseOnSelf()
         {
-            int playerID = client.ReadInt32(Addresses.Player.Id);
+            uint playerId = client.ReadUInt32(Addresses.Player.Id);
+            
             byte stack = 0;
-            if (id == Constants.Items.Bottle.Vial.Id) stack = count;
-            return client.Send(Packets.ItemUseBattlelistPacket.Create(
-                client, ItemLocation.Hotkey(), id, stack, playerID));
+
+            if (id == Constants.Items.Bottle.Vial.Id) 
+                stack = count;
+
+            return Packets.Outgoing.BattleWindowPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, playerId);
         }
 
         /// <summary>
@@ -149,50 +155,16 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.Item toItem)
         {
-            return client.Send(Packets.ItemMovePacket.Create(
-                client, loc, id, loc.ToBytes()[4],toItem.Loc, count));
-        }
-
-        public bool Look()
-        {
-            return client.Send(Packets.LookAtPacket.Create(client, loc.groundLocation, (int)id, loc.stackOrder));
+            return Packets.Outgoing.ThrowPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toItem.Loc.ToLocation(), count);
         }
 
         /// <summary>
-        /// Get the packet bytes for an item location.
+        /// Test me!
         /// </summary>
-        /// <param name="location"></param>
         /// <returns></returns>
-        public static byte[] ItemLocationToBytes(Objects.ItemLocation location)
-        {            
-            byte[] bytes = new byte[5];
-
-            switch (location.type)
-            {
-                case Constants.ItemLocationType.Container:
-                    bytes[00] = 0xFF;
-                    bytes[01] = 0xFF;
-                    bytes[02] = Convert.ToByte(0x40 + location.container);
-                    bytes[03] = 0x00;
-                    bytes[04] = location.position;
-                    break;
-                case Constants.ItemLocationType.Slot:
-                    bytes[00] = 0xFF;
-                    bytes[01] = 0xFF;
-                    bytes[02] = Convert.ToByte(location.slot);
-                    bytes[03] = 0x00;
-                    bytes[04] = 0x00;
-                    break;
-                case Constants.ItemLocationType.Ground:
-                    bytes[00] = Packet.Lo(location.groundLocation.X);
-                    bytes[01] = Packet.Hi(location.groundLocation.X);
-                    bytes[02] = Packet.Lo(location.groundLocation.Y);
-                    bytes[03] = Packet.Hi(location.groundLocation.Y);
-                    bytes[04] = Convert.ToByte(location.groundLocation.Z);
-                    break;
-            }
-
-            return bytes;
+        public bool Look()
+        {
+            return Packets.Outgoing.LookAtPacket.Send(client, loc.groundLocation, (ushort)id, loc.stackOrder);
         }
 
         /// <summary>
@@ -623,27 +595,58 @@ namespace Tibia.Objects
                 case Constants.ItemLocationType.Container:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
-                    bytes[02] = Convert.ToByte(0x40 + container);
+                    bytes[02] = (byte)(0x40 + container);
                     bytes[03] = 0x00;
                     bytes[04] = position;
                     break;
                 case Constants.ItemLocationType.Slot:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
-                    bytes[02] = Convert.ToByte(slot);
+                    bytes[02] = (byte)slot;
                     bytes[03] = 0x00;
                     bytes[04] = 0x00;
                     break;
                 case Constants.ItemLocationType.Ground:
-                    bytes[00] = Packet.Lo(groundLocation.X);
-                    bytes[01] = Packet.Hi(groundLocation.X);
-                    bytes[02] = Packet.Lo(groundLocation.Y);
-                    bytes[03] = Packet.Hi(groundLocation.Y);
-                    bytes[04] = Convert.ToByte(groundLocation.Z);
+                    bytes[00] = groundLocation.X.Low();
+                    bytes[01] = groundLocation.X.High();
+                    bytes[02] = groundLocation.Y.Low();
+                    bytes[03] = groundLocation.Y.High(); 
+                    bytes[04] = (byte)groundLocation.Z;
                     break;
             }
 
             return bytes;
         }
+
+        public Location ToLocation()
+        {
+            Location newPos = new Location();
+
+            switch (type)
+            {
+                case Constants.ItemLocationType.Container:
+                    {
+                        newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
+                        newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)(0x40 + container), 0x00 }, 0);
+                        newPos.Z = (int)position;
+                        break;
+                    }
+                case Constants.ItemLocationType.Slot:
+                    {
+                        newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
+                        newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)slot, 0x00 }, 0);
+                        newPos.Z = 0;
+                        break;
+                    }
+                case Constants.ItemLocationType.Ground:
+                    {
+                        newPos = groundLocation;
+                        break;
+                    }
+            }
+
+            return newPos;
+        }
+
     }
 }

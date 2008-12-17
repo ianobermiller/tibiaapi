@@ -1,55 +1,47 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-
-    public class WorldLightPacket : Packet
+    public class WorldLightPacket : IncomingPacket
     {
-        private byte strength;
-        private byte color;
-        public byte Strength
-        {
-            get { return strength; }
-        }
-        public byte Color
-        {
-            get { return color; }
-        }
-        public WorldLightPacket(Client c)
+
+        public byte LightLevel { get; set; }
+        public byte LightColor { get; set; }
+
+        public WorldLightPacket(Objects.Client c)
             : base(c)
         {
-            type = PacketType.WorldLight;
-            destination = PacketDestination.Client;
-        }
-        public WorldLightPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.WorldLight) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                strength = p.GetByte();
-                color = p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            Type = IncomingPacketType_t.WORLD_LIGHT;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public static WorldLightPacket Create(Client c,byte strength, byte color)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.WorldLight);
-            p.AddByte(strength);
-            p.AddByte(color);
-            return new WorldLightPacket(c, p.GetPacket());
+            if (msg.GetByte() != (byte)IncomingPacketType_t.WORLD_LIGHT)
+                return false;
+
+            Destination = destination;
+            Type = IncomingPacketType_t.WORLD_LIGHT;
+
+            LightLevel = msg.GetByte();
+            LightColor = msg.GetByte();
+
+            return true;
+        }
+
+        public override byte[] ToByteArray()
+        {
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddByte(LightLevel);
+            msg.AddByte(LightColor);
+
+            return msg.Packet;
         }
     }
 }

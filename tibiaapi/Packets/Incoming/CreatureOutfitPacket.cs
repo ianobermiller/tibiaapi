@@ -1,100 +1,46 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureOutfitPacket:Packet
+    public class CreatureOutfitPacket : IncomingPacket
     {
-        private int creatureid;
-        private Tibia.Constants.OutfitType outfit;
-        private Tibia.Constants.OutfitAddon addon;
-        private byte head;
-        private byte body;
-        private byte legs;
-        private byte feet;
+        public uint CreatureId { get; set; }
+        public Objects.Outfit Outfit { get; set; }
 
-        public int CreatureId
+        public CreatureOutfitPacket(Objects.Client c)
+            : base(c)
         {
-            get { return creatureid; }
+            Type = IncomingPacketType_t.CREATURE_OUTFIT;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public Tibia.Constants.OutfitType Outfit
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return outfit; }
-        }
-
-        public Tibia.Constants.OutfitAddon Addon 
-        { 
-            get { return addon; } 
-        }
-
-        public byte Head
-        {
-            get { return head; }
-        }
-
-        public byte Body
-        {
-            get { return body; }
-        }
-
-        public byte Legs
-        {
-            get { return legs; }
-        }
-
-        public byte Feet
-        {
-            get { return feet; }
-        }
-
-        public CreatureOutfitPacket(Client c) : base(c)
-        {
-            type = PacketType.CreatureOutfit;
-            destination = PacketDestination.Client;
-        }
-        public CreatureOutfitPacket(Client c, byte[] data)
-            :this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureOutfit) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureid = p.GetLong();
-                outfit = (Tibia.Constants.OutfitType)p.GetInt();
-                head = p.GetByte();
-                body = p.GetByte();
-                legs = p.GetByte();
-                feet = p.GetByte();
-                addon = (Tibia.Constants.OutfitAddon)p.GetByte();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_OUTFIT)
                 return false;
-            }
-        }
-        public static CreatureOutfitPacket Create(Client c, Tibia.Objects.Creature creature, Tibia.Constants.OutfitType outfit, byte head, byte body, byte legs, byte feet, Tibia.Constants.OutfitAddon addon)
-        {
-            return Create(c, creature.Id, outfit, head, body, legs, feet, addon);
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_OUTFIT;
+
+            CreatureId = msg.GetUInt32();
+            Outfit = msg.GetOutfit();
+
+            return true;
         }
 
-        public static CreatureOutfitPacket Create(Client c, int id, Tibia.Constants.OutfitType outfit, byte head, byte body, byte legs, byte feet, Tibia.Constants.OutfitAddon addon)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureOutfit);
-            p.AddLong(id);
-            p.AddInt((int)outfit);
-            p.AddByte(head);
-            p.AddByte(body);
-            p.AddByte(legs);
-            p.AddByte(feet);
-            p.AddByte((byte)addon);
-            return new CreatureOutfitPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddOutfit(Outfit);
+
+            return msg.Packet;
         }
     }
 }

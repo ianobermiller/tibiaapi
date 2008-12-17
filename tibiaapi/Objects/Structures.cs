@@ -29,12 +29,8 @@ namespace Tibia.Objects
         /// <returns>The string representation.</returns>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder(16);
-            builder.Append("{ Number=" + Number.ToString() + ", ");
-            builder.Append("Address=" + Address.ToString() + ", ");
-            builder.Append("Id=" + Id.ToString() + " }");
-
-            return builder.ToString();
+            return string.Format("/{ Number={0}, Address={1}, Id={2} /}", 
+                Number.ToString(), Address.ToString(), Id.ToString());
         }
     }
 
@@ -43,13 +39,18 @@ namespace Tibia.Objects
     /// </summary>
     public class LoginServer
     {
-        public string Server = string.Empty;
-        public short Port = 7171;
+        public string Server { get; set; }
+        public short Port { get; set; }
 
-        public LoginServer() { }
+        public LoginServer() 
+        {
+            Server = "";
+            Port = 7171;
+        }
 
         public LoginServer(string server)
         {
+            Port = 7171;
             Server = server;
         }
 
@@ -76,6 +77,7 @@ namespace Tibia.Objects
             Name = name;
         }
     }
+
     public struct Rect
     {
         private int top;
@@ -84,30 +86,37 @@ namespace Tibia.Objects
         private int right;
         private int width;
         private int height;
+
         public int Top
         {
             get { return top; }
         }
+
         public int Bottom
         {
             get { return bottom; }
         }
+
         public int Left
         {
             get { return left; }
         }
+
         public int Rigth
         {
             get { return right; }
         }
+
         public int Height
         {
             get { return height; }
         }
+
         public int Width
         {
             get { return width; }
         }
+
         public Rect(Util.WinApi.RECT r)
         {
             top = r.top;
@@ -130,10 +139,20 @@ namespace Tibia.Objects
             Version = version;
         }
 
-
         public override string ToString()
         {
-            return Path + " [" + Version + "]";
+            return string.Format("{0} [{1}]", Path, Version);
         }
     }
+
+    public struct CharList
+    {
+        public string CharName { get; set; }
+        public string WorldName { get; set; }
+        public uint WorldIP { get; set; }
+        public string WorldIPString { get; set; }
+        public ushort WorldPort { get; set; }
+    }
+
+
 }

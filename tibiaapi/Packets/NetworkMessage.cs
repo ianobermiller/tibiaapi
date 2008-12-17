@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class NetworkMessage
     {
@@ -272,14 +272,14 @@ namespace Tibia.Util
             return BitConverter.ToUInt32(GetBytes(4), 0);
         }
 
-        //public Objects.Position GetPosition()
-        //{
-        //    ushort x = GetUInt16();
-        //    ushort y = GetUInt16();
-        //    byte z = GetByte();
+        public Objects.Location GetLocation()
+        {
+            int x = (int)GetUInt16();
+            int y = (int)GetUInt16();
+            int z = (int)GetByte();
 
-        //    return new TibiaEasyProxy.Objects.Position(x, y, z);
-        //}
+            return new Objects.Location(x, y, z);
+        }
 
         private uint GetAdler32()
         {
@@ -291,24 +291,24 @@ namespace Tibia.Util
             return BitConverter.ToUInt16(messageStream.GetBuffer(), 0);
         }
 
-        //public Objects.Outfit GetOutfit()
-        //{
-        //    byte head, body, legs, feet, addons;
-        //    ushort looktype = GetUInt16();
+        public Objects.Outfit GetOutfit()
+        {
+            byte head, body, legs, feet, addons;
+            ushort looktype = GetUInt16();
 
-        //    if (looktype != 0)
-        //    {
-        //        head = GetByte();
-        //        body = GetByte();
-        //        legs = GetByte();
-        //        feet = GetByte();
-        //        addons = GetByte();
+            if (looktype != 0)
+            {
+                head = GetByte();
+                body = GetByte();
+                legs = GetByte();
+                feet = GetByte();
+                addons = GetByte();
 
-        //        return new Objects.Outfit(looktype, head, body, legs, feet, addons);
-        //    }
-        //    else
-        //        return new TibiaEasyProxy.Objects.Outfit(looktype, GetUInt16());
-        //}
+                return new Objects.Outfit(looktype, head, body, legs, feet, addons);
+            }
+            else
+                return new Tibia.Objects.Outfit(looktype, GetUInt16());
+        }
 
         #endregion
 
@@ -340,15 +340,15 @@ namespace Tibia.Util
             AddBytes(BitConverter.GetBytes(value));
         }
 
-        //public void AddPosition(Objects.Position pos)
-        //{
-        //    AddBytes(pos.ToByteArray());
-        //}
+        public void AddLocation(Objects.Location pos)
+        {
+            AddBytes(pos.ToBytes());
+        }
 
-        //public void AddOutfit(Objects.Outfit outfit)
-        //{
-        //    AddBytes(outfit.ToByteArray());
-        //}
+        public void AddOutfit(Objects.Outfit outfit)
+        {
+            AddBytes(outfit.ToByteArray());
+        }
 
         public void AddPaddingBytes(int count)
         {

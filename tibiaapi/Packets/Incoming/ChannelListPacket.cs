@@ -1,70 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tibia.Objects;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class ChannelListPacket : Packet
+    public class ChannelListPacket : IncomingPacket
     {
-        private int numChannels;
-        private List<Channel> channels;
+        public byte NumberChannel { get; set; }
+        public List<Objects.Channel> Channels { get; set; }
 
-        public int NumChannels
+        public ChannelListPacket(Objects.Client c)
+            : base(c)
         {
-            get { return numChannels; }
-        }
-
-        public List<Channel> Channels
-        {
-            get { return channels; }
+            Type = IncomingPacketType_t.CHANNEL_LIST;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public ChannelListPacket(Client c) : base(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            type = PacketType.ChannelList;
-            destination = PacketDestination.Client;
-        }
-        public ChannelListPacket(Client c, byte[] data) : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CHANNEL_LIST)
+                throw new Exception();
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CHANNEL_LIST;
+            NumberChannel = msg.GetByte();
+
+            Channels = new List<Tibia.Objects.Channel>(NumberChannel);
+
+            ushort id;
+
+            for (int i = 0; i < NumberChannel; i++)
             {
-                if (type != PacketType.ChannelList) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                numChannels = p.GetByte();
-                channels = new List<Channel>(numChannels);
-                ushort id;
-                for (int i = 0; i < numChannels; i++)
-                {
-                    id = p.GetInt();
-                    channels.Add(new Channel(
-                        (ChatChannel)id,
-                        p.GetString()
-                    ));
-                }
-                index = p.Index;
-                return true;
+                id = msg.GetUInt16();
+                Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
             }
-            else 
-            {
-                return false;
-            }
+
+            return true;
         }
 
-        public static ChannelListPacket Create(Client c, List<Channel> channels)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.ChannelList);
-            p.AddByte((byte)channels.Count);
+            NetworkMessage msg = new NetworkMessage(0);
 
-            foreach (Channel chan in channels)
+            msg.AddByte((byte)Type);
+            msg.AddByte((byte)Channels.Count);
+
+            foreach (Objects.Channel c in Channels)
             {
-                p.AddInt((int)chan.Id);
-                p.AddString(chan.Name);
+                msg.AddUInt16((ushort)c.Id);
+                msg.AddString(c.Name);
             }
-            return new ChannelListPacket(c, p.GetPacket());
+
+            return msg.Packet;
         }
     }
 }

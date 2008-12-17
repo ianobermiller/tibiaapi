@@ -69,7 +69,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenParent()
         {
-            return client.Send(Packets.ContainerOpenParentPacket.Create(client, number));
+            return Packets.Outgoing.UpArrowContainerPacket.Send(client, number);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Tibia.Objects
             if (!IsOpen)
                 return true;
 
-            return client.Send(Packets.ContainerClosePacket.Create(client, number));
+            return Packets.Outgoing.CloseContainerPacket.Send(client, number);
         }
 
         /// <summary>
@@ -94,11 +94,9 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Rename(string newName)
         {
+            //TODO: Find if the container has parent.
             if (client.UsingProxy)
-            {
-                Packets.ContainerOpenedPacket packet = Packets.ContainerOpenedPacket.Create(client, this, newName);
-                return client.Send(packet);
-            }
+                return Packets.Incoming.OpenContainerPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, 0, GetItems());
             else
                 return false;
         }

@@ -1,64 +1,47 @@
 ﻿using System;
-using Tibia.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Tibia.Packets
+namespace Tibia.Packets.Incoming
 {
-    public class CreatureMovePacket : Packet
+    public class CreatureMovePacket : IncomingPacket
     {
-        private Objects.Location from;
-        private byte fromStackPos;
-        private Objects.Location to;
+        public byte FromStackPosition { get; set; }
+        public Objects.Location FromPosition { get; set; }
+        public Objects.Location ToPosition { get; set; }
 
-        public Objects.Location From
+        public CreatureMovePacket(Objects.Client c)
+            : base(c)
         {
-            get { return from; }
-        }
-
-        public byte FromStackPos
-        {
-            get { return fromStackPos; }
+            Type = IncomingPacketType_t.CREATURE_MOVE;
+            Destination = PacketDestination_t.CLIENT;
         }
 
-        public Objects.Location To
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            get { return to; }
-        }
-
-        public CreatureMovePacket(Client c) : base(c)
-        {
-            type = PacketType.CreatureMove;
-            destination = PacketDestination.Client;
-        }
-        public CreatureMovePacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (type != PacketType.CreatureMove) return false;
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                from = p.GetLocation();
-                fromStackPos = p.GetByte();
-                to = p.GetLocation();
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_MOVE)
                 return false;
-            }
+
+            Destination = destination;
+            Type = IncomingPacketType_t.CREATURE_MOVE;
+            FromPosition = msg.GetLocation();
+            FromStackPosition = msg.GetByte();
+            ToPosition = msg.GetLocation();
+
+            return true;
         }
 
-        public static CreatureMovePacket Create(Client c, Objects.Location from, byte fromStackPos, Objects.Location to)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, PacketType.CreatureMove);
-            p.AddLocation(from);
-            p.AddByte(fromStackPos);
-            p.AddLocation(to);
-            return new CreatureMovePacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(0);
+
+            msg.AddByte((byte)Type);
+            msg.AddLocation(FromPosition);
+            msg.AddByte(FromStackPosition);
+            msg.AddLocation(ToPosition);
+
+            return msg.Packet;
         }
     }
 }
