@@ -100,13 +100,11 @@ client.Proxy.ClientMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_
         void Proxy_ClientMessageArrived(Tibia.Packets.NetworkMessage message)
         {
             LogPacket(message.Packet, "CLIENT");
-            return packet;
         }
 
         void Proxy_ServerMessageArrived(Tibia.Packets.NetworkMessage message)
         {
             LogPacket(message.Packet, "SERVER");
-            return packet;
         }
 
         private void LogPacket(byte[] packet, string from)
