@@ -99,6 +99,7 @@
     <Compile Include="Objects\Screen.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
+    <Compile Include="Packets\Incoming\CancelTargetPacket.cs" />
     <Compile Include="Packets\Incoming\CanReportBugsPacket.cs" />
     <Compile Include="Packets\Incoming\ChannelListPacket.cs" />
     <Compile Include="Packets\Incoming\CloseContainerPacket.cs" />
@@ -140,6 +141,10 @@
     <Compile Include="Packets\Incoming\PlayerIconsPacket.cs" />
     <Compile Include="Packets\Incoming\PlayerSkillsPacket.cs" />
     <Compile Include="Packets\Incoming\PlayerStatsPacket.cs" />
+    <Compile Include="Packets\Incoming\RemoveReportPacket.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationCancelPacket.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationLockPacket.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationsChannelPacket.cs" />
     <Compile Include="Packets\Incoming\SafeTradeClosePacket.cs" />
     <Compile Include="Packets\Incoming\SafeTradeRequestAckPacket.cs" />
     <Compile Include="Packets\Incoming\SafeTradeRequestNoAckPacket.cs" />

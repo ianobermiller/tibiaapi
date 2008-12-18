@@ -8,7 +8,7 @@ namespace Tibia.Packets.Outgoing
     public class CloseChannelPacket : OutgoingPacket
     {
 
-        public ChatChannel ChannelId { get; set; }
+        public ChatChannel_t ChannelId { get; set; }
 
         public CloseChannelPacket(Objects.Client c)
             : base(c)
@@ -25,7 +25,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType_t.CLOSE_CHANNEL;
 
-            ChannelId = (ChatChannel)msg.GetUInt16();
+            ChannelId = (ChatChannel_t)msg.GetUInt16();
 
             return true;
         }

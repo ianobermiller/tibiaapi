@@ -9,12 +9,12 @@ namespace Tibia.Packets.Incoming
     {
         public SpeakClasses_t SpeakType { get; set; }
         public uint UnknowSpeak { get; set; }
-        public ChatChannel ChannelId { get; set; }
+        public ChatChannel_t ChannelId { get; set; }
         public string SenderName { get; set; }
         public ushort SenderLevel { get; set; }
         public string Message { get; set; }
         public Objects.Location Position { get; set; }
-        public uint Number { get; set; }
+        public uint Time { get; set; }
 
         public CreatureSpeakPacket(Objects.Client c)
             : base(c)
@@ -44,7 +44,6 @@ namespace Tibia.Packets.Incoming
                 case SpeakClasses_t.SPEAK_MONSTER_SAY:
                 case SpeakClasses_t.SPEAK_MONSTER_YELL:
                 case SpeakClasses_t.SPEAK_PRIVATE_NP:
-                case SpeakClasses_t.SPEAK_MONSTER_SAY12:
                     {
                         Position = msg.GetLocation();
                         break;
@@ -55,29 +54,16 @@ namespace Tibia.Packets.Incoming
                 case SpeakClasses_t.SPEAK_CHANNEL_Y:
                 case SpeakClasses_t.SPEAK_CHANNEL_W:
                     {
-                        ChannelId = (ChatChannel)msg.GetUInt16();
-                        break;
-                    }
-                case SpeakClasses_t.SPEAK_PRIVATE:
-                case SpeakClasses_t.SPEAK_BROADCAST:
-                case SpeakClasses_t.SPEAK_PRIVATE_RED:
-                    {
-                        break;
-                    }
-                case SpeakClasses_t.SPEAK_RVR_ANSWER:
-                    {
-                        //TODO. Rule violations
-                        Number = msg.GetUInt32();
+                        ChannelId = (ChatChannel_t)msg.GetUInt16();
                         break;
                     }
                 case SpeakClasses_t.SPEAK_RVR_CHANNEL:
-                case SpeakClasses_t.SPEAK_RVR_CONTINUE:
                     {
-                        //TODO: but what?
-                        break;
+                        Time = msg.GetUInt32();
+                        break; 
                     }
                 default:
-                    throw new Exception("Unknow SpeakClass!");
+                    break;
             }
 
             Message = msg.GetString();
@@ -117,22 +103,9 @@ namespace Tibia.Packets.Incoming
                         msg.AddUInt16((ushort)ChannelId);
                         break;
                     }
-                case SpeakClasses_t.SPEAK_PRIVATE:
-                case SpeakClasses_t.SPEAK_BROADCAST:
-                case SpeakClasses_t.SPEAK_PRIVATE_RED:
-                    {
-                        break;
-                    }
-                case SpeakClasses_t.SPEAK_RVR_ANSWER:
-                    {
-                        //TODO. Rule violations
-                        msg.AddUInt32(Number);
-                        break;
-                    }
                 case SpeakClasses_t.SPEAK_RVR_CHANNEL:
-                case SpeakClasses_t.SPEAK_RVR_CONTINUE:
                     {
-                        //TODO: but what?
+                        msg.AddUInt32(Time);
                         break;
                     }
                 default:
