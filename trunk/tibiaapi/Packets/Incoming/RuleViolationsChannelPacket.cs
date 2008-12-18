@@ -12,17 +12,17 @@ namespace Tibia.Packets.Incoming
         public RuleViolationsChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.RuleViolationOpen;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL)
+            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationOpen)
                 throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL;
+            Type = IncomingPacketType.RuleViolationOpen;
 
             ChannelId = msg.GetUInt16();
 

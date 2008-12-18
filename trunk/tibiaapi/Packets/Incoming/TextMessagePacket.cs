@@ -7,24 +7,24 @@ namespace Tibia.Packets.Incoming
 {
     public class TextMessagePacket : IncomingPacket
     {
-        public MessageClasses_t Color { get; set; }
+        public StatusMessage Color { get; set; }
         public string Message { get; set; }
 
         public TextMessagePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.TEXT_MESSAGE;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.StatusMessage;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.TEXT_MESSAGE)
+            if (msg.GetByte() != (byte)IncomingPacketType.StatusMessage)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.TEXT_MESSAGE;
-            Color = (MessageClasses_t)msg.GetByte();
+            Type = IncomingPacketType.StatusMessage;
+            Color = (StatusMessage)msg.GetByte();
             Message = msg.GetString();
 
             return true;
@@ -41,7 +41,7 @@ namespace Tibia.Packets.Incoming
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, MessageClasses_t color, string msg)
+        public static bool Send(Objects.Client client, StatusMessage color, string msg)
         {
             TextMessagePacket p = new TextMessagePacket(client);
             p.Color = color;

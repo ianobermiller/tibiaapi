@@ -15,17 +15,17 @@ namespace Tibia.Packets.Incoming
         public SelfAppearPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.SELF_APPEAR;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.SelfAppear;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.SELF_APPEAR)
+            if (msg.GetByte() != (byte)IncomingPacketType.SelfAppear)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.SELF_APPEAR;
+            Type = IncomingPacketType.SelfAppear;
 
             YourId = msg.GetUInt32();
             Unknow32 = msg.GetByte();

@@ -11,17 +11,17 @@ namespace Tibia.Packets.Incoming
         public DeathPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.DEATH;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.Death;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.DEATH)
+            if (msg.GetByte() != (byte)IncomingPacketType.Death)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.DEATH;
+            Type = IncomingPacketType.Death;
 
             //no data
 

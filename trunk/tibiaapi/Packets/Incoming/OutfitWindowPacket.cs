@@ -8,32 +8,32 @@ namespace Tibia.Packets.Incoming
     public class OutfitWindowPacket : IncomingPacket
     {
 
-        public List<AvalibleOutfit_t> OutfitList { get; set; }
+        public List<AvalibleOutfit> OutfitList { get; set; }
         public Objects.Outfit Default { get; set; }
 
         public OutfitWindowPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.OUTFIT_WINDOW;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.OutfitWindow;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.OUTFIT_WINDOW)
+            if (msg.GetByte() != (byte)IncomingPacketType.OutfitWindow)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.OUTFIT_WINDOW;
+            Type = IncomingPacketType.OutfitWindow;
 
             Default = msg.GetOutfit();
 
             byte count = msg.GetByte();
-            OutfitList = new List<AvalibleOutfit_t> { };
+            OutfitList = new List<AvalibleOutfit> { };
 
             for (int i = 0; i < count; i++)
             {
-                AvalibleOutfit_t outfit = new AvalibleOutfit_t();
+                AvalibleOutfit outfit = new AvalibleOutfit();
 
                 outfit.Id = msg.GetUInt16();
                 outfit.Name = msg.GetString();
@@ -55,7 +55,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddByte((byte)OutfitList.Count);
 
-            foreach (AvalibleOutfit_t i in OutfitList)
+            foreach (AvalibleOutfit i in OutfitList)
             {
                 msg.AddUInt16(i.Id);
                 msg.AddString(i.Name);

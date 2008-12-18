@@ -26,17 +26,17 @@ namespace Tibia.Packets.Incoming
         public PlayerSkillsPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.PLAYER_SKILLS;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.PlayerSkillsUpdate;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.PLAYER_SKILLS)
+            if (msg.GetByte() != (byte)IncomingPacketType.PlayerSkillsUpdate)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.PLAYER_SKILLS;
+            Type = IncomingPacketType.PlayerSkillsUpdate;
 
             Fist = msg.GetByte();
             FistPercent = msg.GetByte();

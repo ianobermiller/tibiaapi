@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public CanReportBugsPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CAN_REPORT_BUGS;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CanReportBugs;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CAN_REPORT_BUGS)
+            if (msg.GetByte() != (byte)IncomingPacketType.CanReportBugs)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CAN_REPORT_BUGS;
+            Type = IncomingPacketType.CanReportBugs;
 
             ReportBugs = msg.GetByte();
 

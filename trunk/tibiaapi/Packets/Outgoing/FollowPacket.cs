@@ -12,17 +12,17 @@ namespace Tibia.Packets.Outgoing
         public FollowPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.FOLLOW;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.Follow;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.FOLLOW)
+            if (msg.GetByte() != (byte)OutgoingPacketType.Follow)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.FOLLOW;
+            Type = OutgoingPacketType.Follow;
 
             CreatureId = msg.GetUInt32();
 

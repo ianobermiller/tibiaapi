@@ -8,40 +8,40 @@ namespace Tibia.Packets.Outgoing
     public class SayPacket : OutgoingPacket
     {
 
-        public SpeakClasses_t SpeakType { get; set; }
+        public SpeechType SpeakType { get; set; }
         public string Receiver { get; set; }
         public string Message { get; set; }
-        public ChatChannel_t ChannelId { get; set; }
+        public ChatChannel ChannelId { get; set; }
 
         public SayPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.SAY;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.PlayerSpeech;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.SAY)
+            if (msg.GetByte() != (byte)OutgoingPacketType.PlayerSpeech)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.SAY;
+            Type = OutgoingPacketType.PlayerSpeech;
 
-            SpeakType = (SpeakClasses_t)msg.GetByte();
+            SpeakType = (SpeechType)msg.GetByte();
 
             switch (SpeakType)
             {
-                case SpeakClasses_t.SPEAK_PRIVATE:
-                case SpeakClasses_t.SPEAK_PRIVATE_RED:
-                case SpeakClasses_t.SPEAK_RVR_ANSWER:
+                case SpeechType.Private:
+                case SpeechType.PrivateRed:
+                case SpeechType.RuleViolationAnswer:
                     Receiver = msg.GetString();
                     break;
-                case SpeakClasses_t.SPEAK_CHANNEL_Y:
-                case SpeakClasses_t.SPEAK_CHANNEL_R1:
-                case SpeakClasses_t.SPEAK_CHANNEL_R2:
-                case SpeakClasses_t.SPEAK_CHANNEL_W:
-                    ChannelId = (ChatChannel_t)msg.GetUInt16();
+                case SpeechType.ChannelYellow:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelRedAnonymous:
+                case SpeechType.ChannelWhite:
+                    ChannelId = (ChatChannel)msg.GetUInt16();
                     break;
                 default:
                     break;
@@ -62,15 +62,15 @@ namespace Tibia.Packets.Outgoing
 
             switch (SpeakType)
             {
-                case SpeakClasses_t.SPEAK_PRIVATE:
-                case SpeakClasses_t.SPEAK_PRIVATE_RED:
-                case SpeakClasses_t.SPEAK_RVR_ANSWER:
+                case SpeechType.Private:
+                case SpeechType.PrivateRed:
+                case SpeechType.RuleViolationAnswer:
                     msg.AddString(Receiver);
                     break;
-                case SpeakClasses_t.SPEAK_CHANNEL_Y:
-                case SpeakClasses_t.SPEAK_CHANNEL_R1:
-                case SpeakClasses_t.SPEAK_CHANNEL_R2:
-                case SpeakClasses_t.SPEAK_CHANNEL_W:
+                case SpeechType.ChannelYellow:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelRedAnonymous:
+                case SpeechType.ChannelWhite:
                     msg.AddUInt16((ushort)ChannelId);
                     break;
                 default:
@@ -82,7 +82,7 @@ namespace Tibia.Packets.Outgoing
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, SpeakClasses_t type, string receiver, string message, ChatChannel_t channel)
+        public static bool Send(Objects.Client client, SpeechType type, string receiver, string message, ChatChannel channel)
         {
             SayPacket p = new SayPacket(client);
 

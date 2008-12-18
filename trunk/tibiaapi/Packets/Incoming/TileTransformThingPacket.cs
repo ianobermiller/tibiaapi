@@ -17,17 +17,17 @@ namespace Tibia.Packets.Incoming
         public TileTransformThingPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.TILE_TRANSFORM_THING;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.TileTransformThing;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.TILE_TRANSFORM_THING)
+            if (msg.GetByte() != (byte)IncomingPacketType.TileTransformThing)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.TILE_TRANSFORM_THING;
+            Type = IncomingPacketType.TileTransformThing;
 
             Position = msg.GetLocation();
             StackPosition = msg.GetByte();

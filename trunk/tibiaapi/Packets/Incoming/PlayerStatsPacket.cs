@@ -23,17 +23,17 @@ namespace Tibia.Packets.Incoming
         public PlayerStatsPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.PLAYER_STATS;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.PlayerStatusUpdate;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.PLAYER_STATS)
+            if (msg.GetByte() != (byte)IncomingPacketType.PlayerStatusUpdate)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.PLAYER_STATS;
+            Type = IncomingPacketType.PlayerStatusUpdate;
 
             Health = msg.GetUInt16();
             MaxHealth = msg.GetUInt16();

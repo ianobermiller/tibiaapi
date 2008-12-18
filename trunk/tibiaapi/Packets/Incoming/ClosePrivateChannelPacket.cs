@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public ClosePrivateChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CLOSE_PRIVATE_CHANNEL;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.PrivateChannelClose;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CLOSE_PRIVATE_CHANNEL)
+            if (msg.GetByte() != (byte)IncomingPacketType.PrivateChannelClose)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CLOSE_PRIVATE_CHANNEL;
+            Type = IncomingPacketType.PrivateChannelClose;
 
             ChannelId = msg.GetUInt16();
 

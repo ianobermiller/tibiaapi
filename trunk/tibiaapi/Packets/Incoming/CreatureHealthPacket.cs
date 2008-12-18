@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public CreatureHealthPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_HEALTH;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureHealth;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_HEALTH)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureHealth)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_HEALTH;
+            Type = IncomingPacketType.CreatureHealth;
 
             CreatureId = msg.GetUInt32();
             CREATURE_HEALTH = msg.GetByte();

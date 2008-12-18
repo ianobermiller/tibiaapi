@@ -11,142 +11,140 @@ namespace Tibia.Packets
         PipePacket          = 0xFF
     }
 
-    public enum SpeakClasses_t : byte
+    public enum SpeechType : byte
     {
-        SPEAK_SAY = 0x01,	//normal talk
-        SPEAK_WHISPER = 0x02,	//whispering - #w text
-        SPEAK_YELL = 0x03,	//yelling - #y text
-        SPEAK_PRIVATE_PN = 0x04, //Player-to-NPC speaking(NPCs channel)
-        SPEAK_PRIVATE_NP = 0x05, //NPC-to-Player speaking
-        SPEAK_PRIVATE = 0x06, //Players speaking privately to players
-        SPEAK_CHANNEL_Y = 0x07,	//Yellow message in chat
-        SPEAK_CHANNEL_W = 0x08, //White message in chat
-        SPEAK_RVR_CHANNEL = 0x09, //Reporting rule violation - Ctrl+R
-        SPEAK_RVR_ANSWER = 0x0A, //Answering report
-        SPEAK_RVR_CONTINUE = 0x0B, //Answering the answer of the report
-        SPEAK_BROADCAST = 0x0C,	//Broadcast a message - #b
-        SPEAK_CHANNEL_R1 = 0x0D,	//Talk red on chat - #c
-        SPEAK_PRIVATE_RED = 0x0E,	//Red private - @name@ text
-        SPEAK_CHANNEL_O = 0x0F,	//Talk orange on text
+        Say = 0x01,	//normal talk
+        Whisper = 0x02,	//whispering - #w text
+        Yell = 0x03,	//yelling - #y text
+        PrivatePlayerToNPC = 0x04, //Player-to-NPC speaking(NPCs channel)
+        PrivateNPCToPlayer = 0x05, //NPC-to-Player speaking
+        Private = 0x06, //Players speaking privately to players
+        ChannelYellow = 0x07,	//Yellow message in chat
+        ChannelWhite = 0x08, //White message in chat
+        RuleViolationReport = 0x09, //Reporting rule violation - Ctrl+R
+        RuleViolationAnswer = 0x0A, //Answering report
+        RuleViolationContinue = 0x0B, //Answering the answer of the report
+        Broadcast = 0x0C,	//Broadcast a message - #b
+        ChannelRed = 0x0D,	//Talk red on chat - #c
+        PrivateRed = 0x0E,	//Red private - @name@ text
+        ChannelOrange = 0x0F,	//Talk orange on text
         //SPEAK_                = 0x10, //?
-        SPEAK_CHANNEL_R2 = 0x11,	//Talk red anonymously on chat - #d
+        ChannelRedAnonymous = 0x11,	//Talk red anonymously on chat - #d
         //SPEAK_MONSTER_SAY12 = 0x12, //?????
-        SPEAK_MONSTER_SAY = 0x13,	//Talk orange
-        SPEAK_MONSTER_YELL = 0x14,	//Yell orange
+        MonsterSay = 0x13,	//Talk orange
+        MonsterYell = 0x14,	//Yell orange
     }
 
-    public enum MessageClasses_t : byte
+    public enum StatusMessage : byte
     {
-        MSG_STATUS_CONSOLE_RED = 0x11, //Red message in the console
-        MSG_STATUS_CONSOLE_ORANGE2 = 0x13, //Orange message in the console
-        MSG_STATUS_CONSOLE_ORANGE = 0x14, //Orange message in the console
-        MSG_STATUS_WARNING = 0x15, //Red message in game window and in the console
-        MSG_EVENT_ADVANCE = 0x16, //White message in game window and in the console
-        MSG_EVENT_DEFAULT = 0x17, //White message at the bottom of the game window and in the console
-        MSG_STATUS_DEFAULT = 0x18, //White message at the bottom of the game window and in the console
-        MSG_INFO_DESCR = 0x19, //Green message in game window and in the console
-        MSG_STATUS_SMALL = 0x1A, //White message at the bottom of the game window"
-        MSG_STATUS_CONSOLE_BLUE = 0x1B, //Blue message in the console
+        ConsoleRed = 0x11, //Red message in the console
+        ConsoleOrange = 0x13, //Orange message in the console
+        ConsoleOrange2 = 0x14, //Orange message in the console
+        Warning = 0x15, //Red message in game window and in the console
+        EventAdvance = 0x16, //White message in game window and in the console
+        EventDefault = 0x17, //White message at the bottom of the game window and in the console
+        StatusDefault = 0x18, //White message at the bottom of the game window and in the console
+        DescriptionGreen = 0x19, //Green message in game window and in the console
+        StatusSmall = 0x1A, //White message at the bottom of the game window"
+        ConsoleBlue = 0x1B, //Blue message in the console
     }
 
-    public enum IncomingPacketType_t : byte
+    public enum IncomingPacketType : byte
     {
         // GameServer
-        SELF_APPEAR = 0x0A,
-        GM_ACTION = 0x0B,
-        ERROR_MESSAGE = 0x14,
-        FYI_MESSAGE = 0x15,
-        WAITING_LIST = 0x16,
-        PING = 0x1E,
-        DEATH = 0x28,
-        CAN_REPORT_BUGS = 0x32,
-        MAP_DESCRIPTION = 0x64,
-        MOVE_NORTH = 0x65,
-        MOVE_EAST = 0x66,
-        MOVE_SOUTH = 0x67,
-        MOVE_WEST = 0x68,
-        UPDATE_TILE = 0x69,
-        TILE_ADD_THING = 0x6A,
-        TILE_TRANSFORM_THING = 0x6B,
-        TILE_REMOVE_THING = 0x6C,
-        CREATURE_MOVE = 0x6D,
-        OPEN_CONTAINER = 0x6E,
-        CLOSE_CONTAINER = 0x6F,
-        CONTAINER_ADD_ITEM = 0x70,
-        CONTAINER_UPDATE_ITEM = 0x71,
-        CONTAINER_REMOVE_ITEM = 0x72,
-        INVENTORY_SET_SLOT = 0x78,
-        INVENTORY_RESET_SLOT = 0x79,
-        SAFE_TRADE_REQUEST_ACK = 0x7D,
-        SAFE_TRADE_REQUEST_NO_ACK = 0x7E,
-        SAFE_TRADE_CLOSE = 0x7F,
-        WORLD_LIGHT = 0x82,
-        MAGIC_EFFECT = 0x83,
-        ANIMATED_TEXT = 0x84,
-        DISTANCE_SHOT = 0x85,
-        CREATURE_SQUARE = 0x86,
-        CREATURE_HEALTH = 0x8C,
-        CREATURE_LIGHT = 0x8D,
-        CREATURE_OUTFIT = 0x8E,
-        CREATURE_SPEED = 0x8F,
-        CREATURE_SKULLS = 0x90,
-        CREATURE_SHIELDS = 0x91,
-        ITEM_TEXT_WINDOW = 0x96,
-        HOUSE_TEXT_WINDOW = 0x97,
-        PLAYER_STATS = 0xA0,
-        PLAYER_SKILLS = 0xA1,
-        PLAYER_ICONS = 0xA2,
-        CANCEL_TARGET = 0xA3,
-        CREATURE_SPEAK = 0xAA,
-        CHANNEL_LIST = 0xAB,
-        OPEN_CHANNEL = 0xAC,
-        OPEN_PRIVATE_PLAYER_CHAT = 0xAD,
-        RULE_VIOLATIONS_CHANNEL = 0xAE,
-        REMOVE_REPORT = 0xAF,
-        RULE_VIOLATION_CANCEL = 0xB0,
-        RULE_VIOLATION_LOCK = 0xB1,
-        CREATE_PRIVATE_CHANNEL = 0xB2,
-        CLOSE_PRIVATE_CHANNEL = 0xB3,
-        TEXT_MESSAGE = 0xB4,
-        PLAYER_CANCEL_WALK = 0xB5,
-        FLOOR_CHANGE_UP = 0xBE,
-        FLOOR_CHANGE_DOWN = 0xBF,
-        OUTFIT_WINDOW = 0xC8,
-        VIP_STATE = 0xD2,
-        VIP_LOGIN = 0xD3,
-        VIP_LOGOUT = 0xD4,
-        QUEST_LIST = 0xF0,
-        QUEST_PART_LIST = 0xF1,
-        OPEN_SHOP_WINDOW = 0x7A,
-        SHOP_SALE_ITEM_LIST = 0x7B,
-        CLOSE_SHOP_WINDOW = 0x7C,
-        SHOW_TUTORIAL = 0xDC,
-        ADD_MAP_MARKER = 0xDD,
+        SelfAppear = 0x0A,
+        GMAction = 0x0B,
+        ErrorMessage = 0x14,
+        FyiMessage = 0x15,
+        WaitingList = 0x16,
+        Ping = 0x1E,
+        Death = 0x28,
+        CanReportBugs = 0x32,
+        MapDescription = 0x64,
+        MoveNorth = 0x65,
+        MoveEast = 0x66,
+        MoveSouth = 0x67,
+        MoveWest = 0x68,
+        UpdateTile = 0x69,
+        TileAddThing = 0x6A,
+        TileTransformThing = 0x6B,
+        TileRemoveThing = 0x6C,
+        CreatureMove = 0x6D,
+        ContainerOpen = 0x6E,
+        ContainerClose = 0x6F,
+        ContainerAddItem = 0x70,
+        ContainerUpdateItem = 0x71,
+        ContainerRemoveItem = 0x72,
+        InventorySetSlot = 0x78,
+        InventoryResetSlot = 0x79,
+        ShopWindowOpen = 0x7A,
+        ShopSaleGoldCount = 0x7B,
+        ShopWindowClose = 0x7C,
+        SafeTradeRequestAck = 0x7D,
+        SafeTradeRequestNoAck = 0x7E,
+        SafeTradeClose = 0x7F,
+        WorldLight = 0x82,
+        MagicEffect = 0x83,
+        AnimatedText = 0x84,
+        Projectile = 0x85,
+        CreatureSquare = 0x86,
+        CreatureHealth = 0x8C,
+        CreatureLight = 0x8D,
+        CreatureOutfit = 0x8E,
+        CreatureSpeed = 0x8F,
+        CreatureSkull = 0x90,
+        CreatureShield = 0x91,
+        ItemTextWindow = 0x96,
+        HouseTextWindow = 0x97,
+        PlayerStatusUpdate = 0xA0,
+        PlayerSkillsUpdate = 0xA1,
+        PlayerFlagUpdate = 0xA2,
+        CancelTarget = 0xA3,
+        CreatureSpeak = 0xAA,
+        ChannelList = 0xAB,
+        ChannelOpen = 0xAC,
+        ChannelOpenPrivate = 0xAD,
+        RuleViolationOpen = 0xAE,
+        RemoveReport = 0xAF,
+        RuleViolationCancel = 0xB0,
+        RuleViolationLock = 0xB1,
+        PrivateChannelCreate = 0xB2,
+        PrivateChannelClose = 0xB3,
+        StatusMessage = 0xB4,
+        PlayerCancelWalk = 0xB5,
+        FloorChangeUp = 0xBE,
+        FloorChangeDown = 0xBF,
+        OutfitWindow = 0xC8,
+        VipState = 0xD2,
+        VipLogin = 0xD3,
+        VipLogout = 0xD4,
+        QuestList = 0xF0,
+        QuestPartList = 0xF1,
+        ShowTutorial = 0xDC,
+        AddMapMarker = 0xDD,
     }
 
-    public enum OutgoingPacketType_t : byte
+    public enum OutgoingPacketType : byte
     {
-        SAY = 0x96,
-        OPEN_CHANNEL = 0x98,
-        CLOSE_CHANNEL = 0x99,
-        ATTACK = 0xA1,
-        THROW = 0x78,
-        LOOK_AT = 0x8C,
-        FOLLOW = 0xA2,
-        USE_ITEM = 0x82,
-        USE_ITEM_EX = 0x83,
-        CANCEL_MOVE = 0xBE,
-        BATTLE_WINDOW = 0x84,
-        LOGOUT = 0x14,
-        CLOSE_CONTAINER = 0x87,
-        UP_ARROW_CONTAINER = 0x88,
-    }
+        Logout = 0x14,
+        ItemMove = 0x78,
 
-    public enum PacketDestination_t : byte
-    {
-        CLIENT,
-        SERVER,
-        PIPE, //for future update
+        // TODO: Readd these packets
+        ShopSell = 0x7A,
+        ShopBuy = 0x7B,
+
+        ItemUse = 0x82,
+        ItemUseOn = 0x83,
+        LookAt = 0x8C,
+        PlayerSpeech = 0x96,
+        ChannelOpen = 0x98,
+        ChannelClose = 0x99,
+        Attack = 0xA1,
+        Follow = 0xA2,
+        CancelMove = 0xBE,
+        ItemUseBattlelist = 0x84,
+        ContainerClose = 0x87,
+        ContainerOpenParent = 0x88,
     }
 
     /// <summary>
@@ -180,30 +178,41 @@ namespace Tibia.Packets
         None
     }
 
-    public enum SquareColor_t : byte
+    public enum SquareColor : byte
     {
-        BLACK = 0
+        Black = 0
     }
 
     #region Speech
 
-    public enum ChatChannel_t : ushort
+    public enum ChatChannel : ushort
     {
-        GUILD = 0x00,
-        RULE_REP = 0x03,
-        GAME_CHAT = 0x04,
-        TRADE = 0x05,
-        TRADE_ROOK = 0x06,
-        RL_CHAT = 0x07,
-        PARTY = 0x08,
-        HELP = 0x09,
-        PRIVATE = 0xFFFF,
-        NONE = 0xAAAA
+        Guild = 0x00,
+        RuleReport = 0x03,
+        Game = 0x04,
+        Trade = 0x05,
+        TradeRook = 0x06,
+        RealLife = 0x07,
+        Party = 0x08,
+        Help = 0x09,
+        OwnPrivate = 0x0E,
+        Custom = 0xA0,
+        Custom1 = 0xA1,
+        Custom2 = 0xA2,
+        Custom3 = 0xA3,
+        Custom4 = 0xA4,
+        Custom5 = 0xA5,
+        Custom6 = 0xA6,
+        Custom7 = 0xA7,
+        Custom8 = 0xA8,
+        Custom9 = 0xA9,
+        Private = 0xFFFF,
+        None = 0xAAAA
     }
 
     #endregion
 
-    public enum TextColor_t : byte
+    public enum TextColor : byte
     {
         Blue = 5,
         Green = 30,
@@ -220,50 +229,50 @@ namespace Tibia.Packets
         None = 255
     }
 
-    public enum ShootType_t : byte
+    public enum ProjectileType : byte
     {
-        NM_SHOOT_SPEAR = 1,
-        NM_SHOOT_BOLT = 2,
-        NM_SHOOT_ARROW = 3,
-        NM_SHOOT_FIRE = 4,
-        NM_SHOOT_ENERGY = 5,
-        NM_SHOOT_POISONARROW = 6,
-        NM_SHOOT_BURSTARROW = 7,
-        NM_SHOOT_THROWINGSTAR = 8,
-        NM_SHOOT_THROWINGKNIFE = 9,
-        NM_SHOOT_SMALLSTONE = 10,
-        NM_SHOOT_DEATH = 11,
-        NM_SHOOT_LARGEROCK = 12,
-        NM_SHOOT_SNOWBALL = 13,
-        NM_SHOOT_POWERBOLT = 14,
-        NM_SHOOT_POISONFIELD = 15,
-        NM_SHOOT_INFERNALBOLT = 16,
-        NM_SHOOT_HUNTINGSPEAR = 17,
-        NM_SHOOT_ENCHANTEDSPEAR = 18,
-        NM_SHOOT_REDSTAR = 19,
-        NM_SHOOT_GREENSTAR = 20,
-        NM_SHOOT_ROYALSPEAR = 21,
-        NM_SHOOT_SNIPERARROW = 22,
-        NM_SHOOT_ONYXARROW = 23,
-        NM_SHOOT_PIERCINGBOLT = 24,
-        NM_SHOOT_WHIRLWINDSWORD = 25,
-        NM_SHOOT_WHIRLWINDAXE = 26,
-        NM_SHOOT_WHIRLWINDCLUB = 27,
-        NM_SHOOT_ETHEREALSPEAR = 28,
-        NM_SHOOT_ICE = 29,
-        NM_SHOOT_EARTH = 30,
-        NM_SHOOT_HOLY = 31,
-        NM_SHOOT_SUDDENDEATH = 32,
-        NM_SHOOT_FLASHARROW = 33,
-        NM_SHOOT_FLAMMINGARROW = 34,
-        NM_SHOOT_SHIVERARROW = 35,
-        NM_SHOOT_ENERGYBALL = 36,
-        NM_SHOOT_SMALLICE = 37,
-        NM_SHOOT_SMALLHOLY = 38,
-        NM_SHOOT_SMALLEARTH = 39,
-        NM_SHOOT_EARTHARROW = 40,
-        NM_SHOOT_EXPLOSION = 41,
-        NM_SHOOT_CAKE = 42,
+        Spear = 0x01,
+        Bolt = 0x02,
+        Arrow = 0x03,
+        Fire = 0x04,
+        Energy = 0x05,
+        PoisonArrow = 0x06,
+        BurstArrow = 0x07,
+        ThrowingStar = 0x08,
+        ThrowingKnife = 0x09,
+        SmallStone = 0x0A,
+        Skull = 0x0B,
+        BigStone = 0x0C,
+        SnowBall = 0x0D,
+        PowerBolt = 0x0E,
+        SmallPoison = 0x0F,
+        InfernalBolt = 0x10,
+        HuntingSpear = 0x11,
+        EnchantedSpear = 0x12,
+        AssassinStar = 0x13,
+        ViperStar = 0x14,
+        RoyalSpear = 0x15,
+        SniperArrow = 0x16,
+        OnyxArrow = 0x17,
+        EarthArrow = 0x18,
+        NormalSword = 0x19,
+        NormalAxe = 0x1A,
+        NormalClub = 0x1B,
+        EtherealSpear = 0x1C,
+        Ice = 0x1D,
+        Earth = 0x1E,
+        Holy = 0x1F,
+        Death = 0x20,
+        FlashArrow = 0x21,
+        FlamingArrow = 0x22,
+        ShiverArrow = 0x23,
+        EnergySmall = 0x24,
+        IceSmall = 0x25,
+        HolySmall = 0x26,
+        EarthSmall = 0x27,
+        EarthArrow2 = 0x28,
+        Explosion = 0x29,
+        Cake = 0x2A
     }
 
     public enum TileAnimationType
@@ -327,28 +336,28 @@ namespace Tibia.Packets
         FlashSquare = 0x39  
     }
 
-    public enum PartyShields_t
+    public enum PartyShield
     {
-        SHIELD_NONE = 0,
-        SHIELD_WHITEYELLOW = 1,
-        SHIELD_WHITEBLUE = 2,
-        SHIELD_BLUE = 3,
-        SHIELD_YELLOW = 4,
-        SHIELD_BLUE_SHAREDEXP = 5,
-        SHIELD_YELLOW_SHAREDEXP = 6,
-        SHIELD_BLUE_NOSHAREDEXP_BLINK = 7,
-        SHIELD_YELLOW_NOSHAREDEXP_BLINK = 8,
-        SHIELD_BLUE_NOSHAREDEXP = 9,
-        SHIELD_YELLOW_NOSHAREDEXP = 10
+        None = 0,
+        Inviter = 1,
+        Invitee = 2,
+        Member = 3,
+        Leader = 4,
+        MemberSharedExp = 5,
+        LeaderSharedExp = 6,
+        MemberSharedExpInactive = 7,
+        LeaderSharedExpInactive = 8,
+        MemberShareExpAlone = 9,
+        LeaderSharedExpAlone = 10
     }
 
-    public class AvalibleOutfit_t
+    public class AvalibleOutfit
     {
         public ushort Id { get; set; }
         public string Name { get; set; }
         public byte Addons { get; set; }
 
-        public AvalibleOutfit_t() { }
+        public AvalibleOutfit() { }
     }
 
     public class ShopInfo
@@ -372,16 +381,16 @@ namespace Tibia.Packets
         }
     }
 
-    public enum PacketCreatureType_t : byte
+    public enum PacketCreatureType : byte
     {
-        KNOW,
-        UNKNOW,
-        TURN,
+        Known,
+        Unknown,
+        Turn
     }
 
     public class PacketCreature
     {
-        public PacketCreatureType_t Type { get; set; }
+        public PacketCreatureType Type { get; set; }
         public uint Id { get; set; }
         public string Name { get; set; }
         public byte Health { get; set; }
@@ -390,8 +399,8 @@ namespace Tibia.Packets
         public byte LightLevel { get; set; }
         public byte LightColor { get; set; }
         public ushort Speed { get; set; }
-        public Constants.Skulls_t Skull { get; set; }
-        public PartyShields_t PartyShield { get; set; }
+        public Constants.Skull Skull { get; set; }
+        public PartyShield PartyShield { get; set; }
         public uint RemoveId { get; set; }
         public Objects.Client Client { get; set; }
 

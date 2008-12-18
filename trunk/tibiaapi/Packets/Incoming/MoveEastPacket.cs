@@ -26,11 +26,11 @@ namespace Tibia.Packets.Incoming
         public MoveEastPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.MOVE_EAST;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.MoveEast;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
             int position = msg.Position;
 
@@ -38,7 +38,7 @@ namespace Tibia.Packets.Incoming
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.MOVE_EAST;
+            Type = IncomingPacketType.MoveEast;
             stream.AddByte((byte)Type);
 
             pos.X++;
@@ -172,7 +172,7 @@ namespace Tibia.Packets.Incoming
                 //creatures
                 if (thingId == 0x0062) //creature is known
                 {
-                    c.Type = PacketCreatureType_t.KNOW;
+                    c.Type = PacketCreatureType.Known;
                     c.Id = msg.GetUInt32();
                     stream.AddUInt32(c.Id); //creatureid
                 }
@@ -185,7 +185,7 @@ namespace Tibia.Packets.Incoming
                     //add a new creature
                     //uint32_t creatureID = msg.getU32();
 
-                    c.Type = PacketCreatureType_t.UNKNOW;
+                    c.Type = PacketCreatureType.Unknown;
                     c.Id = msg.GetUInt32();
                     stream.AddUInt32(c.Id);
 
@@ -221,10 +221,10 @@ namespace Tibia.Packets.Incoming
 
                 //creature->setSkull(msg.getU8());
                 //creature->setShield(msg.getU8());
-                c.Skull = (Constants.Skulls_t)msg.GetByte();
+                c.Skull = (Constants.Skull)msg.GetByte();
                 stream.AddByte((byte)c.Skull);
 
-                c.PartyShield = (PartyShields_t)msg.GetByte();
+                c.PartyShield = (PartyShield)msg.GetByte();
                 stream.AddByte((byte)c.PartyShield);
 
                 creatures.Add(c);
@@ -237,7 +237,7 @@ namespace Tibia.Packets.Incoming
                 //uint32_t creatureID = msg.getU32();
 
                 c = new PacketCreature(Client);
-                c.Type = PacketCreatureType_t.TURN;
+                c.Type = PacketCreatureType.Turn;
                 c.Id = msg.GetUInt32();
                 stream.AddUInt32(c.Id);
                 //check if we can read 1 byte

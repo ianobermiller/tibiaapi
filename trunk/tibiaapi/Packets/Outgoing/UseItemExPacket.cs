@@ -17,17 +17,17 @@ namespace Tibia.Packets.Outgoing
         public UseItemExPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.USE_ITEM_EX;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ItemUseOn;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.USE_ITEM_EX)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ItemUseOn)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.USE_ITEM_EX;
+            Type = OutgoingPacketType.ItemUseOn;
 
             FromPosition = msg.GetLocation();
             FromSpriteId = msg.GetUInt16();

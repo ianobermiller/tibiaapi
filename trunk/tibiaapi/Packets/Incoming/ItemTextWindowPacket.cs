@@ -17,17 +17,17 @@ namespace Tibia.Packets.Incoming
         public ItemTextWindowPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.ITEM_TEXT_WINDOW;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.ItemTextWindow;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.ITEM_TEXT_WINDOW)
+            if (msg.GetByte() != (byte)IncomingPacketType.ItemTextWindow)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.ITEM_TEXT_WINDOW;
+            Type = IncomingPacketType.ItemTextWindow;
 
             WindowId = msg.GetUInt32();
             ItemId = msg.GetUInt16();

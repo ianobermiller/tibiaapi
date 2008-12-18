@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public OpenShopWindowPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.OPEN_SHOP_WINDOW;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.ShopWindowOpen;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.OPEN_SHOP_WINDOW)
+            if (msg.GetByte() != (byte)IncomingPacketType.ShopWindowOpen)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.OPEN_SHOP_WINDOW;
+            Type = IncomingPacketType.ShopWindowOpen;
 
             byte cap = msg.GetByte();
             ShopList = new List<ShopInfo> { };

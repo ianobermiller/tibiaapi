@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public CreatureOutfitPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_OUTFIT;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureOutfit;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_OUTFIT)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureOutfit)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_OUTFIT;
+            Type = IncomingPacketType.CreatureOutfit;
 
             CreatureId = msg.GetUInt32();
             Outfit = msg.GetOutfit();
