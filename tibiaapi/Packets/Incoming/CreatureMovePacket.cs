@@ -14,17 +14,17 @@ namespace Tibia.Packets.Incoming
         public CreatureMovePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_MOVE;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureMove;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_MOVE)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureMove)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_MOVE;
+            Type = IncomingPacketType.CreatureMove;
             FromPosition = msg.GetLocation();
             FromStackPosition = msg.GetByte();
             ToPosition = msg.GetLocation();

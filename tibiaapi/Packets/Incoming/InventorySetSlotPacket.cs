@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public InventorySetSlotPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.INVENTORY_SET_SLOT;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.InventorySetSlot;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.INVENTORY_SET_SLOT)
+            if (msg.GetByte() != (byte)IncomingPacketType.InventorySetSlot)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.INVENTORY_SET_SLOT;
+            Type = IncomingPacketType.InventorySetSlot;
             Slot = msg.GetByte();
 
             Item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);

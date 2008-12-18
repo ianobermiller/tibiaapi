@@ -8,24 +8,24 @@ namespace Tibia.Packets.Outgoing
     public class OpenChannelPacket : OutgoingPacket
     {
 
-        public ChatChannel_t ChannelId { get; set; }
+        public ChatChannel ChannelId { get; set; }
 
         public OpenChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.OPEN_CHANNEL;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ChannelOpen;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.OPEN_CHANNEL)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelOpen)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.OPEN_CHANNEL;
+            Type = OutgoingPacketType.ChannelOpen;
 
-            ChannelId = (ChatChannel_t)msg.GetUInt16();
+            ChannelId = (ChatChannel)msg.GetUInt16();
 
             return true;
         }

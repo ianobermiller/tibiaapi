@@ -10,17 +10,17 @@ namespace Tibia.Packets.Outgoing
         public LogoutPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.LOGOUT;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.Logout;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.LOGOUT)
+            if (msg.GetByte() != (byte)OutgoingPacketType.Logout)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.LOGOUT;
+            Type = OutgoingPacketType.Logout;
 
             return true;
         }

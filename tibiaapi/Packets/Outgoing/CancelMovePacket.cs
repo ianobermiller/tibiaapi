@@ -10,17 +10,17 @@ namespace Tibia.Packets.Outgoing
         public CancelMovePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.CANCEL_MOVE;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.CancelMove;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.CANCEL_MOVE)
+            if (msg.GetByte() != (byte)OutgoingPacketType.CancelMove)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.CANCEL_MOVE;
+            Type = OutgoingPacketType.CancelMove;
 
             return true;
         }

@@ -12,17 +12,17 @@ namespace Tibia.Packets.Incoming
         public InventoryResetSlotPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.INVENTORY_RESET_SLOT;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.InventoryResetSlot;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.INVENTORY_RESET_SLOT)
+            if (msg.GetByte() != (byte)IncomingPacketType.InventoryResetSlot)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.INVENTORY_RESET_SLOT;
+            Type = IncomingPacketType.InventoryResetSlot;
             Slot = msg.GetByte();
 
             return true;

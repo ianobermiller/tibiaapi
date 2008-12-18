@@ -9,24 +9,24 @@ namespace Tibia.Packets.Incoming
     {
         public Objects.Location Position { get; set; }
         public string Message { get; set; }
-        public TextColor_t Color { get; set; }
+        public TextColor Color { get; set; }
 
         public AnimatedTextPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.ANIMATED_TEXT;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.AnimatedText;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.ANIMATED_TEXT)
+            if (msg.GetByte() != (byte)IncomingPacketType.AnimatedText)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.ANIMATED_TEXT;
+            Type = IncomingPacketType.AnimatedText;
             Position = msg.GetLocation();
-            Color = (TextColor_t)msg.GetByte();
+            Color = (TextColor)msg.GetByte();
             Message = msg.GetString();
 
             return true;

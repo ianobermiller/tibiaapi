@@ -11,17 +11,17 @@ namespace Tibia.Packets.Incoming
         public RuleViolationLockPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.RULE_VIOLATION_CANCEL;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.RuleViolationCancel;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.RULE_VIOLATION_CANCEL)
+            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationCancel)
                 throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType_t.RULE_VIOLATION_CANCEL;
+            Type = IncomingPacketType.RuleViolationCancel;
 
             return true;
         }

@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public ChannelListPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CHANNEL_LIST;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.ChannelList;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CHANNEL_LIST)
+            if (msg.GetByte() != (byte)IncomingPacketType.ChannelList)
                 throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType_t.CHANNEL_LIST;
+            Type = IncomingPacketType.ChannelList;
             NumberChannel = msg.GetByte();
 
             Channels = new List<Tibia.Objects.Channel>(NumberChannel);
@@ -33,7 +33,7 @@ namespace Tibia.Packets.Incoming
             for (int i = 0; i < NumberChannel; i++)
             {
                 id = msg.GetUInt16();
-                Channels.Add(new Tibia.Objects.Channel((ChatChannel_t)id, msg.GetString()));
+                Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
             }
 
             return true;

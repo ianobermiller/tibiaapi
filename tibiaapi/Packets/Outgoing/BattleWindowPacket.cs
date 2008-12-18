@@ -15,17 +15,17 @@ namespace Tibia.Packets.Outgoing
         public BattleWindowPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.BATTLE_WINDOW;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ItemUseBattlelist;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.BATTLE_WINDOW)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ItemUseBattlelist)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.BATTLE_WINDOW;
+            Type = OutgoingPacketType.ItemUseBattlelist;
 
             FromPosition = msg.GetLocation();
             SpriteId = msg.GetUInt16();

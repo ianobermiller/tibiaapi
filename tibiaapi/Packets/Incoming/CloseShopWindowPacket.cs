@@ -11,17 +11,17 @@ namespace Tibia.Packets.Incoming
         public CloseShopWindowPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CLOSE_SHOP_WINDOW;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.ShopWindowClose;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CLOSE_SHOP_WINDOW)
+            if (msg.GetByte() != (byte)IncomingPacketType.ShopWindowClose)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CLOSE_SHOP_WINDOW;
+            Type = IncomingPacketType.ShopWindowClose;
 
             //no data
 

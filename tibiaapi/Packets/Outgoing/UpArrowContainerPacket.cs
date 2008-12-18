@@ -12,17 +12,17 @@ namespace Tibia.Packets.Outgoing
         public UpArrowContainerPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.UP_ARROW_CONTAINER;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ContainerOpenParent;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.UP_ARROW_CONTAINER)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerOpenParent)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.UP_ARROW_CONTAINER;
+            Type = OutgoingPacketType.ContainerOpenParent;
 
             Id = msg.GetByte();
 

@@ -8,24 +8,24 @@ namespace Tibia.Packets.Outgoing
     public class CloseChannelPacket : OutgoingPacket
     {
 
-        public ChatChannel_t ChannelId { get; set; }
+        public ChatChannel ChannelId { get; set; }
 
         public CloseChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.CLOSE_CHANNEL;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ChannelClose;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.CLOSE_CHANNEL)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelClose)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.CLOSE_CHANNEL;
+            Type = OutgoingPacketType.ChannelClose;
 
-            ChannelId = (ChatChannel_t)msg.GetUInt16();
+            ChannelId = (ChatChannel)msg.GetUInt16();
 
             return true;
         }

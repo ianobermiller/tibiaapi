@@ -15,17 +15,17 @@ namespace Tibia.Packets.Incoming
         public TileAddThingPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.TILE_ADD_THING;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.TileAddThing;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.TILE_ADD_THING)
+            if (msg.GetByte() != (byte)IncomingPacketType.TileAddThing)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.TILE_ADD_THING;
+            Type = IncomingPacketType.TileAddThing;
 
             Position = msg.GetLocation();
             ThingId = msg.GetUInt16();
@@ -36,12 +36,12 @@ namespace Tibia.Packets.Incoming
 
                 if (ThingId == 0x0062)
                 {
-                    Creature.Type = PacketCreatureType_t.KNOW;
+                    Creature.Type = PacketCreatureType.Known;
                     Creature.Id = msg.GetUInt32();
                 }
                 else if (ThingId == 0x0061)
                 {
-                    Creature.Type = PacketCreatureType_t.UNKNOW;
+                    Creature.Type = PacketCreatureType.Unknown;
                     Creature.RemoveId = msg.GetUInt32();
                     Creature.Id = msg.GetUInt32();
                     Creature.Name = msg.GetString();
@@ -56,14 +56,14 @@ namespace Tibia.Packets.Incoming
                 Creature.LightColor = msg.GetByte();
 
                 Creature.Speed = msg.GetUInt16();
-                Creature.Skull = (Constants.Skulls_t)msg.GetByte();
-                Creature.PartyShield = (PartyShields_t)msg.GetByte();
+                Creature.Skull = (Constants.Skull)msg.GetByte();
+                Creature.PartyShield = (PartyShield)msg.GetByte();
 
             }
             else if (ThingId == 0x0063)
             {
                 Creature = new PacketCreature(Client);
-                Creature.Type = PacketCreatureType_t.TURN;
+                Creature.Type = PacketCreatureType.Turn;
                 Creature.Id = msg.GetUInt32();
                 Creature.Direction = msg.GetByte();
             }

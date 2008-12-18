@@ -57,7 +57,7 @@ namespace Tibia.Util
 #endif
 
 
-        #region "Contrutor/Destrutor"
+        #region "Constructor/Deconstructor"
 
         public Proxy(Client c)
         {
@@ -144,7 +144,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Eventos"
+        #region "Events"
 
         public delegate void ProxyNotification(string message);
         public event ProxyNotification PrintDebug;
@@ -245,7 +245,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Propriedades"
+        #region "Properties"
 
         public Objects.Client Client
         {
@@ -263,13 +263,13 @@ namespace Tibia.Util
         public void SendToClient(NetworkMessage msg)
         {
             serverSendQueue.Enqueue(msg);
-            processServerSendQueue();
+            ProcessServerSendQueue();
         }
 
         public void SendToServer(NetworkMessage msg)
         {
             clientSendQueue.Enqueue(msg);
-            processClientSendQueue();
+            ProcessClientSendQueue();
         }
 
         private void Close()
@@ -329,10 +329,10 @@ namespace Tibia.Util
 
             tcpServer = new TcpListener(System.Net.IPAddress.Any, portServer);
             tcpServer.Start();
-            tcpServer.BeginAcceptSocket((AsyncCallback)socketAcepted, null);
+            tcpServer.BeginAcceptSocket((AsyncCallback)SocketAcepted, null);
         }
 
-        private void socketAcepted(IAsyncResult ar)
+        private void SocketAcepted(IAsyncResult ar)
         {
 #if _DEBUG
             WRITE_DEBUG("OnSocketAcepted Function.");
@@ -346,10 +346,10 @@ namespace Tibia.Util
             acceptingConnection = false;
 
             isFirstMsg = true;
-            networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+            networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
         }
 
-        private void serverReadPacket(IAsyncResult ar)
+        private void ServerReadPacket(IAsyncResult ar)
         {
             if (acceptingConnection)
                 return;
@@ -390,21 +390,21 @@ namespace Tibia.Util
             if (isFirstMsg)
             {
                 isFirstMsg = false;
-                serverParseFirstMsg(msg);
+                ServerParseFirstMsg(msg);
             }
             else
             {
                 serverReceiveQueue.Enqueue(msg);
-                processServerReceiveQueue();
+                ProcessServerReceiveQueue();
 
                 if (networkStreamServer.CanRead)
-                    networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+                    networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
                 else
                     Restart();
             }
         }
 
-        private void serverParseFirstMsg(NetworkMessage msg)
+        private void ServerParseFirstMsg(NetworkMessage msg)
         {
 #if _DEBUG
             WRITE_DEBUG("ServerParseFirstMsg Function.");
@@ -446,7 +446,7 @@ namespace Tibia.Util
 
                     if (clientVersion != 840)
                     {
-                        disconnectClient(0x0A, "This proxy requires client 8.40");
+                        DisconnectClient(0x0A, "This proxy requires client 8.40");
                         return;
                     }
 
@@ -457,7 +457,7 @@ namespace Tibia.Util
                     }
                     catch (Exception)
                     {
-                        disconnectClient(0x0A, "Connection time out.");
+                        DisconnectClient(0x0A, "Connection time out.");
                         return;
                     }
 
@@ -471,7 +471,7 @@ namespace Tibia.Util
                     msg.InsertPacketHeader();
 
                     networkStreamClient.BeginWrite(msg.Packet, 0, msg.Length, null, null);
-                    networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)charListReceived, null);
+                    networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)CharListReceived, null);
 
                     break;
 
@@ -496,7 +496,7 @@ namespace Tibia.Util
                     msg.GetString();
                     string name = msg.GetString();
 
-                    int selectedChar = getSelectedChar(name);
+                    int selectedChar = GetSelectedChar(name);
 
                     if (selectedChar >= 0)
                     {
@@ -507,7 +507,7 @@ namespace Tibia.Util
                         }
                         catch (Exception)
                         {
-                            disconnectClient(0x14, "Connection timeout.");
+                            DisconnectClient(0x14, "Connection timeout.");
                             return;
                         }
 
@@ -521,15 +521,15 @@ namespace Tibia.Util
 
                         networkStreamClient.Write(msg.Packet, 0, msg.Length);
 
-                        networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)clientReadPacket, null);
-                        networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)serverReadPacket, null);
+                        networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)ClientReadPacket, null);
+                        networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
 
                         return;
 
                     }
                     else
                     {
-                        disconnectClient(0x14, "Unknow character, please relogin..");
+                        DisconnectClient(0x14, "Unknow character, please relogin..");
                         return;
                     }
 
@@ -541,7 +541,7 @@ namespace Tibia.Util
             }
         }
 
-        private void charListReceived(IAsyncResult ar)
+        private void CharListReceived(IAsyncResult ar)
         {
 #if _DEBUG
             WRITE_DEBUG("OnCharListReceived Function.");
@@ -594,7 +594,7 @@ namespace Tibia.Util
                         case 0x1F:
                         case 0x20:
                             {
-                                disconnectClient(0x0A, "A new client are avalible, please download it first!");
+                                DisconnectClient(0x0A, "A new client are avalible, please download it first!");
                                 return;
                             }
                         case 0x28: //Select other login server
@@ -645,7 +645,7 @@ namespace Tibia.Util
 
         }
 
-        private void disconnectClient(byte cmd, string message)
+        private void DisconnectClient(byte cmd, string message)
         {
 #if _DEBUG
             WRITE_DEBUG("DisconnectClient Function.");
@@ -663,7 +663,7 @@ namespace Tibia.Util
             Restart();
         }
 
-        private void processServerReceiveQueue()
+        private void ProcessServerReceiveQueue()
         {
             while (serverReceiveQueue.Count > 0)
             {
@@ -678,7 +678,7 @@ namespace Tibia.Util
 
                 while (msg.Position < msg.Length)
                 {
-                    OutgoingPacket packet = parseServerPacket(msg, pos);
+                    OutgoingPacket packet = ParseServerPacket(msg, pos);
 
                     if (packet == null)
                     {
@@ -707,24 +707,24 @@ namespace Tibia.Util
                     output.InsetLogicalPacketHeader();
                     output.PrepareToSend();
                     clientSendQueue.Enqueue(output);
-                    processClientSendQueue();
+                    ProcessClientSendQueue();
                 }
             }
 
         }
 
-        private OutgoingPacket parseServerPacket(NetworkMessage msg, Location pos)
+        private OutgoingPacket ParseServerPacket(NetworkMessage msg, Location pos)
         {
             OutgoingPacket packet;
-            OutgoingPacketType_t type = (OutgoingPacketType_t)msg.PeekByte();
+            OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();
 
             switch (type)
             {
-                case OutgoingPacketType_t.CLOSE_CHANNEL:
+                case OutgoingPacketType.ChannelClose:
                     {
                         packet = new Packets.Outgoing.CloseChannelPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedCloseChannelOutgoingPacket != null)
                                 packet.Forward = ReceivedCloseChannelOutgoingPacket.Invoke(packet);
@@ -733,11 +733,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.OPEN_CHANNEL:
+                case OutgoingPacketType.ChannelOpen:
                     {
                         packet = new Packets.Outgoing.OpenChannelPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedOpenChannelOutgoingPacket != null)
                                 packet.Forward = ReceivedOpenChannelOutgoingPacket.Invoke(packet);
@@ -746,11 +746,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.SAY:
+                case OutgoingPacketType.PlayerSpeech:
                     {
                         packet = new Packets.Outgoing.SayPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedSayOutgoingPacket != null)
                                 packet.Forward = ReceivedSayOutgoingPacket.Invoke(packet);
@@ -759,11 +759,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.ATTACK:
+                case OutgoingPacketType.Attack:
                     {
                         packet = new Packets.Outgoing.AttackPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedAttackOutgoingPacket != null)
                                 packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
@@ -772,11 +772,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.FOLLOW:
+                case OutgoingPacketType.Follow:
                     {
                         packet = new Packets.Outgoing.FollowPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedFollowOutgoingPacket != null)
                                 packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
@@ -785,11 +785,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.LOOK_AT:
+                case OutgoingPacketType.LookAt:
                     {
                         packet = new Packets.Outgoing.LookAtPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedLookAtOutgoingPacket != null)
                                 packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
@@ -798,11 +798,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.USE_ITEM:
+                case OutgoingPacketType.ItemUse:
                     {
                         packet = new Packets.Outgoing.UseItemPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedUseItemOutgoingPacket != null)
                                 packet.Forward = ReceivedUseItemOutgoingPacket.Invoke(packet);
@@ -811,11 +811,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.USE_ITEM_EX:
+                case OutgoingPacketType.ItemUseOn:
                     {
                         packet = new Packets.Outgoing.UseItemExPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedUseItemExOutgoingPacket != null)
                                 packet.Forward = ReceivedUseItemExOutgoingPacket.Invoke(packet);
@@ -824,11 +824,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.THROW:
+                case OutgoingPacketType.ItemMove:
                     {
                         packet = new Packets.Outgoing.ThrowPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedThrowOutgoingPacket != null)
                                 packet.Forward = ReceivedThrowOutgoingPacket.Invoke(packet);
@@ -837,11 +837,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.CANCEL_MOVE:
+                case OutgoingPacketType.CancelMove:
                     {
                         packet = new Packets.Outgoing.CancelMovePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedCancelMoveOutgoingPacket != null)
                                 packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
@@ -850,11 +850,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.BATTLE_WINDOW:
+                case OutgoingPacketType.ItemUseBattlelist:
                     {
                         packet = new Packets.Outgoing.BattleWindowPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedBattleWindowOutgoingPacket != null)
                                 packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
@@ -863,11 +863,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.LOGOUT:
+                case OutgoingPacketType.Logout:
                     {
                         packet = new Packets.Outgoing.LogoutPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedLogoutOutgoingPacket != null)
                                 packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
@@ -876,11 +876,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.CLOSE_CONTAINER:
+                case OutgoingPacketType.ContainerClose:
                     {
                         packet = new Packets.Outgoing.CloseContainerPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedCloseContainerOutgoingPacket != null)
                                 packet.Forward = ReceivedCloseContainerOutgoingPacket.Invoke(packet);
@@ -889,11 +889,11 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case OutgoingPacketType_t.UP_ARROW_CONTAINER:
+                case OutgoingPacketType.ContainerOpenParent:
                     {
                         packet = new Packets.Outgoing.UpArrowContainerPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.SERVER, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
                             if (ReceivedUpArrowContainerOutgoingPacket != null)
                                 packet.Forward = ReceivedUpArrowContainerOutgoingPacket.Invoke(packet);
@@ -909,7 +909,7 @@ namespace Tibia.Util
             return null;
         }
 
-        private void processServerSendQueue()
+        private void ProcessServerSendQueue()
         {
 
             if (writingServer)
@@ -918,11 +918,11 @@ namespace Tibia.Util
             if (serverSendQueue.Count > 0)
             {
                 NetworkMessage msg = serverSendQueue.Dequeue();
-                serverWrite(msg.Packet);
+                ServerWrite(msg.Packet);
             }
         }
 
-        private void serverWrite(byte[] buffer)
+        private void ServerWrite(byte[] buffer)
         {
 
             if (!writingServer)
@@ -930,7 +930,7 @@ namespace Tibia.Util
                 writingServer = true;
 
                 if (networkStreamServer.CanWrite)
-                    networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)serverWriteDone, null);
+                    networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
                 else
                 {
                     //TODO: Handle the error.
@@ -938,20 +938,20 @@ namespace Tibia.Util
             }
         }
 
-        private void serverWriteDone(IAsyncResult ar)
+        private void ServerWriteDone(IAsyncResult ar)
         {
             networkStreamServer.EndWrite(ar);
             writingServer = false;
 
             if (serverSendQueue.Count > 0)
-                processServerSendQueue();
+                ProcessServerSendQueue();
         }
 
         #endregion
 
         #region "Client"
 
-        private void clientReadPacket(IAsyncResult ar)
+        private void ClientReadPacket(IAsyncResult ar)
         {
             if (acceptingConnection)
                 return;
@@ -980,16 +980,16 @@ namespace Tibia.Util
                 ServerMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
 
             clientReceiveQueue.Enqueue(msg);
-            processClientReceiveQueue();
+            ProcessClientReceiveQueue();
 
             if (networkStreamClient.CanRead)
-                networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)clientReadPacket, null);
+                networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)ClientReadPacket, null);
             else
                 Restart();
 
         }
 
-        private void processClientReceiveQueue()
+        private void ProcessClientReceiveQueue()
         {
             while (clientReceiveQueue.Count > 0)
             {
@@ -1004,7 +1004,7 @@ namespace Tibia.Util
 
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = parseClientPacket(msg, pos);
+                    IncomingPacket packet = ParseClientPacket(msg, pos);
 
                     if (packet == null)
                     {
@@ -1031,12 +1031,12 @@ namespace Tibia.Util
                     output.InsetLogicalPacketHeader();
                     output.PrepareToSend();
                     serverSendQueue.Enqueue(output);
-                    processServerSendQueue();
+                    ProcessServerSendQueue();
                 }
             }
         }
 
-        private void processClientSendQueue()
+        private void ProcessClientSendQueue()
         {
             if (writingClient)
                 return;
@@ -1046,11 +1046,11 @@ namespace Tibia.Util
                 NetworkMessage msg = clientSendQueue.Dequeue();
 
                 if (msg != null)
-                    clientWrite(msg.Packet);
+                    ClientWrite(msg.Packet);
             }
         }
 
-        private void clientWrite(byte[] buffer)
+        private void ClientWrite(byte[] buffer)
         {
             if (!writingClient)
             {
@@ -1060,33 +1060,33 @@ namespace Tibia.Util
                     System.Threading.Thread.Sleep(125);
 
                 if (networkStreamClient.CanWrite)
-                    networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)clientWriteDone, null);
+                    networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
             }
         }
 
-        private void clientWriteDone(IAsyncResult ar)
+        private void ClientWriteDone(IAsyncResult ar)
         {
             networkStreamClient.EndWrite(ar);
             writingClient = false;
 
             if (clientSendQueue.Count > 0)
-                processClientSendQueue();
+                ProcessClientSendQueue();
         }
 
-        private IncomingPacket parseClientPacket(NetworkMessage msg, Objects.Location pos)
+        private IncomingPacket ParseClientPacket(NetworkMessage msg, Objects.Location pos)
         {
             IncomingPacket packet;
-            IncomingPacketType_t type = (IncomingPacketType_t)msg.PeekByte();
+            IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
 
             switch (type)
             {
-                case IncomingPacketType_t.ANIMATED_TEXT:
+                case IncomingPacketType.AnimatedText:
                     {
 #if _DEBUG
                         WRITE_DEBUG("ANIMATED_TEXT");
 #endif
                         packet = new Packets.Incoming.AnimatedTextPacket(Client);
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedAnimatedTextIncomingPacket != null)
                                 packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
@@ -1095,14 +1095,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CLOSE_CONTAINER:
+                case IncomingPacketType.ContainerClose:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CLOSE_CONTAINER");
 #endif
                         packet = new Packets.Incoming.CloseContainerPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCloseContainerIncomingPacket != null)
                                 packet.Forward = ReceivedCloseContainerIncomingPacket.Invoke(packet);
@@ -1111,14 +1111,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_SPEAK:
+                case IncomingPacketType.CreatureSpeak:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_SPEAK");
 #endif
                         packet = new Packets.Incoming.CreatureSpeakPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureSpeakIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSpeakIncomingPacket.Invoke(packet);
@@ -1127,14 +1127,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.OPEN_CHANNEL:
+                case IncomingPacketType.ChannelOpen:
                     {
 #if _DEBUG
                         WRITE_DEBUG("OPEN_CHANNEL");
 #endif
                         packet = new Packets.Incoming.OpenChannelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedOpenChannelIncomingPacket != null)
                                 packet.Forward = ReceivedOpenChannelIncomingPacket.Invoke(packet);
@@ -1143,14 +1143,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.PLAYER_CANCEL_WALK:
+                case IncomingPacketType.PlayerCancelWalk:
                     {
 #if _DEBUG
                         WRITE_DEBUG("PLAYER_CANCEL_WALK");
 #endif
                         packet = new Packets.Incoming.PlayerCancelWalkPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedPlayerCancelWalkIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerCancelWalkIncomingPacket.Invoke(packet);
@@ -1159,14 +1159,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CHANNEL_LIST:
+                case IncomingPacketType.ChannelList:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CHANNEL_LIST");
 #endif
                         packet = new Packets.Incoming.ChannelListPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedChannelListIncomingPacket != null)
                                 packet.Forward = ReceivedChannelListIncomingPacket.Invoke(packet);
@@ -1175,14 +1175,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_MOVE:
+                case IncomingPacketType.CreatureMove:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_MOVE");
 #endif
                         packet = new Packets.Incoming.CreatureMovePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureMoveIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureMoveIncomingPacket.Invoke(packet);
@@ -1191,14 +1191,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.TEXT_MESSAGE:
+                case IncomingPacketType.StatusMessage:
                     {
 #if _DEBUG
                         WRITE_DEBUG("TEXT_MESSAGE");
 #endif
                         packet = new Packets.Incoming.TextMessagePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedTextMessageIncomingPacket != null)
                                 packet.Forward = ReceivedTextMessageIncomingPacket.Invoke(packet);
@@ -1207,14 +1207,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.TILE_ADD_THING:
+                case IncomingPacketType.TileAddThing:
                     {
 #if _DEBUG
                         WRITE_DEBUG("TILE_ADD_THING");
 #endif
                         packet = new Packets.Incoming.TileAddThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedTileAddThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileAddThingIncomingPacket.Invoke(packet);
@@ -1223,14 +1223,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_OUTFIT:
+                case IncomingPacketType.CreatureOutfit:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_OUTFIT");
 #endif
                         packet = new Packets.Incoming.CreatureOutfitPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureOutfitIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureOutfitIncomingPacket.Invoke(packet);
@@ -1239,14 +1239,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_LIGHT:
+                case IncomingPacketType.CreatureLight:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_LIGHT");
 #endif
                         packet = new Packets.Incoming.CreatureLightPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureLightIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureLightIncomingPacket.Invoke(packet);
@@ -1255,14 +1255,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_HEALTH:
+                case IncomingPacketType.CreatureHealth:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_HEALTH");
 #endif
                         packet = new Packets.Incoming.CreatureHealthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureHealthIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureHealthIncomingPacket.Invoke(packet);
@@ -1271,14 +1271,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_SPEED:
+                case IncomingPacketType.CreatureSpeed:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_SPEED");
 #endif
                         packet = new Packets.Incoming.CreatureSpeedPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureSpeedIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSpeedIncomingPacket.Invoke(packet);
@@ -1287,14 +1287,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_SQUARE:
+                case IncomingPacketType.CreatureSquare:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_SQUARE");
 #endif
                         packet = new Packets.Incoming.CreatureSquarePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureSquareIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSquareIncomingPacket.Invoke(packet);
@@ -1303,14 +1303,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.TILE_TRANSFORM_THING:
+                case IncomingPacketType.TileTransformThing:
                     {
 #if _DEBUG
                         WRITE_DEBUG("TILE_TRANSFORM_THING");
 #endif
                         packet = new Packets.Incoming.TileTransformThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedTileTransformThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileTransformThingIncomingPacket.Invoke(packet);
@@ -1319,14 +1319,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.TILE_REMOVE_THING:
+                case IncomingPacketType.TileRemoveThing:
                     {
 #if _DEBUG
                         WRITE_DEBUG("TILE_REMOVE_THING");
 #endif
                         packet = new Packets.Incoming.TileRemoveThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedTileRemoveThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileRemoveThingIncomingPacket.Invoke(packet);
@@ -1335,14 +1335,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CONTAINER_ADD_ITEM:
+                case IncomingPacketType.ContainerAddItem:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CONTAINER_ADD_ITEM");
 #endif
                         packet = new Packets.Incoming.ContainerAddItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedContainerAddItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerAddItemIncomingPacket.Invoke(packet);
@@ -1351,14 +1351,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CONTAINER_REMOVE_ITEM:
+                case IncomingPacketType.ContainerRemoveItem:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CONTAINER_REMOVE_ITEM");
 #endif
                         packet = new Packets.Incoming.ContainerRemoveItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedContainerRemoveItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerRemoveItemIncomingPacket.Invoke(packet);
@@ -1367,14 +1367,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CONTAINER_UPDATE_ITEM:
+                case IncomingPacketType.ContainerUpdateItem:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CONTAINER_UPDATE_ITEM");
 #endif
                         packet = new Packets.Incoming.ContainerUpdateItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedContainerUpdateItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerUpdateItemIncomingPacket.Invoke(packet);
@@ -1383,14 +1383,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.OPEN_CONTAINER:
+                case IncomingPacketType.ContainerOpen:
                     {
 #if _DEBUG
                         WRITE_DEBUG("OPEN_CONTAINER");
 #endif
                         packet = new Packets.Incoming.OpenContainerPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedOpenContainerIncomingPacket != null)
                                 packet.Forward = ReceivedOpenContainerIncomingPacket.Invoke(packet);
@@ -1399,14 +1399,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.ITEM_TEXT_WINDOW:
+                case IncomingPacketType.ItemTextWindow:
                     {
 #if _DEBUG
                         WRITE_DEBUG("ITEM_TEXT_WINDOW");
 #endif
                         packet = new Packets.Incoming.ItemTextWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedItemTextWindowIncomingPacket != null)
                                 packet.Forward = ReceivedItemTextWindowIncomingPacket.Invoke(packet);
@@ -1415,14 +1415,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.WORLD_LIGHT:
+                case IncomingPacketType.WorldLight:
                     {
 #if _DEBUG
                         WRITE_DEBUG("WORLD_LIGHT");
 #endif
                         packet = new Packets.Incoming.WorldLightPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedWorldLightIncomingPacket != null)
                                 packet.Forward = ReceivedWorldLightIncomingPacket.Invoke(packet);
@@ -1431,14 +1431,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.DISTANCE_SHOT:
+                case IncomingPacketType.Projectile:
                     {
 #if _DEBUG
                         WRITE_DEBUG("DISTANCE_SHOT");
 #endif
                         packet = new Packets.Incoming.DistanceShotPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedDistanceShotIncomingPacket != null)
                                 packet.Forward = ReceivedDistanceShotIncomingPacket.Invoke(packet);
@@ -1448,14 +1448,14 @@ namespace Tibia.Util
                         break;
                     }
 
-                case IncomingPacketType_t.MAP_DESCRIPTION:
+                case IncomingPacketType.MapDescription:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MAP_DESCRIPTION");
 #endif
                         packet = new Packets.Incoming.MapDescriptionPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMapDescriptionIncomingPacket != null)
                                 packet.Forward = ReceivedMapDescriptionIncomingPacket.Invoke(packet);
@@ -1464,14 +1464,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.MOVE_NORTH:
+                case IncomingPacketType.MoveNorth:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MOVE_NORTH");
 #endif
                         packet = new Packets.Incoming.MoveNorthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMoveNorthIncomingPacket != null)
                                 packet.Forward = ReceivedMoveNorthIncomingPacket.Invoke(packet);
@@ -1480,14 +1480,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.MOVE_SOUTH:
+                case IncomingPacketType.MoveSouth:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MOVE_SOUTH");
 #endif
                         packet = new Packets.Incoming.MoveSouthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMoveSouthIncomingPacket != null)
                                 packet.Forward = ReceivedMoveSouthIncomingPacket.Invoke(packet);
@@ -1496,14 +1496,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.MOVE_EAST:
+                case IncomingPacketType.MoveEast:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MOVE_EAST");
 #endif
                         packet = new Packets.Incoming.MoveEastPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMoveEastIncomingPacket != null)
                                 packet.Forward = ReceivedMoveEastIncomingPacket.Invoke(packet);
@@ -1512,14 +1512,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.MOVE_WEST:
+                case IncomingPacketType.MoveWest:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MOVE_WEST");
 #endif
                         packet = new Packets.Incoming.MoveWestPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMoveWestIncomingPacket != null)
                                 packet.Forward = ReceivedMoveWestIncomingPacket.Invoke(packet);
@@ -1528,14 +1528,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.SELF_APPEAR:
+                case IncomingPacketType.SelfAppear:
                     {
 #if _DEBUG
                         WRITE_DEBUG("SELF_APPEAR");
 #endif
                         packet = new Packets.Incoming.SelfAppearPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedSelfAppearIncomingPacket != null)
                                 packet.Forward = ReceivedSelfAppearIncomingPacket.Invoke(packet);
@@ -1544,14 +1544,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.MAGIC_EFFECT:
+                case IncomingPacketType.MagicEffect:
                     {
 #if _DEBUG
                         WRITE_DEBUG("MAGIC_EFFECT");
 #endif
                         packet = new Packets.Incoming.MagicEffectPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedMagicEffectIncomingPacket != null)
                                 packet.Forward = ReceivedMagicEffectIncomingPacket.Invoke(packet);
@@ -1560,14 +1560,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.FLOOR_CHANGE_DOWN:
+                case IncomingPacketType.FloorChangeDown:
                     {
 #if _DEBUG
                         WRITE_DEBUG("FLOOR_CHANGE_DOWN");
 #endif
                         packet = new Packets.Incoming.FloorChangeDownPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedFloorChangeDownIncomingPacket != null)
                                 packet.Forward = ReceivedFloorChangeDownIncomingPacket.Invoke(packet);
@@ -1576,14 +1576,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.FLOOR_CHANGE_UP:
+                case IncomingPacketType.FloorChangeUp:
                     {
 #if _DEBUG
                         WRITE_DEBUG("FLOOR_CHANGE_UP");
 #endif
                         packet = new Packets.Incoming.FloorChangeUpPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedFloorChangeUpIncomingPacket != null)
                                 packet.Forward = ReceivedFloorChangeUpIncomingPacket.Invoke(packet);
@@ -1592,14 +1592,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.PLAYER_STATS:
+                case IncomingPacketType.PlayerStatusUpdate:
                     {
 #if _DEBUG
                         WRITE_DEBUG("PLAYER_STATS");
 #endif
                         packet = new Packets.Incoming.PlayerStatsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedPlayerStatsIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerStatsIncomingPacket.Invoke(packet);
@@ -1608,14 +1608,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATURE_SKULLS:
+                case IncomingPacketType.CreatureSkull:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATURE_SKULLS");
 #endif
                         packet = new Packets.Incoming.CreatureSkullsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatureSkullsIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSkullsIncomingPacket.Invoke(packet);
@@ -1624,14 +1624,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.WAITING_LIST:
+                case IncomingPacketType.WaitingList:
                     {
 #if _DEBUG
                         WRITE_DEBUG("WAITING_LIST");
 #endif
                         packet = new Packets.Incoming.WaitingListPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedWaitingListIncomingPacket != null)
                                 packet.Forward = ReceivedWaitingListIncomingPacket.Invoke(packet);
@@ -1640,14 +1640,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.PING:
+                case IncomingPacketType.Ping:
                     {
 #if _DEBUG
                         WRITE_DEBUG("PING");
 #endif
                         packet = new Packets.Incoming.PingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedPingIncomingPacket != null)
                                 packet.Forward = ReceivedPingIncomingPacket.Invoke(packet);
@@ -1656,14 +1656,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.DEATH:
+                case IncomingPacketType.Death:
                     {
 #if _DEBUG
                         WRITE_DEBUG("DEATH");
 #endif
                         packet = new Packets.Incoming.DeathPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedDeathIncomingPacket != null)
                                 packet.Forward = ReceivedDeathIncomingPacket.Invoke(packet);
@@ -1672,14 +1672,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CAN_REPORT_BUGS:
+                case IncomingPacketType.CanReportBugs:
                     {
 #if _DEBUG
                         WRITE_DEBUG("DEATH");
 #endif
                         packet = new Packets.Incoming.CanReportBugsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCanReportBugsIncomingPacket != null)
                                 packet.Forward = ReceivedCanReportBugsIncomingPacket.Invoke(packet);
@@ -1688,14 +1688,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.UPDATE_TILE:
+                case IncomingPacketType.UpdateTile:
                     {
 #if _DEBUG
                         WRITE_DEBUG("UPDATE_TILE");
 #endif
                         packet = new Packets.Incoming.UpdateTilePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedUpdateTileIncomingPacket != null)
                                 packet.Forward = ReceivedUpdateTileIncomingPacket.Invoke(packet);
@@ -1704,14 +1704,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.FYI_MESSAGE:
+                case IncomingPacketType.FyiMessage:
                     {
 #if _DEBUG
                         WRITE_DEBUG("FYI_MESSAGE");
 #endif
                         packet = new Packets.Incoming.FYIMessagePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedFYIMessageIncomingPacket != null)
                                 packet.Forward = ReceivedFYIMessageIncomingPacket.Invoke(packet);
@@ -1720,14 +1720,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.INVENTORY_SET_SLOT:
+                case IncomingPacketType.InventorySetSlot:
                     {
 #if _DEBUG
                         WRITE_DEBUG("INVENTORY_SET_SLOT");
 #endif
                         packet = new Packets.Incoming.InventorySetSlotPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedInventorySetSlotIncomingPacket != null)
                                 packet.Forward = ReceivedInventorySetSlotIncomingPacket.Invoke(packet);
@@ -1736,14 +1736,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.INVENTORY_RESET_SLOT:
+                case IncomingPacketType.InventoryResetSlot:
                     {
 #if _DEBUG
                         WRITE_DEBUG("INVENTORY_RESET_SLOT");
 #endif
                         packet = new Packets.Incoming.InventoryResetSlotPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedInventoryResetSlotIncomingPacket != null)
                                 packet.Forward = ReceivedInventoryResetSlotIncomingPacket.Invoke(packet);
@@ -1752,14 +1752,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.SAFE_TRADE_REQUEST_ACK:
+                case IncomingPacketType.SafeTradeRequestAck:
                     {
 #if _DEBUG
                         WRITE_DEBUG("SAFE_TRADE_REQUEST_ACK");
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestAckPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedSafeTradeRequestAckIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeRequestAckIncomingPacket.Invoke(packet);
@@ -1768,14 +1768,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.SAFE_TRADE_REQUEST_NO_ACK:
+                case IncomingPacketType.SafeTradeRequestNoAck:
                     {
 #if _DEBUG
                         WRITE_DEBUG("SAFE_TRADE_REQUEST_NO_ACK");
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedSafeTradeRequestNoAckIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeRequestNoAckIncomingPacket.Invoke(packet);
@@ -1784,14 +1784,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.SAFE_TRADE_CLOSE:
+                case IncomingPacketType.SafeTradeClose:
                     {
 #if _DEBUG
                         WRITE_DEBUG("SAFE_TRADE_CLOSE");
 #endif
                         packet = new Packets.Incoming.SafeTradeClosePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedSafeTradeCloseIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeCloseIncomingPacket.Invoke(packet);
@@ -1800,14 +1800,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.PLAYER_SKILLS:
+                case IncomingPacketType.PlayerSkillsUpdate:
                     {
 #if _DEBUG
                         WRITE_DEBUG("PLAYER_SKILLS");
 #endif
                         packet = new Packets.Incoming.PlayerSkillsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedPlayerSkillsIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerSkillsIncomingPacket.Invoke(packet);
@@ -1816,14 +1816,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.PLAYER_ICONS:
+                case IncomingPacketType.PlayerFlagUpdate:
                     {
 #if _DEBUG
                         WRITE_DEBUG("PLAYER_ICONS");
 #endif
                         packet = new Packets.Incoming.PlayerIconsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedPlayerIconsIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerIconsIncomingPacket.Invoke(packet);
@@ -1832,14 +1832,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.OPEN_PRIVATE_PLAYER_CHAT:
+                case IncomingPacketType.ChannelOpenPrivate:
                     {
 #if _DEBUG
                         WRITE_DEBUG("OPEN_PRIVATE_PLAYER_CHAT");
 #endif
                         packet = new Packets.Incoming.OpenPrivatePlayerChatPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedOpenPrivatePlayerChatIncomingPacket != null)
                                 packet.Forward = ReceivedOpenPrivatePlayerChatIncomingPacket.Invoke(packet);
@@ -1848,14 +1848,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CREATE_PRIVATE_CHANNEL:
+                case IncomingPacketType.PrivateChannelCreate:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CREATE_PRIVATE_CHANNEL");
 #endif
                         packet = new Packets.Incoming.CreatePrivateChannelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCreatePrivateChannelIncomingPacket != null)
                                 packet.Forward = ReceivedCreatePrivateChannelIncomingPacket.Invoke(packet);
@@ -1864,14 +1864,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CLOSE_PRIVATE_CHANNEL:
+                case IncomingPacketType.PrivateChannelClose:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CLOSE_PRIVATE_CHANNEL");
 #endif
                         packet = new Packets.Incoming.ClosePrivateChannelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedClosePrivateChannelIncomingPacket != null)
                                 packet.Forward = ReceivedClosePrivateChannelIncomingPacket.Invoke(packet);
@@ -1880,14 +1880,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.VIP_STATE:
+                case IncomingPacketType.VipState:
                     {
 #if _DEBUG
                         WRITE_DEBUG("VIP_STATE");
 #endif
                         packet = new Packets.Incoming.VipStatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedVipStateIncomingPacket != null)
                                 packet.Forward = ReceivedVipStateIncomingPacket.Invoke(packet);
@@ -1896,14 +1896,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.VIP_LOGIN:
+                case IncomingPacketType.VipLogin:
                     {
 #if _DEBUG
                         WRITE_DEBUG("VIP_LOGIN");
 #endif
                         packet = new Packets.Incoming.VipLoginPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedVipLoginIncomingPacket != null)
                                 packet.Forward = ReceivedVipLoginIncomingPacket.Invoke(packet);
@@ -1912,14 +1912,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.VIP_LOGOUT:
+                case IncomingPacketType.VipLogout:
                     {
 #if _DEBUG
                         WRITE_DEBUG("VIP_LOGOUT");
 #endif
                         packet = new Packets.Incoming.VipLogoutPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedVipLogoutIncomingPacket != null)
                                 packet.Forward = ReceivedVipLogoutIncomingPacket.Invoke(packet);
@@ -1928,14 +1928,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.SHOP_SALE_ITEM_LIST:
+                case IncomingPacketType.ShopSaleGoldCount:
                     {
 #if _DEBUG
                         WRITE_DEBUG("SHOP_SALE_ITEM_LIST");
 #endif
                         packet = new Packets.Incoming.ShopSaleItemListPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedShopSaleItemListIncomingPacket != null)
                                 packet.Forward = ReceivedShopSaleItemListIncomingPacket.Invoke(packet);
@@ -1944,14 +1944,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.OPEN_SHOP_WINDOW:
+                case IncomingPacketType.ShopWindowOpen:
                     {
 #if _DEBUG
                         WRITE_DEBUG("OPEN_SHOP_WINDOW");
 #endif
                         packet = new Packets.Incoming.OpenShopWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedOpenShopWindowIncomingPacket != null)
                                 packet.Forward = ReceivedOpenShopWindowIncomingPacket.Invoke(packet);
@@ -1960,14 +1960,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CLOSE_SHOP_WINDOW:
+                case IncomingPacketType.ShopWindowClose:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CLOSE_SHOP_WINDOW");
 #endif
                         packet = new Packets.Incoming.CloseShopWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCloseShopWindowIncomingPacket != null)
                                 packet.Forward = ReceivedCloseShopWindowIncomingPacket.Invoke(packet);
@@ -1976,14 +1976,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.OUTFIT_WINDOW:
+                case IncomingPacketType.OutfitWindow:
                     {
 #if _DEBUG
                         WRITE_DEBUG("OUTFIT_WINDOW");
 #endif
                         packet = new Packets.Incoming.OutfitWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedOutfitWindowIncomingPacket != null)
                                 packet.Forward = ReceivedOutfitWindowIncomingPacket.Invoke(packet);
@@ -1992,14 +1992,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL:
+                case IncomingPacketType.RuleViolationOpen:
                     {
 #if _DEBUG
                         WRITE_DEBUG("RULE_VIOLATIONS_CHANNEL");
 #endif
                         packet = new Packets.Incoming.RuleViolationsChannelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedRuleViolationsChannelIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationsChannelIncomingPacket.Invoke(packet);
@@ -2008,14 +2008,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.REMOVE_REPORT:
+                case IncomingPacketType.RemoveReport:
                     {
 #if _DEBUG
                         WRITE_DEBUG("REMOVE_REPORT");
 #endif
                         packet = new Packets.Incoming.RemoveReportPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedRemoveReportIncomingPacket != null)
                                 packet.Forward = ReceivedRemoveReportIncomingPacket.Invoke(packet);
@@ -2024,14 +2024,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.RULE_VIOLATION_CANCEL:
+                case IncomingPacketType.RuleViolationCancel:
                     {
 #if _DEBUG
                         WRITE_DEBUG("RULE_VIOLATION_CANCEL");
 #endif
                         packet = new Packets.Incoming.RuleViolationCancelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedRuleViolationCancelIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationCancelIncomingPacket.Invoke(packet);
@@ -2040,14 +2040,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.RULE_VIOLATION_LOCK:
+                case IncomingPacketType.RuleViolationLock:
                     {
 #if _DEBUG
                         WRITE_DEBUG("RULE_VIOLATION_LOCK");
 #endif
                         packet = new Packets.Incoming.RuleViolationLockPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedRuleViolationLockIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationLockIncomingPacket.Invoke(packet);
@@ -2056,14 +2056,14 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType_t.CANCEL_TARGET:
+                case IncomingPacketType.CancelTarget:
                     {
 #if _DEBUG
                         WRITE_DEBUG("CANCEL_TARGET");
 #endif
                         packet = new Packets.Incoming.CancelTargetPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
                             if (ReceivedCancelTargetIncomingPacket != null)
                                 packet.Forward = ReceivedCancelTargetIncomingPacket.Invoke(packet);
@@ -2091,9 +2091,9 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Outras Funções"
+        #region "Other Functions"
 
-        private int getSelectedChar(string name)
+        private int GetSelectedChar(string name)
         {
             for (int i = 0; i < charList.Length; i++)
             {

@@ -16,8 +16,8 @@ namespace Tibia.Packets
         }
 
         public bool Forward { get; set; }
-        public PacketDestination_t Destination { get; set; }
-        public IncomingPacketType_t Type { get; set; }
+        public PacketDestination Destination { get; set; }
+        public IncomingPacketType Type { get; set; }
         public Objects.Client Client { get; set; }
 
         public virtual byte[] ToByteArray() { return new byte[1]; }
@@ -31,9 +31,9 @@ namespace Tibia.Packets
                 msg.InsetLogicalPacketHeader();
                 msg.PrepareToSend();
 
-                if (Destination == PacketDestination_t.CLIENT)
+                if (Destination == PacketDestination.Client)
                     Client.Proxy.SendToClient(msg);
-                else if (Destination == PacketDestination_t.SERVER)
+                else if (Destination == PacketDestination.Server)
                     Client.Proxy.SendToServer(msg);
                 else
                     return false;
@@ -41,7 +41,7 @@ namespace Tibia.Packets
                 return true;
 
             }
-            else if (Destination == PacketDestination_t.SERVER)
+            else if (Destination == PacketDestination.Server)
             {
                 // send with dll.
                 byte[] packet = ToByteArray();
@@ -82,6 +82,6 @@ namespace Tibia.Packets
         }
         #endregion
 
-        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos) { return false; }
+        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos) { return false; }
     }
 }

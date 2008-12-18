@@ -259,9 +259,9 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Creature.Distance_BlackSquare); }
         }
 
-        public Constants.Skulls_t Skull
+        public Constants.Skull Skull
         {
-            get { return (Constants.Skulls_t)client.ReadInt32(address + Addresses.Creature.Distance_Skull); }
+            get { return (Constants.Skull)client.ReadInt32(address + Addresses.Creature.Distance_Skull); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Skull, (int)value); }
         }
         public Constants.Party Party

@@ -8,25 +8,25 @@ namespace Tibia.Packets.Incoming
     public class CreatureSquarePacket : IncomingPacket
     {
         public uint CreatureId { get; set; }
-        public SquareColor_t Color { get; set; }
+        public SquareColor Color { get; set; }
 
         public CreatureSquarePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_SQUARE;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureSquare;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_SQUARE)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureSquare)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_SQUARE;
+            Type = IncomingPacketType.CreatureSquare;
 
             CreatureId = msg.GetUInt32();
-            Color = (SquareColor_t)msg.GetByte();
+            Color = (SquareColor)msg.GetByte();
 
             return true;
         }

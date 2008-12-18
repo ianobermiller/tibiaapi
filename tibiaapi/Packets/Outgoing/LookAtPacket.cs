@@ -15,17 +15,17 @@ namespace Tibia.Packets.Outgoing
         public LookAtPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.LOOK_AT;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.LookAt;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.LOOK_AT)
+            if (msg.GetByte() != (byte)OutgoingPacketType.LookAt)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.LOOK_AT;
+            Type = OutgoingPacketType.LookAt;
 
             Position = msg.GetLocation();
             SpriteId = msg.GetUInt16();

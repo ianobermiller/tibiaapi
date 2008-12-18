@@ -14,17 +14,17 @@ namespace Tibia.Packets.Incoming
         public ContainerUpdateItemPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CONTAINER_UPDATE_ITEM;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.ContainerUpdateItem;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CONTAINER_UPDATE_ITEM)
+            if (msg.GetByte() != (byte)IncomingPacketType.ContainerUpdateItem)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CONTAINER_UPDATE_ITEM;
+            Type = IncomingPacketType.ContainerUpdateItem;
 
             Container = msg.GetByte();
             Slot = msg.GetByte();

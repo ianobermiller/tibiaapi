@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public CreatureSkullsPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_SKULLS;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureSkull;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_SKULLS)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureSkull)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_SKULLS;
+            Type = IncomingPacketType.CreatureSkull;
 
             CreatureId = msg.GetUInt32();
             CreatureSkull = msg.GetByte();

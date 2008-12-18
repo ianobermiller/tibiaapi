@@ -12,17 +12,17 @@ namespace Tibia.Packets.Outgoing
         public CloseContainerPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.CLOSE_CONTAINER;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ContainerClose;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.CLOSE_CONTAINER)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerClose)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.CLOSE_CONTAINER;
+            Type = OutgoingPacketType.ContainerClose;
 
             Id = msg.GetByte();
 

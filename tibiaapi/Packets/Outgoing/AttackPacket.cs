@@ -13,17 +13,17 @@ namespace Tibia.Packets.Outgoing
         public AttackPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.ATTACK;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.Attack;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.ATTACK)
+            if (msg.GetByte() != (byte)OutgoingPacketType.Attack)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.ATTACK;
+            Type = OutgoingPacketType.Attack;
 
             CreatureId = msg.GetUInt32();
 

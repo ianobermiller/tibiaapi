@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public FYIMessagePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.FYI_MESSAGE;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.FyiMessage;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.FYI_MESSAGE)
+            if (msg.GetByte() != (byte)IncomingPacketType.FyiMessage)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.FYI_MESSAGE;
+            Type = IncomingPacketType.FyiMessage;
 
             Message = msg.GetString();
 

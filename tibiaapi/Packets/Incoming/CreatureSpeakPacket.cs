@@ -7,9 +7,9 @@ namespace Tibia.Packets.Incoming
 {
     public class CreatureSpeakPacket : IncomingPacket
     {
-        public SpeakClasses_t SpeakType { get; set; }
+        public SpeechType SpeakType { get; set; }
         public uint UnknowSpeak { get; set; }
-        public ChatChannel_t ChannelId { get; set; }
+        public ChatChannel ChannelId { get; set; }
         public string SenderName { get; set; }
         public ushort SenderLevel { get; set; }
         public string Message { get; set; }
@@ -19,45 +19,45 @@ namespace Tibia.Packets.Incoming
         public CreatureSpeakPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.CREATURE_SPEAK;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.CreatureSpeak;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.CREATURE_SPEAK)
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureSpeak)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.CREATURE_SPEAK;
+            Type = IncomingPacketType.CreatureSpeak;
 
             UnknowSpeak = msg.GetUInt32();
             SenderName = msg.GetString();
             SenderLevel = msg.GetUInt16();
-            SpeakType = (SpeakClasses_t)msg.GetByte();
+            SpeakType = (SpeechType)msg.GetByte();
 
             switch (SpeakType)
             {
-                case SpeakClasses_t.SPEAK_SAY:
-                case SpeakClasses_t.SPEAK_WHISPER:
-                case SpeakClasses_t.SPEAK_YELL:
-                case SpeakClasses_t.SPEAK_MONSTER_SAY:
-                case SpeakClasses_t.SPEAK_MONSTER_YELL:
-                case SpeakClasses_t.SPEAK_PRIVATE_NP:
+                case SpeechType.Say:
+                case SpeechType.Whisper:
+                case SpeechType.Yell:
+                case SpeechType.MonsterSay:
+                case SpeechType.MonsterYell:
+                case SpeechType.PrivateNPCToPlayer:
                     {
                         Position = msg.GetLocation();
                         break;
                     }
-                case SpeakClasses_t.SPEAK_CHANNEL_R1:
-                case SpeakClasses_t.SPEAK_CHANNEL_R2:
-                case SpeakClasses_t.SPEAK_CHANNEL_O:
-                case SpeakClasses_t.SPEAK_CHANNEL_Y:
-                case SpeakClasses_t.SPEAK_CHANNEL_W:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelRedAnonymous:
+                case SpeechType.ChannelOrange:
+                case SpeechType.ChannelYellow:
+                case SpeechType.ChannelWhite:
                     {
-                        ChannelId = (ChatChannel_t)msg.GetUInt16();
+                        ChannelId = (ChatChannel)msg.GetUInt16();
                         break;
                     }
-                case SpeakClasses_t.SPEAK_RVR_CHANNEL:
+                case SpeechType.RuleViolationReport:
                     {
                         Time = msg.GetUInt32();
                         break; 
@@ -84,26 +84,26 @@ namespace Tibia.Packets.Incoming
 
             switch (SpeakType)
             {
-                case SpeakClasses_t.SPEAK_SAY:
-                case SpeakClasses_t.SPEAK_WHISPER:
-                case SpeakClasses_t.SPEAK_YELL:
-                case SpeakClasses_t.SPEAK_MONSTER_SAY:
-                case SpeakClasses_t.SPEAK_MONSTER_YELL:
-                case SpeakClasses_t.SPEAK_PRIVATE_NP:
+                case SpeechType.Say:
+                case SpeechType.Whisper:
+                case SpeechType.Yell:
+                case SpeechType.MonsterSay:
+                case SpeechType.MonsterYell:
+                case SpeechType.PrivateNPCToPlayer:
                     {
                         msg.AddLocation(Position);
                         break;
                     }
-                case SpeakClasses_t.SPEAK_CHANNEL_R1:
-                case SpeakClasses_t.SPEAK_CHANNEL_R2:
-                case SpeakClasses_t.SPEAK_CHANNEL_O:
-                case SpeakClasses_t.SPEAK_CHANNEL_Y:
-                case SpeakClasses_t.SPEAK_CHANNEL_W:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelRedAnonymous:
+                case SpeechType.ChannelOrange:
+                case SpeechType.ChannelYellow:
+                case SpeechType.ChannelWhite:
                     {
                         msg.AddUInt16((ushort)ChannelId);
                         break;
                     }
-                case SpeakClasses_t.SPEAK_RVR_CHANNEL:
+                case SpeechType.RuleViolationReport:
                     {
                         msg.AddUInt32(Time);
                         break;

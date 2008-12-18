@@ -13,17 +13,17 @@ namespace Tibia.Packets.Incoming
         public VipLoginPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.VIP_LOGIN;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.VipLogin;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.VIP_LOGIN)
+            if (msg.GetByte() != (byte)IncomingPacketType.VipLogin)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.VIP_LOGIN;
+            Type = IncomingPacketType.VipLogin;
 
             PlayerId = msg.GetUInt32();
 

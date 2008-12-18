@@ -14,17 +14,17 @@ namespace Tibia.Packets.Incoming
         public SafeTradeRequestAckPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.SAFE_TRADE_REQUEST_ACK;
-            Destination = PacketDestination_t.CLIENT;
+            Type = IncomingPacketType.SafeTradeRequestAck;
+            Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.SAFE_TRADE_REQUEST_ACK)
+            if (msg.GetByte() != (byte)IncomingPacketType.SafeTradeRequestAck)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType_t.SAFE_TRADE_REQUEST_ACK;
+            Type = IncomingPacketType.SafeTradeRequestAck;
 
             Name = msg.GetString();
             Count = msg.GetByte();

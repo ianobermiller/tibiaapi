@@ -16,17 +16,17 @@ namespace Tibia.Packets.Outgoing
         public ThrowPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType_t.THROW;
-            Destination = PacketDestination_t.SERVER;
+            Type = OutgoingPacketType.ItemMove;
+            Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType_t.THROW)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ItemMove)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType_t.THROW;
+            Type = OutgoingPacketType.ItemMove;
 
             FromPosition = msg.GetLocation();
             SpriteId = msg.GetUInt16();
