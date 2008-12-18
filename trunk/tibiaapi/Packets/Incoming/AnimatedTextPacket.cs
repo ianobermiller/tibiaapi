@@ -9,7 +9,7 @@ namespace Tibia.Packets.Incoming
     {
         public Objects.Location Position { get; set; }
         public string Message { get; set; }
-        public TextColor Color { get; set; }
+        public TextColor_t Color { get; set; }
 
         public AnimatedTextPacket(Objects.Client c)
             : base(c)
@@ -26,7 +26,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType_t.ANIMATED_TEXT;
             Position = msg.GetLocation();
-            Color = (TextColor)msg.GetByte();
+            Color = (TextColor_t)msg.GetByte();
             Message = msg.GetString();
 
             return true;

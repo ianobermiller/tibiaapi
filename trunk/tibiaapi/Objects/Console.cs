@@ -53,7 +53,7 @@ namespace Tibia.Objects
         /// <returns>message packet</returns>
         public bool Say(ChatMessage message)
         {
-            return Packets.Outgoing.SayPacket.Send(client, (SpeakClasses_t)message.Type, message.Recipient, message.Text, message.Channel); 
+            return Packets.Outgoing.SayPacket.Send(client, message.Type, message.Recipient, message.Text, message.Channel); 
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace Tibia.Objects
     {
         public string Text;
         public string Recipient;
-        public Packets.ChatChannel Channel;
-        public Packets.ChatType Type;
+        public Packets.ChatChannel_t Channel;
+        public Packets.SpeakClasses_t Type;
 
         /// <summary>
         /// Create a default message.
@@ -86,8 +86,8 @@ namespace Tibia.Objects
         {
             this.Text = text;
             this.Recipient = "";
-            this.Channel = Packets.ChatChannel.None;
-            this.Type = Packets.ChatType.Normal;
+            this.Channel = Packets.ChatChannel_t.NONE;
+            this.Type = Packets.SpeakClasses_t.SPEAK_SAY;
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace Tibia.Objects
         {
             this.Text = text;
             this.Recipient = recipient;
-            this.Channel = Packets.ChatChannel.None;
-            this.Type = Packets.ChatType.PrivateMessage;
+            this.Channel = Packets.ChatChannel_t.NONE;
+            this.Type = Packets.SpeakClasses_t.SPEAK_PRIVATE;
         }
 
         /// <summary>
@@ -108,12 +108,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public ChatMessage(string text, Packets.ChatChannel channel)
+        public ChatMessage(string text, Packets.ChatChannel_t channel)
         {
             this.Text = text;
             this.Recipient = "";
             this.Channel = channel;
-            this.Type = Packets.ChatType.ChannelNormal;
+            this.Type = Packets.SpeakClasses_t.SPEAK_CHANNEL_Y;
         }
 
         /// <summary>
@@ -121,11 +121,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public ChatMessage(string text, Packets.ChatType type)
+        public ChatMessage(string text, Packets.SpeakClasses_t type)
         {
             this.Text = text;
             this.Recipient = "";
-            this.Channel = Packets.ChatChannel.None;
+            this.Channel = Packets.ChatChannel_t.NONE;
             this.Type = type;
         }
     }

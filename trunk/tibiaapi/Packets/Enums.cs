@@ -9,7 +9,6 @@ namespace Tibia.Packets
     {
         // Pipe
         PipePacket          = 0xFF
-
     }
 
     public enum SpeakClasses_t : byte
@@ -31,7 +30,7 @@ namespace Tibia.Packets
         SPEAK_CHANNEL_O = 0x0F,	//Talk orange on text
         //SPEAK_                = 0x10, //?
         SPEAK_CHANNEL_R2 = 0x11,	//Talk red anonymously on chat - #d
-        SPEAK_MONSTER_SAY12 = 0x12, //?????
+        //SPEAK_MONSTER_SAY12 = 0x12, //?????
         SPEAK_MONSTER_SAY = 0x13,	//Talk orange
         SPEAK_MONSTER_YELL = 0x14,	//Yell orange
     }
@@ -97,15 +96,15 @@ namespace Tibia.Packets
         PLAYER_STATS = 0xA0,
         PLAYER_SKILLS = 0xA1,
         PLAYER_ICONS = 0xA2,
-        PLAYER_CANCEL_ATTACK = 0xA3,
+        CANCEL_TARGET = 0xA3,
         CREATURE_SPEAK = 0xAA,
         CHANNEL_LIST = 0xAB,
         OPEN_CHANNEL = 0xAC,
         OPEN_PRIVATE_PLAYER_CHAT = 0xAD,
-        //OPEN_RULE_VIOLATION = 0xAE,
-        //RuleViolationAF = 0xAF,
-        //RuleViolationB0 = 0xB0,
-        //RuleViolationB1 = 0xB1,
+        RULE_VIOLATIONS_CHANNEL = 0xAE,
+        REMOVE_REPORT = 0xAF,
+        RULE_VIOLATION_CANCEL = 0xB0,
+        RULE_VIOLATION_LOCK = 0xB1,
         CREATE_PRIVATE_CHANNEL = 0xB2,
         CLOSE_PRIVATE_CHANNEL = 0xB3,
         TEXT_MESSAGE = 0xB4,
@@ -147,6 +146,7 @@ namespace Tibia.Packets
     {
         CLIENT,
         SERVER,
+        PIPE, //for future update
     }
 
     /// <summary>
@@ -169,8 +169,6 @@ namespace Tibia.Packets
         OnClickContextMenu  = 0x0C
     }
     
-
-
     /// <summary>
     /// Describes the packets destination
     /// </summary>
@@ -182,67 +180,30 @@ namespace Tibia.Packets
         None
     }
 
-    public enum SquareColor : byte
+    public enum SquareColor_t : byte
     {
-        Black = 0
-    }
-
-    public enum MapItemAddType
-    {
-        Item,
-        CreatureReturning,
-        CreatureKnown,
-        CreatureNew
+        BLACK = 0
     }
 
     #region Speech
-    public enum ChatType : byte
-    {
-        Normal = 0x01,
-        Whisper = 0x02,
-        Yell = 0x03,
-        PrivatePlayerToNpc = 0x04,
-        PrivateNpcToPlayer = 0x05,
-        PrivateMessage = 0x06,
-        ChannelNormal = 0x07,
-        ChannelGM = 0x0A,
-        Broadcast = 0x0B,
-        ChannelRed = 0x0C,
-        PrivateRed = 0x0D,
-        ChannelTutor = 0x0E,
-        ChannelRedAnonymous = 0x10,
-        Monster = 0x12,
-        MonsterYell = 0x13, 
-    }
 
-    public enum ChatChannel : ushort
+    public enum ChatChannel_t : ushort
     {
-        Guild = 0,
-        Game = 4,
-        Trade = 5,
-        RL = 6,
-        Help = 7,
-        OwnPrivate = 14,
-        Private1 = 17,
-        Private = 0xFFFF,
-        Custom = 0xA0,
-        Custom1 = 0xA1,
-        Custom2 = 0xA2,
-        Custom3 = 0xA3,
-        Custom4 = 0xA4,
-        Custom5 = 0xA5,
-        Custom6 = 0xA6,
-        Custom7 = 0xA7,
-        Custom8 = 0xA8,
-        Custom9 = 0xA9,
-        None = 0xAAAA
+        GUILD = 0x00,
+        RULE_REP = 0x03,
+        GAME_CHAT = 0x04,
+        TRADE = 0x05,
+        TRADE_ROOK = 0x06,
+        RL_CHAT = 0x07,
+        PARTY = 0x08,
+        HELP = 0x09,
+        PRIVATE = 0xFFFF,
+        NONE = 0xAAAA
     }
 
     #endregion
 
-
-
-    public enum TextColor : byte
+    public enum TextColor_t : byte
     {
         Blue = 5,
         Green = 30,

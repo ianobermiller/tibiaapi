@@ -33,7 +33,7 @@ namespace Tibia.Packets.Incoming
             for (int i = 0; i < NumberChannel; i++)
             {
                 id = msg.GetUInt16();
-                Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
+                Channels.Add(new Tibia.Objects.Channel((ChatChannel_t)id, msg.GetString()));
             }
 
             return true;

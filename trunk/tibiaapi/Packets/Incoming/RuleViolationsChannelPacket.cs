@@ -5,27 +5,26 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class OpenChannelPacket : IncomingPacket
+    public class RuleViolationsChannelPacket : IncomingPacket
     {
-        public ChatChannel_t ChannelId { get; set; }
-        public string ChannelName { get; set; }
+        public ushort ChannelId { get; set; }
 
-        public OpenChannelPacket(Objects.Client c)
+        public RuleViolationsChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType_t.OPEN_CHANNEL;
+            Type = IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL;
             Destination = PacketDestination_t.CLIENT;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType_t.OPEN_CHANNEL)
-                return false;
+            if (msg.GetByte() != (byte)IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL)
+                throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType_t.OPEN_CHANNEL;
-            ChannelId = (ChatChannel_t)msg.GetUInt16();
-            ChannelName = msg.GetString();
+            Type = IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL;
+
+            ChannelId = msg.GetUInt16();
 
             return true;
         }
@@ -35,8 +34,7 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddUInt16((ushort)ChannelId);
-            msg.AddString(ChannelName);
+            msg.AddUInt16(ChannelId);
 
             return msg.Packet;
         }

@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
     public class CreatureSquarePacket : IncomingPacket
     {
         public uint CreatureId { get; set; }
-        public SquareColor Color { get; set; }
+        public SquareColor_t Color { get; set; }
 
         public CreatureSquarePacket(Objects.Client c)
             : base(c)
@@ -26,7 +26,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType_t.CREATURE_SQUARE;
 
             CreatureId = msg.GetUInt32();
-            Color = (SquareColor)msg.GetByte();
+            Color = (SquareColor_t)msg.GetByte();
 
             return true;
         }

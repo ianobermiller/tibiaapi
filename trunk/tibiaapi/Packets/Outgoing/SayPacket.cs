@@ -11,7 +11,7 @@ namespace Tibia.Packets.Outgoing
         public SpeakClasses_t SpeakType { get; set; }
         public string Receiver { get; set; }
         public string Message { get; set; }
-        public ChatChannel ChannelId { get; set; }
+        public ChatChannel_t ChannelId { get; set; }
 
         public SayPacket(Objects.Client c)
             : base(c)
@@ -41,7 +41,7 @@ namespace Tibia.Packets.Outgoing
                 case SpeakClasses_t.SPEAK_CHANNEL_R1:
                 case SpeakClasses_t.SPEAK_CHANNEL_R2:
                 case SpeakClasses_t.SPEAK_CHANNEL_W:
-                    ChannelId = (ChatChannel)msg.GetUInt16();
+                    ChannelId = (ChatChannel_t)msg.GetUInt16();
                     break;
                 default:
                     break;
@@ -82,7 +82,7 @@ namespace Tibia.Packets.Outgoing
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, SpeakClasses_t type, string receiver, string message, ChatChannel channel)
+        public static bool Send(Objects.Client client, SpeakClasses_t type, string receiver, string message, ChatChannel_t channel)
         {
             SayPacket p = new SayPacket(client);
 

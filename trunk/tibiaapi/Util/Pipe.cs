@@ -48,9 +48,9 @@ namespace Tibia.Util
         /// <summary>
         ///  Creates a Pipe to interact with an injected DLL or another program.
         /// </summary>
-        public Pipe(Client c, string name)
+        public Pipe(Client client, string name)
         {
-            client = c;
+            this.client = client;
             this.name = name;
             pipe = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
@@ -81,8 +81,10 @@ namespace Tibia.Util
         {
             pipe.EndRead(ar);
             // Call OnReceive asynchronously
+
             if (OnReceive != null)
                 OnReceive.BeginInvoke(new Packet(client, buffer), null, null);
+
             pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }
 
@@ -92,7 +94,8 @@ namespace Tibia.Util
         public void Send(Packet packet)
         {
             if (OnSend != null)
-                OnSend.BeginInvoke(packet,null,null);
+                OnSend.BeginInvoke(packet, null, null);
+
             pipe.Write(packet.Data, 0, packet.Data.Length);
         }
 
@@ -101,10 +104,7 @@ namespace Tibia.Util
         /// </summary>
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get { return name; }
         }
 
         /// <summary>
@@ -112,10 +112,7 @@ namespace Tibia.Util
         /// </summary>
         public Client Client
         {
-            get
-            {
-                return client;
-            }
+            get { return client; }
         }
     }
 }

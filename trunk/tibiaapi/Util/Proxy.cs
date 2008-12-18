@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using Tibia.Packets;
 using Tibia.Objects;
+using System.Windows.Forms;
 
 namespace Tibia.Util
 {
@@ -50,6 +51,12 @@ namespace Tibia.Util
         private Objects.Player player;
         private bool isConnected;
 
+
+#if _DEBUG
+        Form debugFrom;
+#endif
+
+
         #region "Contrutor/Destrutor"
 
         public Proxy(Client c)
@@ -79,7 +86,43 @@ namespace Tibia.Util
             ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
 
             client.UsingProxy = true;
+
+
+#if _DEBUG
+            debugFrom = new Form();
+            RichTextBox myRichTextBox = new RichTextBox();
+            myRichTextBox.Name = "richTextBox";
+            myRichTextBox.Dock = DockStyle.Fill;
+            debugFrom.Controls.Add(myRichTextBox);
+            debugFrom.Disposed += new EventHandler(debugFrom_Disposed);
+            PrintDebug += new ProxyNotification(Proxy_PrintDebug);
+            debugFrom.Show();
+#endif
         }
+
+#if _DEBUG
+        void Proxy_PrintDebug(string message)
+        {
+            if (debugFrom.Disposing)
+                return;
+
+            if (debugFrom.InvokeRequired)
+            {
+                debugFrom.Invoke(new Action<string>(Proxy_PrintDebug), new object[] { message });
+                return;
+            }
+
+            RichTextBox myRichTextBox = (RichTextBox)debugFrom.Controls["richTextBox"];
+            myRichTextBox.AppendText(message + "\n");
+            myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
+            myRichTextBox.ScrollToCaret();
+        }
+
+        void debugFrom_Disposed(object sender, EventArgs e)
+        {
+            PrintDebug -= new ProxyNotification(Proxy_PrintDebug); 
+        }
+#endif
 
         ~Proxy()
         {
@@ -172,6 +215,11 @@ namespace Tibia.Util
         public event IncomingPacketListener ReceivedOpenShopWindowIncomingPacket;
         public event IncomingPacketListener ReceivedCloseShopWindowIncomingPacket;
         public event IncomingPacketListener ReceivedOutfitWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationsChannelIncomingPacket;
+        public event IncomingPacketListener ReceivedRemoveReportIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationCancelIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationLockIncomingPacket;
+        public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
 
         //outgoing
         public event OutgoingPacketListener ReceivedCloseChannelOutgoingPacket;
@@ -1944,8 +1992,86 @@ namespace Tibia.Util
                         }
                         break;
                     }
+                case IncomingPacketType_t.RULE_VIOLATIONS_CHANNEL:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("RULE_VIOLATIONS_CHANNEL");
+#endif
+                        packet = new Packets.Incoming.RuleViolationsChannelPacket(Client);
 
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedRuleViolationsChannelIncomingPacket != null)
+                                packet.Forward = ReceivedRuleViolationsChannelIncomingPacket.Invoke(packet);
 
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.REMOVE_REPORT:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("REMOVE_REPORT");
+#endif
+                        packet = new Packets.Incoming.RemoveReportPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedRemoveReportIncomingPacket != null)
+                                packet.Forward = ReceivedRemoveReportIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.RULE_VIOLATION_CANCEL:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("RULE_VIOLATION_CANCEL");
+#endif
+                        packet = new Packets.Incoming.RuleViolationCancelPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedRuleViolationCancelIncomingPacket != null)
+                                packet.Forward = ReceivedRuleViolationCancelIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.RULE_VIOLATION_LOCK:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("RULE_VIOLATION_LOCK");
+#endif
+                        packet = new Packets.Incoming.RuleViolationLockPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedRuleViolationLockIncomingPacket != null)
+                                packet.Forward = ReceivedRuleViolationLockIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case IncomingPacketType_t.CANCEL_TARGET:
+                    {
+#if _DEBUG
+                        WRITE_DEBUG("CANCEL_TARGET");
+#endif
+                        packet = new Packets.Incoming.CancelTargetPacket(Client);
+
+                        if (packet.ParseMessage(msg, PacketDestination_t.CLIENT, pos))
+                        {
+                            if (ReceivedCancelTargetIncomingPacket != null)
+                                packet.Forward = ReceivedCancelTargetIncomingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
