@@ -34,7 +34,7 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType_t.FLOOR_CHANGE_UP)
+            if (msg.GetByte() != (byte)IncomingPacketType.FloorChangeUp)
                 return false;
 
             Destination = destination;

@@ -1081,68 +1081,68 @@ namespace Tibia.Util
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:
-                    {
+                {
 #if _DEBUG
-                        WRITE_DEBUG("ANIMATED_TEXT");
+                    WRITE_DEBUG("ANIMATED_TEXT");
 #endif
-                        packet = new Packets.Incoming.AnimatedTextPacket(Client);
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
-                        {
-                            if (ReceivedAnimatedTextIncomingPacket != null)
-                                packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
+                    packet = new Packets.Incoming.AnimatedTextPacket(Client);
+                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    {
+                        if (ReceivedAnimatedTextIncomingPacket != null)
+                            packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
 
-                            return packet;
-                        }
-                        break;
+                        return packet;
                     }
+                    break;
+                }
                 case IncomingPacketType.ContainerClose:
-                    {
+                {
 #if _DEBUG
-                        WRITE_DEBUG("CLOSE_CONTAINER");
+                    WRITE_DEBUG("CLOSE_CONTAINER");
 #endif
-                        packet = new Packets.Incoming.CloseContainerPacket(Client);
+                    packet = new Packets.Incoming.CloseContainerPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
-                        {
-                            if (ReceivedCloseContainerIncomingPacket != null)
-                                packet.Forward = ReceivedCloseContainerIncomingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    {
+                        if (ReceivedCloseContainerIncomingPacket != null)
+                            packet.Forward = ReceivedCloseContainerIncomingPacket.Invoke(packet);
 
-                            return packet;
-                        }
-                        break;
+                        return packet;
                     }
+                    break;
+                }
                 case IncomingPacketType.CreatureSpeak:
-                    {
+                {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_SPEAK");
+                    WRITE_DEBUG("CREATURE_SPEAK");
 #endif
-                        packet = new Packets.Incoming.CreatureSpeakPacket(Client);
+                    packet = new Packets.Incoming.CreatureSpeakPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
-                        {
-                            if (ReceivedCreatureSpeakIncomingPacket != null)
-                                packet.Forward = ReceivedCreatureSpeakIncomingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    {
+                        if (ReceivedCreatureSpeakIncomingPacket != null)
+                            packet.Forward = ReceivedCreatureSpeakIncomingPacket.Invoke(packet);
 
-                            return packet;
-                        }
-                        break;
+                        return packet;
                     }
+                    break;
+                }
                 case IncomingPacketType.ChannelOpen:
-                    {
+                {
 #if _DEBUG
-                        WRITE_DEBUG("OPEN_CHANNEL");
+                    WRITE_DEBUG("OPEN_CHANNEL");
 #endif
-                        packet = new Packets.Incoming.OpenChannelPacket(Client);
+                    packet = new Packets.Incoming.OpenChannelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
-                        {
-                            if (ReceivedOpenChannelIncomingPacket != null)
-                                packet.Forward = ReceivedOpenChannelIncomingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    {
+                        if (ReceivedOpenChannelIncomingPacket != null)
+                            packet.Forward = ReceivedOpenChannelIncomingPacket.Invoke(packet);
 
-                            return packet;
-                        }
-                        break;
+                        return packet;
                     }
+                    break;
+                }
                 case IncomingPacketType.PlayerCancelWalk:
                     {
 #if _DEBUG

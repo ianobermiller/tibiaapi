@@ -41,7 +41,7 @@ namespace Tibia.Packets
                 return true;
 
             }
-            else if(Destination == PacketDestination.Server)
+            else if (Destination == PacketDestination.Server)
             {
                 // send with dll.
 

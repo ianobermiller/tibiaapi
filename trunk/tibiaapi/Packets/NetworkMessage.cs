@@ -49,7 +49,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Propriedades"
+        #region "Properties"
 
         public int Length
         {
@@ -415,7 +415,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Outras Funções"
+        #region "Other Functions"
 
         public bool PrepareToSend()
         {

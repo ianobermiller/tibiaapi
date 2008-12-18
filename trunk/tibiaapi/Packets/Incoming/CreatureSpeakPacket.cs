@@ -44,24 +44,24 @@ namespace Tibia.Packets.Incoming
                 case SpeechType.MonsterSay:
                 case SpeechType.MonsterYell:
                 case SpeechType.PrivateNPCToPlayer:
-                    {
-                        Position = msg.GetLocation();
-                        break;
-                    }
+                {
+                    Position = msg.GetLocation();
+                    break;
+                }
                 case SpeechType.ChannelRed:
                 case SpeechType.ChannelRedAnonymous:
                 case SpeechType.ChannelOrange:
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelWhite:
-                    {
-                        ChannelId = (ChatChannel)msg.GetUInt16();
-                        break;
-                    }
+                {
+                    ChannelId = (ChatChannel)msg.GetUInt16();
+                    break;
+                }
                 case SpeechType.RuleViolationReport:
-                    {
-                        Time = msg.GetUInt32();
-                        break; 
-                    }
+                {
+                    Time = msg.GetUInt32();
+                    break; 
+                }
                 default:
                     break;
             }
@@ -90,24 +90,24 @@ namespace Tibia.Packets.Incoming
                 case SpeechType.MonsterSay:
                 case SpeechType.MonsterYell:
                 case SpeechType.PrivateNPCToPlayer:
-                    {
-                        msg.AddLocation(Position);
-                        break;
-                    }
+                {
+                    msg.AddLocation(Position);
+                    break;
+                }
                 case SpeechType.ChannelRed:
                 case SpeechType.ChannelRedAnonymous:
                 case SpeechType.ChannelOrange:
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelWhite:
-                    {
-                        msg.AddUInt16((ushort)ChannelId);
-                        break;
-                    }
+                {
+                    msg.AddUInt16((ushort)ChannelId);
+                    break;
+                }
                 case SpeechType.RuleViolationReport:
-                    {
-                        msg.AddUInt32(Time);
-                        break;
-                    }
+                {
+                    msg.AddUInt32(Time);
+                    break;
+                }
                 default:
                     break;
 
