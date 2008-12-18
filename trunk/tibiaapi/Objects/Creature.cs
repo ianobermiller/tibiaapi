@@ -110,7 +110,7 @@ namespace Tibia.Objects
         /// <returns>True if it's yourself, false otherwise</returns>
         public bool IsSelf()
         {
-            return (Id == client.GetPlayer().Id);
+            return (Id == client.ReadInt32(Addresses.Player.Id));
         }
 
         public void Approach()
@@ -151,6 +151,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Follow the creature / player.
+        /// </summary>
+        /// <returns></returns>
+        public bool Follow()
+        {
+            client.WriteInt32(Addresses.Player.GreenSquare, Id);
+            return Packets.Outgoing.FollowPacket.Send(client, (uint)Id);
+        }
+
+        /// <summary>
         /// Gets the distance between player and creature / player.
         /// </summary>
         /// <returns></returns>
@@ -166,20 +176,24 @@ namespace Tibia.Objects
         }
 
         #region Get/Set Methods
+
         public Client Client
         {
             get { return client; }
         }
+
         public int Id
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Id); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Id, value); }
         }
+
         public Constants.CreatureType Type
         {
             get { return (Constants.CreatureType)client.ReadByte(address + Addresses.Creature.Distance_Type); }
             set { client.WriteByte(address + Addresses.Creature.Distance_Type, (byte)value); }
         }
+
         public string Name
         {
             get { return client.ReadString(address + Addresses.Creature.Distance_Name); }
@@ -191,16 +205,19 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Creature.Distance_X); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_X, value); }
         }
+
         public int Y
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Y); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Y, value); }
         }
+
         public int Z
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Z); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Z, value); }
         }
+
         public Location Location
         {
             get { return new Location(X, Y, Z); }
@@ -211,6 +228,7 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz, value); }
         }
+
         public int ScreenOffsetVert
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetVert); }
@@ -222,16 +240,19 @@ namespace Tibia.Objects
             get { return Convert.ToBoolean(client.ReadByte(address + Addresses.Creature.Distance_IsWalking)); }
             set { client.WriteByte(address + Addresses.Creature.Distance_IsWalking, Convert.ToByte(value)); }
         }
+
         public int WalkSpeed
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_WalkSpeed); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_WalkSpeed, value); }
         }
+
         public Constants.TurnDirection Direction
         {
             get { return (Constants.TurnDirection)client.ReadInt32(address + Addresses.Creature.Distance_Direction); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Direction, (int)value); }
         }
+
         public bool IsVisible
         {
             get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Creature.Distance_IsVisible)); }
@@ -243,11 +264,13 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Light); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Light, value); }
         }
+
         public int LightColor
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_LightColor); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_LightColor, value); }
         }
+
         public int HPBar
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_HPBar); }
@@ -270,40 +293,65 @@ namespace Tibia.Objects
             set { client.WriteInt32(address + Addresses.Creature.Distance_Party, (int)value); }
         }
 
-        public Constants.OutfitType Outfit
+        public Constants.OutfitType OutfitType
         {
             get { return (Constants.OutfitType)client.ReadInt32(address + Addresses.Creature.Distance_Outfit); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Outfit, (int)value); }
         }
+
         public int Color_Head
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Head); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Head, value); }
         }
+
         public int Color_Body
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Body); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Body, value); }
         }
+
         public int Color_Legs
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Legs); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Legs, value); }
         }
+
         public int Color_Feet
         {
             get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Feet); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Feet, value); }
         }
+
         public Constants.OutfitAddon Addon
         {
         	get { return (Constants.OutfitAddon)client.ReadInt32(address + Addresses.Creature.Distance_Addon); }
         	set { client.WriteInt32(address + Addresses.Creature.Distance_Addon, (int)value); }
         }
+
+        public Outfit Outfit
+        {
+            get
+            {
+                return new Outfit((ushort)OutfitType, (byte)Color_Head, (byte)Color_Body,
+                    (byte)Color_Legs, (byte)Color_Feet, (byte)Addon); 
+            }
+            set
+            {
+                OutfitType = (Constants.OutfitType)value.LookType;
+                Color_Head = (int)value.Head;
+                Color_Body = (int)value.Body;
+                Color_Legs = (int)value.Legs;
+                Color_Feet = (int)value.Feet;
+                Addon = (Constants.OutfitAddon)value.Addons;
+            }
+        }
+
         #endregion
+
         public override string ToString()
         {
-            return Name+": "+HPBar.ToString()+"%";
+            return string.Format("{0}: {1}%", Name, HPBar.ToString());
         }
     }
 }
