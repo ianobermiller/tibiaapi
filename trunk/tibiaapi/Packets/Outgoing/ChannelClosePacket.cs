@@ -5,25 +5,25 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class OpenChannelPacket : OutgoingPacket
+    public class ChannelClosePacket : OutgoingPacket
     {
 
         public ChatChannel ChannelId { get; set; }
 
-        public OpenChannelPacket(Objects.Client c)
+        public ChannelClosePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.ChannelClose;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelOpen)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelClose)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.ChannelClose;
 
             ChannelId = (ChatChannel)msg.GetUInt16();
 

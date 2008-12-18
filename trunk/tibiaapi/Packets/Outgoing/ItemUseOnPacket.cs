@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class UseItemExPacket : OutgoingPacket
+    public class ItemUseOnPacket : OutgoingPacket
     {
         public Objects.Location FromPosition { get; set; }
         public ushort FromSpriteId { get; set; }
@@ -14,7 +14,7 @@ namespace Tibia.Packets.Outgoing
         public ushort ToSpriteId { get; set; }
         public byte ToStackPosition { get; set; }
 
-        public UseItemExPacket(Objects.Client c)
+        public ItemUseOnPacket(Objects.Client c)
             : base(c)
         {
             Type = OutgoingPacketType.ItemUseOn;
@@ -57,7 +57,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort fromSpriteId, byte fromStackPostion, Objects.Location toPosition, ushort toSpriteId, byte toStackPosition)
         {
-            UseItemExPacket p = new UseItemExPacket(client);
+            ItemUseOnPacket p = new ItemUseOnPacket(client);
 
             p.FromPosition = fromPosition;
             p.FromSpriteId = fromSpriteId;

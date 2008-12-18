@@ -5,24 +5,24 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class CloseContainerPacket : OutgoingPacket
+    public class ContainerOpenParentPacket : OutgoingPacket
     {
         public byte Id { get; set; }
 
-        public CloseContainerPacket(Objects.Client c)
+        public ContainerOpenParentPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ContainerClose;
+            Type = OutgoingPacketType.ContainerOpenParent;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerClose)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerOpenParent)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ContainerClose;
+            Type = OutgoingPacketType.ContainerOpenParent;
 
             Id = msg.GetByte();
 
@@ -42,7 +42,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, byte id)
         {
-            CloseContainerPacket p = new CloseContainerPacket(client);
+            ContainerOpenParentPacket p = new ContainerOpenParentPacket(client);
             p.Id = id;
             return p.Send();
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class ThrowPacket : OutgoingPacket
+    public class ItemMovePacket : OutgoingPacket
     {
         public Objects.Location FromPosition { get; set; }
         public ushort SpriteId { get; set; }
@@ -13,7 +13,7 @@ namespace Tibia.Packets.Outgoing
         public Objects.Location ToPosition { get; set; }
         public byte Count { get; set; }
 
-        public ThrowPacket(Objects.Client c)
+        public ItemMovePacket(Objects.Client c)
             : base(c)
         {
             Type = OutgoingPacketType.ItemMove;
@@ -54,7 +54,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStackPostion, Objects.Location toPosition, byte count)
         {
-            ThrowPacket p = new ThrowPacket(client);
+            ItemMovePacket p = new ItemMovePacket(client);
 
             p.FromPosition = fromPosition;
             p.SpriteId = spriteId;

@@ -57,7 +57,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenContainer(byte container)
         {
-            return Packets.Outgoing.UseItemPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, container);
+            return Packets.Outgoing.ItemUsePacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, container);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use()
         {
-            return Packets.Outgoing.UseItemPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, 0x0F);
+            return Packets.Outgoing.ItemUsePacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, 0x0F);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
         }
 
 
@@ -101,7 +101,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onItem.Loc.ToLocation(), (ushort)onItem.Id, 0); 
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onItem.Loc.ToLocation(), (ushort)onItem.Id, 0); 
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Creature onCreature)
         {
-            return Packets.Outgoing.UseItemExPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], onCreature.Location, 0x63, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], onCreature.Location, 0x63, 0);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Tibia.Objects
             if (id == Constants.Items.Bottle.Vial.Id) 
                 stack = count;
 
-            return Packets.Outgoing.BattleWindowPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, playerId);
+            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, playerId);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.Item toItem)
         {
-            return Packets.Outgoing.ThrowPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toItem.Loc.ToLocation(), count);
+            return Packets.Outgoing.ItemMovePacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toItem.Loc.ToLocation(), count);
         }
 
         /// <summary>

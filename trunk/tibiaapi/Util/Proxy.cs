@@ -722,7 +722,7 @@ namespace Tibia.Util
             {
                 case OutgoingPacketType.ChannelClose:
                     {
-                        packet = new Packets.Outgoing.CloseChannelPacket(client);
+                        packet = new Packets.Outgoing.ChannelClosePacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -735,7 +735,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ChannelOpen:
                     {
-                        packet = new Packets.Outgoing.OpenChannelPacket(client);
+                        packet = new Packets.Outgoing.ChannelOpenPacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -748,7 +748,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.PlayerSpeech:
                     {
-                        packet = new Packets.Outgoing.SayPacket(client);
+                        packet = new Packets.Outgoing.PlayerSpeechPacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -800,7 +800,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ItemUse:
                     {
-                        packet = new Packets.Outgoing.UseItemPacket(client);
+                        packet = new Packets.Outgoing.ItemUsePacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -813,7 +813,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ItemUseOn:
                     {
-                        packet = new Packets.Outgoing.UseItemExPacket(client);
+                        packet = new Packets.Outgoing.ItemUseOnPacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -826,7 +826,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ItemMove:
                     {
-                        packet = new Packets.Outgoing.ThrowPacket(client);
+                        packet = new Packets.Outgoing.ItemMovePacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -852,7 +852,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ItemUseBattlelist:
                     {
-                        packet = new Packets.Outgoing.BattleWindowPacket(client);
+                        packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -878,7 +878,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ContainerClose:
                     {
-                        packet = new Packets.Outgoing.CloseContainerPacket(client);
+                        packet = new Packets.Outgoing.ContainerClosePacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
@@ -891,7 +891,7 @@ namespace Tibia.Util
                     }
                 case OutgoingPacketType.ContainerOpenParent:
                     {
-                        packet = new Packets.Outgoing.UpArrowContainerPacket(client);
+                        packet = new Packets.Outgoing.ContainerOpenParentPacket(client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {

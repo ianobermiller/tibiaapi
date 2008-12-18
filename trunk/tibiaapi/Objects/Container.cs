@@ -67,7 +67,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenParent()
         {
-            return Packets.Outgoing.UpArrowContainerPacket.Send(client, number);
+            return Packets.Outgoing.ContainerOpenParentPacket.Send(client, number);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Tibia.Objects
             if (!IsOpen)
                 return true;
 
-            return Packets.Outgoing.CloseContainerPacket.Send(client, number);
+            return Packets.Outgoing.ContainerClosePacket.Send(client, number);
         }
 
         /// <summary>
