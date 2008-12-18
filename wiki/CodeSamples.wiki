@@ -92,30 +92,31 @@ private Packet ReceivedPlayerSpeechPacket(Packet packet)
 // Start the proxy and attach event handlers
 // Put this in Form_Load
 client.StartProxy();
-client.Proxy.ReceivedFromClient += (Proxy.PacketListener)PacketFromClient;
-client.Proxy.ReceivedFromServer += (Proxy.PacketListener)PacketFromServer;
+client.Proxy.ServerMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_ServerMessageArrived);
+client.Proxy.ClientMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_ClientMessageArrived);
 
-// Sample event handlers
-private Packet PacketFromClient(Packet packet)
-{
-	LogPacket(packet.Data, "CLIENT");
-	return packet;
-}
 
-private Packet PacketFromServer(Packet packet)
-{
-	LogPacket(packet.Data, "SERVER");
-	return packet;
-}
+        // Sample event handlers
+        void Proxy_ClientMessageArrived(Tibia.Packets.NetworkMessage message)
+        {
+            LogPacket(message.Packet, "CLIENT");
+            return packet;
+        }
 
-private void LogPacket(byte[] packet, string from)
-{
-	uxPackets.Invoke(new EventHandler(delegate
-	{
-		string s = "from " + from + Environment.NewLine;
-		s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
-	}));
-}
+        void Proxy_ServerMessageArrived(Tibia.Packets.NetworkMessage message)
+        {
+            LogPacket(message.Packet, "SERVER");
+            return packet;
+        }
+
+        private void LogPacket(byte[] packet, string from)
+        {
+            uxPackets.Invoke(new EventHandler(delegate
+            {
+                string s = "from " + from + Environment.NewLine;
+                s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
+            }));
+        }
 }}}
 
 == Perform name spy or level spy ==
