@@ -5,27 +5,26 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class CloseChannelPacket : OutgoingPacket
+    public class ContainerClosePacket : OutgoingPacket
     {
+        public byte Id { get; set; }
 
-        public ChatChannel ChannelId { get; set; }
-
-        public CloseChannelPacket(Objects.Client c)
+        public ContainerClosePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ChannelClose;
+            Type = OutgoingPacketType.ContainerClose;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelClose)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerClose)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ChannelClose;
+            Type = OutgoingPacketType.ContainerClose;
 
-            ChannelId = (ChatChannel)msg.GetUInt16();
+            Id = msg.GetByte();
 
             return true;
         }
@@ -36,9 +35,16 @@ namespace Tibia.Packets.Outgoing
 
             msg.AddByte((byte)Type);
 
-            msg.AddUInt16((ushort)ChannelId);
+            msg.AddByte(Id);
 
             return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, byte id)
+        {
+            ContainerClosePacket p = new ContainerClosePacket(client);
+            p.Id = id;
+            return p.Send();
         }
     }
 }

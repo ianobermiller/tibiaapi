@@ -5,26 +5,27 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class UpArrowContainerPacket : OutgoingPacket
+    public class ChannelOpenPacket : OutgoingPacket
     {
-        public byte Id { get; set; }
 
-        public UpArrowContainerPacket(Objects.Client c)
+        public ChatChannel ChannelId { get; set; }
+
+        public ChannelOpenPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ContainerOpenParent;
+            Type = OutgoingPacketType.ChannelOpen;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ContainerOpenParent)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelOpen)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ContainerOpenParent;
+            Type = OutgoingPacketType.ChannelOpen;
 
-            Id = msg.GetByte();
+            ChannelId = (ChatChannel)msg.GetUInt16();
 
             return true;
         }
@@ -35,16 +36,9 @@ namespace Tibia.Packets.Outgoing
 
             msg.AddByte((byte)Type);
 
-            msg.AddByte(Id);
+            msg.AddUInt16((ushort)ChannelId);
 
             return msg.Packet;
-        }
-
-        public static bool Send(Objects.Client client, byte id)
-        {
-            UpArrowContainerPacket p = new UpArrowContainerPacket(client);
-            p.Id = id;
-            return p.Send();
         }
     }
 }

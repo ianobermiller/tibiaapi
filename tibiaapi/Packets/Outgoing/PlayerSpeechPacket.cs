@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class SayPacket : OutgoingPacket
+    public class PlayerSpeechPacket : OutgoingPacket
     {
 
         public SpeechType SpeakType { get; set; }
@@ -13,7 +13,7 @@ namespace Tibia.Packets.Outgoing
         public string Message { get; set; }
         public ChatChannel ChannelId { get; set; }
 
-        public SayPacket(Objects.Client c)
+        public PlayerSpeechPacket(Objects.Client c)
             : base(c)
         {
             Type = OutgoingPacketType.PlayerSpeech;
@@ -84,7 +84,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, SpeechType type, string receiver, string message, ChatChannel channel)
         {
-            SayPacket p = new SayPacket(client);
+            PlayerSpeechPacket p = new PlayerSpeechPacket(client);
 
             p.SpeakType = type;
             p.Receiver = receiver;
