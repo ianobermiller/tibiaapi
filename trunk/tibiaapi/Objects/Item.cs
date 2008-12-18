@@ -18,38 +18,34 @@ namespace Tibia.Objects
 
         #region Constructors
 
+        //only for ItemsList
+        /// <summary>
+        /// Please use this constructor only for items list.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        public Item(uint id, string name) 
+            : this(null, id, 0, name) { }
+
+        public Item(Client client, uint id)
+            : this(client, id, 0) { }
+
         public Item(Client client, uint id, byte count)
+            : this(client, id, count, "") { }
+
+        public Item(Client client, uint id, byte count, string name)
+            : this(client, id, count, "", null, false) { }
+
+        public Item(Client client, uint id, byte count, string name, ItemLocation location, bool found)
         {
             this.client = client;
             this.id = id;
             this.count = count;
+            this.name = name;
+            this.loc = location;
+            this.found = found;
         }
 
-        public Item() : this(0) { }
-        public Item(Client client, bool found) : this(0, "", 0, null, client, found) { }
-        public Item(uint id) : this(id, "") { }
-        public Item(uint id, string name) : this(id, name, 0, null, null, false) { }
-        public Item(ItemLocation loc) : this(0, "", 0, loc, null, false) { }
-        public Item(uint id, byte count, ItemLocation loc, Client client, bool found) : this(id, "", count, loc, client, found) { }
-
-        /// <summary>
-        /// Main constructor.
-        /// </summary>
-        /// <param name="id">item id</param>
-        /// <param name="name">item name (only used when representing an item type)</param>
-        /// <param name="count">number of items in the stack (also charges on a rune)</param>
-        /// <param name="loc">location in game</param>
-        /// <param name="client">client (used for sending packets)</param>
-        /// <param name="found">used when searching</param>
-        public Item(uint id, string name, byte count, ItemLocation loc, Client client, bool found)
-        {
-            Id = id;
-            Name = name;
-            Count = count;
-            Loc = loc;
-            Found = found;
-            this.client = client;
-        }
         #endregion
 
         #region Packet Functions
@@ -143,9 +139,10 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.ItemLocation toLocation)
         {
-            if (client == null) return false;
+            if (client == null) 
+                return false;
             
-            return Move(new Objects.Item(toLocation));
+            return Move(new Objects.Item(client, 0, 0, "", toLocation, false));
         }
 
         /// <summary>
@@ -159,12 +156,12 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Test me!
+        /// Look at an item.
         /// </summary>
         /// <returns></returns>
         public bool Look()
         {
-            return Packets.Outgoing.LookAtPacket.Send(client, loc.groundLocation, (ushort)id, loc.stackOrder);
+            return Packets.Outgoing.LookAtPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder);
         }
 
         /// <summary>
@@ -467,7 +464,14 @@ namespace Tibia.Objects
     {
         public uint RegenerationTime;
 
-        public Food(uint id, string name, uint regenerationTime) : base(id, name)
+        public Food(uint id, string name, uint regenerationTime)
+            : base(null, id, 0, name)
+        {
+            RegenerationTime = regenerationTime;
+        }
+
+        public Food(Client client, uint id, string name, uint regenerationTime)
+            : base(client, id, 0, name)
         {
             RegenerationTime = regenerationTime;
         }
@@ -490,13 +494,22 @@ namespace Tibia.Objects
         /// <param name="spell">spell used to create the item</param>
         /// <param name="soulPoints">amount of soul points needed to make the item</param>
         /// <param name="originalItem">the item that the spell words are used on to create this item</param>
-        public TransformingItem(uint id, string name, Spell spell, uint soulPoints, Item originalItem)
-            : base(id, name)
+        public TransformingItem(Client client, uint id, string name, Spell spell, uint soulPoints, Item originalItem)
+            : base(client, id, 0, name)
         {
             Spell = spell;
             SoulPoints = soulPoints;
             OriginalItem = originalItem;
         }
+
+        public TransformingItem(uint id, string name, Spell spell, uint soulPoints, Item originalItem)
+            : base(null, id, 0, name)
+        {
+            Spell = spell;
+            SoulPoints = soulPoints;
+            OriginalItem = originalItem;
+        }
+
     }
 
     /// <summary>
@@ -511,8 +524,13 @@ namespace Tibia.Objects
         /// <param name="name">item name</param>
         /// <param name="spell">spell used to create the rune</param>
         /// <param name="soulPoints">amount of soul points needed to make the rune</param>
+        public Rune(Client client, uint id, string name, Spell spell, uint soulPoints)
+            : base(client, id, name, spell, soulPoints, Constants.Items.Rune.Blank)
+        {
+        }
+
         public Rune(uint id, string name, Spell spell, uint soulPoints)
-            : base(id, name, spell, soulPoints, Constants.Items.Rune.Blank)
+            : base(null, id, name, spell, soulPoints, Constants.Items.Rune.Blank)
         {
         }
     }

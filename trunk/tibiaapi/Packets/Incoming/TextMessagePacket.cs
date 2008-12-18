@@ -40,5 +40,15 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, MessageClasses_t color, string msg)
+        {
+            TextMessagePacket p = new TextMessagePacket(client);
+            p.Color = color;
+            p.Message = msg;
+
+            return p.Send();
+        }
+
     }
 }
