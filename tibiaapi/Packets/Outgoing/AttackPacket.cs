@@ -7,7 +7,6 @@ namespace Tibia.Packets.Outgoing
 {
     public class AttackPacket : OutgoingPacket
     {
-
         public uint CreatureId { get; set; }
 
         public AttackPacket(Objects.Client c)

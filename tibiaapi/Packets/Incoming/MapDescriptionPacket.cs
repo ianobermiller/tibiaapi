@@ -35,7 +35,7 @@ namespace Tibia.Packets.Incoming
 
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType_t.MAP_DESCRIPTION)
+            if (msg.GetByte() != (byte)IncomingPacketType.MapDescription)
                 return false;
 
             Destination = destination;

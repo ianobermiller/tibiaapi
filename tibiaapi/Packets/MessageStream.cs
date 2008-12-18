@@ -19,7 +19,7 @@ namespace Tibia.Packets
         public MessageStream(int size)
             : this()
         {
-            checkIfNeedExpand(size);
+            CheckIfNeedExpand(size);
             _length = size;
         }
 
@@ -45,7 +45,7 @@ namespace Tibia.Packets
 
         public void Write(byte[] buffer, int offset, int count)
         {
-            checkIfNeedExpand(count);
+            CheckIfNeedExpand(count);
             Array.Copy(buffer, offset, _buffer, _position, count);
             _position += count;
 
@@ -53,7 +53,7 @@ namespace Tibia.Packets
                 _length = _position;
         }
 
-        private void checkIfNeedExpand(int count)
+        private void CheckIfNeedExpand(int count)
         {
             int _l = count + _length;
 
@@ -136,7 +136,7 @@ namespace Tibia.Packets
             set
             {
                 if (value > _buffer.Length)
-                    checkIfNeedExpand(value - _buffer.Length);
+                    CheckIfNeedExpand(value - _buffer.Length);
                 _length = value;
             }
         }
@@ -147,7 +147,7 @@ namespace Tibia.Packets
             set
             {
                 if (value > _buffer.Length)
-                    checkIfNeedExpand(value - _buffer.Length);
+                    CheckIfNeedExpand(value - _buffer.Length);
 
                 if (value > _length)
                     _length = value;

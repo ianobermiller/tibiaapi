@@ -34,7 +34,7 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType_t.MOVE_WEST)
+            if (msg.GetByte() != (byte)IncomingPacketType.MoveWest)
                 return false;
 
             Destination = destination;
