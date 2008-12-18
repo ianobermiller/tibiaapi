@@ -36,7 +36,6 @@ namespace Tibia.Objects
         private Inventory inventory;
         private Random random;
         private Console console;
-        private Util.DatReader dat;
         private Util.Proxy proxy;
         private Util.Pipe pipe = null; //For Displaying Text
         private Screen screen;
@@ -100,7 +99,6 @@ namespace Tibia.Objects
             inventory = new Inventory(this);
             console = new Console(this);
             random = new Random();
-            dat = new Util.DatReader(this);
             screen = new Screen(this);
 
             pathFinder = new Tibia.Util.PathFinder(this);
@@ -667,15 +665,6 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Get the client's DatReader.
-        /// </summary>
-        /// <returns></returns>
-        public Util.DatReader DatReader
-        {
-            get { return dat; }
-        }
-
-        /// <summary>
         /// Get the client's inventory.
         /// </summary>
         /// <returns></returns>
@@ -725,9 +714,11 @@ namespace Tibia.Objects
         /// <returns>True if eating succeeded, false if no food found or eating failed.</returns>
         public bool EatFood()
         {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Inventory inventory = new Inventory(this);
+            if (!LoggedIn) 
+                throw new Exceptions.NotLoggedInException();
+
             Item food = inventory.FindItem(Tibia.Constants.ItemLists.Foods.Values);
+
             if (food.Found)
                 return food.Use();
             else
@@ -912,7 +903,7 @@ namespace Tibia.Objects
                     // Build an item object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
                     // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newItem = new Item(item.Id, 0, newLocation, this, true);
+                    Item newItem = new Item(this, item.Id, 0, "", newLocation, true);
 
                     // Move the rune back to it's original location
                     Thread.Sleep(300);
@@ -946,12 +937,13 @@ namespace Tibia.Objects
         {
             Player player = GetPlayer();
             List<Tile> fishes = map.GetFishTiles();
+
             if (fishes.Count > 0)
             {
-                int tilenr = random.Next(fishes.Count - 1);
-                inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, fishes[tilenr]);
+                inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, fishes[random.Next(fishes.Count - 1)]);
                 return true;
             }
+
             return false;
         }
 
@@ -979,6 +971,7 @@ namespace Tibia.Objects
         }
 
         #region Account Info
+
         public void SetAccountInfo(int account, string password)
         {
             AccountNumber = account;
@@ -993,6 +986,7 @@ namespace Tibia.Objects
             WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
             WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
         }
+
         #endregion
 
         #endregion

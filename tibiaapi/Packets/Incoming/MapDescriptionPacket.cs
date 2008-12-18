@@ -243,7 +243,7 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Objects.Item item = new Tibia.Objects.Item(Client, thingId, 0);
+                Objects.Item item = new Tibia.Objects.Item(Client, thingId);
 
                 if (item.HasExtraByte)
                 {

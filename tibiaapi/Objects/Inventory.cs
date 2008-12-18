@@ -120,7 +120,8 @@ namespace Tibia.Objects
                     }
                 }
             }
-            lastFound = (item == null ? new Item(client, false) : item);
+            lastFound = (item == null ? new Item(client, 0) : item);
+
             return lastFound;
         }
 
@@ -217,12 +218,10 @@ namespace Tibia.Objects
                 long address = Addresses.Container.Start +
                               Addresses.Container.Step_Container * (int)location.container +
                               Addresses.Container.Step_Slot * (int)location.slot;
-                return new Item(
-                    (uint)client.ReadInt32(address + Addresses.Container.Distance_Item_Id),
+                return new Item(client,
+                    client.ReadUInt32(address + Addresses.Container.Distance_Item_Id),
                     client.ReadByte(address + Addresses.Container.Distance_Item_Count),
-                    location,
-                    client,
-                    true);
+                    "", location, true);
             }
             return null;
         }
@@ -427,11 +426,11 @@ namespace Tibia.Objects
             uint id = (uint)client.ReadInt32(address);
             if (id > 0)
             {
-                item = new Item(id, count, new ItemLocation(s), client, true);
+                item = new Item(client, id, count, "", new ItemLocation(s), true);
             }
             else
             {
-                item = new Item(client, false);
+                item = new Item(client, 0);
             }
             return item;
         }
@@ -447,12 +446,11 @@ namespace Tibia.Objects
             uint address = Addresses.Player.Slot_Head;
             for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
             {
-                item = new Item(
-                    Convert.ToUInt32(client.ReadInt32(address)), 
-                    client.ReadByte(address +  + Addresses.Player.Distance_Slot_Count), 
-                    new ItemLocation((Constants.SlotNumber) i), 
-                    client, 
-                    false);
+                item = new Item(client,
+                    client.ReadUInt32(address), 
+                    client.ReadByte(address +  + Addresses.Player.Distance_Slot_Count),"", 
+                    new ItemLocation((Constants.SlotNumber) i), false);
+
                 if (match(item))
                 {
                     item.Found = true;

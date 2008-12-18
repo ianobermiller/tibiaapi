@@ -44,7 +44,13 @@ namespace Tibia.Packets
             else if(Destination == PacketDestination_t.SERVER)
             {
                 // send with dll.
-                return SendPacketWithDLL(Client, ToByteArray());
+
+                byte[] packet = ToByteArray();
+                byte[] sendPacket = new byte[packet.Length + 2];
+                Array.Copy(packet, 0, sendPacket, 2, packet.Length);
+                Array.Copy(BitConverter.GetBytes((ushort)packet.Length), sendPacket, 2);
+
+                return SendPacketWithDLL(Client, sendPacket);
             }
 
             return false;

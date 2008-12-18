@@ -71,7 +71,7 @@ namespace Tibia.Objects
                 square.MemoryLocation.X = xNew;
                 square.MemoryLocation.Y = yNew;
 
-                Item Ground = new Item(square.Tile.Id, 0, null, client, false);
+                Item Ground = new Item(client, square.Tile.Id);
 
                 if (Ground.GetFlag(Addresses.DatItem.Flag.Blocking) ||
                     Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||

@@ -48,15 +48,13 @@ namespace Tibia.Objects
             List<Item> items = new List<Item>(amount);
             for (uint i = address; i <= address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
             {
-                byte itemCount = client.ReadByte(i + Addresses.Container.Distance_Item_Count);
-                uint itemId = (uint) client.ReadInt32(i + Addresses.Container.Distance_Item_Id);
+
+                uint itemId = client.ReadUInt32(i + Addresses.Container.Distance_Item_Id);
                 if (itemId > 0)
-                    items.Add(new Item(
-                        itemId,
-                        itemCount,
-                        new ItemLocation(number, slot),
-                        client,
-                        true));
+                    items.Add(new Item(client, itemId,
+                        client.ReadByte(i + Addresses.Container.Distance_Item_Count)
+                        , "", new ItemLocation(number, slot), true));
+                
                 slot++;
             }
 

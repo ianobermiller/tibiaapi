@@ -23,10 +23,7 @@ namespace Tibia.Objects
 
                 foreach (MapObject mo in Objects)
                 {
-                    Item item = new Item(new ItemLocation(Tile.Location, (byte)mo.StackOrder));
-                    item.Client = client;
-                    item.Id = (uint)mo.Id;
-                    item.Count = (byte)mo.Data;
+                    Item item = new Item(client, (uint)mo.Id, (byte)mo.Data, "", new ItemLocation(Tile.Location, (byte)mo.StackOrder), true); 
                     items.Add(item);
                 }
 

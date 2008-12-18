@@ -214,8 +214,10 @@ namespace Tibia.Packets
         public int AddItem(Item item)
         {
             AddInt((int)item.Id);
-            if (client.DatReader.GetItem(item.Id).HasExtraByte())
+
+            if (item.HasExtraByte)
                 AddByte(item.Count);
+
             return index;
         }
         #endregion
@@ -345,10 +347,11 @@ namespace Tibia.Packets
         /// <returns></returns>
         public Item GetItem()
         {
-            Item item = new Item(GetInt());
-            if (client.DatReader.GetItem(item.Id).HasExtraByte())
+            Item item = new Item(client, GetInt());
+
+            if (item.HasExtraByte)
                 item.Count = GetByte();
-            item.Client = client;
+
             return item;
         }
 
