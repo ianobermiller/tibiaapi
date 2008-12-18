@@ -32,6 +32,8 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType_t.FLOOR_CHANGE_DOWN)
                 return false;
 
@@ -40,25 +42,24 @@ namespace Tibia.Packets.Incoming
             stream.AddByte((byte)Type);
 
             pos.Z++;
-            //going from surface to underground
-            if (pos.Z == 8)
+
+            try
             {
-                int j, i;
-                for (i = (int)pos.Z, j = -1; i < (int)pos.Z + 3; ++i, --j)
+                //going from surface to underground
+                if (pos.Z == 8)
                 {
-                    if (!setFloorDescription(msg, pos.X - 8, pos.Y - 6, i, 18, 14, j))
-                    {
-                        //RAISE_PROTOCOL_ERROR("Set Floor Desc  z = 8 0xBF");
-                    }
+                    int j, i;
+                    for (i = (int)pos.Z, j = -1; i < (int)pos.Z + 3; ++i, --j)
+                        setFloorDescription(msg, pos.X - 8, pos.Y - 6, i, 18, 14, j);
                 }
+                //going further down
+                else if (pos.Z > 8 && pos.Z < 14)
+                    setFloorDescription(msg, pos.X - 8, pos.Y - 6, pos.Z + 2, 18, 14, -3);
             }
-            //going further down
-            else if (pos.Z > 8 && pos.Z < 14)
+            catch (Exception)
             {
-                if (!setFloorDescription(msg, pos.X - 8, pos.Y - 6, pos.Z + 2, 18, 14, -3))
-                {
-                    //RAISE_PROTOCOL_ERROR("Set Floor Desc  z > 8 && z < 14 0xBF");
-                }
+                msg.Position = position;
+                return false;
             }
 
             pos.X--;

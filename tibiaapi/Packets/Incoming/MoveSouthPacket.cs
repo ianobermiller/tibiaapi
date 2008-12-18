@@ -32,6 +32,8 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination_t destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType_t.MOVE_SOUTH)
                 return false;
 
@@ -40,7 +42,16 @@ namespace Tibia.Packets.Incoming
             stream.AddByte((byte)Type);
 
             pos.Y++;
-            setMapDescription(msg, pos.X - 8, pos.Y + 7, pos.Z, 18, 1);
+
+            try
+            {
+                setMapDescription(msg, pos.X - 8, pos.Y + 7, pos.Z, 18, 1);
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

@@ -442,7 +442,6 @@ namespace Tibia.Objects
         public static Client Open(ProcessStartInfo psi)
         {
             Process p = Process.Start(psi);
-            p.EnableRaisingEvents = true;
             return new Client(p);
         }
 
@@ -641,9 +640,10 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Player GetPlayer()
         {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
-            Creature creature = battleList.GetCreature(ReadInt32(Addresses.Player.Id));
-            return new Player(this, creature.Address);
+            if (!LoggedIn) 
+                throw new Exceptions.NotLoggedInException();
+
+            return new Player(this, battleList.GetCreature(ReadInt32(Addresses.Player.Id)).Address);
         }
 
         /// <summary>
@@ -705,9 +705,11 @@ namespace Tibia.Objects
         {
             get { return pipe; }
         }
+
         #endregion
 
         #region Client MultiFunctions
+
         /// <summary>
         /// Eat food found in any container.
         /// </summary>
@@ -805,7 +807,6 @@ namespace Tibia.Objects
 
         }
 
-
         /// <summary>
         /// Gets or sets the follow mode.
         /// </summary>
@@ -846,7 +847,9 @@ namespace Tibia.Objects
         /// <returns>True if everything went well, false if no original item was found or part or all of the process failed</returns>
         public bool TransformItem(TransformingItem item, bool checkSoulPoints)
         {
-            if (!LoggedIn) throw new Exceptions.NotLoggedInException();
+            if (!LoggedIn) 
+                throw new Exceptions.NotLoggedInException();
+
             Player player = GetPlayer();
             bool allClear = true; // Keeps a running total of success
             Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
@@ -898,7 +901,8 @@ namespace Tibia.Objects
                     allClear = allClear & console.Say(item.Spell.Words);
                     Thread.Sleep(200);
                     // Don't bother continuing if both the above actions didn't work
-                    if (!allClear) return false;
+                    if (!allClear) 
+                        return false;
 
                     // Build an item object for the newly created item
                     // We don't use getSlot because it could execute too fast, returning a blank
@@ -946,9 +950,6 @@ namespace Tibia.Objects
 
             return false;
         }
-
-
-
 
         #endregion
 
@@ -1225,6 +1226,7 @@ namespace Tibia.Objects
         #endregion
 
         #region Pipe wrappers
+
         public void InitializePipe()
         {
             if (pipe != null)

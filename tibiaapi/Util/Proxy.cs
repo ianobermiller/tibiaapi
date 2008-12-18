@@ -1434,7 +1434,7 @@ namespace Tibia.Util
                 case IncomingPacketType_t.DISTANCE_SHOT:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("DistanceEffect");
+                        WRITE_DEBUG("DISTANCE_SHOT");
 #endif
                         packet = new Packets.Incoming.DistanceShotPacket(Client);
 
