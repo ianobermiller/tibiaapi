@@ -239,6 +239,7 @@ namespace Tibia
                 s.AppendLine(type.FullName + " = ");
                 s.AppendLine("{");
                 List<Type> interfaces = new List<Type>(type.GetInterfaces());
+
                 if (interfaces.Contains(typeof(IEnumerable)))
                 {
                     s.AppendLine("\tValues = ");
@@ -249,6 +250,7 @@ namespace Tibia
                     }
                     s.AppendLine("\t}");
                 }
+
                 foreach (FieldInfo fi in type.GetFields())
                 {
                     object val;
@@ -260,9 +262,11 @@ namespace Tibia
                     {
                         val = null;
                     }
+
                     s.AppendLine("\t" + fi.Name + " = " +
                         (val == null ? "null" : val.ToString()));
                 }
+
                 foreach (PropertyInfo pi in type.GetProperties())
                 {
                     if (pi.CanRead)
@@ -280,6 +284,7 @@ namespace Tibia
                             (val == null ? "null" : val.ToString()));
                     }
                 }
+
                 s.AppendLine("}");
             }
             else

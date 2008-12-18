@@ -69,7 +69,7 @@ namespace Tibia.Packets.Incoming
             }
             else
             {
-                Item = new Tibia.Objects.Item(Client, ThingId, 0);
+                Item = new Tibia.Objects.Item(Client, ThingId);
                 Item.Loc = new Tibia.Objects.ItemLocation(Position);
 
                 if (Item.HasExtraByte)
