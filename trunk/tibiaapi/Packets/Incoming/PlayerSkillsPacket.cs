@@ -32,26 +32,36 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.PlayerSkillsUpdate)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.PlayerSkillsUpdate;
 
-            Fist = msg.GetByte();
-            FistPercent = msg.GetByte();
-            Club = msg.GetByte();
-            ClubPercent = msg.GetByte();
-            Sword = msg.GetByte();
-            SwordPercent = msg.GetByte();
-            Axe = msg.GetByte();
-            AxePercent = msg.GetByte();
-            Distance = msg.GetByte();
-            DistancePercent = msg.GetByte();
-            Shield = msg.GetByte();
-            ShieldPercent = msg.GetByte();
-            Fish = msg.GetByte();
-            FishPercent = msg.GetByte();
+            try
+            {
+                Fist = msg.GetByte();
+                FistPercent = msg.GetByte();
+                Club = msg.GetByte();
+                ClubPercent = msg.GetByte();
+                Sword = msg.GetByte();
+                SwordPercent = msg.GetByte();
+                Axe = msg.GetByte();
+                AxePercent = msg.GetByte();
+                Distance = msg.GetByte();
+                DistancePercent = msg.GetByte();
+                Shield = msg.GetByte();
+                ShieldPercent = msg.GetByte();
+                Fish = msg.GetByte();
+                FishPercent = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

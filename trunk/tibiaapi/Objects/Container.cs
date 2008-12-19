@@ -37,6 +37,30 @@ namespace Tibia.Objects
             this.number = number;
         }
 
+        public Item GetItem(Predicate<Item> match)
+        {
+            byte slot = 0;
+            int amount = (int)Amount;
+
+            for (uint i = Address; i <= Address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
+            {
+                uint itemId = (uint)Client.ReadUInt32(i + Addresses.Container.Distance_Item_Id);
+                if (itemId > 0)
+                {
+                    Item item = new Item(client, itemId);
+                    item.Loc = new ItemLocation(number, slot);
+                    item.Count = Client.ReadByte(i + Addresses.Container.Distance_Item_Count);
+
+                    if (match(item))
+                        return item;
+                }
+
+                slot++;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Return a list of all the items in the container.
         /// </summary>

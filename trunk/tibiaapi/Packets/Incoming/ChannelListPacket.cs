@@ -19,21 +19,32 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.ChannelList)
                 throw new Exception();
 
             Destination = destination;
             Type = IncomingPacketType.ChannelList;
-            NumberChannel = msg.GetByte();
 
-            Channels = new List<Tibia.Objects.Channel>(NumberChannel);
-
-            ushort id;
-
-            for (int i = 0; i < NumberChannel; i++)
+            try
             {
-                id = msg.GetUInt16();
-                Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
+                NumberChannel = msg.GetByte();
+
+                Channels = new List<Tibia.Objects.Channel>(NumberChannel);
+
+                ushort id;
+
+                for (int i = 0; i < NumberChannel; i++)
+                {
+                    id = msg.GetUInt16();
+                    Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
+                }
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
             }
 
             return true;

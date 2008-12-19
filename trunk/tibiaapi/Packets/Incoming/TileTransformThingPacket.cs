@@ -23,28 +23,38 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.TileTransformThing)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.TileTransformThing;
 
-            Position = msg.GetLocation();
-            StackPosition = msg.GetByte();
-            ThingId = msg.GetUInt16();
-
-            if (ThingId == 0x0061 || ThingId == 0x0062 || ThingId == 0x0063)
+            try
             {
-                CreatureId = msg.GetUInt32();
-                CreatureDirection = msg.GetByte();
+                Position = msg.GetLocation();
+                StackPosition = msg.GetByte();
+                ThingId = msg.GetUInt16();
+
+                if (ThingId == 0x0061 || ThingId == 0x0062 || ThingId == 0x0063)
+                {
+                    CreatureId = msg.GetUInt32();
+                    CreatureDirection = msg.GetByte();
+                }
+                else
+                {
+                    Item = new Tibia.Objects.Item(Client, ThingId, 0);
+                    Item.Loc = new Tibia.Objects.ItemLocation(Position);
+
+                    if (Item.HasExtraByte)
+                        Item.Count = msg.GetByte();
+                }
             }
-            else
+            catch (Exception)
             {
-                Item = new Tibia.Objects.Item(Client, ThingId, 0);
-                Item.Loc = new Tibia.Objects.ItemLocation(Position);
-
-                if (Item.HasExtraByte)
-                    Item.Count = msg.GetByte();
+                msg.Position = position;
+                return false;
             }
 
             return true;

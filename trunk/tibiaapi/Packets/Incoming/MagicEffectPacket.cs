@@ -19,14 +19,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.MagicEffect)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.MagicEffect;
 
-            Position = msg.GetLocation();
-            Effect = msg.GetByte();
+            try
+            {
+                Position = msg.GetLocation();
+                Effect = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

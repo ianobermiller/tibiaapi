@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
     public class CreatureHealthPacket : IncomingPacket
     {
         public uint CreatureId { get; set; }
-        public byte CREATURE_HEALTH { get; set; }
+        public byte Health { get; set; }
 
         public CreatureHealthPacket(Objects.Client c)
             : base(c)
@@ -19,14 +19,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.CreatureHealth)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.CreatureHealth;
 
-            CreatureId = msg.GetUInt32();
-            CREATURE_HEALTH = msg.GetByte();
+            try
+            {
+                CreatureId = msg.GetUInt32();
+                Health = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }
@@ -38,7 +48,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(CreatureId);
-            msg.AddByte(CREATURE_HEALTH);
+            msg.AddByte(Health);
 
             return msg.Packet;
         }

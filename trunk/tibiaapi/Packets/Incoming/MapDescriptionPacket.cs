@@ -42,11 +42,10 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.MapDescription;
             stream.AddByte((byte)Type);
 
-            pos = msg.GetLocation();
-            stream.AddLocation(pos);
-
             try
             {
+                pos = msg.GetLocation();
+                stream.AddLocation(pos);
                 setMapDescription(msg, pos.X - 8, pos.Y - 6, pos.Z, 18, 14);
             }
             catch (Exception)

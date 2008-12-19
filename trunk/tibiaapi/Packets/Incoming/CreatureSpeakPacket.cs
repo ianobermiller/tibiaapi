@@ -25,48 +25,59 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.CreatureSpeak)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.CreatureSpeak;
 
-            UnknowSpeak = msg.GetUInt32();
-            SenderName = msg.GetString();
-            SenderLevel = msg.GetUInt16();
-            SpeakType = (SpeechType)msg.GetByte();
-
-            switch (SpeakType)
+            try
             {
-                case SpeechType.Say:
-                case SpeechType.Whisper:
-                case SpeechType.Yell:
-                case SpeechType.MonsterSay:
-                case SpeechType.MonsterYell:
-                case SpeechType.PrivateNPCToPlayer:
-                {
-                    Position = msg.GetLocation();
-                    break;
-                }
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelRedAnonymous:
-                case SpeechType.ChannelOrange:
-                case SpeechType.ChannelYellow:
-                case SpeechType.ChannelWhite:
-                {
-                    ChannelId = (ChatChannel)msg.GetUInt16();
-                    break;
-                }
-                case SpeechType.RuleViolationReport:
-                {
-                    Time = msg.GetUInt32();
-                    break; 
-                }
-                default:
-                    break;
-            }
+                UnknowSpeak = msg.GetUInt32();
+                SenderName = msg.GetString();
+                SenderLevel = msg.GetUInt16();
+                SpeakType = (SpeechType)msg.GetByte();
 
-            Message = msg.GetString();
+
+                switch (SpeakType)
+                {
+                    case SpeechType.Say:
+                    case SpeechType.Whisper:
+                    case SpeechType.Yell:
+                    case SpeechType.MonsterSay:
+                    case SpeechType.MonsterYell:
+                    case SpeechType.PrivateNPCToPlayer:
+                        {
+                            Position = msg.GetLocation();
+                            break;
+                        }
+                    case SpeechType.ChannelRed:
+                    case SpeechType.ChannelRedAnonymous:
+                    case SpeechType.ChannelOrange:
+                    case SpeechType.ChannelYellow:
+                    case SpeechType.ChannelWhite:
+                        {
+                            ChannelId = (ChatChannel)msg.GetUInt16();
+                            break;
+                        }
+                    case SpeechType.RuleViolationReport:
+                        {
+                            Time = msg.GetUInt32();
+                            break;
+                        }
+                    default:
+                        break;
+                }
+
+                Message = msg.GetString();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

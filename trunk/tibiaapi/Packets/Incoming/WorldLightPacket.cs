@@ -20,14 +20,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.WorldLight)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.WorldLight;
 
-            LightLevel = msg.GetByte();
-            LightColor = msg.GetByte();
+            try
+            {
+                LightLevel = msg.GetByte();
+                LightColor = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

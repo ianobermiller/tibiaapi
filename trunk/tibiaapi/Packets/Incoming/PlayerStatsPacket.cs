@@ -29,30 +29,40 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.PlayerStatusUpdate)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.PlayerStatusUpdate;
 
-            Health = msg.GetUInt16();
-            MaxHealth = msg.GetUInt16();
-            Capacity = msg.GetUInt32();
+            try
+            {
+                Health = msg.GetUInt16();
+                MaxHealth = msg.GetUInt16();
+                Capacity = msg.GetUInt32();
 
-            Experience = msg.GetUInt32();
+                Experience = msg.GetUInt32();
 
-            Level = msg.GetUInt16();
+                Level = msg.GetUInt16();
 
-            LevelPercent = msg.GetByte();
+                LevelPercent = msg.GetByte();
 
-            Mana = msg.GetUInt16();
-            MaxMana = msg.GetUInt16();
+                Mana = msg.GetUInt16();
+                MaxMana = msg.GetUInt16();
 
-            MagicLevel = msg.GetByte();
-            MagicLevelPercent = msg.GetByte();
-            Soul = msg.GetByte();
+                MagicLevel = msg.GetByte();
+                MagicLevelPercent = msg.GetByte();
+                Soul = msg.GetByte();
 
-            Stamina = msg.GetUInt16();
+                Stamina = msg.GetUInt16();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

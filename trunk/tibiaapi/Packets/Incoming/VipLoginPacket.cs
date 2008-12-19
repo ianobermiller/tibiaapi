@@ -19,13 +19,23 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.VipLogin)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.VipLogin;
 
-            PlayerId = msg.GetUInt32();
+            try
+            {
+                PlayerId = msg.GetUInt32();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }
