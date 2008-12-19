@@ -102,7 +102,7 @@ namespace Tibia.Objects
             packet[04] = Packet.Hi(name.Length);
             Array.Copy(enc.GetBytes(name), 0, packet, 5, name.Length);
             
-            return client.Send(packet);
+            return client.SendToServer(packet);
         }
     }
 }

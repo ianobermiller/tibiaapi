@@ -146,12 +146,16 @@ namespace Tibia.Util
 
         #region "Events"
 
-        public delegate void ProxyNotification(string message);
-        public event ProxyNotification PrintDebug;
+        public event Action<string> PrintDebug;
 
         public delegate void MessageListener(NetworkMessage message);
         public event MessageListener ServerMessageArrived;
         public event MessageListener ClientMessageArrived;
+
+        public delegate void SplitPacket(byte type, byte[] packet);
+
+        public event SplitPacket IncomingSplitPacket;
+        public event SplitPacket OutgoingSplitPacket;
 
         public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
         public delegate bool OutgoingPacketListener(Packets.OutgoingPacket packet);
@@ -679,6 +683,7 @@ namespace Tibia.Util
                 while (msg.Position < msg.Length)
                 {
                     OutgoingPacket packet = ParseServerPacket(msg, pos);
+                    byte[] packetBytes;
 
                     if (packet == null)
                     {
@@ -686,17 +691,33 @@ namespace Tibia.Util
                         WRITE_DEBUG("Unknow outgoing packet.. skping the rest! type: " + msg.PeekByte());
 #endif
 
-                        //skip the rest...
-                        haveContent = true;
-                        output.AddBytes(msg.GetBytes(msg.Length - msg.Position));
+
+                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
+
+                        if (packetBytes.Length > 0)
+                        {
+                            if (OutgoingSplitPacket != null)
+                                OutgoingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+
+                            //skip the rest...
+                            haveContent = true;
+                            output.AddBytes(packetBytes);
+                        }
+
                         break;
                     }
                     else
                     {
+
+                        packetBytes = packet.ToByteArray();
+
+                        if (OutgoingSplitPacket != null)
+                            OutgoingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+
                         if (packet.Forward)
                         {
                             haveContent = true;
-                            output.AddBytes(packet.ToByteArray());
+                            output.AddBytes(packetBytes);
                         }
                     }
 
@@ -1005,22 +1026,39 @@ namespace Tibia.Util
                 while (msg.Position < msg.Length)
                 {
                     IncomingPacket packet = ParseClientPacket(msg, pos);
+                    byte[] packetBytes;
 
                     if (packet == null)
                     {
+#if _DEBUG
                         WRITE_DEBUG("Unknow incoming packet.. skping the rest! type: " + msg.PeekByte());
+#endif
 
-                        //skip the rest...
-                        haveContent = true;
-                        output.AddBytes(msg.GetBytes(msg.Length - msg.Position));
+                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
+
+                        if (packetBytes.Length > 0)
+                        {
+                            if (IncomingSplitPacket != null)
+                                IncomingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+
+                            //skip the rest...
+                            haveContent = true;
+                            output.AddBytes(packetBytes);
+                        }
+
                         break;
                     }
                     else
                     {
+                        packetBytes = packet.ToByteArray();
+
+                        if (IncomingSplitPacket != null)
+                            IncomingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+
                         if (packet.Forward)
                         {
                             haveContent = true;
-                            output.AddBytes(packet.ToByteArray());
+                            output.AddBytes(packetBytes);
                         }
                     }
 
