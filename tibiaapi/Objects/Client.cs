@@ -1161,7 +1161,7 @@ namespace Tibia.Objects
 
         #region Proxy wrappers
 
-        public bool Send(byte[] packet)
+        public bool SendToServer(byte[] packet)
         {
             if (UsingProxy)
             {
@@ -1175,6 +1175,22 @@ namespace Tibia.Objects
             }
             else
                 return Packets.OutgoingPacket.SendPacketWithDLL(this, packet);
+        }
+
+        public bool SendToClient(byte[] packet)
+        {
+            if (UsingProxy)
+            {
+                Packets.NetworkMessage msg = new NetworkMessage();
+                msg.AddBytes(packet);
+                msg.PrepareToSend();
+
+                proxy.SendToClient(msg);
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

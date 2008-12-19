@@ -52,10 +52,9 @@ namespace SmartPacketAnalyzer
             else
             {
                 client.StartProxy();
-                client.Proxy.ReceivedPacketFromClient += PacketFromClient;
-                client.Proxy.ReceivedPacketFromServer += PacketFromServer;
-                client.Proxy.SplitPacketFromServer += SplitPacketFromServer;
-                client.Proxy.ReceivedStatusMessagePacket += ReceivedStatusMessagePacket;
+                client.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                client.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
+                client.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
                 uxTimerShort.Enabled = true;
             }
 
@@ -67,79 +66,52 @@ namespace SmartPacketAnalyzer
             }));
         }
 
-        private bool PacketFromClient(Packet packet)
+        bool Proxy_ReceivedTextMessageIncomingPacket(IncomingPacket packet)
+        {
+            Tibia.Packets.Incoming.TextMessagePacket p = (Tibia.Packets.Incoming.TextMessagePacket)packet;
+            
+            if (p.Color == StatusMessage.DescriptionGreen && p.Message.StartsWith("You see "))
+                p.Message = p.Message + " [" + client.ReadInt32(Tibia.Addresses.Client.See_Id) + "]";
+
+            return true;
+        }
+
+        void Proxy_OutgoingSplitPacket(byte type, byte[] packet)
         {
             if (uxLogClient.Checked)
             {
                 if (uxLogHeader.Checked)
                 {
-                    if (uxHeaderByte.Text.Length == 2 && 
-                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
-                    {
-                        LogPacket(packet.Data, "CLIENT", "SERVER");
-                    }
-                }
-                else
-                {
-                    LogPacket(packet.Data, "CLIENT", "SERVER");
-                }
-            }
-            return true;
-        }
-
-        private bool SplitPacketFromServer(Packet packet)
-        {
-            if (uxLogSplit.Checked && uxLogServer.Checked)
-            {
-                if (uxLogHeader.Checked)
-                {
                     if (uxHeaderByte.Text.Length == 2 &&
-                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
+                        type == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
-                        LogPacket(packet.Data, "SERVER*", "CLIENT");
+                        LogPacket(packet, "CLIENT", "SERVER");
                     }
                 }
                 else
                 {
-                    LogPacket(packet.Data, "SERVER*", "CLIENT");
+                    LogPacket(packet, "CLIENT", "SERVER");
                 }
             }
-            return true;
         }
 
-        private bool PacketFromServer(Packet packet)
+        void Proxy_IncomingSplitPacket(byte type, byte[] packet)
         {
             if (uxLogServer.Checked)
             {
                 if (uxLogHeader.Checked)
                 {
                     if (uxHeaderByte.Text.Length == 2 &&
-                        (byte)packet.Type == uxHeaderByte.Text.ToBytesAsHex()[0])
+                        type == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
-                        LogPacket(packet.Data, "SERVER", "CLIENT");
+                        LogPacket(packet, "SERVER", "CLIENT");
                     }
                 }
                 else
                 {
-                    LogPacket(packet.Data, "SERVER", "CLIENT");
+                    LogPacket(packet, "SERVER", "CLIENT");
                 }
             }
-            return true;
-        }
-
-        private bool ReceivedStatusMessagePacket(Packet packet)
-        {
-            StatusMessagePacket p = (StatusMessagePacket)packet;
-            if (p.Color == StatusMessageType.Description && p.Message.StartsWith("You see "))
-            {
-                client.Send(
-                    StatusMessagePacket.Create(
-                        client,
-                        StatusMessageType.Description,
-                        p.Message + " [" + client.ReadInt(Tibia.Addresses.Client.See_Id) + "]"));
-                return false;
-            }
-            return true;
         }
 
         private void LogPacket(byte[] packet, string from, string to)
@@ -236,7 +208,7 @@ namespace SmartPacketAnalyzer
                             item.SubItems[2].Text = client.ReadByte(address).ToString();
                             break;
                         case DataTypes.Integer:
-                            item.SubItems[2].Text = client.ReadInt(address).ToString();
+                            item.SubItems[2].Text = client.ReadInt32(address).ToString();
                             break;
                         case DataTypes.Double:
                             item.SubItems[2].Text = client.ReadDouble(address).ToString();
@@ -245,7 +217,7 @@ namespace SmartPacketAnalyzer
                             item.SubItems[2].Text = client.ReadString(address, 255).ToString();
                             break;
                         case DataTypes.Pointer:
-                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt(address), 16).ToUpper();
+                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt32(address), 16).ToUpper();
                             break;
                     }
                 }
@@ -263,7 +235,7 @@ namespace SmartPacketAnalyzer
 
         private void uxSendToServer_Click(object sender, EventArgs e)
         {
-            client.Send(uxSend.Text.ToBytesAsHex());
+            client.SendToServer(uxSend.Text.ToBytesAsHex());
         }
 
         private void uxAddAddress_Click(object sender, EventArgs e)
@@ -320,6 +292,7 @@ namespace SmartPacketAnalyzer
                 }
             }
         }
+
     }
 
     public struct CapturedPacket
@@ -338,7 +311,7 @@ namespace SmartPacketAnalyzer
             Source = source;
             Destination = destination;
             Length = length;
-            Type = data[2];
+            Type = data[0];
         }
 
         public override string ToString()

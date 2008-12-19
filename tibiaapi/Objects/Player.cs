@@ -31,7 +31,7 @@ namespace Tibia.Objects
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = Convert.ToByte(0x6F + direction);
-            return client.Send(packet);
+            return client.SendToServer(packet);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Tibia.Objects
             packet[0] = 0x01;
             packet[1] = 0x00;
             packet[2] = Convert.ToByte(0x65 + direction);
-            return client.Send(packet);
+            return client.SendToServer(packet);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Tibia.Objects
                 packet[i] = Convert.ToByte(dir);
             }
 
-            return client.Send(packet);
+            return client.SendToServer(packet);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Tibia.Objects
             packet[8] = feetColor;
             packet[9] = Convert.ToByte(addons);
             
-            return client.Send(packet);
+            return client.SendToServer(packet);
         }
 
         #endregion
