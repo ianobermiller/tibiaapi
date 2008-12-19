@@ -25,30 +25,40 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.ContainerOpen)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.ContainerOpen;
 
-            Id = msg.GetByte();
-            ItemId = msg.GetUInt16();
-            Name = msg.GetString();
-            Capacity = msg.GetByte();
-            HasParent = msg.GetByte();
-            ItemCount = msg.GetByte();
-
-            Items = new List<Tibia.Objects.Item>(ItemCount);
-
-            for (int i = 0; i < ItemCount; i++)
+            try
             {
-                Objects.Item item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+                Id = msg.GetByte();
+                ItemId = msg.GetUInt16();
+                Name = msg.GetString();
+                Capacity = msg.GetByte();
+                HasParent = msg.GetByte();
+                ItemCount = msg.GetByte();
 
-                if (item.HasExtraByte)
-                    item.Count = msg.GetByte();
+                Items = new List<Tibia.Objects.Item>(ItemCount);
 
-                item.Loc = new Tibia.Objects.ItemLocation(Id, (byte)i);
-                Items.Add(item);
+                for (int i = 0; i < ItemCount; i++)
+                {
+                    Objects.Item item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+
+                    if (item.HasExtraByte)
+                        item.Count = msg.GetByte();
+
+                    item.Loc = new Tibia.Objects.ItemLocation(Id, (byte)i);
+                    Items.Add(item);
+                }
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
             }
 
             return true;

@@ -23,18 +23,28 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.ItemTextWindow)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.ItemTextWindow;
 
-            WindowId = msg.GetUInt32();
-            ItemId = msg.GetUInt16();
-            MaxLength = msg.GetUInt16();
-            Text = msg.GetString();
-            Author = msg.GetString();
-            Date = msg.GetString();
+            try
+            {
+                WindowId = msg.GetUInt32();
+                ItemId = msg.GetUInt16();
+                MaxLength = msg.GetUInt16();
+                Text = msg.GetString();
+                Author = msg.GetString();
+                Date = msg.GetString();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

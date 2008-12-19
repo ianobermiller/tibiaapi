@@ -18,12 +18,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int postion = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.ContainerClose)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.ContainerClose;
-            Id = msg.GetByte();
+
+            try
+            {
+                Id = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = postion;
+                return false;
+            }
+
 
             return true;
         }

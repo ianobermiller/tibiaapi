@@ -20,26 +20,36 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.OutfitWindow)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.OutfitWindow;
 
-            Default = msg.GetOutfit();
-
-            byte count = msg.GetByte();
-            OutfitList = new List<AvalibleOutfit> { };
-
-            for (int i = 0; i < count; i++)
+            try
             {
-                AvalibleOutfit outfit = new AvalibleOutfit();
+                Default = msg.GetOutfit();
 
-                outfit.Id = msg.GetUInt16();
-                outfit.Name = msg.GetString();
-                outfit.Addons = msg.GetByte();
+                byte count = msg.GetByte();
+                OutfitList = new List<AvalibleOutfit> { };
 
-                OutfitList.Add(outfit);
+                for (int i = 0; i < count; i++)
+                {
+                    AvalibleOutfit outfit = new AvalibleOutfit();
+
+                    outfit.Id = msg.GetUInt16();
+                    outfit.Name = msg.GetString();
+                    outfit.Addons = msg.GetByte();
+
+                    OutfitList.Add(outfit);
+                }
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
             }
 
             return true;

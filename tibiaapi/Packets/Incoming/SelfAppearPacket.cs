@@ -8,8 +8,8 @@ namespace Tibia.Packets.Incoming
     public class SelfAppearPacket : IncomingPacket
     {
         public uint YourId { get; set; }
-        public byte Unknow32 { get; set; }
-        public byte Unknow { get; set; }
+        public byte Unknow1 { get; set; }
+        public byte Unknow2 { get; set; }
         public byte CanReportBug { get; set; }
 
         public SelfAppearPacket(Objects.Client c)
@@ -21,16 +21,26 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.SelfAppear)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.SelfAppear;
 
-            YourId = msg.GetUInt32();
-            Unknow32 = msg.GetByte();
-            Unknow = msg.GetByte();
-            CanReportBug = msg.GetByte();
+            try
+            {
+                YourId = msg.GetUInt32();
+                Unknow1 = msg.GetByte();
+                Unknow2 = msg.GetByte();
+                CanReportBug = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }
@@ -42,8 +52,8 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(YourId);
-            msg.AddByte(Unknow32);
-            msg.AddByte(Unknow);
+            msg.AddByte(Unknow1);
+            msg.AddByte(Unknow2);
             msg.AddByte(CanReportBug);
 
             return msg.Packet;

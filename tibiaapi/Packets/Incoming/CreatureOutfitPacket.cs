@@ -19,14 +19,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.CreatureOutfit)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.CreatureOutfit;
 
-            CreatureId = msg.GetUInt32();
-            Outfit = msg.GetOutfit();
+            try
+            {
+                CreatureId = msg.GetUInt32();
+                Outfit = msg.GetOutfit();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

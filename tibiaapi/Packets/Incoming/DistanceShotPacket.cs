@@ -21,15 +21,25 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position; 
+
             if (msg.GetByte() != (byte)IncomingPacketType.Projectile)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.Projectile;
 
-            FromPosition = msg.GetLocation();
-            ToPosition = msg.GetLocation();
-            Effect = (ProjectileType)msg.GetByte();
+            try
+            {
+                FromPosition = msg.GetLocation();
+                ToPosition = msg.GetLocation();
+                Effect = (ProjectileType)msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

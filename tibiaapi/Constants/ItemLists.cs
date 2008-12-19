@@ -241,6 +241,23 @@ namespace Tibia.Constants
         };
         #endregion
 
+        #region Backpacks
+        public static Dictionary<uint, Item> Backpacks = new Dictionary<uint, Item>
+        {
+			{ Items.Container.BackpackBlack.Id, Items.Container.BackpackBlack },
+			{ Items.Container.BackpackBlue.Id, Items.Container.BackpackBlue },
+			{ Items.Container.BackpackBrown.Id, Items.Container.BackpackBrown },
+			{ Items.Container.BackpackGold.Id, Items.Container.BackpackGold },
+			{ Items.Container.BackpackGrass.Id, Items.Container.BackpackGrass },
+			{ Items.Container.BackpackGreen.Id, Items.Container.BackpackGreen },
+			{ Items.Container.BackpackPirate.Id, Items.Container.BackpackPirate },
+			{ Items.Container.BackpackPurple.Id, Items.Container.BackpackPurple },
+			{ Items.Container.BackpackRed.Id, Items.Container.BackpackRed },
+			{ Items.Container.BackpackStar.Id, Items.Container.BackpackStar },
+			{ Items.Container.BackpackYellow.Id, Items.Container.BackpackYellow },
+        };
+        #endregion
+
         #region Foods
         public static Dictionary<uint, Objects.Food> Foods = new Dictionary<uint, Objects.Food>
 		{

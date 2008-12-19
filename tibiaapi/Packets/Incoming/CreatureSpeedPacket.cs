@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
     public class CreatureSpeedPacket : IncomingPacket
     {
         public uint CreatureId { get; set; }
-        public ushort CREATURE_SPEED { get; set; }
+        public ushort Speed { get; set; }
 
         public CreatureSpeedPacket(Objects.Client c)
             : base(c)
@@ -19,14 +19,24 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.CreatureSpeed)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.CreatureSpeed;
 
-            CreatureId = msg.GetUInt32();
-            CREATURE_SPEED = msg.GetUInt16();
+            try
+            {
+                CreatureId = msg.GetUInt32();
+                Speed = msg.GetUInt16();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }
@@ -38,7 +48,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(CreatureId);
-            msg.AddUInt16(CREATURE_SPEED);
+            msg.AddUInt16(Speed);
 
             return msg.Packet;
         }

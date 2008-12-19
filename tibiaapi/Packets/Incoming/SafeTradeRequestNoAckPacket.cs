@@ -20,25 +20,35 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.SafeTradeRequestNoAck)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.SafeTradeRequestNoAck;
 
-            Name = msg.GetString();
-            Count = msg.GetByte();
-
-            Items = new List<Tibia.Objects.Item>(Count);
-
-            for (int i = 0; i < Count; i++)
+            try
             {
-                Objects.Item item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+                Name = msg.GetString();
+                Count = msg.GetByte();
 
-                if (item.HasExtraByte)
-                    item.Count = msg.GetByte();
+                Items = new List<Tibia.Objects.Item>(Count);
 
-                Items.Add(item);
+                for (int i = 0; i < Count; i++)
+                {
+                    Objects.Item item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+
+                    if (item.HasExtraByte)
+                        item.Count = msg.GetByte();
+
+                    Items.Add(item);
+                }
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
             }
 
             return true;

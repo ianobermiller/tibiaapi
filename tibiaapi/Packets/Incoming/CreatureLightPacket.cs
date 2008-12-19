@@ -20,15 +20,25 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.CreatureLight)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.CreatureLight;
 
-            CreatureId = msg.GetUInt32();
-            LightLevel = msg.GetByte();
-            LightColor = msg.GetByte();
+            try
+            {
+                CreatureId = msg.GetUInt32();
+                LightLevel = msg.GetByte();
+                LightColor = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

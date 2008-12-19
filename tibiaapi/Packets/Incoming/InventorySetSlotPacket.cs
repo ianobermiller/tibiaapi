@@ -19,17 +19,28 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.InventorySetSlot)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.InventorySetSlot;
-            Slot = msg.GetByte();
 
-            Item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+            try
+            {
+                Slot = msg.GetByte();
 
-            if (Item.HasExtraByte)
-                Item.Count = msg.GetByte();
+                Item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
+
+                if (Item.HasExtraByte)
+                    Item.Count = msg.GetByte();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

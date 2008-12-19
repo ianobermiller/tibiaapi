@@ -19,13 +19,23 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.PlayerFlagUpdate)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.PlayerFlagUpdate;
 
-            Icons = msg.GetUInt16();
+            try
+            {
+                Icons = msg.GetUInt16();
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
+            }
 
             return true;
         }

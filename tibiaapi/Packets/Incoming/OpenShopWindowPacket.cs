@@ -19,26 +19,36 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
+            int position = msg.Position;
+
             if (msg.GetByte() != (byte)IncomingPacketType.ShopWindowOpen)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.ShopWindowOpen;
 
-            byte cap = msg.GetByte();
-            ShopList = new List<ShopInfo> { };
-
-            for (int i = 0; i < cap; i++)
+            try
             {
-                ShopInfo item = new ShopInfo();
+                byte cap = msg.GetByte();
+                ShopList = new List<ShopInfo> { };
 
-                item.ItemId = msg.GetUInt16();
-                item.SubType = msg.GetByte();
-                item.ItemName = msg.GetString();
-                item.Weight = msg.GetUInt32();
-                item.BuyPrice = msg.GetUInt32();
-                item.SellPrice = msg.GetUInt32();
-                ShopList.Add(item);
+                for (int i = 0; i < cap; i++)
+                {
+                    ShopInfo item = new ShopInfo();
+
+                    item.ItemId = msg.GetUInt16();
+                    item.SubType = msg.GetByte();
+                    item.ItemName = msg.GetString();
+                    item.Weight = msg.GetUInt32();
+                    item.BuyPrice = msg.GetUInt32();
+                    item.SellPrice = msg.GetUInt32();
+                    ShopList.Add(item);
+                }
+            }
+            catch (Exception)
+            {
+                msg.Position = position;
+                return false;
             }
 
             return true;
