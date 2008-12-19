@@ -402,6 +402,7 @@ namespace Tibia.Packets
         public Constants.Skull Skull { get; set; }
         public PartyShield PartyShield { get; set; }
         public uint RemoveId { get; set; }
+        public Objects.Location Location { get; set; }
         public Objects.Client Client { get; set; }
 
         public PacketCreature(Objects.Client client)

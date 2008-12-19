@@ -163,13 +163,14 @@ namespace Tibia.Packets.Incoming
                         return false;
                     }
                     //read tile things: items and creatures
-                    internalGetThing(msg);
+                    internalGetThing(msg, pos);
                 }
             }
         }
 
-        private bool internalGetThing(NetworkMessage msg)
+        private bool internalGetThing(NetworkMessage msg, Objects.Location pos)
         {
+            //get thing type
             ushort thingId = msg.GetUInt16();
             stream.AddUInt16(thingId);
 
@@ -179,44 +180,60 @@ namespace Tibia.Packets.Incoming
             {
 
                 c = new PacketCreature(Client);
+                c.Location = pos;
 
-                if (thingId == 0x0062)
+                //creatures
+                if (thingId == 0x0062) //creature is known
                 {
                     c.Type = PacketCreatureType.Known;
                     c.Id = msg.GetUInt32();
-                    stream.AddUInt32(c.Id);
+                    stream.AddUInt32(c.Id); //creatureid
                 }
                 else if (thingId == 0x0061)
-                {
+                { //creature is not known
+                    //perhaps we have to remove a known creature
+                    //uint32_t removeID = msg.getU32();
                     c.RemoveId = msg.GetUInt32();
                     stream.AddUInt32(c.RemoveId);
+                    //add a new creature
+                    //uint32_t creatureID = msg.getU32();
 
                     c.Type = PacketCreatureType.Unknown;
                     c.Id = msg.GetUInt32();
                     stream.AddUInt32(c.Id);
 
+                    //creature->setName(msg.getString());
+
                     c.Name = msg.GetString();
                     stream.AddString(c.Name);
                 }
 
+                //read creature properties
+                //creature->setHealth(msg.getU8());
                 c.Health = msg.GetByte();
                 stream.AddByte(c.Health);
 
+                //uint8_t direction;
                 c.Direction = msg.GetByte();
                 stream.AddByte(c.Direction);
 
                 c.Outfit = msg.GetOutfit();
                 stream.AddOutfit(c.Outfit);
 
+                //creature->setLightLevel(msg.getU8());
+                //creature->setLightColor(msg.getU8());
                 c.LightLevel = msg.GetByte();
                 stream.AddByte(c.LightLevel);
 
                 c.LightColor = msg.GetByte();
                 stream.AddByte(c.LightColor);
 
+                //creature->setSpeed(msg.getU16());
                 c.Speed = msg.GetUInt16();
                 stream.AddUInt16(c.Speed);
 
+                //creature->setSkull(msg.getU8());
+                //creature->setShield(msg.getU8());
                 c.Skull = (Constants.Skull)msg.GetByte();
                 stream.AddByte((byte)c.Skull);
 
@@ -230,12 +247,14 @@ namespace Tibia.Packets.Incoming
             else if (thingId == 0x0063)
             {
                 //creature turn
-                c = new PacketCreature(Client);
-                c.Type = PacketCreatureType.Turn;
+                //uint32_t creatureID = msg.getU32();
 
+                c = new PacketCreature(Client);
+                c.Location = pos;
+                c.Type = PacketCreatureType.Turn;
                 c.Id = msg.GetUInt32();
                 stream.AddUInt32(c.Id);
-
+                //uint8_t direction;
                 c.Direction = msg.GetByte();
                 stream.AddByte(c.Direction);
 
@@ -245,7 +264,8 @@ namespace Tibia.Packets.Incoming
             }
             else
             {
-                Objects.Item item = new Tibia.Objects.Item(Client, thingId, 0);
+                //item
+                Objects.Item item = new Tibia.Objects.Item(Client, thingId);
 
                 if (item.HasExtraByte)
                 {
@@ -253,6 +273,7 @@ namespace Tibia.Packets.Incoming
                     stream.AddByte(item.Count);
                 }
 
+                item.Loc = new Tibia.Objects.ItemLocation(pos);
                 items.Add(item);
 
                 return true;

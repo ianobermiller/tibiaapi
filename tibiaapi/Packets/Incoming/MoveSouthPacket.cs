@@ -151,12 +151,12 @@ namespace Tibia.Packets.Incoming
                         return false;
                     }
                     //read tile things: items and creatures
-                    internalGetThing(msg);
+                    internalGetThing(msg, pos);
                 }
             }
         }
 
-        private bool internalGetThing(NetworkMessage msg)
+        private bool internalGetThing(NetworkMessage msg, Objects.Location pos)
         {
             //get thing type
             ushort thingId = msg.GetUInt16();
@@ -168,6 +168,7 @@ namespace Tibia.Packets.Incoming
             {
 
                 c = new PacketCreature(Client);
+                c.Location = pos;
 
                 //creatures
                 if (thingId == 0x0062) //creature is known
@@ -237,10 +238,10 @@ namespace Tibia.Packets.Incoming
                 //uint32_t creatureID = msg.getU32();
 
                 c = new PacketCreature(Client);
+                c.Location = pos;
                 c.Type = PacketCreatureType.Turn;
                 c.Id = msg.GetUInt32();
                 stream.AddUInt32(c.Id);
-                //check if we can read 1 byte
                 //uint8_t direction;
                 c.Direction = msg.GetByte();
                 stream.AddByte(c.Direction);
@@ -252,7 +253,7 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Objects.Item item = new Tibia.Objects.Item(Client, thingId, 0);
+                Objects.Item item = new Tibia.Objects.Item(Client, thingId);
 
                 if (item.HasExtraByte)
                 {
@@ -260,6 +261,7 @@ namespace Tibia.Packets.Incoming
                     stream.AddByte(item.Count);
                 }
 
+                item.Loc = new Tibia.Objects.ItemLocation(pos);
                 items.Add(item);
 
                 return true;
