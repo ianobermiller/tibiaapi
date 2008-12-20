@@ -1,6 +1,6 @@
 #summary How to compile the TibiaAPI from the latest repository source code
 #labels Featured,Phase-Implementation
  # Checkout the latest version of the code (see [SVNSetup])
- # Open the project file tibiaapi/TibiaAPI.csproj in Visual Studio 2005 or later
+ # Open the project file tibiaapi/TibiaAPI.csproj in Visual Studio 2008 or later
  # Build the project by clicking Build > Build Solution
  # The DLL can be found at tibiaapi/bin/Release/TibiaAPI.dll
