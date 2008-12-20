@@ -79,8 +79,6 @@ namespace Tibia.Objects
             return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
         }
 
-
-
         /// <summary>
         /// Use the item on a tile location.
         /// Gets the tile id automatically.
@@ -164,6 +162,72 @@ namespace Tibia.Objects
             return Packets.Outgoing.LookAtPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder);
         }
 
+        #endregion
+
+        #region Get/Set Properties
+        /// <summary>
+        /// Gets the client associated with this item;
+        /// </summary>
+        public Client Client
+        {
+            get { return client; }
+            set { client = value; }
+        }
+        /// <summary>
+        /// Gets or sets the id of the item.
+        /// </summary>
+        public uint Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        /// <summary>
+        /// Gets or sets the name of the item.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        /// <summary>
+        /// Gets or sets the amount stacked of this item.
+        /// </summary>
+        public byte Count
+        {
+            get { return count; }
+            set { count = value; }
+        }
+
+        /// <summary>
+        /// Gets the total number of items/objects in Tibia.
+        /// </summary>
+        public uint TotalItemCount
+        {
+            get
+            {
+                uint baseAddr = client.ReadUInt32(Addresses.Client.DatPointer);
+                return client.ReadUInt32(baseAddr + 4);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of this item.
+        /// </summary>
+        public ItemLocation Loc
+        {
+            get { return loc; }
+            set { loc = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether this item is found.
+        /// </summary>
+        public bool Found
+        {
+            get { return found; }
+            set { found = value; }
+        }
+
         /// <summary>
         /// Gets the DatAddress of the item in the dat structure.
         /// </summary>
@@ -242,10 +306,10 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the flags of the item.
         /// </summary>
-        public int Flags
+        public uint Flags
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Flags); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Flags, value); }
+            get { return client.ReadUInt32(DatAddress + Addresses.DatItem.Flags); }
+            set { client.WriteUInt32(DatAddress + Addresses.DatItem.Flags, value); }
         }
 
         /// <summary>
@@ -330,70 +394,7 @@ namespace Tibia.Objects
             get { return (Addresses.DatItem.Help)client.ReadInt32(DatAddress + Addresses.DatItem.LensHelp); }
             set { client.WriteInt32(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
         }
-        #endregion
 
-        #region Get/Set Properties
-        /// <summary>
-        /// Gets the client associated with this item;
-        /// </summary>
-        public Client Client
-        {
-            get { return client; }
-            set { client = value; }
-        }
-        /// <summary>
-        /// Gets or sets the id of the item.
-        /// </summary>
-        public uint Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
-        /// <summary>
-        /// Gets or sets the name of the item.
-        /// </summary>
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-        /// <summary>
-        /// Gets or sets the amount stacked of this item.
-        /// </summary>
-        public byte Count
-        {
-            get { return count; }
-            set { count = value; }
-        }
-
-        /// <summary>
-        /// Gets the total number of items/objects in Tibia.
-        /// </summary>
-        public uint TotalItemCount
-        {
-            get
-            {
-                uint baseAddr = (uint)client.ReadInt32(Addresses.Client.DatPointer);
-                return (uint)client.ReadInt32(baseAddr + 4);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the location of this item.
-        /// </summary>
-        public ItemLocation Loc
-        {
-            get { return loc; }
-            set { loc = value; }
-        }
-        /// <summary>
-        /// Gets or sets whether this item is found.
-        /// </summary>
-        public bool Found
-        {
-            get { return found; }
-            set { found = value; }
-        }
         #endregion
 
         #region Composite Properties
@@ -410,6 +411,23 @@ namespace Tibia.Objects
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash) ||
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsFluidContainer);
             }
+        }
+
+        #endregion
+
+        #region Flags
+
+        public bool GetFlag(Addresses.DatItem.Flag flag)
+        {
+            return (Flags & (uint)flag) == (uint)flag;
+        }
+
+        public void SetFlag(Addresses.DatItem.Flag flag, bool enable)
+        {
+            if (enable)
+                Flags |= (uint)flag;
+            else
+                Flags &= ~(uint)flag;
         }
 
         #endregion
@@ -438,23 +456,6 @@ namespace Tibia.Objects
         {
             return Name;
         }
-
-        #region Flags
-
-        public bool GetFlag(Addresses.DatItem.Flag flag)
-        {
-            return (Flags & (int)flag) == (int)flag;
-        }
-
-        public void SetFlag(Addresses.DatItem.Flag flag, bool enable)
-        {
-            if (enable)
-                Flags |= (int)flag;
-            else
-                Flags &= ~(int)flag;
-        }
-
-        #endregion
     }
 
     #region Special Item Types
