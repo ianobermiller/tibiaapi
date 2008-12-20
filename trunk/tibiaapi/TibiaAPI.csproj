@@ -163,6 +163,7 @@
     <Compile Include="Packets\Incoming\WorldLightPacket.cs" />
     <Compile Include="Packets\OutgoingPacket.cs" />
     <Compile Include="Packets\Outgoing\AttackPacket.cs" />
+    <Compile Include="Packets\Outgoing\AutoWalkPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
     <Compile Include="Packets\Outgoing\CancelMovePacket.cs" />
     <Compile Include="Packets\Outgoing\ChannelClosePacket.cs" />
@@ -171,11 +172,15 @@
     <Compile Include="Packets\Outgoing\LogoutPacket.cs" />
     <Compile Include="Packets\Outgoing\LookAtPacket.cs" />
     <Compile Include="Packets\Outgoing\ChannelOpenPacket.cs" />
+    <Compile Include="Packets\Outgoing\MovePacket.cs" />
     <Compile Include="Packets\Outgoing\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemMovePacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerOpenParentPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseOnPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUsePacket.cs" />
+    <Compile Include="Packets\Outgoing\ShopBuyPacket.cs" />
+    <Compile Include="Packets\Outgoing\ShopSellPacket.cs" />
+    <Compile Include="Packets\Outgoing\TurnPacket.cs" />
     <Compile Include="Packets\PacketBuilder.cs" />
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />

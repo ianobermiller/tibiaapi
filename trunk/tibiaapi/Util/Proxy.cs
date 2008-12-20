@@ -1,4 +1,4 @@
-﻿//#define _DEBUG
+﻿#define _DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -95,7 +95,7 @@ namespace Tibia.Util
             myRichTextBox.Dock = DockStyle.Fill;
             debugFrom.Controls.Add(myRichTextBox);
             debugFrom.Disposed += new EventHandler(debugFrom_Disposed);
-            PrintDebug += new ProxyNotification(Proxy_PrintDebug);
+            PrintDebug += new Action<string>(Proxy_PrintDebug);
             debugFrom.Show();
 #endif
         }
@@ -120,7 +120,7 @@ namespace Tibia.Util
 
         void debugFrom_Disposed(object sender, EventArgs e)
         {
-            PrintDebug -= new ProxyNotification(Proxy_PrintDebug); 
+            PrintDebug -= new Action<string>(Proxy_PrintDebug); 
         }
 #endif
 
@@ -243,6 +243,11 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
         public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
         public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
+        public event OutgoingPacketListener ReceivedShopBuyOutgoingPacket;
+        public event OutgoingPacketListener ReceivedShopSellOutgoingPacket;
+        public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
+        public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
 
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
@@ -939,6 +944,165 @@ namespace Tibia.Util
                         }
                         break;
                     }
+                case OutgoingPacketType.ShopBuy:
+                    {
+                        packet = new Packets.Outgoing.ShopBuyPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        {
+                            if (ReceivedShopBuyOutgoingPacket != null)
+                                packet.Forward = ReceivedShopBuyOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType.ShopSell:
+                    {
+                        packet = new Packets.Outgoing.ShopSellPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        {
+                            if (ReceivedShopSellOutgoingPacket != null)
+                                packet.Forward = ReceivedShopSellOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType.TurnDown:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Down);
+
+                        if (ReceivedTurnOutgoingPacket != null)
+                            packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.TurnUp:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Up);
+
+                        if (ReceivedTurnOutgoingPacket != null)
+                            packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.TurnLeft:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Left);
+
+                        if (ReceivedTurnOutgoingPacket != null)
+                            packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.TurnRight:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Right);
+
+                        if (ReceivedTurnOutgoingPacket != null)
+                            packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveDown:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Down);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveDownLeft:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownLeft);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveDownRight:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownRight);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveLeft:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Left);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveRight:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Right);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveUp:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Up);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveUpLeft:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpLeft);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.MoveUpRight:
+                    {
+                        msg.GetByte(); //type
+                        packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpRight);
+
+                        if (ReceivedMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                case OutgoingPacketType.AutoWalk:
+                    {
+                        packet = new Packets.Outgoing.AutoWalkPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        {
+                            if (ReceivedAutoWalkOutgoingPacket != null)
+                                packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
@@ -993,7 +1157,16 @@ namespace Tibia.Util
             if (acceptingConnection)
                 return;
 
-            readBytesClient = networkStreamClient.EndRead(ar);
+
+            //sometimes when close the client without logout this may trigger an exception
+            try
+            {
+                readBytesClient = networkStreamClient.EndRead(ar);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             if (readBytesClient == 0)
             {
