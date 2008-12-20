@@ -37,7 +37,7 @@ namespace Tibia.Packets
 
     public enum StatusMessage : byte
     {
-        ConsoleRed = 0x11, //Red message in the console
+        ConsoleRed = 0x12, //Red message in the console
         ConsoleOrange = 0x13, //Orange message in the console
         ConsoleOrange2 = 0x14, //Orange message in the console
         Warning = 0x15, //Red message in game window and in the console
