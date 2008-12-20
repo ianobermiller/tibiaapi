@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class FYIMessagePacket : IncomingPacket
+    public class FyiMessagePacket : IncomingPacket
     {
 
         public string Message { get; set; }
 
-        public FYIMessagePacket(Objects.Client c)
+        public FyiMessagePacket(Objects.Client c)
             : base(c)
         {
             Type = IncomingPacketType.FyiMessage;

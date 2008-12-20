@@ -5,14 +5,15 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class RuleViolationsChannelPacket : IncomingPacket
+    public class CreatureSkullPacket : IncomingPacket
     {
-        public ushort ChannelId { get; set; }
+        public uint CreatureId { get; set; }
+        public byte CreatureSkull { get; set; }
 
-        public RuleViolationsChannelPacket(Objects.Client c)
+        public CreatureSkullPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.RuleViolationOpen;
+            Type = IncomingPacketType.CreatureSkull;
             Destination = PacketDestination.Client;
         }
 
@@ -20,15 +21,16 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationOpen)
-                throw new Exception();
+            if (msg.GetByte() != (byte)IncomingPacketType.CreatureSkull)
+                return false;
 
             Destination = destination;
-            Type = IncomingPacketType.RuleViolationOpen;
+            Type = IncomingPacketType.CreatureSkull;
 
             try
             {
-                ChannelId = msg.GetUInt16();
+                CreatureId = msg.GetUInt32();
+                CreatureSkull = msg.GetByte();
             }
             catch (Exception)
             {
@@ -44,7 +46,9 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddUInt16(ChannelId);
+
+            msg.AddUInt32(CreatureId);
+            msg.AddByte(CreatureSkull);
 
             return msg.Packet;
         }

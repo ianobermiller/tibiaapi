@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class ClosePrivateChannelPacket : IncomingPacket
+    public class PlayerFlagsPacket : IncomingPacket
     {
 
-        public ushort ChannelId { get; set; }
+        public ushort Flag { get; set; }
 
-        public ClosePrivateChannelPacket(Objects.Client c)
+        public PlayerFlagsPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.PrivateChannelClose;
+            Type = IncomingPacketType.PlayerFlags;
             Destination = PacketDestination.Client;
         }
 
@@ -21,16 +21,15 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.PrivateChannelClose)
+            if (msg.GetByte() != (byte)IncomingPacketType.PlayerFlags)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.PrivateChannelClose;
-
+            Type = IncomingPacketType.PlayerFlags;
 
             try
             {
-                ChannelId = msg.GetUInt16();
+                Flag = msg.GetUInt16();
             }
             catch (Exception)
             {
@@ -47,7 +46,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddByte((byte)Type);
 
-            msg.AddUInt16(ChannelId);
+            msg.AddUInt16(Flag);
 
             return msg.Packet;
         }

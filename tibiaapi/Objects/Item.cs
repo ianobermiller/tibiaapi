@@ -440,18 +440,20 @@ namespace Tibia.Objects
         }
 
         #region Flags
+
         public bool GetFlag(Addresses.DatItem.Flag flag)
         {
             return (Flags & (int)flag) == (int)flag;
         }
 
-        public void SetFlag(Addresses.DatItem.Flag flag, bool on)
+        public void SetFlag(Addresses.DatItem.Flag flag, bool enable)
         {
-            if (on)
+            if (enable)
                 Flags |= (int)flag;
             else
                 Flags &= ~(int)flag;
         }
+
         #endregion
     }
 

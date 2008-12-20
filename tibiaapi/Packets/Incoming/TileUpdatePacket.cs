@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class UpdateTilePacket : IncomingPacket
+    public class TileUpdatePacket : IncomingPacket
     {
         NetworkMessage stream = new NetworkMessage(0);
         private short m_skipTiles;
@@ -23,10 +23,10 @@ namespace Tibia.Packets.Incoming
             get { return creatures; }
         }
 
-        public UpdateTilePacket(Objects.Client c)
+        public TileUpdatePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.UpdateTile;
+            Type = IncomingPacketType.TileUpdate;
             Destination = PacketDestination.Client;
         }
 
@@ -34,11 +34,11 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.UpdateTile)
+            if (msg.GetByte() != (byte)IncomingPacketType.TileUpdate)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.UpdateTile;
+            Type = IncomingPacketType.TileUpdate;
             stream.AddByte((byte)Type);
 
             try

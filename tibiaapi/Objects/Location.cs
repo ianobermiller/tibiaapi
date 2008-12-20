@@ -74,6 +74,18 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Returns true of the provided location is close to (2sqm)
+        /// this location.
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public bool IsCloseTo(Location loc)
+        {
+            return DistanceTo(loc) <= 2 &&
+                loc.Z == Z;
+        }
+
+        /// <summary>
         /// Returns the string representation of this struct.
         /// </summary>
         /// <returns>The string representation.</returns>

@@ -47,12 +47,12 @@ namespace Tibia.Objects
         /// <summary>
         /// Event raised when the Tibia client is exited.
         /// </summary>
-        public event EventHandler ClientExited;
+        public event EventHandler Exited;
 
         private void process_Exited(object sender, EventArgs e)
         {
-            if (ClientExited != null)
-                ClientExited.BeginInvoke(this, e, null, null);
+            if (Exited != null)
+                Exited.BeginInvoke(this, e, null, null);
         }
 
         #endregion

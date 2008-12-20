@@ -13,7 +13,7 @@ namespace Tibia.Packets.Incoming
         public TextMessagePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.StatusMessage;
+            Type = IncomingPacketType.TextMessage;
             Destination = PacketDestination.Client;
         }
 
@@ -21,11 +21,11 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.StatusMessage)
+            if (msg.GetByte() != (byte)IncomingPacketType.TextMessage)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.StatusMessage;
+            Type = IncomingPacketType.TextMessage;
 
             try
             {

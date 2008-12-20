@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class ShopSaleItemListPacket : IncomingPacket
+    public class ShopSaleGoldCountPacket : IncomingPacket
     {
 
         public uint Cash { get; set; }
         public List<ShopInfo> ItemList { get; set; }
 
-        public ShopSaleItemListPacket(Objects.Client c)
+        public ShopSaleGoldCountPacket(Objects.Client c)
             : base(c)
         {
             Type = IncomingPacketType.ShopSaleGoldCount;

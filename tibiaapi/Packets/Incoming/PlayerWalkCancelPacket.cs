@@ -5,16 +5,14 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class CreatePrivateChannelPacket : IncomingPacket
+    public class PlayerWalkCancelPacket : IncomingPacket
     {
+        public byte Direction { get; set; }
 
-        public string Name { get; set; }
-        public ushort ChannelId { get; set; }
-
-        public CreatePrivateChannelPacket(Objects.Client c)
+        public PlayerWalkCancelPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.PrivateChannelCreate;
+            Type = IncomingPacketType.PlayerWalkCancel;
             Destination = PacketDestination.Client;
         }
 
@@ -22,17 +20,15 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.PrivateChannelCreate)
+            if (msg.GetByte() != (byte)IncomingPacketType.PlayerWalkCancel)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.PrivateChannelCreate;
-
+            Type = IncomingPacketType.PlayerWalkCancel;
 
             try
             {
-                ChannelId = msg.GetUInt16();
-                Name = msg.GetString();
+                Direction = msg.GetByte();
             }
             catch (Exception)
             {
@@ -48,9 +44,7 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-
-            msg.AddUInt16(ChannelId);
-            msg.AddString(Name);
+            msg.AddByte(Direction);
 
             return msg.Packet;
         }
