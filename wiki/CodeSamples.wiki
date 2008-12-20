@@ -226,14 +226,14 @@ blist.getCreature("rat").attack()
 *C#*
 {{{
 Player player = client.getPlayer();
-player.Outfit = Tibia.Constants.OutfitType.BeggarMale;
+player.OutfitType = Tibia.Constants.OutfitType.BeggarMale;
 player.Addon = Tibia.Constants.OutfitAddon.Both;
 }}}
 
 *VB.Net*
 {{{
 Dim player As Player = client.getPlayer()
-player.Outfit = Tibia.Constants.OutfitType.BeggarMale
+player.OutfitType = Tibia.Constants.OutfitType.BeggarMale
 player.Addon = Tibia.Constants.OutfitAddon.Both
 }}}
 
