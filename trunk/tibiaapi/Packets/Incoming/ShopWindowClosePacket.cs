@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class CloseShopWindowPacket : IncomingPacket
+    public class ShopWindowClosePacket : IncomingPacket
     {
 
-        public CloseShopWindowPacket(Objects.Client c)
+        public ShopWindowClosePacket(Objects.Client c)
             : base(c)
         {
             Type = IncomingPacketType.ShopWindowClose;

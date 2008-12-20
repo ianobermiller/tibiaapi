@@ -5,37 +5,36 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class CloseContainerPacket : IncomingPacket
+    public class RuleViolationOpenPacket : IncomingPacket
     {
-        public byte Id { get; set; }
+        public ushort ChannelId { get; set; }
 
-        public CloseContainerPacket(Objects.Client c)
+        public RuleViolationOpenPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.ContainerClose;
+            Type = IncomingPacketType.RuleViolationOpen;
             Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            int postion = msg.Position;
+            int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.ContainerClose)
-                return false;
+            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationOpen)
+                throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType.ContainerClose;
+            Type = IncomingPacketType.RuleViolationOpen;
 
             try
             {
-                Id = msg.GetByte();
+                ChannelId = msg.GetUInt16();
             }
             catch (Exception)
             {
-                msg.Position = postion;
+                msg.Position = position;
                 return false;
             }
-
 
             return true;
         }
@@ -45,7 +44,7 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddByte(Id);
+            msg.AddUInt16(ChannelId);
 
             return msg.Packet;
         }

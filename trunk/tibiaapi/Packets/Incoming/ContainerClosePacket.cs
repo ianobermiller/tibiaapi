@@ -5,36 +5,37 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class PlayerCancelWalkPacket : IncomingPacket
+    public class ContainerClosePacket : IncomingPacket
     {
-        public byte Direction { get; set; }
+        public byte Id { get; set; }
 
-        public PlayerCancelWalkPacket(Objects.Client c)
+        public ContainerClosePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.PlayerCancelWalk;
+            Type = IncomingPacketType.ContainerClose;
             Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            int position = msg.Position;
+            int postion = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.PlayerCancelWalk)
+            if (msg.GetByte() != (byte)IncomingPacketType.ContainerClose)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.PlayerCancelWalk;
+            Type = IncomingPacketType.ContainerClose;
 
             try
             {
-                Direction = msg.GetByte();
+                Id = msg.GetByte();
             }
             catch (Exception)
             {
-                msg.Position = position;
+                msg.Position = postion;
                 return false;
             }
+
 
             return true;
         }
@@ -44,7 +45,7 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddByte(Direction);
+            msg.AddByte(Id);
 
             return msg.Packet;
         }

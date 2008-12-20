@@ -5,15 +5,14 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class OpenChannelPacket : IncomingPacket
+    public class RuleViolationRemovePacket : IncomingPacket
     {
-        public ChatChannel ChannelId { get; set; }
-        public string ChannelName { get; set; }
+        public string Name { get; set; }
 
-        public OpenChannelPacket(Objects.Client c)
+        public RuleViolationRemovePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.ChannelOpen;
+            Type = IncomingPacketType.RuleViolationRemove;
             Destination = PacketDestination.Client;
         }
 
@@ -21,16 +20,15 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.ChannelOpen)
-                return false;
+            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationRemove)
+                throw new Exception();
 
             Destination = destination;
-            Type = IncomingPacketType.ChannelOpen;
+            Type = IncomingPacketType.RuleViolationRemove;
 
             try
             {
-                ChannelId = (ChatChannel)msg.GetUInt16();
-                ChannelName = msg.GetString();
+                Name = msg.GetString();
             }
             catch (Exception)
             {
@@ -46,8 +44,7 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddUInt16((ushort)ChannelId);
-            msg.AddString(ChannelName);
+            msg.AddString(Name);
 
             return msg.Packet;
         }

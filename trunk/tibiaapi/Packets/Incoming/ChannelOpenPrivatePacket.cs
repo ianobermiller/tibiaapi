@@ -5,35 +5,31 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class DistanceShotPacket : IncomingPacket
+    public class ChannelOpenPrivatePacket : IncomingPacket
     {
 
-        public Objects.Location FromPosition { get; set; }
-        public Objects.Location ToPosition { get; set; }
-        public ProjectileType Effect { get; set; }
+        public string Name { get; set; }
 
-        public DistanceShotPacket(Objects.Client c)
+        public ChannelOpenPrivatePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.Projectile;
+            Type = IncomingPacketType.ChannelOpenPrivate;
             Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            int position = msg.Position; 
+            int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.Projectile)
+            if (msg.GetByte() != (byte)IncomingPacketType.ChannelOpenPrivate)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.Projectile;
+            Type = IncomingPacketType.ChannelOpenPrivate;
 
             try
             {
-                FromPosition = msg.GetLocation();
-                ToPosition = msg.GetLocation();
-                Effect = (ProjectileType)msg.GetByte();
+                Name = msg.GetString();
             }
             catch (Exception)
             {
@@ -50,9 +46,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(FromPosition);
-            msg.AddLocation(ToPosition);
-            msg.AddByte((byte)Effect);
+            msg.AddString(Name);
 
             return msg.Packet;
         }

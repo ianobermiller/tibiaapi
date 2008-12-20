@@ -118,7 +118,7 @@ namespace Tibia.Objects
         {
             //TODO: Find if the container has parent.
             if (client.UsingProxy)
-                return Packets.Incoming.OpenContainerPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, 0, GetItems());
+                return Packets.Incoming.ContainerOpenPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, 0, GetItems());
             else
                 return false;
         }

@@ -14,7 +14,7 @@ using Tibia.Packets.Incoming;
 using Tibia.Packets.Outgoing;
 using System.Threading;
 
-namespace Smart_AutoLooter
+namespace SmartAutoLooter
 {
     public partial class frmMain : Form
     {
@@ -41,7 +41,7 @@ namespace Smart_AutoLooter
                 if (!_client.LoggedIn)
                 {
 
-                    _client.ClientExited += new EventHandler(_client_ClientExited);
+                    _client.Exited += new EventHandler(_client_Exited);
 
                     _client.StartProxy();
                     //autoloot
@@ -50,7 +50,7 @@ namespace Smart_AutoLooter
                     _client.Proxy.ReceivedContainerRemoveItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerRemoveItemIncomingPacket);
                     _client.Proxy.ReceivedContainerAddItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerAddItemIncomingPacket);
                     _client.Proxy.ReceivedTileAddThingIncomingPacket += new Proxy.IncomingPacketListener(_proxy_ReceivedTileAddThingIncomingPacket);
-                    _client.Proxy.ReceivedOpenContainerIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedOpenContainerIncomingPacket);
+                    _client.Proxy.ReceivedContainerOpenIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerOpenIncomingPacket);
                 }
                 else
                     MessageBox.Show("Please start this program before login.");
@@ -60,7 +60,7 @@ namespace Smart_AutoLooter
 
         }
 
-        void _client_ClientExited(object sender, EventArgs e)
+        void _client_Exited(object sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -70,11 +70,11 @@ namespace Smart_AutoLooter
             return _lootItems.Find(delegate(LootItem lootItem) { return lootItem.Container == id; }) == null;
         }
 
-        bool Proxy_ReceivedOpenContainerIncomingPacket(IncomingPacket packet)
+        bool Proxy_ReceivedContainerOpenIncomingPacket(IncomingPacket packet)
         {
             if (_autoLoot && _lootItems.Count > 0)
             {
-                OpenContainerPacket p = (OpenContainerPacket)packet;
+                ContainerOpenPacket p = (ContainerOpenPacket)packet;
 
                 bool lootContainer = isLootContainer(p.Id);
 
@@ -267,7 +267,7 @@ namespace Smart_AutoLooter
             {
                 TileAddThingPacket p = (TileAddThingPacket)packet;
 
-                if (p.Item != null && p.Position.IsAdjacentTo(_client.Proxy.GetPlayer().Location))
+                if (p.Item != null && p.Position.IsCloseTo(_client.Proxy.GetPlayer().Location))
                 {
                     if (p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer) &&
                         p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsCorpse))

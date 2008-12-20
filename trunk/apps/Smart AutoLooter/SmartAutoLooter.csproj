@@ -8,8 +8,8 @@
     <ProjectGuid>{3D68C009-C8A6-4886-9056-C4184F4BA45F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Smart_AutoLooter</RootNamespace>
-    <AssemblyName>Smart AutoLooter</AssemblyName>
+    <RootNamespace>SmartAutoLooter</RootNamespace>
+    <AssemblyName>SmartAutoLooter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -82,6 +82,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

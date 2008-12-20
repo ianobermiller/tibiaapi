@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class OpenShopWindowPacket : IncomingPacket
+    public class ShopWindowOpenPacket : IncomingPacket
     {
 
         public List<ShopInfo> ShopList { get; set; }
 
-        public OpenShopWindowPacket(Objects.Client c)
+        public ShopWindowOpenPacket(Objects.Client c)
             : base(c)
         {
             Type = IncomingPacketType.ShopWindowOpen;

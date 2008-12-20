@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class PlayerStatsPacket : IncomingPacket
+    public class PlayerStatusPacket : IncomingPacket
     {
         public ushort Health { get; set; }
         public ushort MaxHealth { get; set; }
@@ -20,10 +20,10 @@ namespace Tibia.Packets.Incoming
         public byte Soul { get; set; }
         public ushort Stamina { get; set; }
 
-        public PlayerStatsPacket(Objects.Client c)
+        public PlayerStatusPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.PlayerStatusUpdate;
+            Type = IncomingPacketType.PlayerStatus;
             Destination = PacketDestination.Client;
         }
 
@@ -31,11 +31,11 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.PlayerStatusUpdate)
+            if (msg.GetByte() != (byte)IncomingPacketType.PlayerStatus)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.PlayerStatusUpdate;
+            Type = IncomingPacketType.PlayerStatus;
 
             try
             {

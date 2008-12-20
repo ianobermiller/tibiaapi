@@ -148,6 +148,9 @@ namespace Tibia.Util
 
         public event Action<string> PrintDebug;
 
+        public event Action PlayerLogin;
+        public event Action PlayerLogout;
+
         public delegate void MessageListener(NetworkMessage message);
         public event MessageListener ServerMessageArrived;
         public event MessageListener ClientMessageArrived;
@@ -163,86 +166,90 @@ namespace Tibia.Util
 
         //incoming
         public event IncomingPacketListener ReceivedAnimatedTextIncomingPacket;
-        public event IncomingPacketListener ReceivedItemTextWindowIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSpeakIncomingPacket;
-        public event IncomingPacketListener ReceivedOpenChannelIncomingPacket;
+        public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
+        public event IncomingPacketListener ReceivedCanReportBugsIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelClosePrivateIncomingPacket;
         public event IncomingPacketListener ReceivedChannelListIncomingPacket;
-        public event IncomingPacketListener ReceivedTextMessageIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerCancelWalkIncomingPacket;
-        public event IncomingPacketListener ReceivedTileAddThingIncomingPacket;
-        public event IncomingPacketListener ReceivedTileTransformThingIncomingPacket;
-        public event IncomingPacketListener ReceivedTileRemoveThingIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureOutfitIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureLightIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureHealthIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSpeedIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSquareIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureMoveIncomingPacket;
-        public event IncomingPacketListener ReceivedCloseContainerIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelOpenPrivateIncomingPacket;
         public event IncomingPacketListener ReceivedContainerAddItemIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerOpenIncomingPacket;
         public event IncomingPacketListener ReceivedContainerRemoveItemIncomingPacket;
         public event IncomingPacketListener ReceivedContainerUpdateItemIncomingPacket;
-        public event IncomingPacketListener ReceivedOpenContainerIncomingPacket;
-        public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
-        public event IncomingPacketListener ReceivedDistanceShotIncomingPacket;
-        public event IncomingPacketListener ReceivedMapDescriptionIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveNorthIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveSouthIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveEastIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveWestIncomingPacket;
-        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
-        public event IncomingPacketListener ReceivedMagicEffectIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureHealthIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureLightIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureMoveIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureOutfitIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSkullIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeakIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeedIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSquareIncomingPacket;
+        public event IncomingPacketListener ReceivedDeathIncomingPacket;
         public event IncomingPacketListener ReceivedFloorChangeDownIncomingPacket;
         public event IncomingPacketListener ReceivedFloorChangeUpIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerStatsIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSkullsIncomingPacket;
-        public event IncomingPacketListener ReceivedWaitingListIncomingPacket;
-        public event IncomingPacketListener ReceivedPingIncomingPacket;
-        public event IncomingPacketListener ReceivedDeathIncomingPacket;
-        public event IncomingPacketListener ReceivedCanReportBugsIncomingPacket;
-        public event IncomingPacketListener ReceivedUpdateTileIncomingPacket;
-        public event IncomingPacketListener ReceivedFYIMessageIncomingPacket;
-        public event IncomingPacketListener ReceivedInventorySetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedFyiMessageIncomingPacket;
         public event IncomingPacketListener ReceivedInventoryResetSlotIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerSkillsIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerIconsIncomingPacket;
-        public event IncomingPacketListener ReceivedOpenPrivatePlayerChatIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatePrivateChannelIncomingPacket;
-        public event IncomingPacketListener ReceivedClosePrivateChannelIncomingPacket;
-        public event IncomingPacketListener ReceivedVipLogoutIncomingPacket;
-        public event IncomingPacketListener ReceivedVipLoginIncomingPacket;
-        public event IncomingPacketListener ReceivedVipStateIncomingPacket;
-        public event IncomingPacketListener ReceivedShopSaleItemListIncomingPacket;
-        public event IncomingPacketListener ReceivedOpenShopWindowIncomingPacket;
-        public event IncomingPacketListener ReceivedCloseShopWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedInventorySetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedItemTextWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedMagicEffectIncomingPacket;
+        public event IncomingPacketListener ReceivedMapDescriptionIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveEastIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveNorthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveSouthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveWestIncomingPacket;
         public event IncomingPacketListener ReceivedOutfitWindowIncomingPacket;
-        public event IncomingPacketListener ReceivedRuleViolationsChannelIncomingPacket;
-        public event IncomingPacketListener ReceivedRemoveReportIncomingPacket;
+        public event IncomingPacketListener ReceivedPingIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerFlagsIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerSkillsIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerStatusIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerWalkCancelIncomingPacket;
+        public event IncomingPacketListener ReceivedPrivateChannelCreateIncomingPacket;
+        public event IncomingPacketListener ReceivedProjectileIncomingPacket;
         public event IncomingPacketListener ReceivedRuleViolationCancelIncomingPacket;
         public event IncomingPacketListener ReceivedRuleViolationLockIncomingPacket;
-        public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationRemoveIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
+        public event IncomingPacketListener ReceivedShopSaleGoldCountIncomingPacket;
+        public event IncomingPacketListener ReceivedShopWindowCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedShopWindowOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedTextMessageIncomingPacket;
+        public event IncomingPacketListener ReceivedTileAddThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileRemoveThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileTransformThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileUpdateIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLoginIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLogoutIncomingPacket;
+        public event IncomingPacketListener ReceivedVipStateIncomingPacket;
+        public event IncomingPacketListener ReceivedWaitingListIncomingPacket;
+        public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
 
         //outgoing
-        public event OutgoingPacketListener ReceivedCloseChannelOutgoingPacket;
-        public event OutgoingPacketListener ReceivedOpenChannelOutgoingPacket;
-        public event OutgoingPacketListener ReceivedSayOutgoingPacket;
+        public event OutgoingPacketListener ReceivedChannelCloseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedChannelOpenOutgoingPacket;
+        public event OutgoingPacketListener ReceivedPlayerSpeechOutgoingPacket;
         public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
         public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
         public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
-        public event OutgoingPacketListener ReceivedUseItemOutgoingPacket;
-        public event OutgoingPacketListener ReceivedUseItemExOutgoingPacket;
-        public event OutgoingPacketListener ReceivedThrowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseOnOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
         public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
         public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
-        public event OutgoingPacketListener ReceivedCloseContainerOutgoingPacket;
-        public event OutgoingPacketListener ReceivedUpArrowContainerOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
 
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
+
+            if (PlayerLogin != null)
+                PlayerLogin.BeginInvoke(null, null);
+
             isConnected = true;
             return true;
         }
@@ -305,6 +312,12 @@ namespace Tibia.Util
             {
                 if (acceptingConnection)
                     return;
+
+                if (isConnected)
+                {
+                    if (PlayerLogout != null)
+                        PlayerLogout.BeginInvoke(null, null);
+                }
 
                 isConnected = false;
 
@@ -458,6 +471,9 @@ namespace Tibia.Util
                     {
                         tcpClient = new TcpClient(loginServers[selectedLoginServer].Server, loginServers[selectedLoginServer].Port);
                         networkStreamClient = tcpClient.GetStream();
+
+                        
+
                     }
                     catch (Exception)
                     {
@@ -747,8 +763,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedCloseChannelOutgoingPacket != null)
-                                packet.Forward = ReceivedCloseChannelOutgoingPacket.Invoke(packet);
+                            if (ReceivedChannelCloseOutgoingPacket != null)
+                                packet.Forward = ReceivedChannelCloseOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -760,8 +776,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedOpenChannelOutgoingPacket != null)
-                                packet.Forward = ReceivedOpenChannelOutgoingPacket.Invoke(packet);
+                            if (ReceivedChannelOpenOutgoingPacket != null)
+                                packet.Forward = ReceivedChannelOpenOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -773,8 +789,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedSayOutgoingPacket != null)
-                                packet.Forward = ReceivedSayOutgoingPacket.Invoke(packet);
+                            if (ReceivedPlayerSpeechOutgoingPacket != null)
+                                packet.Forward = ReceivedPlayerSpeechOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -825,8 +841,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedUseItemOutgoingPacket != null)
-                                packet.Forward = ReceivedUseItemOutgoingPacket.Invoke(packet);
+                            if (ReceivedItemUseOutgoingPacket != null)
+                                packet.Forward = ReceivedItemUseOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -838,8 +854,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedUseItemExOutgoingPacket != null)
-                                packet.Forward = ReceivedUseItemExOutgoingPacket.Invoke(packet);
+                            if (ReceivedItemUseOnOutgoingPacket != null)
+                                packet.Forward = ReceivedItemUseOnOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -851,8 +867,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedThrowOutgoingPacket != null)
-                                packet.Forward = ReceivedThrowOutgoingPacket.Invoke(packet);
+                            if (ReceivedItemUseBattlelistOutgoingPacket != null)
+                                packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -903,8 +919,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedCloseContainerOutgoingPacket != null)
-                                packet.Forward = ReceivedCloseContainerOutgoingPacket.Invoke(packet);
+                            if (ReceivedContainerCloseOutgoingPacket != null)
+                                packet.Forward = ReceivedContainerCloseOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -916,8 +932,8 @@ namespace Tibia.Util
 
                         if (packet.ParseMessage(msg, PacketDestination.Server, pos))
                         {
-                            if (ReceivedUpArrowContainerOutgoingPacket != null)
-                                packet.Forward = ReceivedUpArrowContainerOutgoingPacket.Invoke(packet);
+                            if (ReceivedContainerOpenParentOutgoingPacket != null)
+                                packet.Forward = ReceivedContainerOpenParentOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1121,7 +1137,7 @@ namespace Tibia.Util
                 case IncomingPacketType.AnimatedText:
                 {
 #if _DEBUG
-                    WRITE_DEBUG("ANIMATED_TEXT");
+                    WRITE_DEBUG("AnimatedText");
 #endif
                     packet = new Packets.Incoming.AnimatedTextPacket(Client);
                     if (packet.ParseMessage(msg, PacketDestination.Client, pos))
@@ -1136,14 +1152,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ContainerClose:
                 {
 #if _DEBUG
-                    WRITE_DEBUG("CLOSE_CONTAINER");
+                    WRITE_DEBUG("ContainerClose");
 #endif
-                    packet = new Packets.Incoming.CloseContainerPacket(Client);
+                    packet = new Packets.Incoming.ContainerClosePacket(Client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                     {
-                        if (ReceivedCloseContainerIncomingPacket != null)
-                            packet.Forward = ReceivedCloseContainerIncomingPacket.Invoke(packet);
+                        if (ReceivedContainerCloseIncomingPacket != null)
+                            packet.Forward = ReceivedContainerCloseIncomingPacket.Invoke(packet);
 
                         return packet;
                     }
@@ -1152,7 +1168,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureSpeak:
                 {
 #if _DEBUG
-                    WRITE_DEBUG("CREATURE_SPEAK");
+                    WRITE_DEBUG("CreatureSpeak");
 #endif
                     packet = new Packets.Incoming.CreatureSpeakPacket(Client);
 
@@ -1168,30 +1184,30 @@ namespace Tibia.Util
                 case IncomingPacketType.ChannelOpen:
                 {
 #if _DEBUG
-                    WRITE_DEBUG("OPEN_CHANNEL");
+                    WRITE_DEBUG("ChannelOpen");
 #endif
-                    packet = new Packets.Incoming.OpenChannelPacket(Client);
+                    packet = new Packets.Incoming.ChannelOpenPacket(Client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                     {
-                        if (ReceivedOpenChannelIncomingPacket != null)
-                            packet.Forward = ReceivedOpenChannelIncomingPacket.Invoke(packet);
+                        if (ReceivedChannelOpenIncomingPacket != null)
+                            packet.Forward = ReceivedChannelOpenIncomingPacket.Invoke(packet);
 
                         return packet;
                     }
                     break;
                 }
-                case IncomingPacketType.PlayerCancelWalk:
+                case IncomingPacketType.PlayerWalkCancel:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("PLAYER_CANCEL_WALK");
+                        WRITE_DEBUG("PlayerWalkCancel");
 #endif
-                        packet = new Packets.Incoming.PlayerCancelWalkPacket(Client);
+                        packet = new Packets.Incoming.PlayerWalkCancelPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedPlayerCancelWalkIncomingPacket != null)
-                                packet.Forward = ReceivedPlayerCancelWalkIncomingPacket.Invoke(packet);
+                            if (ReceivedPlayerWalkCancelIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerWalkCancelIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1200,7 +1216,7 @@ namespace Tibia.Util
                 case IncomingPacketType.ChannelList:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CHANNEL_LIST");
+                        WRITE_DEBUG("ChannelList");
 #endif
                         packet = new Packets.Incoming.ChannelListPacket(Client);
 
@@ -1216,7 +1232,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureMove:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_MOVE");
+                        WRITE_DEBUG("CreatureMove");
 #endif
                         packet = new Packets.Incoming.CreatureMovePacket(Client);
 
@@ -1229,10 +1245,10 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType.StatusMessage:
+                case IncomingPacketType.TextMessage:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("TEXT_MESSAGE");
+                        WRITE_DEBUG("TextMessage");
 #endif
                         packet = new Packets.Incoming.TextMessagePacket(Client);
 
@@ -1248,7 +1264,7 @@ namespace Tibia.Util
                 case IncomingPacketType.TileAddThing:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("TILE_ADD_THING");
+                        WRITE_DEBUG("TileAddThing");
 #endif
                         packet = new Packets.Incoming.TileAddThingPacket(Client);
 
@@ -1264,7 +1280,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureOutfit:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_OUTFIT");
+                        WRITE_DEBUG("CreatureOutfit");
 #endif
                         packet = new Packets.Incoming.CreatureOutfitPacket(Client);
 
@@ -1280,7 +1296,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureLight:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_LIGHT");
+                        WRITE_DEBUG("CreatureLight");
 #endif
                         packet = new Packets.Incoming.CreatureLightPacket(Client);
 
@@ -1296,7 +1312,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureHealth:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_HEALTH");
+                        WRITE_DEBUG("CreatureHealth");
 #endif
                         packet = new Packets.Incoming.CreatureHealthPacket(Client);
 
@@ -1312,7 +1328,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureSpeed:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_SPEED");
+                        WRITE_DEBUG("CreatureSpeed");
 #endif
                         packet = new Packets.Incoming.CreatureSpeedPacket(Client);
 
@@ -1328,7 +1344,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureSquare:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_SQUARE");
+                        WRITE_DEBUG("CreatureSquare");
 #endif
                         packet = new Packets.Incoming.CreatureSquarePacket(Client);
 
@@ -1344,7 +1360,7 @@ namespace Tibia.Util
                 case IncomingPacketType.TileTransformThing:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("TILE_TRANSFORM_THING");
+                        WRITE_DEBUG("TileTransformThing");
 #endif
                         packet = new Packets.Incoming.TileTransformThingPacket(Client);
 
@@ -1360,7 +1376,7 @@ namespace Tibia.Util
                 case IncomingPacketType.TileRemoveThing:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("TILE_REMOVE_THING");
+                        WRITE_DEBUG("TileRemoveThing");
 #endif
                         packet = new Packets.Incoming.TileRemoveThingPacket(Client);
 
@@ -1376,7 +1392,7 @@ namespace Tibia.Util
                 case IncomingPacketType.ContainerAddItem:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CONTAINER_ADD_ITEM");
+                        WRITE_DEBUG("ContainerAddItem");
 #endif
                         packet = new Packets.Incoming.ContainerAddItemPacket(Client);
 
@@ -1392,7 +1408,7 @@ namespace Tibia.Util
                 case IncomingPacketType.ContainerRemoveItem:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CONTAINER_REMOVE_ITEM");
+                        WRITE_DEBUG("ContainerRemoveItem");
 #endif
                         packet = new Packets.Incoming.ContainerRemoveItemPacket(Client);
 
@@ -1408,7 +1424,7 @@ namespace Tibia.Util
                 case IncomingPacketType.ContainerUpdateItem:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CONTAINER_UPDATE_ITEM");
+                        WRITE_DEBUG("ContainerUpdateItem");
 #endif
                         packet = new Packets.Incoming.ContainerUpdateItemPacket(Client);
 
@@ -1424,14 +1440,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ContainerOpen:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("OPEN_CONTAINER");
+                        WRITE_DEBUG("ContainerOpen");
 #endif
-                        packet = new Packets.Incoming.OpenContainerPacket(Client);
+                        packet = new Packets.Incoming.ContainerOpenPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedOpenContainerIncomingPacket != null)
-                                packet.Forward = ReceivedOpenContainerIncomingPacket.Invoke(packet);
+                            if (ReceivedContainerOpenIncomingPacket != null)
+                                packet.Forward = ReceivedContainerOpenIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1440,7 +1456,7 @@ namespace Tibia.Util
                 case IncomingPacketType.ItemTextWindow:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("ITEM_TEXT_WINDOW");
+                        WRITE_DEBUG("ItemTextWindow");
 #endif
                         packet = new Packets.Incoming.ItemTextWindowPacket(Client);
 
@@ -1456,7 +1472,7 @@ namespace Tibia.Util
                 case IncomingPacketType.WorldLight:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("WORLD_LIGHT");
+                        WRITE_DEBUG("WorldLight");
 #endif
                         packet = new Packets.Incoming.WorldLightPacket(Client);
 
@@ -1472,14 +1488,14 @@ namespace Tibia.Util
                 case IncomingPacketType.Projectile:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("DISTANCE_SHOT");
+                        WRITE_DEBUG("Projectile");
 #endif
-                        packet = new Packets.Incoming.DistanceShotPacket(Client);
+                        packet = new Packets.Incoming.ProjectilePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedDistanceShotIncomingPacket != null)
-                                packet.Forward = ReceivedDistanceShotIncomingPacket.Invoke(packet);
+                            if (ReceivedProjectileIncomingPacket != null)
+                                packet.Forward = ReceivedProjectileIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1489,7 +1505,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MapDescription:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MAP_DESCRIPTION");
+                        WRITE_DEBUG("MapDescription");
 #endif
                         packet = new Packets.Incoming.MapDescriptionPacket(Client);
 
@@ -1505,7 +1521,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MoveNorth:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MOVE_NORTH");
+                        WRITE_DEBUG("MoveNorth");
 #endif
                         packet = new Packets.Incoming.MoveNorthPacket(Client);
 
@@ -1521,7 +1537,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MoveSouth:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MOVE_SOUTH");
+                        WRITE_DEBUG("MoveSouth");
 #endif
                         packet = new Packets.Incoming.MoveSouthPacket(Client);
 
@@ -1537,7 +1553,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MoveEast:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MOVE_EAST");
+                        WRITE_DEBUG("MoveEast");
 #endif
                         packet = new Packets.Incoming.MoveEastPacket(Client);
 
@@ -1553,7 +1569,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MoveWest:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MOVE_WEST");
+                        WRITE_DEBUG("MoveWest");
 #endif
                         packet = new Packets.Incoming.MoveWestPacket(Client);
 
@@ -1569,7 +1585,7 @@ namespace Tibia.Util
                 case IncomingPacketType.SelfAppear:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("SELF_APPEAR");
+                        WRITE_DEBUG("SelfAppear");
 #endif
                         packet = new Packets.Incoming.SelfAppearPacket(Client);
 
@@ -1585,7 +1601,7 @@ namespace Tibia.Util
                 case IncomingPacketType.MagicEffect:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("MAGIC_EFFECT");
+                        WRITE_DEBUG("MagicEffect");
 #endif
                         packet = new Packets.Incoming.MagicEffectPacket(Client);
 
@@ -1601,7 +1617,7 @@ namespace Tibia.Util
                 case IncomingPacketType.FloorChangeDown:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("FLOOR_CHANGE_DOWN");
+                        WRITE_DEBUG("FloorChangeDown");
 #endif
                         packet = new Packets.Incoming.FloorChangeDownPacket(Client);
 
@@ -1617,7 +1633,7 @@ namespace Tibia.Util
                 case IncomingPacketType.FloorChangeUp:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("FLOOR_CHANGE_UP");
+                        WRITE_DEBUG("FloorChangeUp");
 #endif
                         packet = new Packets.Incoming.FloorChangeUpPacket(Client);
 
@@ -1630,17 +1646,17 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType.PlayerStatusUpdate:
+                case IncomingPacketType.PlayerStatus:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("PLAYER_STATS");
+                        WRITE_DEBUG("PlayerStatus");
 #endif
-                        packet = new Packets.Incoming.PlayerStatsPacket(Client);
+                        packet = new Packets.Incoming.PlayerStatusPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedPlayerStatsIncomingPacket != null)
-                                packet.Forward = ReceivedPlayerStatsIncomingPacket.Invoke(packet);
+                            if (ReceivedPlayerStatusIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerStatusIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1649,14 +1665,14 @@ namespace Tibia.Util
                 case IncomingPacketType.CreatureSkull:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATURE_SKULLS");
+                        WRITE_DEBUG("CreatureSkull");
 #endif
-                        packet = new Packets.Incoming.CreatureSkullsPacket(Client);
+                        packet = new Packets.Incoming.CreatureSkullPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedCreatureSkullsIncomingPacket != null)
-                                packet.Forward = ReceivedCreatureSkullsIncomingPacket.Invoke(packet);
+                            if (ReceivedCreatureSkullIncomingPacket != null)
+                                packet.Forward = ReceivedCreatureSkullIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1665,7 +1681,7 @@ namespace Tibia.Util
                 case IncomingPacketType.WaitingList:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("WAITING_LIST");
+                        WRITE_DEBUG("WaitingList");
 #endif
                         packet = new Packets.Incoming.WaitingListPacket(Client);
 
@@ -1681,7 +1697,7 @@ namespace Tibia.Util
                 case IncomingPacketType.Ping:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("PING");
+                        WRITE_DEBUG("Ping");
 #endif
                         packet = new Packets.Incoming.PingPacket(Client);
 
@@ -1697,7 +1713,7 @@ namespace Tibia.Util
                 case IncomingPacketType.Death:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("DEATH");
+                        WRITE_DEBUG("Death");
 #endif
                         packet = new Packets.Incoming.DeathPacket(Client);
 
@@ -1713,7 +1729,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CanReportBugs:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("DEATH");
+                        WRITE_DEBUG("CanReportBugs");
 #endif
                         packet = new Packets.Incoming.CanReportBugsPacket(Client);
 
@@ -1726,17 +1742,17 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType.UpdateTile:
+                case IncomingPacketType.TileUpdate:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("UPDATE_TILE");
+                        WRITE_DEBUG("TileUpdate");
 #endif
-                        packet = new Packets.Incoming.UpdateTilePacket(Client);
+                        packet = new Packets.Incoming.TileUpdatePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedUpdateTileIncomingPacket != null)
-                                packet.Forward = ReceivedUpdateTileIncomingPacket.Invoke(packet);
+                            if (ReceivedTileUpdateIncomingPacket != null)
+                                packet.Forward = ReceivedTileUpdateIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1745,14 +1761,14 @@ namespace Tibia.Util
                 case IncomingPacketType.FyiMessage:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("FYI_MESSAGE");
+                        WRITE_DEBUG("FyiMessage");
 #endif
-                        packet = new Packets.Incoming.FYIMessagePacket(Client);
+                        packet = new Packets.Incoming.FyiMessagePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedFYIMessageIncomingPacket != null)
-                                packet.Forward = ReceivedFYIMessageIncomingPacket.Invoke(packet);
+                            if (ReceivedFyiMessageIncomingPacket != null)
+                                packet.Forward = ReceivedFyiMessageIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1761,7 +1777,7 @@ namespace Tibia.Util
                 case IncomingPacketType.InventorySetSlot:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("INVENTORY_SET_SLOT");
+                        WRITE_DEBUG("InventorySetSlot");
 #endif
                         packet = new Packets.Incoming.InventorySetSlotPacket(Client);
 
@@ -1777,7 +1793,7 @@ namespace Tibia.Util
                 case IncomingPacketType.InventoryResetSlot:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("INVENTORY_RESET_SLOT");
+                        WRITE_DEBUG("InventoryResetSlot");
 #endif
                         packet = new Packets.Incoming.InventoryResetSlotPacket(Client);
 
@@ -1793,7 +1809,7 @@ namespace Tibia.Util
                 case IncomingPacketType.SafeTradeRequestAck:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("SAFE_TRADE_REQUEST_ACK");
+                        WRITE_DEBUG("SafeTradeRequestAck");
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestAckPacket(Client);
 
@@ -1809,7 +1825,7 @@ namespace Tibia.Util
                 case IncomingPacketType.SafeTradeRequestNoAck:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("SAFE_TRADE_REQUEST_NO_ACK");
+                        WRITE_DEBUG("SafeTradeRequestNoAck");
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(Client);
 
@@ -1825,7 +1841,7 @@ namespace Tibia.Util
                 case IncomingPacketType.SafeTradeClose:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("SAFE_TRADE_CLOSE");
+                        WRITE_DEBUG("SafeTradeClose");
 #endif
                         packet = new Packets.Incoming.SafeTradeClosePacket(Client);
 
@@ -1841,7 +1857,7 @@ namespace Tibia.Util
                 case IncomingPacketType.PlayerSkillsUpdate:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("PLAYER_SKILLS");
+                        WRITE_DEBUG("PlayerSkillsUpdate");
 #endif
                         packet = new Packets.Incoming.PlayerSkillsPacket(Client);
 
@@ -1854,17 +1870,17 @@ namespace Tibia.Util
                         }
                         break;
                     }
-                case IncomingPacketType.PlayerFlagUpdate:
+                case IncomingPacketType.PlayerFlags:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("PLAYER_ICONS");
+                        WRITE_DEBUG("PlayerFlags");
 #endif
-                        packet = new Packets.Incoming.PlayerIconsPacket(Client);
+                        packet = new Packets.Incoming.PlayerFlagsPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedPlayerIconsIncomingPacket != null)
-                                packet.Forward = ReceivedPlayerIconsIncomingPacket.Invoke(packet);
+                            if (ReceivedPlayerFlagsIncomingPacket != null)
+                                packet.Forward = ReceivedPlayerFlagsIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1873,14 +1889,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ChannelOpenPrivate:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("OPEN_PRIVATE_PLAYER_CHAT");
+                        WRITE_DEBUG("ChannelOpenPrivate");
 #endif
-                        packet = new Packets.Incoming.OpenPrivatePlayerChatPacket(Client);
+                        packet = new Packets.Incoming.ChannelOpenPrivatePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedOpenPrivatePlayerChatIncomingPacket != null)
-                                packet.Forward = ReceivedOpenPrivatePlayerChatIncomingPacket.Invoke(packet);
+                            if (ReceivedChannelOpenPrivateIncomingPacket != null)
+                                packet.Forward = ReceivedChannelOpenPrivateIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1889,30 +1905,30 @@ namespace Tibia.Util
                 case IncomingPacketType.PrivateChannelCreate:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CREATE_PRIVATE_CHANNEL");
+                        WRITE_DEBUG("PrivateChannelCreate");
 #endif
-                        packet = new Packets.Incoming.CreatePrivateChannelPacket(Client);
+                        packet = new Packets.Incoming.PrivateChannelCreatePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedCreatePrivateChannelIncomingPacket != null)
-                                packet.Forward = ReceivedCreatePrivateChannelIncomingPacket.Invoke(packet);
+                            if (ReceivedPrivateChannelCreateIncomingPacket != null)
+                                packet.Forward = ReceivedPrivateChannelCreateIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
                         break;
                     }
-                case IncomingPacketType.PrivateChannelClose:
+                case IncomingPacketType.ChannelClosePrivate:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CLOSE_PRIVATE_CHANNEL");
+                        WRITE_DEBUG("ChannelClosePrivate");
 #endif
-                        packet = new Packets.Incoming.ClosePrivateChannelPacket(Client);
+                        packet = new Packets.Incoming.ChannelClosePrivatePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedClosePrivateChannelIncomingPacket != null)
-                                packet.Forward = ReceivedClosePrivateChannelIncomingPacket.Invoke(packet);
+                            if (ReceivedChannelClosePrivateIncomingPacket != null)
+                                packet.Forward = ReceivedChannelClosePrivateIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1921,7 +1937,7 @@ namespace Tibia.Util
                 case IncomingPacketType.VipState:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("VIP_STATE");
+                        WRITE_DEBUG("VipState");
 #endif
                         packet = new Packets.Incoming.VipStatePacket(Client);
 
@@ -1937,7 +1953,7 @@ namespace Tibia.Util
                 case IncomingPacketType.VipLogin:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("VIP_LOGIN");
+                        WRITE_DEBUG("VipLogin");
 #endif
                         packet = new Packets.Incoming.VipLoginPacket(Client);
 
@@ -1953,7 +1969,7 @@ namespace Tibia.Util
                 case IncomingPacketType.VipLogout:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("VIP_LOGOUT");
+                        WRITE_DEBUG("VipLogout");
 #endif
                         packet = new Packets.Incoming.VipLogoutPacket(Client);
 
@@ -1969,14 +1985,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ShopSaleGoldCount:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("SHOP_SALE_ITEM_LIST");
+                        WRITE_DEBUG("ShopSaleGoldCount");
 #endif
-                        packet = new Packets.Incoming.ShopSaleItemListPacket(Client);
+                        packet = new Packets.Incoming.ShopSaleGoldCountPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedShopSaleItemListIncomingPacket != null)
-                                packet.Forward = ReceivedShopSaleItemListIncomingPacket.Invoke(packet);
+                            if (ReceivedShopSaleGoldCountIncomingPacket != null)
+                                packet.Forward = ReceivedShopSaleGoldCountIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -1985,14 +2001,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ShopWindowOpen:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("OPEN_SHOP_WINDOW");
+                        WRITE_DEBUG("ShopWindowOpen");
 #endif
-                        packet = new Packets.Incoming.OpenShopWindowPacket(Client);
+                        packet = new Packets.Incoming.ShopWindowOpenPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedOpenShopWindowIncomingPacket != null)
-                                packet.Forward = ReceivedOpenShopWindowIncomingPacket.Invoke(packet);
+                            if (ReceivedShopWindowOpenIncomingPacket != null)
+                                packet.Forward = ReceivedShopWindowOpenIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -2001,14 +2017,14 @@ namespace Tibia.Util
                 case IncomingPacketType.ShopWindowClose:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CLOSE_SHOP_WINDOW");
+                        WRITE_DEBUG("ShopWindowClose");
 #endif
-                        packet = new Packets.Incoming.CloseShopWindowPacket(Client);
+                        packet = new Packets.Incoming.ShopWindowClosePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedCloseShopWindowIncomingPacket != null)
-                                packet.Forward = ReceivedCloseShopWindowIncomingPacket.Invoke(packet);
+                            if (ReceivedShopWindowCloseIncomingPacket != null)
+                                packet.Forward = ReceivedShopWindowCloseIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -2017,7 +2033,7 @@ namespace Tibia.Util
                 case IncomingPacketType.OutfitWindow:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("OUTFIT_WINDOW");
+                        WRITE_DEBUG("OutfitWindow");
 #endif
                         packet = new Packets.Incoming.OutfitWindowPacket(Client);
 
@@ -2033,30 +2049,30 @@ namespace Tibia.Util
                 case IncomingPacketType.RuleViolationOpen:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("RULE_VIOLATIONS_CHANNEL");
+                        WRITE_DEBUG("RuleViolationOpen");
 #endif
-                        packet = new Packets.Incoming.RuleViolationsChannelPacket(Client);
+                        packet = new Packets.Incoming.RuleViolationOpenPacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedRuleViolationsChannelIncomingPacket != null)
-                                packet.Forward = ReceivedRuleViolationsChannelIncomingPacket.Invoke(packet);
+                            if (ReceivedRuleViolationOpenIncomingPacket != null)
+                                packet.Forward = ReceivedRuleViolationOpenIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
                         break;
                     }
-                case IncomingPacketType.RemoveReport:
+                case IncomingPacketType.RuleViolationRemove:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("REMOVE_REPORT");
+                        WRITE_DEBUG("RuleViolationRemove");
 #endif
-                        packet = new Packets.Incoming.RemoveReportPacket(Client);
+                        packet = new Packets.Incoming.RuleViolationRemovePacket(Client);
 
                         if (packet.ParseMessage(msg, PacketDestination.Client, pos))
                         {
-                            if (ReceivedRemoveReportIncomingPacket != null)
-                                packet.Forward = ReceivedRemoveReportIncomingPacket.Invoke(packet);
+                            if (ReceivedRuleViolationRemoveIncomingPacket != null)
+                                packet.Forward = ReceivedRuleViolationRemoveIncomingPacket.Invoke(packet);
 
                             return packet;
                         }
@@ -2065,7 +2081,7 @@ namespace Tibia.Util
                 case IncomingPacketType.RuleViolationCancel:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("RULE_VIOLATION_CANCEL");
+                        WRITE_DEBUG("RuleViolationCancel");
 #endif
                         packet = new Packets.Incoming.RuleViolationCancelPacket(Client);
 
@@ -2081,7 +2097,7 @@ namespace Tibia.Util
                 case IncomingPacketType.RuleViolationLock:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("RULE_VIOLATION_LOCK");
+                        WRITE_DEBUG("RuleViolationLock");
 #endif
                         packet = new Packets.Incoming.RuleViolationLockPacket(Client);
 
@@ -2097,7 +2113,7 @@ namespace Tibia.Util
                 case IncomingPacketType.CancelTarget:
                     {
 #if _DEBUG
-                        WRITE_DEBUG("CANCEL_TARGET");
+                        WRITE_DEBUG("CancelTarget");
 #endif
                         packet = new Packets.Incoming.CancelTargetPacket(Client);
 

@@ -1,4 +1,4 @@
-﻿namespace Smart_AutoLooter
+﻿namespace SmartAutoLooter
 {
     partial class frmAutoLootAdd
     {

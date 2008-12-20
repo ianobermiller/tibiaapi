@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Smart_AutoLooter
+namespace SmartAutoLooter
 {
     public partial class frmAutoLootAdd : Form
     {

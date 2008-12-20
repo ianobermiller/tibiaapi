@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class OpenContainerPacket : IncomingPacket
+    public class ContainerOpenPacket : IncomingPacket
     {
 
         public ushort ItemId { get; set; }
@@ -16,7 +16,7 @@ namespace Tibia.Packets.Incoming
         public byte ItemCount { get; set; }
         public List<Objects.Item> Items { get; set; }
 
-        public OpenContainerPacket(Objects.Client c)
+        public ContainerOpenPacket(Objects.Client c)
             : base(c)
         {
             Type = IncomingPacketType.ContainerOpen;
@@ -91,7 +91,7 @@ namespace Tibia.Packets.Incoming
 
         public static bool Send(Objects.Client client, byte id, ushort itemId, string name, byte capacity, byte hasParent, List<Objects.Item> items)
         {
-            OpenContainerPacket p = new OpenContainerPacket(client);
+            ContainerOpenPacket p = new ContainerOpenPacket(client);
 
             p.Id = id;
             p.ItemId = itemId;

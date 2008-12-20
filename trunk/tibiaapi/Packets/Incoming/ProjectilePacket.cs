@@ -5,30 +5,35 @@ using System.Text;
 
 namespace Tibia.Packets.Incoming
 {
-    public class RemoveReportPacket : IncomingPacket
+    public class ProjectilePacket : IncomingPacket
     {
-        public string Name { get; set; }
 
-        public RemoveReportPacket(Objects.Client c)
+        public Objects.Location FromPosition { get; set; }
+        public Objects.Location ToPosition { get; set; }
+        public ProjectileType Effect { get; set; }
+
+        public ProjectilePacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.RemoveReport;
+            Type = IncomingPacketType.Projectile;
             Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
         {
-            int position = msg.Position;
+            int position = msg.Position; 
 
-            if (msg.GetByte() != (byte)IncomingPacketType.RemoveReport)
-                throw new Exception();
+            if (msg.GetByte() != (byte)IncomingPacketType.Projectile)
+                return false;
 
             Destination = destination;
-            Type = IncomingPacketType.RemoveReport;
+            Type = IncomingPacketType.Projectile;
 
             try
             {
-                Name = msg.GetString();
+                FromPosition = msg.GetLocation();
+                ToPosition = msg.GetLocation();
+                Effect = (ProjectileType)msg.GetByte();
             }
             catch (Exception)
             {
@@ -44,7 +49,10 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(0);
 
             msg.AddByte((byte)Type);
-            msg.AddString(Name);
+
+            msg.AddLocation(FromPosition);
+            msg.AddLocation(ToPosition);
+            msg.AddByte((byte)Effect);
 
             return msg.Packet;
         }
