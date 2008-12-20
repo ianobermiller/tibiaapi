@@ -58,7 +58,7 @@ private void uxButton_Click(object sender, EventArgs e)
 *C#*
 {{{
 // Put this after you start the proxy
-client.Proxy.ReceivedPlayerSpeechOutgoingPacket += new Tibia.Util.Proxy.OutgoingPacketListener(Proxy_ReceivedSayOutgoingPacket);
+client.Proxy.ReceivedPlayerSpeechOutgoingPacket += new Tibia.Util.Proxy.OutgoingPacketListener(Proxy_ReceivedPlayerSpeechOutgoingPacket);
 }}}
 {{{
 // This simple example assumes you have a textbox named uxText, 
