@@ -38,6 +38,7 @@ namespace Tibia.Objects
             Array.Copy(BitConverter.GetBytes((ushort)X), 0, bytes, 0, 2);
             Array.Copy(BitConverter.GetBytes((ushort)Y), 0, bytes, 2, 2);
             bytes[4] = (byte)Z;
+
             return bytes;
         }
 
@@ -56,9 +57,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsValid()
         {
-            return X >= 0 &&
-                Y >= 0 &&
-                Z >= 0;
+            return X >= 0 && Y >= 0 && Z >= 0;
         }
 
         /// <summary>
@@ -69,8 +68,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAdjacentTo(Location loc)
         {
-            return DistanceTo(loc) <= 1 &&
-                loc.Z == Z;
+            return DistanceTo(loc) <= 1 && loc.Z == Z;
         }
 
         /// <summary>
@@ -81,8 +79,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsCloseTo(Location loc)
         {
-            return DistanceTo(loc) <= 2 &&
-                loc.Z == Z;
+            return DistanceTo(loc) <= 2 && loc.Z == Z;
         }
 
         /// <summary>
@@ -91,7 +88,7 @@ namespace Tibia.Objects
         /// <returns>The string representation.</returns>
         public override string ToString()
         {
-            return "(" + X + ", " + Y + ", " + Z + ")";
+            return string.Format("({0}, {1}, {2})", X, Y, Z);
         }
 
         /// <summary>
@@ -103,6 +100,7 @@ namespace Tibia.Objects
         {
             int xDist = Math.Abs(X - l.X);
             int yDist = Math.Abs(Y - l.Y);
+
             return (xDist > yDist ? xDist : yDist);
         }
 
@@ -116,20 +114,18 @@ namespace Tibia.Objects
             try
             {
                 string replace = "~!@#$%^&*()_+`-={}|:\"<>?[]\\;',./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
                 foreach (char c in replace)
-                {
                     s = s.Replace(c, ' ');
-                }
+
                 s = s.Trim();
+
                 while (s.IndexOf("  ") != -1)
                     s = s.Replace("  ", " ");
+
                 string[] split = s.Split(" ".ToCharArray());
-                Location loc = new Location(
-                    int.Parse(split[0]),
-                    int.Parse(split[1]),
-                    int.Parse(split[2])
-                );
-                return loc;
+
+                return new Location(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]));
             }
             catch
             {
@@ -144,9 +140,7 @@ namespace Tibia.Objects
 
         public bool Equals(Location other)
         {
-            return other.X == X &&
-                other.Y == Y &&
-                other.Z == Z;
+            return other.X == X && other.Y == Y && other.Z == Z;
         }
     }
 }
