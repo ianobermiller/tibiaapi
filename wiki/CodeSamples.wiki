@@ -58,31 +58,32 @@ private void uxButton_Click(object sender, EventArgs e)
 *C#*
 {{{
 // Put this after you start the proxy
-client.Proxy.ReceivedPlayerSpeechPacket += (Proxy.PacketListener)ReceivedPlayerSpeechPacket;
+client.Proxy.ReceivedPlayerSpeechOutgoingPacket += new Tibia.Util.Proxy.OutgoingPacketListener(Proxy_ReceivedSayOutgoingPacket);
 }}}
 {{{
 // This simple example assumes you have a textbox named uxText, 
 // to which it will append the command your client sent
-private Packet ReceivedPlayerSpeechPacket(Packet packet)
+private bool Proxy_ReceivedPlayerSpeechOutgoingPacket(Tibia.Packets.OutgoingPacket packet)
 {
-	PlayerSpeechPacket p = (PlayerSpeechPacket)packet;
-	if (p.Message.StartsWith("/"))
-	{
-		uxText.Invoke(new EventHandler(delegate
-			{
-				uxText.AppendText("Command: " + p.Message.Substring(1));
-				uxText.AppendText(Environment.NewLine);
-				
-				// Scroll to the bottom of the text box
-				uxText.SelectionStart = uxText.Text.Length;
-				uxText.ScrollToCaret();
-			}));
-			
-		// Don't send the command to the server
-		return null;
-	}
-	else
-		return packet;
+    Tibia.Packets.Outgoing.PlayerSpeechPacket p = (Tibia.Packets.Outgoing.PlayerSpeechPacket)packet;
+    
+    if (p.Message.StartsWith("/"))
+    {
+        uxText.Invoke(new EventHandler(delegate
+        {
+            uxText.AppendText("Command: " + p.Message.Substring(1));
+            uxText.AppendText(Environment.NewLine);
+
+            // Scroll to the bottom of the text box
+            uxText.SelectionStart = uxText.Text.Length;
+            uxText.ScrollToCaret();
+        }));
+
+        // Don't send the command to the server
+        return false;
+    }
+
+    return true;
 }
 }}}
 
