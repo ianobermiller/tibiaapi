@@ -104,6 +104,7 @@
     <Compile Include="Packets\Incoming\ChannelListPacket.cs" />
     <Compile Include="Packets\Incoming\ContainerClosePacket.cs" />
     <Compile Include="Packets\Incoming\ChannelClosePrivatePacket.cs" />
+    <Compile Include="Packets\Incoming\MapPacket.cs" />
     <Compile Include="Packets\Incoming\ShopWindowClosePacket.cs" />
     <Compile Include="Packets\Incoming\ContainerAddItemPacket.cs" />
     <Compile Include="Packets\Incoming\ContainerRemoveItemPacket.cs" />

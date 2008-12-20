@@ -220,12 +220,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        private static uint LastRcvPacket = 0x7804C0;
+        public static uint LastRcvPacket = 0x7804C0;
 
         /// <summary>
         /// Call to decrypt packet
         /// </summary>
-        private static uint DecryptCall = 0x45A745;
+        public static uint DecryptCall = 0x45A745;
 
         /// <summary>
         /// Auto login stuff
