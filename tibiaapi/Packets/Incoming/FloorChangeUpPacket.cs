@@ -14,7 +14,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.FloorChangeUp ;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
         {
             int position = msg.Position;
 
