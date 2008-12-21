@@ -1,4 +1,4 @@
-﻿#define _DEBUG
+﻿//#define _DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -766,7 +766,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ChannelClosePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedChannelCloseOutgoingPacket != null)
                                 packet.Forward = ReceivedChannelCloseOutgoingPacket.Invoke(packet);
@@ -779,7 +779,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ChannelOpenPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedChannelOpenOutgoingPacket != null)
                                 packet.Forward = ReceivedChannelOpenOutgoingPacket.Invoke(packet);
@@ -792,7 +792,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.PlayerSpeechPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedPlayerSpeechOutgoingPacket != null)
                                 packet.Forward = ReceivedPlayerSpeechOutgoingPacket.Invoke(packet);
@@ -805,7 +805,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.AttackPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedAttackOutgoingPacket != null)
                                 packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
@@ -818,7 +818,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.FollowPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedFollowOutgoingPacket != null)
                                 packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
@@ -831,7 +831,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.LookAtPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedLookAtOutgoingPacket != null)
                                 packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
@@ -844,7 +844,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ItemUsePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedItemUseOutgoingPacket != null)
                                 packet.Forward = ReceivedItemUseOutgoingPacket.Invoke(packet);
@@ -857,7 +857,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ItemUseOnPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedItemUseOnOutgoingPacket != null)
                                 packet.Forward = ReceivedItemUseOnOutgoingPacket.Invoke(packet);
@@ -870,7 +870,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ItemMovePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedItemUseBattlelistOutgoingPacket != null)
                                 packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
@@ -883,7 +883,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.CancelMovePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedCancelMoveOutgoingPacket != null)
                                 packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
@@ -896,7 +896,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedBattleWindowOutgoingPacket != null)
                                 packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
@@ -909,7 +909,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.LogoutPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedLogoutOutgoingPacket != null)
                                 packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
@@ -922,7 +922,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ContainerClosePacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedContainerCloseOutgoingPacket != null)
                                 packet.Forward = ReceivedContainerCloseOutgoingPacket.Invoke(packet);
@@ -935,7 +935,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ContainerOpenParentPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedContainerOpenParentOutgoingPacket != null)
                                 packet.Forward = ReceivedContainerOpenParentOutgoingPacket.Invoke(packet);
@@ -948,7 +948,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ShopBuyPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedShopBuyOutgoingPacket != null)
                                 packet.Forward = ReceivedShopBuyOutgoingPacket.Invoke(packet);
@@ -961,7 +961,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.ShopSellPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedShopSellOutgoingPacket != null)
                                 packet.Forward = ReceivedShopSellOutgoingPacket.Invoke(packet);
@@ -1094,7 +1094,7 @@ namespace Tibia.Util
                     {
                         packet = new Packets.Outgoing.AutoWalkPacket(client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Server, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
                         {
                             if (ReceivedAutoWalkOutgoingPacket != null)
                                 packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
@@ -1214,7 +1214,7 @@ namespace Tibia.Util
 
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = ParseClientPacket(msg, pos);
+                    IncomingPacket packet = ParseClientPacket(msg, ref pos);
                     byte[] packetBytes;
 
                     if (packet == null)
@@ -1300,7 +1300,7 @@ namespace Tibia.Util
                 ProcessClientSendQueue();
         }
 
-        private IncomingPacket ParseClientPacket(NetworkMessage msg, Objects.Location pos)
+        private IncomingPacket ParseClientPacket(NetworkMessage msg, ref Objects.Location pos)
         {
             IncomingPacket packet;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
@@ -1313,7 +1313,7 @@ namespace Tibia.Util
                     WRITE_DEBUG("AnimatedText");
 #endif
                     packet = new Packets.Incoming.AnimatedTextPacket(Client);
-                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
                         if (ReceivedAnimatedTextIncomingPacket != null)
                             packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
@@ -1329,7 +1329,7 @@ namespace Tibia.Util
 #endif
                     packet = new Packets.Incoming.ContainerClosePacket(Client);
 
-                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
                         if (ReceivedContainerCloseIncomingPacket != null)
                             packet.Forward = ReceivedContainerCloseIncomingPacket.Invoke(packet);
@@ -1345,7 +1345,7 @@ namespace Tibia.Util
 #endif
                     packet = new Packets.Incoming.CreatureSpeakPacket(Client);
 
-                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
                         if (ReceivedCreatureSpeakIncomingPacket != null)
                             packet.Forward = ReceivedCreatureSpeakIncomingPacket.Invoke(packet);
@@ -1361,7 +1361,7 @@ namespace Tibia.Util
 #endif
                     packet = new Packets.Incoming.ChannelOpenPacket(Client);
 
-                    if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                    if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
                         if (ReceivedChannelOpenIncomingPacket != null)
                             packet.Forward = ReceivedChannelOpenIncomingPacket.Invoke(packet);
@@ -1377,7 +1377,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PlayerWalkCancelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPlayerWalkCancelIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerWalkCancelIncomingPacket.Invoke(packet);
@@ -1393,7 +1393,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ChannelListPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedChannelListIncomingPacket != null)
                                 packet.Forward = ReceivedChannelListIncomingPacket.Invoke(packet);
@@ -1409,7 +1409,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureMovePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureMoveIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureMoveIncomingPacket.Invoke(packet);
@@ -1425,7 +1425,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.TextMessagePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedTextMessageIncomingPacket != null)
                                 packet.Forward = ReceivedTextMessageIncomingPacket.Invoke(packet);
@@ -1441,7 +1441,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.TileAddThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedTileAddThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileAddThingIncomingPacket.Invoke(packet);
@@ -1457,7 +1457,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureOutfitPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureOutfitIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureOutfitIncomingPacket.Invoke(packet);
@@ -1473,7 +1473,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureLightPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureLightIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureLightIncomingPacket.Invoke(packet);
@@ -1489,7 +1489,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureHealthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureHealthIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureHealthIncomingPacket.Invoke(packet);
@@ -1505,7 +1505,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureSpeedPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureSpeedIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSpeedIncomingPacket.Invoke(packet);
@@ -1521,7 +1521,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureSquarePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureSquareIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSquareIncomingPacket.Invoke(packet);
@@ -1537,7 +1537,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.TileTransformThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedTileTransformThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileTransformThingIncomingPacket.Invoke(packet);
@@ -1553,7 +1553,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.TileRemoveThingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedTileRemoveThingIncomingPacket != null)
                                 packet.Forward = ReceivedTileRemoveThingIncomingPacket.Invoke(packet);
@@ -1569,7 +1569,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ContainerAddItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedContainerAddItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerAddItemIncomingPacket.Invoke(packet);
@@ -1585,7 +1585,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ContainerRemoveItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedContainerRemoveItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerRemoveItemIncomingPacket.Invoke(packet);
@@ -1601,7 +1601,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ContainerUpdateItemPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedContainerUpdateItemIncomingPacket != null)
                                 packet.Forward = ReceivedContainerUpdateItemIncomingPacket.Invoke(packet);
@@ -1617,7 +1617,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ContainerOpenPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedContainerOpenIncomingPacket != null)
                                 packet.Forward = ReceivedContainerOpenIncomingPacket.Invoke(packet);
@@ -1633,7 +1633,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ItemTextWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedItemTextWindowIncomingPacket != null)
                                 packet.Forward = ReceivedItemTextWindowIncomingPacket.Invoke(packet);
@@ -1649,7 +1649,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.WorldLightPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedWorldLightIncomingPacket != null)
                                 packet.Forward = ReceivedWorldLightIncomingPacket.Invoke(packet);
@@ -1665,7 +1665,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ProjectilePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedProjectileIncomingPacket != null)
                                 packet.Forward = ReceivedProjectileIncomingPacket.Invoke(packet);
@@ -1682,7 +1682,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MapDescriptionPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMapDescriptionIncomingPacket != null)
                                 packet.Forward = ReceivedMapDescriptionIncomingPacket.Invoke(packet);
@@ -1698,7 +1698,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MoveNorthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMoveNorthIncomingPacket != null)
                                 packet.Forward = ReceivedMoveNorthIncomingPacket.Invoke(packet);
@@ -1714,7 +1714,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MoveSouthPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMoveSouthIncomingPacket != null)
                                 packet.Forward = ReceivedMoveSouthIncomingPacket.Invoke(packet);
@@ -1730,7 +1730,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MoveEastPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMoveEastIncomingPacket != null)
                                 packet.Forward = ReceivedMoveEastIncomingPacket.Invoke(packet);
@@ -1746,7 +1746,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MoveWestPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMoveWestIncomingPacket != null)
                                 packet.Forward = ReceivedMoveWestIncomingPacket.Invoke(packet);
@@ -1762,7 +1762,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.SelfAppearPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedSelfAppearIncomingPacket != null)
                                 packet.Forward = ReceivedSelfAppearIncomingPacket.Invoke(packet);
@@ -1778,7 +1778,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.MagicEffectPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedMagicEffectIncomingPacket != null)
                                 packet.Forward = ReceivedMagicEffectIncomingPacket.Invoke(packet);
@@ -1794,7 +1794,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.FloorChangeDownPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedFloorChangeDownIncomingPacket != null)
                                 packet.Forward = ReceivedFloorChangeDownIncomingPacket.Invoke(packet);
@@ -1810,7 +1810,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.FloorChangeUpPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedFloorChangeUpIncomingPacket != null)
                                 packet.Forward = ReceivedFloorChangeUpIncomingPacket.Invoke(packet);
@@ -1826,7 +1826,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PlayerStatusPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPlayerStatusIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerStatusIncomingPacket.Invoke(packet);
@@ -1842,7 +1842,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CreatureSkullPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCreatureSkullIncomingPacket != null)
                                 packet.Forward = ReceivedCreatureSkullIncomingPacket.Invoke(packet);
@@ -1858,7 +1858,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.WaitingListPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedWaitingListIncomingPacket != null)
                                 packet.Forward = ReceivedWaitingListIncomingPacket.Invoke(packet);
@@ -1874,7 +1874,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PingPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPingIncomingPacket != null)
                                 packet.Forward = ReceivedPingIncomingPacket.Invoke(packet);
@@ -1890,7 +1890,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.DeathPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedDeathIncomingPacket != null)
                                 packet.Forward = ReceivedDeathIncomingPacket.Invoke(packet);
@@ -1906,7 +1906,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CanReportBugsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCanReportBugsIncomingPacket != null)
                                 packet.Forward = ReceivedCanReportBugsIncomingPacket.Invoke(packet);
@@ -1922,7 +1922,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.TileUpdatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedTileUpdateIncomingPacket != null)
                                 packet.Forward = ReceivedTileUpdateIncomingPacket.Invoke(packet);
@@ -1938,7 +1938,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.FyiMessagePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedFyiMessageIncomingPacket != null)
                                 packet.Forward = ReceivedFyiMessageIncomingPacket.Invoke(packet);
@@ -1954,7 +1954,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.InventorySetSlotPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedInventorySetSlotIncomingPacket != null)
                                 packet.Forward = ReceivedInventorySetSlotIncomingPacket.Invoke(packet);
@@ -1970,7 +1970,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.InventoryResetSlotPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedInventoryResetSlotIncomingPacket != null)
                                 packet.Forward = ReceivedInventoryResetSlotIncomingPacket.Invoke(packet);
@@ -1986,7 +1986,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestAckPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedSafeTradeRequestAckIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeRequestAckIncomingPacket.Invoke(packet);
@@ -2002,7 +2002,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedSafeTradeRequestNoAckIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeRequestNoAckIncomingPacket.Invoke(packet);
@@ -2018,7 +2018,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.SafeTradeClosePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedSafeTradeCloseIncomingPacket != null)
                                 packet.Forward = ReceivedSafeTradeCloseIncomingPacket.Invoke(packet);
@@ -2034,7 +2034,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PlayerSkillsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPlayerSkillsIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerSkillsIncomingPacket.Invoke(packet);
@@ -2050,7 +2050,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PlayerFlagsPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPlayerFlagsIncomingPacket != null)
                                 packet.Forward = ReceivedPlayerFlagsIncomingPacket.Invoke(packet);
@@ -2066,7 +2066,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ChannelOpenPrivatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedChannelOpenPrivateIncomingPacket != null)
                                 packet.Forward = ReceivedChannelOpenPrivateIncomingPacket.Invoke(packet);
@@ -2082,7 +2082,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.PrivateChannelCreatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedPrivateChannelCreateIncomingPacket != null)
                                 packet.Forward = ReceivedPrivateChannelCreateIncomingPacket.Invoke(packet);
@@ -2098,7 +2098,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ChannelClosePrivatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedChannelClosePrivateIncomingPacket != null)
                                 packet.Forward = ReceivedChannelClosePrivateIncomingPacket.Invoke(packet);
@@ -2114,7 +2114,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.VipStatePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedVipStateIncomingPacket != null)
                                 packet.Forward = ReceivedVipStateIncomingPacket.Invoke(packet);
@@ -2130,7 +2130,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.VipLoginPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedVipLoginIncomingPacket != null)
                                 packet.Forward = ReceivedVipLoginIncomingPacket.Invoke(packet);
@@ -2146,7 +2146,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.VipLogoutPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedVipLogoutIncomingPacket != null)
                                 packet.Forward = ReceivedVipLogoutIncomingPacket.Invoke(packet);
@@ -2162,7 +2162,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ShopSaleGoldCountPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedShopSaleGoldCountIncomingPacket != null)
                                 packet.Forward = ReceivedShopSaleGoldCountIncomingPacket.Invoke(packet);
@@ -2178,7 +2178,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ShopWindowOpenPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedShopWindowOpenIncomingPacket != null)
                                 packet.Forward = ReceivedShopWindowOpenIncomingPacket.Invoke(packet);
@@ -2194,7 +2194,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.ShopWindowClosePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedShopWindowCloseIncomingPacket != null)
                                 packet.Forward = ReceivedShopWindowCloseIncomingPacket.Invoke(packet);
@@ -2210,7 +2210,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.OutfitWindowPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedOutfitWindowIncomingPacket != null)
                                 packet.Forward = ReceivedOutfitWindowIncomingPacket.Invoke(packet);
@@ -2226,7 +2226,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.RuleViolationOpenPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedRuleViolationOpenIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationOpenIncomingPacket.Invoke(packet);
@@ -2242,7 +2242,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.RuleViolationRemovePacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedRuleViolationRemoveIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationRemoveIncomingPacket.Invoke(packet);
@@ -2258,7 +2258,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.RuleViolationCancelPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedRuleViolationCancelIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationCancelIncomingPacket.Invoke(packet);
@@ -2274,7 +2274,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.RuleViolationLockPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedRuleViolationLockIncomingPacket != null)
                                 packet.Forward = ReceivedRuleViolationLockIncomingPacket.Invoke(packet);
@@ -2290,7 +2290,7 @@ namespace Tibia.Util
 #endif
                         packet = new Packets.Incoming.CancelTargetPacket(Client);
 
-                        if (packet.ParseMessage(msg, PacketDestination.Client, pos))
+                        if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                         {
                             if (ReceivedCancelTargetIncomingPacket != null)
                                 packet.Forward = ReceivedCancelTargetIncomingPacket.Invoke(packet);

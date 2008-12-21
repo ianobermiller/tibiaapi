@@ -14,7 +14,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.FloorChangeDown;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
         {
             int position = msg.Position;
 
@@ -32,16 +32,9 @@ namespace Tibia.Packets.Incoming
                 //going from surface to underground
                 if (pos.Z == 8)
                 {
-                    //TODO: There are something wrong here.. we have to find what is.
-
-                    //Do not parse this.. maybe it can debug the client...
-
-                    msg.Position = position;
-                    return false;
-
-                    //int j, i;
-                    //for (i = pos.Z, j = -1; i < pos.Z + 3; ++i, --j)
-                    //    setFloorDescription(msg, pos.X - 8, pos.Y - 6, i, 18, 14, j);
+                    int j, i;
+                    for (i = pos.Z, j = -1; i < pos.Z + 3; ++i, --j)
+                        setFloorDescription(msg, pos.X - 8, pos.Y - 6, i, 18, 14, j);
 
                 }
                 //going further down
