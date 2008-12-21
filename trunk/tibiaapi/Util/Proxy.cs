@@ -1,4 +1,4 @@
-﻿#define _DEBUG
+﻿//#define _DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Tibia.Packets;
 using Tibia.Objects;
 using System.Windows.Forms;
+using System.Net;
 
 namespace Tibia.Util
 {
@@ -32,7 +33,7 @@ namespace Tibia.Util
         private bool writingServer;
         private Queue<NetworkMessage> serverSendQueue = new Queue<NetworkMessage> { };
         private Queue<NetworkMessage> serverReceiveQueue = new Queue<NetworkMessage> { };
-        private ushort portServer = 7272;
+        private ushort portServer = 0;
         private bool isFirstMsg;
 
         private TcpClient tcpClient;
@@ -65,6 +66,10 @@ namespace Tibia.Util
             client = c;
 
             loginServers = client.LoginServers;
+
+            if (portServer == 0)
+                portServer = GetFreePort();
+
             client.SetServer("localhost", (short)portServer);
 
             if (client.RSA == Constants.RSAKey.OpenTibia)
@@ -277,6 +282,12 @@ namespace Tibia.Util
         public uint[] XteaKey
         {
             get { return xteaKey; }
+        }
+
+        public ushort Port
+        {
+            get { return portServer; }
+            set { portServer = value; }
         }
 
         #endregion
@@ -2365,5 +2376,51 @@ namespace Tibia.Util
 
         #endregion
 
+        #region Port Checking
+        /// <summary>
+        /// Check if a port is open on localhost
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public static bool CheckPort(ushort port)
+        {
+            try
+            {
+                TcpListener tcpScan = new TcpListener(IPAddress.Any, port);
+                tcpScan.Start();
+                tcpScan.Stop();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost starting at the default 7171
+        /// </summary>
+        /// <returns></returns>
+        public static ushort GetFreePort()
+        {
+            return GetFreePort(7172);
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost beginning at start
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public static ushort GetFreePort(ushort start)
+        {
+            while (!CheckPort(start))
+            {
+                start++;
+            }
+
+            return start;
+        }
+        #endregion
     }
 }
