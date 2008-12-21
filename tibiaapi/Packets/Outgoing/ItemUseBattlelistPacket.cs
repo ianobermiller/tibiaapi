@@ -37,7 +37,7 @@ namespace Tibia.Packets.Outgoing
 
         public override byte[] ToByteArray()
         {
-            NetworkMessage msg = new NetworkMessage(0);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
 

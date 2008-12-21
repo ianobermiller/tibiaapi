@@ -18,31 +18,36 @@ namespace Tibia.Packets
         static BigInteger cipM = new BigInteger("124710459426827943004376449897985582167801707960697037164044904862948569380850421396904597686953877022394604239428185498284169068581802277612081027966724336319448537811441719076484340922854929273517308661370727105382899118999403808045846444647284499123164879035103627004668521005328367415259939915284902061793", 10);
         static BigInteger cipE = new BigInteger("65537", 10);
 
-        static uint[] xteaKey;
+        //static uint[] xteaKey;
         protected MessageStream messageStream;
+        public Objects.Client Client { get; set; }
 
         #region "Contructors"
 
-        public NetworkMessage()
+        public NetworkMessage(Objects.Client client)
         {
+            Client = client;
             messageStream = new MessageStream();
             messageStream.Position = 6;
         }
 
-        public NetworkMessage(int size)
+        public NetworkMessage(Objects.Client client, int size)
         {
+            Client = client;
             messageStream = new MessageStream(size);
             messageStream.Position = 0;
         }
 
-        public NetworkMessage(byte[] data)
+        public NetworkMessage(Objects.Client client, byte[] data)
         {
+            Client = client;
             messageStream = new MessageStream(data);
             messageStream.Position = 0;
         }
 
-        public NetworkMessage(byte[] data, int length)
+        public NetworkMessage(Objects.Client client,byte[] data, int length)
         {
+            Client = client;
             messageStream = new MessageStream(data, 0, length);
             messageStream.Position = 0;
         }
@@ -61,12 +66,6 @@ namespace Tibia.Packets
         {
             get { return this.messageStream.Position; }
             set { this.messageStream.Position = value; }
-        }
-
-        public static uint[] XTEAKey
-        {
-            get { return xteaKey; }
-            set { xteaKey = value; }
         }
 
         public byte[] Packet
@@ -88,7 +87,7 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt()
         {
-            if (xteaKey == null)
+            if (Client.Proxy.XteaKey == null)
                 return false;
 
             int msgSize = messageStream.Length - 6;
@@ -148,9 +147,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                y += (z << 4 ^ z >> 5) + z ^ sum + xteaKey[sum & 3];
+                y += (z << 4 ^ z >> 5) + z ^ sum + Client.Proxy.XteaKey[sum & 3];
                 sum += delta;
-                z += (y << 4 ^ y >> 5) + y ^ sum + xteaKey[sum >> 11 & 3];
+                z += (y << 4 ^ y >> 5) + y ^ sum + Client.Proxy.XteaKey[sum >> 11 & 3];
             }
 
             v[index] = y;
@@ -169,9 +168,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                z -= (y << 4 ^ y >> 5) + y ^ sum + xteaKey[sum >> 11 & 3];
+                z -= (y << 4 ^ y >> 5) + y ^ sum + Client.Proxy.XteaKey[sum >> 11 & 3];
                 sum -= delta;
-                y -= (z << 4 ^ z >> 5) + z ^ sum + xteaKey[sum & 3];
+                y -= (z << 4 ^ z >> 5) + z ^ sum + Client.Proxy.XteaKey[sum & 3];
             }
 
             v[index] = y;
@@ -463,7 +462,7 @@ namespace Tibia.Packets
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(cipE, cipM);
             // it's sometimes possible for the results to be a byte short
-            // and this can break some software (see #79502) so we 0x00 pad the result
+            // and this can break some software so we 0x00 pad the result
 
             messageStream.Position = start;
             messageStream.Write(GetPaddedValue(output), 0, 128);
@@ -480,7 +479,7 @@ namespace Tibia.Packets
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(otServerE, otServerM);
             // it's sometimes possible for the results to be a byte short
-            // and this can break some software (see #79502) so we 0x00 pad the result
+            // and this can break some software so we 0x00 pad the result
 
             messageStream.Position = start;
             messageStream.Write(GetPaddedValue(output), 0, 128);

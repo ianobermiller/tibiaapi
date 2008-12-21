@@ -26,7 +26,7 @@ namespace Tibia.Packets
         {
             if (Client.UsingProxy)
             {
-                NetworkMessage msg = new NetworkMessage();
+                NetworkMessage msg = new NetworkMessage(Client);
                 msg.AddBytes(ToByteArray());
                 msg.InsetLogicalPacketHeader();
                 msg.PrepareToSend();

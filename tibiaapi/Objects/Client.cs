@@ -1165,7 +1165,7 @@ namespace Tibia.Objects
         {
             if (UsingProxy)
             {
-                Packets.NetworkMessage msg = new NetworkMessage();
+                Packets.NetworkMessage msg = new NetworkMessage(this);
                 msg.AddBytes(packet);
                 msg.PrepareToSend();
 
@@ -1181,7 +1181,7 @@ namespace Tibia.Objects
         {
             if (UsingProxy)
             {
-                Packets.NetworkMessage msg = new NetworkMessage();
+                Packets.NetworkMessage msg = new NetworkMessage(this);
                 msg.AddBytes(packet);
                 msg.PrepareToSend();
 

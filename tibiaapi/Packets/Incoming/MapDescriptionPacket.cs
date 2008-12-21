@@ -22,6 +22,7 @@ namespace Tibia.Packets.Incoming
 
             Destination = destination;
             Type = IncomingPacketType.MapDescription;
+            stream = new NetworkMessage(Client, 0);
             stream.AddByte((byte)Type);
 
             try

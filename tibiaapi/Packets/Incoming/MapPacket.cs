@@ -6,7 +6,7 @@ namespace Tibia.Packets.Incoming
 {
     public abstract class MapPacket : IncomingPacket
     {
-        protected NetworkMessage stream = new NetworkMessage(0);
+        protected NetworkMessage stream;
         protected short m_skipTiles;
 
         protected List<Objects.Item> items = new List<Tibia.Objects.Item> { };

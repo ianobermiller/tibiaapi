@@ -22,6 +22,7 @@ namespace Tibia.Packets.Incoming
 
             Destination = destination;
             Type = IncomingPacketType.MoveWest;
+            stream = new NetworkMessage(Client, 0);
             stream.AddByte((byte)Type);
 
             pos.X--;
