@@ -295,12 +295,18 @@ namespace Tibia.Util
   
         public void SendToClient(NetworkMessage msg)
         {
+            if (!isConnected)
+                throw new Tibia.Exceptions.ProxyDisconnectedException();
+
             serverSendQueue.Enqueue(msg);
             ProcessServerSendQueue();
         }
 
         public void SendToServer(NetworkMessage msg)
         {
+            if (!isConnected)
+                throw new Tibia.Exceptions.ProxyDisconnectedException();
+
             clientSendQueue.Enqueue(msg);
             ProcessClientSendQueue();
         }

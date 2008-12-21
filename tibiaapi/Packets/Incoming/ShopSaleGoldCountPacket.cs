@@ -41,6 +41,8 @@ namespace Tibia.Packets.Incoming
 
                     item.ItemId = msg.GetUInt16();
                     item.SubType = msg.GetByte();
+
+                    ItemList.Add(item);
                 }
             }
             catch (Exception)
