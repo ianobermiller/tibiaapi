@@ -51,8 +51,6 @@ namespace SmartAutoLooter
                     _client.Proxy.ReceivedContainerAddItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerAddItemIncomingPacket);
                     _client.Proxy.ReceivedTileAddThingIncomingPacket += new Proxy.IncomingPacketListener(_proxy_ReceivedTileAddThingIncomingPacket);
                     _client.Proxy.ReceivedContainerOpenIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerOpenIncomingPacket);
-
-                    _client.Proxy.ReceivedTurnOutgoingPacket += new Proxy.OutgoingPacketListener(Proxy_ReceivedTurnOutgoingPacket);
                 }
                 else
                     MessageBox.Show("Please start this program before login.");
@@ -60,13 +58,6 @@ namespace SmartAutoLooter
             else
                 Application.Exit();
 
-        }
-
-        bool Proxy_ReceivedTurnOutgoingPacket(OutgoingPacket packet)
-        {
-            Tibia.Packets.Outgoing.TurnPacket p = (Tibia.Packets.Outgoing.TurnPacket)packet;
-
-            return true;
         }
 
         void _client_Exited(object sender, EventArgs e)
@@ -395,7 +386,7 @@ namespace SmartAutoLooter
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Tibia.Packets.NetworkMessage msg = new NetworkMessage(0);
+                Tibia.Packets.NetworkMessage msg = new NetworkMessage(null, 0);
 
                 msg.AddUInt16((ushort)_lootItems.Count);
 
@@ -418,7 +409,7 @@ namespace SmartAutoLooter
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Tibia.Packets.NetworkMessage msg = new NetworkMessage(System.IO.File.ReadAllBytes(dialog.FileName));
+                Tibia.Packets.NetworkMessage msg = new NetworkMessage(null, System.IO.File.ReadAllBytes(dialog.FileName));
 
                 try
                 {
