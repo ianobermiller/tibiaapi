@@ -48,7 +48,7 @@ namespace Tibia.Addresses
             IsPickupable = 131072,
             IsHangable = 262144,
             IsHangableHorizontal = 524288,
-            IsHangableVertizcal = 1048576,
+            IsHangableVertical = 1048576,
             IsRotatable = 2097152,
             IsLightSource = 4194304,
             Floorchange = 8388608,
@@ -58,7 +58,7 @@ namespace Tibia.Addresses
             IsIdleAnimation = 134217728,
             HasAutoMapColor = 268435456,
             HasHelpLens = 536870912,
-            Unknow = 1073741824, //old isGround flag
+            Unknown = 1073741824, //old isGround flag
             IsGround = 2147483648,
         }
 
