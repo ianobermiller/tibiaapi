@@ -86,7 +86,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x785578; //8.31
+        public static uint LastMSGText = 0x78A438; //8.40
 
         /// <summary>
         /// The last player to send a message to the default channel.
@@ -130,7 +130,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x77BC80; //8.31
+        public static uint See_Text = 0x78A410; //8.40
         
         // Login Server addresses
         public static uint LoginServerStart = 0x77FC48; //8.40
