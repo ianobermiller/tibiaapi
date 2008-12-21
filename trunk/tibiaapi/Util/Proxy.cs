@@ -1,4 +1,4 @@
-﻿//#define _DEBUG
+﻿#define _DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -47,6 +47,7 @@ namespace Tibia.Util
 
         private bool acceptingConnection;
         private CharList[] charList;
+        private uint[] xteaKey;
 
         private Objects.Player player;
         private bool isConnected;
@@ -273,6 +274,11 @@ namespace Tibia.Util
             get { return isConnected; }
         }
 
+        public uint[] XteaKey
+        {
+            get { return xteaKey; }
+        }
+
         #endregion
 
   
@@ -392,7 +398,7 @@ namespace Tibia.Util
             }
 
             packetSizeServer = (int)BitConverter.ToUInt16(bufferServer, 0) + 2;
-            NetworkMessage msg = new NetworkMessage(packetSizeServer);
+            NetworkMessage msg = new NetworkMessage(Client, packetSizeServer);
             Array.Copy(bufferServer, msg.GetBuffer(), 2);
 
             while (readBytesServer < packetSizeServer)
@@ -407,7 +413,7 @@ namespace Tibia.Util
             }
 
             if (ClientMessageArrived != null)
-                ClientMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
+                ClientMessageArrived.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
 
             if (isFirstMsg)
             {
@@ -456,7 +462,8 @@ namespace Tibia.Util
 
                     if (msg.GetByte() != 0)
                     {
-                        //TODO: ...
+                        Restart();
+                        return;
                     }
 
                     key[0] = msg.GetUInt32();
@@ -464,7 +471,7 @@ namespace Tibia.Util
                     key[2] = msg.GetUInt32();
                     key[3] = msg.GetUInt32();
 
-                    NetworkMessage.XTEAKey = key;
+                    xteaKey = key;
 
                     if (clientVersion != 840)
                     {
@@ -515,7 +522,7 @@ namespace Tibia.Util
                     key[2] = msg.GetUInt32();
                     key[3] = msg.GetUInt32();
 
-                    NetworkMessage.XTEAKey = key;
+                    xteaKey = key;
 
                     msg.GetByte();
                     msg.GetString();
@@ -577,7 +584,7 @@ namespace Tibia.Util
             if (readBytesClient == 2)
             {
                 packetSizeClient = (int)BitConverter.ToUInt16(bufferClient, 0) + 2;
-                NetworkMessage msg = new NetworkMessage(packetSizeClient);
+                NetworkMessage msg = new NetworkMessage(Client, packetSizeClient);
                 Array.Copy(bufferClient, msg.GetBuffer(), 2);
 
                 while (readBytesClient < packetSizeClient)
@@ -589,7 +596,7 @@ namespace Tibia.Util
                 }
 
                 if (ServerMessageArrived != null)
-                    ServerMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
+                    ServerMessageArrived.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
 
                 msg.PrepareToRead();
                 msg.GetUInt16(); //packet size..
@@ -676,7 +683,7 @@ namespace Tibia.Util
             WRITE_DEBUG("DisconnectClient Function.");
 #endif
 
-            NetworkMessage msg = new NetworkMessage();
+            NetworkMessage msg = new NetworkMessage(Client);
             msg.AddByte(cmd);
             msg.AddString(message);
 
@@ -693,7 +700,7 @@ namespace Tibia.Util
             while (serverReceiveQueue.Count > 0)
             {
                 NetworkMessage msg = serverReceiveQueue.Dequeue();
-                NetworkMessage output = new NetworkMessage();
+                NetworkMessage output = new NetworkMessage(Client);
                 bool haveContent = false;
 
                 msg.PrepareToRead();
@@ -1175,7 +1182,7 @@ namespace Tibia.Util
             }
 
             packetSizeClient = (int)BitConverter.ToUInt16(bufferClient, 0) + 2;
-            NetworkMessage msg = new NetworkMessage(packetSizeClient);
+            NetworkMessage msg = new NetworkMessage(Client,packetSizeClient);
             Array.Copy(bufferClient, msg.GetBuffer(), 2);
 
             while (readBytesClient < packetSizeClient)
@@ -1187,7 +1194,7 @@ namespace Tibia.Util
             }
 
             if (ServerMessageArrived != null)
-                ServerMessageArrived.BeginInvoke(new NetworkMessage(msg.Packet), null, null);
+                ServerMessageArrived.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
 
             clientReceiveQueue.Enqueue(msg);
             ProcessClientReceiveQueue();
@@ -1204,7 +1211,7 @@ namespace Tibia.Util
             while (clientReceiveQueue.Count > 0)
             {
                 NetworkMessage msg = clientReceiveQueue.Dequeue();
-                NetworkMessage output = new NetworkMessage();
+                NetworkMessage output = new NetworkMessage(Client);
                 bool haveContent = false;
 
                 msg.PrepareToRead();

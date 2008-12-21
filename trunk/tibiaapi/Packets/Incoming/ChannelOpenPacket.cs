@@ -43,7 +43,7 @@ namespace Tibia.Packets.Incoming
 
         public override byte[] ToByteArray()
         {
-            NetworkMessage msg = new NetworkMessage(0);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
             msg.AddUInt16((ushort)ChannelId);
