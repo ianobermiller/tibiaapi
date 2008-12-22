@@ -1,6 +1,4 @@
-﻿//#define _DEBUG
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,14 +52,10 @@ namespace Tibia.Util
         private Objects.Player player;
         private bool isConnected;
 
-
-#if _DEBUG
         Form debugForm;
-#endif
         #endregion
 
         #region Properties
-
         public Objects.Client Client
         {
             get { return client; }
@@ -71,6 +65,8 @@ namespace Tibia.Util
         {
             get { return isConnected; }
         }
+
+        public bool DebugOn { get; set; }
 
         public uint[] XteaKey
         {
@@ -82,7 +78,6 @@ namespace Tibia.Util
             get { return portServer; }
             set { portServer = value; }
         }
-
         #endregion
 
         #region Events
@@ -197,7 +192,9 @@ namespace Tibia.Util
 
         #region Constructor/Deconstructor
 
-        public Proxy(Client c)
+        public Proxy(Client c) : this(c, false) { }
+
+        public Proxy(Client c, bool debug)
         {
             client = c;
 
@@ -229,16 +226,18 @@ namespace Tibia.Util
 
             Start();
 
-            #if _DEBUG
-            debugForm = new Form();
-            RichTextBox myRichTextBox = new RichTextBox();
-            myRichTextBox.Name = "richTextBox";
-            myRichTextBox.Dock = DockStyle.Fill;
-            debugForm.Controls.Add(myRichTextBox);
-            debugForm.Disposed += new EventHandler(debugFrom_Disposed);
-            PrintDebug += new Action<string>(Proxy_PrintDebug);
-            debugForm.Show();
-            #endif
+            if (debug)
+            {
+                DebugOn = true;
+                debugForm = new Form();
+                RichTextBox myRichTextBox = new RichTextBox();
+                myRichTextBox.Name = "richTextBox";
+                myRichTextBox.Dock = DockStyle.Fill;
+                debugForm.Controls.Add(myRichTextBox);
+                debugForm.Disposed += new EventHandler(debugFrom_Disposed);
+                PrintDebug += Proxy_PrintDebug;
+                debugForm.Show();
+            }
         }
 
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
@@ -250,30 +249,6 @@ namespace Tibia.Util
             return true;
         }
 
-        #if _DEBUG
-        void Proxy_PrintDebug(string message)
-        {
-            if (debugForm.Disposing)
-                return;
-
-            if (debugForm.InvokeRequired)
-            {
-                debugForm.Invoke(new Action<string>(Proxy_PrintDebug), new object[] { message });
-                return;
-            }
-
-            RichTextBox myRichTextBox = (RichTextBox)debugForm.Controls["richTextBox"];
-            myRichTextBox.AppendText(message + "\n");
-            myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
-            myRichTextBox.ScrollToCaret();
-        }
-
-        void debugFrom_Disposed(object sender, EventArgs e)
-        {
-            PrintDebug -= new Action<string>(Proxy_PrintDebug); 
-        }
-        #endif
-
         ~Proxy()
         {
             if (!client.Process.HasExited)
@@ -281,7 +256,7 @@ namespace Tibia.Util
                 client.LoginServers = loginServers;
 
                 if (!IsOtServer)
-                   client.RSA = Constants.RSAKey.RealTibia;
+                    client.RSA = Constants.RSAKey.RealTibia;
 
                 if (client.CharListCount != 0 && client.CharListCount == charList.Length)
                 {
@@ -297,9 +272,8 @@ namespace Tibia.Util
         #region Control
         public void Start()
         {
-#if _DEBUG
-            WRITE_DEBUG("Start Function");
-#endif
+            if (DebugOn)
+                WriteDebug("Start Function");
 
             if (acceptingConnection)
                 return;
@@ -319,9 +293,8 @@ namespace Tibia.Util
         private void Close()
         {
 
-            #if _DEBUG
-            WRITE_DEBUG("Close Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("Close Function.");
 
             if (tcpClient != null)
                 tcpClient.Close();
@@ -337,9 +310,8 @@ namespace Tibia.Util
 
         private void Restart()
         {
-            #if _DEBUG
-            WRITE_DEBUG("Restart Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("Restart Function.");
 
             lock ("acceptingConnection")
             {
@@ -381,9 +353,8 @@ namespace Tibia.Util
         #region Server
         private void SocketAcepted(IAsyncResult ar)
         {
-            #if _DEBUG
-            WRITE_DEBUG("OnSocketAcepted Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("OnSocketAcepted Function.");
 
             socketServer = tcpServer.EndAcceptSocket(ar);
 
@@ -408,7 +379,7 @@ namespace Tibia.Util
             {
                 readBytesServer = networkStreamServer.EndRead(ar);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return;
             }
@@ -456,9 +427,8 @@ namespace Tibia.Util
 
         private void ServerParseFirstMsg(NetworkMessage msg)
         {
-            #if _DEBUG
-            WRITE_DEBUG("ServerParseFirstMsg Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("ServerParseFirstMsg Function.");
 
             msg.Position = 6;
 
@@ -506,7 +476,7 @@ namespace Tibia.Util
                         tcpClient = new TcpClient(loginServers[selectedLoginServer].Server, loginServers[selectedLoginServer].Port);
                         networkStreamClient = tcpClient.GetStream();
 
-                        
+
 
                     }
                     catch (Exception)
@@ -597,9 +567,8 @@ namespace Tibia.Util
 
         private void CharListReceived(IAsyncResult ar)
         {
-            #if _DEBUG
-            WRITE_DEBUG("OnCharListReceived Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("OnCharListReceived Function.");
 
             readBytesClient = networkStreamClient.EndRead(ar);
 
@@ -689,9 +658,8 @@ namespace Tibia.Util
 
         private void DisconnectClient(byte cmd, string message)
         {
-            #if _DEBUG
-            WRITE_DEBUG("DisconnectClient Function.");
-            #endif
+            if (DebugOn)
+                WriteDebug("DisconnectClient Function.");
 
             NetworkMessage msg = new NetworkMessage(Client);
             msg.AddByte(cmd);
@@ -725,9 +693,8 @@ namespace Tibia.Util
 
                     if (packet == null)
                     {
-                        #if _DEBUG
-                        WRITE_DEBUG("Unknow outgoing packet.. skping the rest! type: " + msg.PeekByte());
-                        #endif
+                        if (DebugOn)
+                            WriteDebug("Unknown outgoing packet.. skipping the rest! type: " + msg.PeekByte());
 
                         packetBytes = msg.GetBytes(msg.Length - msg.Position);
 
@@ -1062,38 +1029,38 @@ namespace Tibia.Util
                     }
                     break;
                 case OutgoingPacketType.VipAdd:
-					packet = new Packets.Outgoing.VipAddPacket(client);
+                    packet = new Packets.Outgoing.VipAddPacket(client);
 
-					if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-					{
-						if (ReceivedVipAddOutgoingPacket != null)
-							packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedVipAddOutgoingPacket != null)
+                            packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
 
-						return packet;
-					}
-					break;
+                        return packet;
+                    }
+                    break;
                 case OutgoingPacketType.VipRemove:
-					packet = new Packets.Outgoing.VipRemovePacket(client);
+                    packet = new Packets.Outgoing.VipRemovePacket(client);
 
-					if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-					{
-						if (ReceivedVipRemoveOutgoingPacket != null)
-							packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedVipRemoveOutgoingPacket != null)
+                            packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
 
-						return packet;
-					}
-					break;
+                        return packet;
+                    }
+                    break;
                 case OutgoingPacketType.ItemRotate:
-					packet = new Packets.Outgoing.ItemRotatePacket(client);
+                    packet = new Packets.Outgoing.ItemRotatePacket(client);
 
-					if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-					{
-						if (ReceivedItemRotateOutgoingPacket != null)
-							packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedItemRotateOutgoingPacket != null)
+                            packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
 
-						return packet;
-					}
-					break;
+                        return packet;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -1148,7 +1115,6 @@ namespace Tibia.Util
             if (acceptingConnection)
                 return;
 
-
             //sometimes when close the client without logout this may trigger an exception
             try
             {
@@ -1166,7 +1132,7 @@ namespace Tibia.Util
             }
 
             packetSizeClient = (int)BitConverter.ToUInt16(bufferClient, 0) + 2;
-            NetworkMessage msg = new NetworkMessage(client,packetSizeClient);
+            NetworkMessage msg = new NetworkMessage(client, packetSizeClient);
             Array.Copy(bufferClient, msg.GetBuffer(), 2);
 
             while (readBytesClient < packetSizeClient)
@@ -1210,9 +1176,8 @@ namespace Tibia.Util
 
                     if (packet == null)
                     {
-#if _DEBUG
-                        WRITE_DEBUG("Unknow incoming packet.. skping the rest! type: " + msg.PeekByte());
-#endif
+                        if (DebugOn)
+                            WriteDebug("Unknow incoming packet.. skping the rest! type: " + msg.PeekByte());
 
                         packetBytes = msg.GetBytes(msg.Length - msg.Position);
 
@@ -1299,9 +1264,8 @@ namespace Tibia.Util
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:
-                    #if _DEBUG
-                    WRITE_DEBUG("AnimatedText");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("AnimatedText");
                     packet = new Packets.Incoming.AnimatedTextPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
@@ -1312,9 +1276,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ContainerClose:
-                    #if _DEBUG
-                    WRITE_DEBUG("ContainerClose");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ContainerClose");
                     packet = new Packets.Incoming.ContainerClosePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1326,9 +1289,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureSpeak:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureSpeak");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureSpeak");
                     packet = new Packets.Incoming.CreatureSpeakPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1340,9 +1302,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ChannelOpen:
-                    #if _DEBUG
-                    WRITE_DEBUG("ChannelOpen");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ChannelOpen");
                     packet = new Packets.Incoming.ChannelOpenPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1354,9 +1315,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.PlayerWalkCancel:
-                    #if _DEBUG
-                    WRITE_DEBUG("PlayerWalkCancel");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("PlayerWalkCancel");
                     packet = new Packets.Incoming.PlayerWalkCancelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1368,9 +1328,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ChannelList:
-                    #if _DEBUG
-                    WRITE_DEBUG("ChannelList");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ChannelList");
                     packet = new Packets.Incoming.ChannelListPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1382,9 +1341,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureMove:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureMove");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureMove");
                     packet = new Packets.Incoming.CreatureMovePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1396,9 +1354,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.TextMessage:
-                    #if _DEBUG
-                    WRITE_DEBUG("TextMessage");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("TextMessage");
                     packet = new Packets.Incoming.TextMessagePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1410,9 +1367,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.TileAddThing:
-                    #if _DEBUG
-                    WRITE_DEBUG("TileAddThing");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("TileAddThing");
                     packet = new Packets.Incoming.TileAddThingPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1424,9 +1380,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureOutfit:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureOutfit");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureOutfit");
                     packet = new Packets.Incoming.CreatureOutfitPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1438,9 +1393,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureLight:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureLight");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureLight");
                     packet = new Packets.Incoming.CreatureLightPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1452,9 +1406,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureHealth:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureHealth");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureHealth");
                     packet = new Packets.Incoming.CreatureHealthPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1466,9 +1419,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureSpeed:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureSpeed");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureSpeed");
                     packet = new Packets.Incoming.CreatureSpeedPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1480,9 +1432,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureSquare:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureSquare");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureSquare");
                     packet = new Packets.Incoming.CreatureSquarePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1494,9 +1445,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.TileTransformThing:
-                    #if _DEBUG
-                    WRITE_DEBUG("TileTransformThing");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("TileTransformThing");
                     packet = new Packets.Incoming.TileTransformThingPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1508,9 +1458,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.TileRemoveThing:
-                    #if _DEBUG
-                    WRITE_DEBUG("TileRemoveThing");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("TileRemoveThing");
                     packet = new Packets.Incoming.TileRemoveThingPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1522,9 +1471,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ContainerAddItem:
-                    #if _DEBUG
-                    WRITE_DEBUG("ContainerAddItem");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ContainerAddItem");
                     packet = new Packets.Incoming.ContainerAddItemPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1536,9 +1484,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ContainerRemoveItem:
-                    #if _DEBUG
-                    WRITE_DEBUG("ContainerRemoveItem");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ContainerRemoveItem");
                     packet = new Packets.Incoming.ContainerRemoveItemPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1550,9 +1497,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ContainerUpdateItem:
-                    #if _DEBUG
-                    WRITE_DEBUG("ContainerUpdateItem");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ContainerUpdateItem");
                     packet = new Packets.Incoming.ContainerUpdateItemPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1564,9 +1510,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ContainerOpen:
-                    #if _DEBUG
-                    WRITE_DEBUG("ContainerOpen");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ContainerOpen");
                     packet = new Packets.Incoming.ContainerOpenPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1578,9 +1523,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ItemTextWindow:
-                    #if _DEBUG
-                    WRITE_DEBUG("ItemTextWindow");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ItemTextWindow");
                     packet = new Packets.Incoming.ItemTextWindowPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1592,9 +1536,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.WorldLight:
-                    #if _DEBUG
-                    WRITE_DEBUG("WorldLight");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("WorldLight");
                     packet = new Packets.Incoming.WorldLightPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1606,9 +1549,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.Projectile:
-                    #if _DEBUG
-                    WRITE_DEBUG("Projectile");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("Projectile");
                     packet = new Packets.Incoming.ProjectilePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1620,9 +1562,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MapDescription:
-                    #if _DEBUG
-                    WRITE_DEBUG("MapDescription");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MapDescription");
                     packet = new Packets.Incoming.MapDescriptionPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1634,9 +1575,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MoveNorth:
-                    #if _DEBUG
-                    WRITE_DEBUG("MoveNorth");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MoveNorth");
                     packet = new Packets.Incoming.MoveNorthPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1648,9 +1588,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MoveSouth:
-                    #if _DEBUG
-                    WRITE_DEBUG("MoveSouth");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MoveSouth");
                     packet = new Packets.Incoming.MoveSouthPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1662,9 +1601,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MoveEast:
-                    #if _DEBUG
-                    WRITE_DEBUG("MoveEast");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MoveEast");
                     packet = new Packets.Incoming.MoveEastPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1676,9 +1614,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MoveWest:
-                    #if _DEBUG
-                    WRITE_DEBUG("MoveWest");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MoveWest");
                     packet = new Packets.Incoming.MoveWestPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1690,9 +1627,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.SelfAppear:
-                    #if _DEBUG
-                    WRITE_DEBUG("SelfAppear");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("SelfAppear");
                     packet = new Packets.Incoming.SelfAppearPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1704,9 +1640,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.MagicEffect:
-                    #if _DEBUG
-                    WRITE_DEBUG("MagicEffect");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("MagicEffect");
                     packet = new Packets.Incoming.MagicEffectPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1718,9 +1653,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.FloorChangeDown:
-                    #if _DEBUG
-                    WRITE_DEBUG("FloorChangeDown");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("FloorChangeDown");
                     packet = new Packets.Incoming.FloorChangeDownPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1732,9 +1666,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.FloorChangeUp:
-                    #if _DEBUG
-                    WRITE_DEBUG("FloorChangeUp");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("FloorChangeUp");
                     packet = new Packets.Incoming.FloorChangeUpPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1746,9 +1679,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.PlayerStatus:
-                    #if _DEBUG
-                    WRITE_DEBUG("PlayerStatus");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("PlayerStatus");
                     packet = new Packets.Incoming.PlayerStatusPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1760,9 +1692,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CreatureSkull:
-                    #if _DEBUG
-                    WRITE_DEBUG("CreatureSkull");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CreatureSkull");
                     packet = new Packets.Incoming.CreatureSkullPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1774,9 +1705,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.WaitingList:
-                    #if _DEBUG
-                    WRITE_DEBUG("WaitingList");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("WaitingList");
                     packet = new Packets.Incoming.WaitingListPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1788,9 +1718,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.Ping:
-                    #if _DEBUG
-                    WRITE_DEBUG("Ping");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("Ping");
                     packet = new Packets.Incoming.PingPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1802,9 +1731,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.Death:
-                    #if _DEBUG
-                    WRITE_DEBUG("Death");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("Death");
                     packet = new Packets.Incoming.DeathPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1816,9 +1744,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CanReportBugs:
-                    #if _DEBUG
-                    WRITE_DEBUG("CanReportBugs");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CanReportBugs");
                     packet = new Packets.Incoming.CanReportBugsPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1830,9 +1757,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.TileUpdate:
-                    #if _DEBUG
-                    WRITE_DEBUG("TileUpdate");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("TileUpdate");
                     packet = new Packets.Incoming.TileUpdatePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1844,9 +1770,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.FyiMessage:
-                    #if _DEBUG
-                    WRITE_DEBUG("FyiMessage");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("FyiMessage");
                     packet = new Packets.Incoming.FyiMessagePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1858,9 +1783,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.InventorySetSlot:
-                    #if _DEBUG
-                    WRITE_DEBUG("InventorySetSlot");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("InventorySetSlot");
                     packet = new Packets.Incoming.InventorySetSlotPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1872,9 +1796,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.InventoryResetSlot:
-                    #if _DEBUG
-                    WRITE_DEBUG("InventoryResetSlot");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("InventoryResetSlot");
                     packet = new Packets.Incoming.InventoryResetSlotPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1886,9 +1809,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.SafeTradeRequestAck:
-                    #if _DEBUG
-                    WRITE_DEBUG("SafeTradeRequestAck");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("SafeTradeRequestAck");
                     packet = new Packets.Incoming.SafeTradeRequestAckPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1900,9 +1822,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.SafeTradeRequestNoAck:
-                    #if _DEBUG
-                    WRITE_DEBUG("SafeTradeRequestNoAck");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("SafeTradeRequestNoAck");
                     packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1914,9 +1835,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.SafeTradeClose:
-                    #if _DEBUG
-                    WRITE_DEBUG("SafeTradeClose");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("SafeTradeClose");
                     packet = new Packets.Incoming.SafeTradeClosePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1928,9 +1848,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.PlayerSkillsUpdate:
-                    #if _DEBUG
-                    WRITE_DEBUG("PlayerSkillsUpdate");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("PlayerSkillsUpdate");
                     packet = new Packets.Incoming.PlayerSkillsPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1942,9 +1861,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.PlayerFlags:
-                    #if _DEBUG
-                    WRITE_DEBUG("PlayerFlags");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("PlayerFlags");
                     packet = new Packets.Incoming.PlayerFlagsPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1956,9 +1874,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ChannelOpenPrivate:
-                    #if _DEBUG
-                    WRITE_DEBUG("ChannelOpenPrivate");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ChannelOpenPrivate");
                     packet = new Packets.Incoming.ChannelOpenPrivatePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1970,9 +1887,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.PrivateChannelCreate:
-                    #if _DEBUG
-                    WRITE_DEBUG("PrivateChannelCreate");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("PrivateChannelCreate");
                     packet = new Packets.Incoming.PrivateChannelCreatePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1984,9 +1900,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ChannelClosePrivate:
-                    #if _DEBUG
-                    WRITE_DEBUG("ChannelClosePrivate");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ChannelClosePrivate");
                     packet = new Packets.Incoming.ChannelClosePrivatePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -1998,9 +1913,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.VipState:
-                    #if _DEBUG
-                    WRITE_DEBUG("VipState");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("VipState");
                     packet = new Packets.Incoming.VipStatePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2012,9 +1926,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.VipLogin:
-                    #if _DEBUG
-                    WRITE_DEBUG("VipLogin");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("VipLogin");
                     packet = new Packets.Incoming.VipLoginPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2026,9 +1939,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.VipLogout:
-                    #if _DEBUG
-                    WRITE_DEBUG("VipLogout");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("VipLogout");
                     packet = new Packets.Incoming.VipLogoutPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2040,9 +1952,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ShopSaleGoldCount:
-                    #if _DEBUG
-                    WRITE_DEBUG("ShopSaleGoldCount");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ShopSaleGoldCount");
                     packet = new Packets.Incoming.ShopSaleGoldCountPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2054,9 +1965,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ShopWindowOpen:
-                    #if _DEBUG
-                    WRITE_DEBUG("ShopWindowOpen");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ShopWindowOpen");
                     packet = new Packets.Incoming.ShopWindowOpenPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2068,9 +1978,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.ShopWindowClose:
-                    #if _DEBUG
-                    WRITE_DEBUG("ShopWindowClose");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("ShopWindowClose");
                     packet = new Packets.Incoming.ShopWindowClosePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2082,9 +1991,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.OutfitWindow:
-                    #if _DEBUG
-                    WRITE_DEBUG("OutfitWindow");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("OutfitWindow");
                     packet = new Packets.Incoming.OutfitWindowPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2096,9 +2004,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.RuleViolationOpen:
-                    #if _DEBUG
-                    WRITE_DEBUG("RuleViolationOpen");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("RuleViolationOpen");
                     packet = new Packets.Incoming.RuleViolationOpenPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2110,9 +2017,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.RuleViolationRemove:
-                    #if _DEBUG
-                    WRITE_DEBUG("RuleViolationRemove");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("RuleViolationRemove");
                     packet = new Packets.Incoming.RuleViolationRemovePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2124,9 +2030,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.RuleViolationCancel:
-                        #if _DEBUG
-                    WRITE_DEBUG("RuleViolationCancel");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("RuleViolationCancel");
                     packet = new Packets.Incoming.RuleViolationCancelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2138,9 +2043,8 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.RuleViolationLock:
-                    #if _DEBUG
-                    WRITE_DEBUG("RuleViolationLock");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("RuleViolationLock");
                     packet = new Packets.Incoming.RuleViolationLockPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2152,9 +2056,9 @@ namespace Tibia.Util
                     }
                     break;
                 case IncomingPacketType.CancelTarget:
-                    #if _DEBUG
-                    WRITE_DEBUG("CancelTarget");
-                    #endif
+                    if (DebugOn)
+                        WriteDebug("CancelTarget");
+
                     packet = new Packets.Incoming.CancelTargetPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
@@ -2175,17 +2079,38 @@ namespace Tibia.Util
         #endregion
 
         #region Debug
-
-        private void WRITE_DEBUG(string message)
+        private void WriteDebug(string message)
         {
             if (PrintDebug != null)
                 PrintDebug.BeginInvoke(message, null, null);
         }
 
+        void Proxy_PrintDebug(string message)
+        {
+            if (debugForm.Disposing)
+                return;
+
+            if (debugForm.InvokeRequired)
+            {
+                debugForm.Invoke(new Action<string>(Proxy_PrintDebug), new object[] { message });
+                return;
+            }
+
+            RichTextBox myRichTextBox = (RichTextBox)debugForm.Controls["richTextBox"];
+            myRichTextBox.AppendText(message + "\n");
+            myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
+            myRichTextBox.ScrollToCaret();
+        }
+
+        void debugFrom_Disposed(object sender, EventArgs e)
+        {
+            PrintDebug -= Proxy_PrintDebug;
+            DebugOn = false;
+        }
+
         #endregion
 
         #region Other Functions
-
         private int GetSelectedChar(string name)
         {
             for (int i = 0; i < charList.Length; i++)
