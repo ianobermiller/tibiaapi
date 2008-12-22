@@ -7,7 +7,6 @@ namespace Tibia.Packets.Incoming
 {
     public class ChannelListPacket : IncomingPacket
     {
-        public byte NumberChannel { get; set; }
         public List<Objects.Channel> Channels { get; set; }
 
         public ChannelListPacket(Objects.Client c)
@@ -29,15 +28,12 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                NumberChannel = msg.GetByte();
+                byte count = msg.GetByte();
+                Channels = new List<Tibia.Objects.Channel> { };
 
-                Channels = new List<Tibia.Objects.Channel>(NumberChannel);
-
-                ushort id;
-
-                for (int i = 0; i < NumberChannel; i++)
+                for (int i = 0; i < count; i++)
                 {
-                    id = msg.GetUInt16();
+                    ushort id = msg.GetUInt16();
                     Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
                 }
             }
@@ -64,6 +60,13 @@ namespace Tibia.Packets.Incoming
             }
 
             return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, List<Objects.Channel> channels)
+        {
+            ChannelListPacket p = new ChannelListPacket(client);
+            p.Channels = channels;
+            return p.Send();
         }
     }
 }

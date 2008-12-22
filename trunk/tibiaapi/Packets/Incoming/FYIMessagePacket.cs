@@ -45,10 +45,16 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
-
             msg.AddString(Message);
 
             return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, string message)
+        {
+            FyiMessagePacket p = new FyiMessagePacket(client);
+            p.Message = message;
+            return p.Send();
         }
     }
 }

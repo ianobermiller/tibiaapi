@@ -46,5 +46,14 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, uint playerId, string playerName, byte state)
+        {
+            VipStatePacket p = new VipStatePacket(client);
+            p.PlayerId = playerId;
+            p.PlayerName = playerName;
+            p.PlayerState = state;
+            return p.Send();
+        }
     }
 }

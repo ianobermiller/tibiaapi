@@ -7,7 +7,6 @@ namespace Tibia.Packets.Incoming
 {
     public class ChannelOpenPrivatePacket : IncomingPacket
     {
-
         public string Name { get; set; }
 
         public ChannelOpenPrivatePacket(Objects.Client c)
@@ -45,10 +44,16 @@ namespace Tibia.Packets.Incoming
             NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
-
             msg.AddString(Name);
 
             return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, string name)
+        {
+            ChannelOpenPrivatePacket p = new ChannelOpenPrivatePacket(client);
+            p.Name = name;
+            return p.Send();
         }
     }
 }

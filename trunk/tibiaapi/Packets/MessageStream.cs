@@ -13,7 +13,7 @@ namespace Tibia.Packets
 
         public MessageStream()
         {
-            _buffer = new byte[256];
+            _buffer = new byte[64];
         }
 
         public MessageStream(int size)
@@ -60,16 +60,15 @@ namespace Tibia.Packets
             if (_l > _buffer.Length)
             {
 
-                int __l = 256;
+                int __l = 128;
 
                 while (__l < _l)
                     __l *= 2;
 
-                byte[] _t = new byte[_buffer.Length];
+                byte[] _t = new byte[__l];
                 Array.Copy(_buffer, _t, _buffer.Length);
 
-                _buffer = new byte[__l];
-                Array.Copy(_t, _buffer, _t.Length);
+                _buffer = _t;
             }
         }
 

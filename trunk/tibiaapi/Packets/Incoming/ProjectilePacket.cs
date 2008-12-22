@@ -56,5 +56,14 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, Objects.Location toLocation, ProjectileType effect)
+        {
+            ProjectilePacket p = new ProjectilePacket(client);
+            p.FromPosition = fromLocation;
+            p.ToPosition = toLocation;
+            p.Effect = effect;
+            return p.Send();
+        }
     }
 }
