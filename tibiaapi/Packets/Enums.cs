@@ -132,6 +132,7 @@ namespace Tibia.Packets
         ShopBuy = 0x7B,
         ItemUse = 0x82,
         ItemUseOn = 0x83,
+        ItemRotate = 0x85,
         LookAt = 0x8C,
         PlayerSpeech = 0x96,
         ChannelOpen = 0x98,
@@ -159,6 +160,10 @@ namespace Tibia.Packets
         MoveDownRight = 0x6B,
         MoveDownLeft = 0x6C,
         MoveUpLeft = 0x6D,
+
+        VipAdd = 0xDC,
+        VipRemove = 0xDD,
+
     }
 
     /// <summary>

@@ -89,20 +89,17 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool AddPlayer(string name)
         {
-            byte[] packet = { };
-            int packetLength, payloadLength;
-            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
-            packetLength = 5 + name.Length;
-            payloadLength = packetLength - 2;
-            packet = new byte[packetLength];
-            packet[00] = Packet.Lo(payloadLength);
-            packet[01] = Packet.Hi(payloadLength);
-            packet[02] = 0xDC;
-            packet[03] = Packet.Lo(name.Length);
-            packet[04] = Packet.Hi(name.Length);
-            Array.Copy(enc.GetBytes(name), 0, packet, 5, name.Length);
-            
-            return client.SendToServer(packet);
+            return Packets.Outgoing.VipAddPacket.Send(client, name);
+        }
+
+        /// <summary>
+        /// Removes Player from VIP
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool RemovePlayer(Vip vip)
+        {
+            return Packets.Outgoing.VipRemovePacket.Send(client, (uint)vip.Id);
         }
     }
 }

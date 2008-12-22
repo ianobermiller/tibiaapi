@@ -5,27 +5,26 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class ChannelOpenPacket : OutgoingPacket
+    public class VipAddPacket : OutgoingPacket
     {
+        public string Name { get; set; }
 
-        public ChatChannel ChannelId { get; set; }
-
-        public ChannelOpenPacket(Objects.Client c)
+        public VipAddPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.VipAdd;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelOpen)
+            if (msg.GetByte() != (byte)OutgoingPacketType.VipAdd)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.VipAdd;
 
-            ChannelId = (ChatChannel)msg.GetUInt16();
+            Name = msg.GetString();
 
             return true;
         }
@@ -35,15 +34,16 @@ namespace Tibia.Packets.Outgoing
             NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
-            msg.AddUInt16((ushort)ChannelId);
+
+            msg.AddString(Name);
 
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, ChatChannel channel)
+        public static bool Send(Objects.Client client, string name)
         {
-            ChannelOpenPacket p = new ChannelOpenPacket(client);
-            p.ChannelId = channel;
+            VipAddPacket p = new VipAddPacket(client);
+            p.Name = name;
             return p.Send();
         }
     }

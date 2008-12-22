@@ -62,7 +62,5 @@ namespace Tibia.Packets.Outgoing
             MovePacket p = new MovePacket(client, direction);
             return p.Send();
         }
-
-
     }
 }

@@ -156,6 +156,7 @@ namespace Tibia.Util
 
         public event Action PlayerLogin;
         public event Action PlayerLogout;
+        public event Action ClientConnect;
 
         public delegate void MessageListener(NetworkMessage message);
         public event MessageListener ServerMessageArrived;
@@ -254,6 +255,9 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
         public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
+        public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
+        public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
 
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
@@ -387,6 +391,9 @@ namespace Tibia.Util
 
             if (socketServer.Connected)
                 networkStreamServer = new NetworkStream(socketServer);
+
+            if (ClientConnect != null)
+                ClientConnect.BeginInvoke(null, null);
 
             acceptingConnection = false;
 
@@ -1122,6 +1129,45 @@ namespace Tibia.Util
                         {
                             if (ReceivedAutoWalkOutgoingPacket != null)
                                 packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType.VipAdd:
+                    {
+                        packet = new Packets.Outgoing.VipAddPacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                        {
+                            if (ReceivedVipAddOutgoingPacket != null)
+                                packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType.VipRemove:
+                    {
+                        packet = new Packets.Outgoing.VipRemovePacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                        {
+                            if (ReceivedVipRemoveOutgoingPacket != null)
+                                packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
+
+                            return packet;
+                        }
+                        break;
+                    }
+                case OutgoingPacketType.ItemRotate:
+                    {
+                        packet = new Packets.Outgoing.ItemRotatePacket(client);
+
+                        if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                        {
+                            if (ReceivedItemRotateOutgoingPacket != null)
+                                packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
 
                             return packet;
                         }

@@ -51,5 +51,13 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, ChatChannel channel, string name)
+        {
+            ChannelOpenPacket p = new ChannelOpenPacket(client);
+            p.ChannelId = channel;
+            p.ChannelName = name;
+            return p.Send();
+        }
     }
 }

@@ -5,30 +5,30 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class ShopSellPacket : OutgoingPacket
+    public class ItemRotatePacket : OutgoingPacket
     {
+        public Objects.Location Location { get; set; }
         public ushort ItemId { get; set; }
-        public byte Count { get; set; }
-        public byte Amount { get; set; }
+        public byte StackPosition { get; set; }
 
-        public ShopSellPacket(Objects.Client c)
+        public ItemRotatePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ShopSell;
+            Type = OutgoingPacketType.ItemRotate;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ShopSell)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ItemRotate)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ShopSell;
+            Type = OutgoingPacketType.ItemRotate;
 
+            Location = msg.GetLocation();
             ItemId = msg.GetUInt16();
-            Count = msg.GetByte();
-            Amount = msg.GetByte();
+            StackPosition = msg.GetByte();
 
             return true;
         }
@@ -36,22 +36,23 @@ namespace Tibia.Packets.Outgoing
         public override byte[] ToByteArray()
         {
             NetworkMessage msg = new NetworkMessage(Client, 0);
+
             msg.AddByte((byte)Type);
 
+            msg.AddLocation(Location);
             msg.AddUInt16(ItemId);
-            msg.AddByte(Count);
-            msg.AddByte(Amount);
+            msg.AddByte(StackPosition);
 
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, ushort itemId, byte count, byte amount)
+        public static bool Send(Objects.Client client, Objects.Location location, ushort itemId, byte stackPosition)
         {
-            ShopSellPacket p = new ShopSellPacket(client);
+            ItemRotatePacket p = new ItemRotatePacket(client);
 
+            p.Location = location;
             p.ItemId = itemId;
-            p.Count = count;
-            p.Amount = amount;
+            p.StackPosition = stackPosition;
 
             return p.Send();
         }

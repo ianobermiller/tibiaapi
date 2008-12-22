@@ -164,6 +164,7 @@
     <Compile Include="Packets\OutgoingPacket.cs" />
     <Compile Include="Packets\Outgoing\AttackPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkPacket.cs" />
+    <Compile Include="Packets\Outgoing\ItemRotatePacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
     <Compile Include="Packets\Outgoing\CancelMovePacket.cs" />
     <Compile Include="Packets\Outgoing\ChannelClosePacket.cs" />
@@ -181,6 +182,8 @@
     <Compile Include="Packets\Outgoing\ShopBuyPacket.cs" />
     <Compile Include="Packets\Outgoing\ShopSellPacket.cs" />
     <Compile Include="Packets\Outgoing\TurnPacket.cs" />
+    <Compile Include="Packets\Outgoing\VipAddPacket.cs" />
+    <Compile Include="Packets\Outgoing\VipRemovePacket.cs" />
     <Compile Include="Packets\PacketBuilder.cs" />
     <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />

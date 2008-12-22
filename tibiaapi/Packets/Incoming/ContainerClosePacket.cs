@@ -49,5 +49,12 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, byte id)
+        {
+            ContainerClosePacket p = new ContainerClosePacket(client);
+            p.Id = id;
+            return p.Send();
+        }
     }
 }

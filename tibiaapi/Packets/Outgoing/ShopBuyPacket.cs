@@ -55,7 +55,5 @@ namespace Tibia.Packets.Outgoing
 
             return p.Send();
         }
-
-
     }
 }

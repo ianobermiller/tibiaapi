@@ -50,7 +50,5 @@ namespace Tibia.Packets.Outgoing
             TurnPacket p = new TurnPacket(client, direction);
             return p.Send();
         }
-
-
     }
 }

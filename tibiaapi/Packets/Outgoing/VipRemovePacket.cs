@@ -5,27 +5,26 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class ChannelOpenPacket : OutgoingPacket
+    public class VipRemovePacket : OutgoingPacket
     {
+        public uint Id { get; set; }
 
-        public ChatChannel ChannelId { get; set; }
-
-        public ChannelOpenPacket(Objects.Client c)
+        public VipRemovePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.VipRemove;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelOpen)
+            if (msg.GetByte() != (byte)OutgoingPacketType.VipRemove)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.ChannelOpen;
+            Type = OutgoingPacketType.VipRemove;
 
-            ChannelId = (ChatChannel)msg.GetUInt16();
+            Id = msg.GetUInt32();
 
             return true;
         }
@@ -35,15 +34,16 @@ namespace Tibia.Packets.Outgoing
             NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
-            msg.AddUInt16((ushort)ChannelId);
+
+            msg.AddUInt32(Id);
 
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, ChatChannel channel)
+        public static bool Send(Objects.Client client,uint id)
         {
-            ChannelOpenPacket p = new ChannelOpenPacket(client);
-            p.ChannelId = channel;
+            VipRemovePacket p = new VipRemovePacket(client);
+            p.Id = id;
             return p.Send();
         }
     }
