@@ -1,4 +1,4 @@
-namespace SmartPacketAnalyzer
+﻿namespace SmartPacketAnalyzer
 {
     partial class uxMemory
     {
@@ -28,126 +28,155 @@ namespace SmartPacketAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.uxDescription = new System.Windows.Forms.TextBox();
-            this.uxAddress = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.uxType = new System.Windows.Forms.ComboBox();
-            this.uxAdd = new System.Windows.Forms.Button();
-            this.uxCancel = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.uxAddAddress = new System.Windows.Forms.Button();
+            this.uxClearAddresses = new System.Windows.Forms.Button();
+            this.uxMemoryList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+            this.uxMemoryMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.uxMemoryEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMemoryDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxTimerShort = new System.Windows.Forms.Timer(this.components);
+            this.groupBox2.SuspendLayout();
+            this.uxMemoryMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // groupBox2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Description";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.uxAddAddress);
+            this.groupBox2.Controls.Add(this.uxClearAddresses);
+            this.groupBox2.Controls.Add(this.uxMemoryList);
+            this.groupBox2.Location = new System.Drawing.Point(7, 4);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(383, 237);
+            this.groupBox2.TabIndex = 28;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Memory";
             // 
-            // uxDescription
+            // uxAddAddress
             // 
-            this.uxDescription.Location = new System.Drawing.Point(78, 6);
-            this.uxDescription.Name = "uxDescription";
-            this.uxDescription.Size = new System.Drawing.Size(208, 20);
-            this.uxDescription.TabIndex = 1;
-            this.uxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
+            this.uxAddAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.uxAddAddress.Location = new System.Drawing.Point(12, 202);
+            this.uxAddAddress.Name = "uxAddAddress";
+            this.uxAddAddress.Size = new System.Drawing.Size(123, 26);
+            this.uxAddAddress.TabIndex = 30;
+            this.uxAddAddress.Text = "Add Address";
+            this.uxAddAddress.UseVisualStyleBackColor = true;
+            this.uxAddAddress.Click += new System.EventHandler(this.uxAddAddress_Click);
             // 
-            // uxAddress
+            // uxClearAddresses
             // 
-            this.uxAddress.Location = new System.Drawing.Point(78, 32);
-            this.uxAddress.Name = "uxAddress";
-            this.uxAddress.Size = new System.Drawing.Size(100, 20);
-            this.uxAddress.TabIndex = 2;
-            this.uxAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
+            this.uxClearAddresses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.uxClearAddresses.Location = new System.Drawing.Point(262, 202);
+            this.uxClearAddresses.Name = "uxClearAddresses";
+            this.uxClearAddresses.Size = new System.Drawing.Size(109, 26);
+            this.uxClearAddresses.TabIndex = 29;
+            this.uxClearAddresses.Text = "Clear Addresses";
+            this.uxClearAddresses.UseVisualStyleBackColor = true;
+            this.uxClearAddresses.Click += new System.EventHandler(this.uxClearAddresses_Click);
             // 
-            // label2
+            // uxMemoryList
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 35);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Address";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.uxMemoryList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.uxMemoryList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.uxMemoryList.ContextMenuStrip = this.uxMemoryMenu;
+            this.uxMemoryList.FullRowSelect = true;
+            this.uxMemoryList.GridLines = true;
+            this.uxMemoryList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.uxMemoryList.Location = new System.Drawing.Point(9, 19);
+            this.uxMemoryList.MultiSelect = false;
+            this.uxMemoryList.Name = "uxMemoryList";
+            this.uxMemoryList.Size = new System.Drawing.Size(362, 177);
+            this.uxMemoryList.TabIndex = 9;
+            this.uxMemoryList.UseCompatibleStateImageBehavior = false;
+            this.uxMemoryList.View = System.Windows.Forms.View.Details;
             // 
-            // label3
+            // columnHeader1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 61);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Type";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.columnHeader1.Text = "Description";
+            this.columnHeader1.Width = 117;
             // 
-            // uxType
+            // columnHeader2
             // 
-            this.uxType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxType.FormattingEnabled = true;
-            this.uxType.Location = new System.Drawing.Point(78, 58);
-            this.uxType.Name = "uxType";
-            this.uxType.Size = new System.Drawing.Size(100, 21);
-            this.uxType.TabIndex = 3;
-            this.uxType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AllControls_KeyDown);
+            this.columnHeader2.Text = "Address";
+            this.columnHeader2.Width = 71;
             // 
-            // uxAdd
+            // columnHeader3
             // 
-            this.uxAdd.Location = new System.Drawing.Point(130, 85);
-            this.uxAdd.Name = "uxAdd";
-            this.uxAdd.Size = new System.Drawing.Size(75, 23);
-            this.uxAdd.TabIndex = 4;
-            this.uxAdd.Text = "Add";
-            this.uxAdd.UseVisualStyleBackColor = true;
-            this.uxAdd.Click += new System.EventHandler(this.uxAdd_Click);
+            this.columnHeader3.Text = "Value";
+            this.columnHeader3.Width = 102;
             // 
-            // uxCancel
+            // columnHeader4
             // 
-            this.uxCancel.Location = new System.Drawing.Point(211, 85);
-            this.uxCancel.Name = "uxCancel";
-            this.uxCancel.Size = new System.Drawing.Size(75, 23);
-            this.uxCancel.TabIndex = 5;
-            this.uxCancel.Text = "Cancel";
-            this.uxCancel.UseVisualStyleBackColor = true;
-            this.uxCancel.Click += new System.EventHandler(this.uxCancel_Click);
+            this.columnHeader4.Text = "Type";
+            this.columnHeader4.Width = 52;
+            // 
+            // uxMemoryMenu
+            // 
+            this.uxMemoryMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxMemoryEdit,
+            this.uxMemoryDelete});
+            this.uxMemoryMenu.Name = "uxMemoryMenu";
+            this.uxMemoryMenu.Size = new System.Drawing.Size(108, 48);
+            // 
+            // uxMemoryEdit
+            // 
+            this.uxMemoryEdit.Name = "uxMemoryEdit";
+            this.uxMemoryEdit.Size = new System.Drawing.Size(107, 22);
+            this.uxMemoryEdit.Text = "Edit";
+            this.uxMemoryEdit.Click += new System.EventHandler(this.uxMemoryEdit_Click);
+            // 
+            // uxMemoryDelete
+            // 
+            this.uxMemoryDelete.Name = "uxMemoryDelete";
+            this.uxMemoryDelete.Size = new System.Drawing.Size(107, 22);
+            this.uxMemoryDelete.Text = "Delete";
+            this.uxMemoryDelete.Click += new System.EventHandler(this.uxMemoryDelete_Click);
+            // 
+            // uxTimerShort
+            // 
+            this.uxTimerShort.Interval = 300;
+            this.uxTimerShort.Tick += new System.EventHandler(this.uxTimerShort_Tick);
             // 
             // uxMemory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 114);
-            this.Controls.Add(this.uxCancel);
-            this.Controls.Add(this.uxAdd);
-            this.Controls.Add(this.uxType);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.uxAddress);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.uxDescription);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.ClientSize = new System.Drawing.Size(399, 248);
+            this.Controls.Add(this.groupBox2);
             this.Name = "uxMemory";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "New memory address";
-            this.TopMost = true;
+            this.Text = "SmartPacketAnalyzer - Memory";
+            this.Load += new System.EventHandler(this.uxMemory_Load);
+            this.groupBox2.ResumeLayout(false);
+            this.uxMemoryMenu.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox uxDescription;
-        private System.Windows.Forms.TextBox uxAddress;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox uxType;
-        private System.Windows.Forms.Button uxAdd;
-        private System.Windows.Forms.Button uxCancel;
-
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button uxAddAddress;
+        private System.Windows.Forms.Button uxClearAddresses;
+        private System.Windows.Forms.ListView uxMemoryList;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ContextMenuStrip uxMemoryMenu;
+        private System.Windows.Forms.ToolStripMenuItem uxMemoryEdit;
+        private System.Windows.Forms.ToolStripMenuItem uxMemoryDelete;
+        private System.Windows.Forms.Timer uxTimerShort;
     }
 }
