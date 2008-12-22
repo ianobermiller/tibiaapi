@@ -16,10 +16,12 @@ namespace SmartPacketAnalyzer
     {
         bool LogPackets = true;
         List<CapturedPacket> packetList = new List<CapturedPacket>();
+        Dictionary<byte, string> incomingPacketTypeNames = new Dictionary<byte, string>();
+        Dictionary<byte, string> outgoingPacketTypeNames = new Dictionary<byte, string>();
         byte[] displayedPacket = null;
+        uxMemory memoryForm;
 
         Client client;
-
 
         public uxForm()
         {
@@ -55,15 +57,17 @@ namespace SmartPacketAnalyzer
                 client.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
                 client.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
                 client.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
-                uxTimerShort.Enabled = true;
             }
 
-            uxMemoryList.Items.Add(new ListViewItem(new string[]{
-                "Current See ID",
-                Convert.ToString(Tibia.Addresses.Client.See_Id, 16).ToUpper(),
-                String.Empty,
-                DataTypes.Integer.ToString()
-            }));
+            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
+            {
+                incomingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.IncomingPacketType), t));
+            }
+
+            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.OutgoingPacketType)))
+            {
+                outgoingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.OutgoingPacketType), t));
+            }
         }
 
         bool Proxy_ReceivedTextMessageIncomingPacket(IncomingPacket packet)
@@ -122,12 +126,20 @@ namespace SmartPacketAnalyzer
                 {
                     CapturedPacket cp = new CapturedPacket(packet, from, packet.Length, to);
                     packetList.Add(cp);
+                    string name = "";
+
+                    if (cp.Source == "SERVER" && incomingPacketTypeNames.ContainsKey(cp.Type))
+                        name = incomingPacketTypeNames[cp.Type];
+                    if (cp.Source == "CLIENT" && outgoingPacketTypeNames.ContainsKey(cp.Type))
+                        name = outgoingPacketTypeNames[cp.Type];
+
                     uxPacketList.Items.Add(new ListViewItem(new string[]{
                         cp.Time,
                         cp.Source,
                         cp.Destination,
                         cp.Length.ToString(),
-                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper()
+                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper(),
+                        name
                     }));
                     uxPacketList.EnsureVisible(uxPacketList.Items.Count - 1);
                 }));
@@ -195,85 +207,6 @@ namespace SmartPacketAnalyzer
             Clipboard.SetText(displayedPacket.ToHexString());
         }
 
-        private void uxTimerShort_Tick(object sender, EventArgs e)
-        {
-            foreach(ListViewItem item in uxMemoryList.Items)
-            {
-                try
-                {
-                    long address = Int32.Parse(item.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber);
-                    switch ((DataTypes)Enum.Parse(typeof(DataTypes), item.SubItems[3].Text))
-                    {
-                        case DataTypes.Byte:
-                            item.SubItems[2].Text = client.ReadByte(address).ToString();
-                            break;
-                        case DataTypes.Integer:
-                            item.SubItems[2].Text = client.ReadInt32(address).ToString();
-                            break;
-                        case DataTypes.Double:
-                            item.SubItems[2].Text = client.ReadDouble(address).ToString();
-                            break;
-                        case DataTypes.String:
-                            item.SubItems[2].Text = client.ReadString(address, 255).ToString();
-                            break;
-                        case DataTypes.Pointer:
-                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt32(address), 16).ToUpper();
-                            break;
-                    }
-                }
-                catch
-                {
-                    item.SubItems[2].Text = "N/A";
-                }
-            }
-        }
-
-        private void uxSendToClient_Click(object sender, EventArgs e)
-        {
-            client.SendToClient(uxSend.Text.ToBytesAsHex());
-        }
-
-        private void uxSendToServer_Click(object sender, EventArgs e)
-        {
-            client.SendToServer(uxSend.Text.ToBytesAsHex());
-        }
-
-        private void uxAddAddress_Click(object sender, EventArgs e)
-        {
-            string[] s = uxMemory.ShowNew();
-            if (s != null)
-                uxMemoryList.Items.Add(new ListViewItem(s));
-        }
-
-        private void uxMemoryDelete_Click(object sender, EventArgs e)
-        {
-            if (uxMemoryList.SelectedIndices.Count > 0)
-            {
-                uxMemoryList.Items.RemoveAt(uxMemoryList.SelectedIndices[0]);
-            }
-        }
-
-        private void uxMemoryEdit_Click(object sender, EventArgs e)
-        {
-            if (uxMemoryList.SelectedIndices.Count > 0)
-            {
-                int index = uxMemoryList.SelectedIndices[0];
-                string[] s = uxMemory.ShowEdit(new string[]{
-                    uxMemoryList.Items[index].SubItems[0].Text,
-                    uxMemoryList.Items[index].SubItems[1].Text,
-                    uxMemoryList.Items[index].SubItems[2].Text,
-                    uxMemoryList.Items[index].SubItems[3].Text
-                });
-                if (s != null)
-                    uxMemoryList.Items[index] = new ListViewItem(s);
-            }
-        }
-
-        private void uxClearAddresses_Click(object sender, EventArgs e)
-        {
-            uxMemoryList.Items.Clear();
-        }
-
         private void uxPacketDisplay_Resize(object sender, EventArgs e)
         {
             DisplayPacket();
@@ -291,6 +224,15 @@ namespace SmartPacketAnalyzer
                     }
                 }
             }
+        }
+
+        private void uxShowMemoryWatcher_Click(object sender, EventArgs e)
+        {
+            if (memoryForm == null || memoryForm.Disposing || memoryForm.IsDisposed)
+            {
+                memoryForm = new uxMemory(client);
+            }
+            memoryForm.Show();
         }
 
     }
@@ -318,14 +260,5 @@ namespace SmartPacketAnalyzer
         {
             return Time + "\t from " + Source;
         }
-    }
-
-    public enum DataTypes
-    {
-        Byte,
-        Integer,
-        Double,
-        String,
-        Pointer
     }
 }

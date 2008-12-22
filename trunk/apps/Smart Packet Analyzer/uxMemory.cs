@@ -1,71 +1,112 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Tibia;
+using Tibia.Objects;
 
 namespace SmartPacketAnalyzer
 {
     public partial class uxMemory : Form
     {
-        private static uxMemory newMemory;
-        private static string[] s;
-        
-        public uxMemory()
+        Client client;
+        public uxMemory(Client c)
         {
+            client = c;
             InitializeComponent();
-            foreach (string name in Enum.GetNames(typeof(DataTypes)))
-                uxType.Items.Add(name);
-            s = null;
         }
 
-        public static string[] ShowNew()
+        private void uxMemory_Load(object sender, EventArgs e)
         {
-            newMemory = new uxMemory();
-            newMemory.Text = "New memory address";
-            newMemory.uxAdd.Text = "Add";
-            newMemory.uxType.SelectedIndex = 1;
-            s = null;
-            newMemory.ShowDialog();
-            return s;
-        }
-
-        public static string[] ShowEdit(string[] data)
-        {
-            newMemory = new uxMemory();
-            newMemory.Text = "Edit memory address";
-            newMemory.uxAdd.Text = "Edit";
-            newMemory.uxDescription.Text = data[0];
-            newMemory.uxAddress.Text = data[1];
-            newMemory.uxType.SelectedIndex = newMemory.uxType.Items.IndexOf(data[3]);
-            newMemory.ShowDialog();
-            return s;
-        }
-
-
-
-        private void uxAdd_Click(object sender, EventArgs e)
-        {
-            s = new string[]{
-                uxDescription.Text,
-                uxAddress.Text,
+            uxTimerShort.Enabled = true;
+            uxMemoryList.Items.Add(new ListViewItem(new string[]{
+                "Current See ID",
+                Convert.ToString(Tibia.Addresses.Client.See_Id, 16).ToUpper(),
                 String.Empty,
-                uxType.Text
-            };
-            newMemory.Dispose();
+                DataType.Integer.ToString()
+            }));
         }
 
-        private void uxCancel_Click(object sender, EventArgs e)
+        private void uxAddAddress_Click(object sender, EventArgs e)
         {
-            newMemory.Dispose();
+            string[] s = uxMemoryEntry.ShowNew();
+            if (s != null)
+                uxMemoryList.Items.Add(new ListViewItem(s));
         }
 
-        private void AllControls_KeyDown(object sender, KeyEventArgs e)
+        private void uxMemoryDelete_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-                uxAdd_Click(null, null);
+            if (uxMemoryList.SelectedIndices.Count > 0)
+            {
+                uxMemoryList.Items.RemoveAt(uxMemoryList.SelectedIndices[0]);
+            }
         }
+
+        private void uxMemoryEdit_Click(object sender, EventArgs e)
+        {
+            if (uxMemoryList.SelectedIndices.Count > 0)
+            {
+                int index = uxMemoryList.SelectedIndices[0];
+                string[] s = uxMemoryEntry.ShowEdit(new string[]{
+                    uxMemoryList.Items[index].SubItems[0].Text,
+                    uxMemoryList.Items[index].SubItems[1].Text,
+                    uxMemoryList.Items[index].SubItems[2].Text,
+                    uxMemoryList.Items[index].SubItems[3].Text
+                });
+                if (s != null)
+                    uxMemoryList.Items[index] = new ListViewItem(s);
+            }
+        }
+
+        private void uxClearAddresses_Click(object sender, EventArgs e)
+        {
+            uxMemoryList.Items.Clear();
+        }
+
+        private void uxTimerShort_Tick(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in uxMemoryList.Items)
+            {
+                try
+                {
+                    long address = Int32.Parse(item.SubItems[1].Text, System.Globalization.NumberStyles.HexNumber);
+                    switch ((DataType)Enum.Parse(typeof(DataType), item.SubItems[3].Text))
+                    {
+                        case DataType.Byte:
+                            item.SubItems[2].Text = client.ReadByte(address).ToString();
+                            break;
+                        case DataType.Integer:
+                            item.SubItems[2].Text = client.ReadInt32(address).ToString();
+                            break;
+                        case DataType.Double:
+                            item.SubItems[2].Text = client.ReadDouble(address).ToString();
+                            break;
+                        case DataType.String:
+                            item.SubItems[2].Text = client.ReadString(address, 255).ToString();
+                            break;
+                        case DataType.Pointer:
+                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt32(address), 16).ToUpper();
+                            break;
+                    }
+                }
+                catch
+                {
+                    item.SubItems[2].Text = "N/A";
+                }
+            }
+        }
+    }
+
+    public enum DataType
+    {
+        Byte,
+        Integer,
+        Double,
+        String,
+        Pointer
     }
 }
