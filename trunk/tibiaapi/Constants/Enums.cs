@@ -495,9 +495,10 @@ namespace Tibia.Constants
         BogRaider = 299,
         GrimReaper = 300,
         EarthElemental = 301,
-        CommunityManager = 302
+        CommunityManager = 302,
 
-        
+        YalaharianFemale = 324,
+        YalaharianMale = 325
     }
 
     #endregion
