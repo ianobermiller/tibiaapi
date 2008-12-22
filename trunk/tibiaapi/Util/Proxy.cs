@@ -1,4 +1,4 @@
-﻿#define _DEBUG
+﻿//#define _DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -193,6 +193,7 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
         public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
+        #endregion
 
         #region Constructor/Deconstructor
 
@@ -293,22 +294,26 @@ namespace Tibia.Util
 
         #endregion
 
-        public void SendToClient(NetworkMessage msg)
+        #region Control
+        public void Start()
         {
-            if (!isConnected)
-                throw new Tibia.Exceptions.ProxyDisconnectedException();
+#if _DEBUG
+            WRITE_DEBUG("Start Function");
+#endif
 
-            serverSendQueue.Enqueue(msg);
-            ProcessServerSendQueue();
-        }
+            if (acceptingConnection)
+                return;
 
-        public void SendToServer(NetworkMessage msg)
-        {
-            if (!isConnected)
-                throw new Tibia.Exceptions.ProxyDisconnectedException();
+            acceptingConnection = true;
 
-            clientSendQueue.Enqueue(msg);
-            ProcessClientSendQueue();
+            serverReceiveQueue.Clear();
+            serverSendQueue.Clear();
+            clientReceiveQueue.Clear();
+            clientSendQueue.Clear();
+
+            tcpServer = new TcpListener(System.Net.IPAddress.Any, portServer);
+            tcpServer.Start();
+            tcpServer.BeginAcceptSocket((AsyncCallback)SocketAcepted, null);
         }
 
         private void Close()
@@ -354,29 +359,26 @@ namespace Tibia.Util
             }
         }
 
-        #region Server
-
-        public void Start()
+        public void SendToClient(NetworkMessage msg)
         {
-            #if _DEBUG
-            WRITE_DEBUG("Start Function");
-            #endif
+            if (!isConnected)
+                throw new Tibia.Exceptions.ProxyDisconnectedException();
 
-            if (acceptingConnection)
-                return;
-
-            acceptingConnection = true;
-
-            serverReceiveQueue.Clear();
-            serverSendQueue.Clear();
-            clientReceiveQueue.Clear();
-            clientSendQueue.Clear();
-
-            tcpServer = new TcpListener(System.Net.IPAddress.Any, portServer);
-            tcpServer.Start();
-            tcpServer.BeginAcceptSocket((AsyncCallback)SocketAcepted, null);
+            serverSendQueue.Enqueue(msg);
+            ProcessServerSendQueue();
         }
 
+        public void SendToServer(NetworkMessage msg)
+        {
+            if (!isConnected)
+                throw new Tibia.Exceptions.ProxyDisconnectedException();
+
+            clientSendQueue.Enqueue(msg);
+            ProcessClientSendQueue();
+        }
+        #endregion
+
+        #region Server
         private void SocketAcepted(IAsyncResult ar)
         {
             #if _DEBUG
@@ -953,7 +955,7 @@ namespace Tibia.Util
                     }
                     break;
                 case OutgoingPacketType.TurnDown:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Down);
 
                     if (ReceivedTurnOutgoingPacket != null)
@@ -961,7 +963,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.TurnUp:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Up);
 
                     if (ReceivedTurnOutgoingPacket != null)
@@ -969,7 +971,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.TurnLeft:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Left);
 
                     if (ReceivedTurnOutgoingPacket != null)
@@ -977,7 +979,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.TurnRight:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Right);
 
                     if (ReceivedTurnOutgoingPacket != null)
@@ -985,7 +987,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveDown:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Down);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -993,7 +995,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveDownLeft:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownLeft);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1001,7 +1003,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveDownRight:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownRight);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1009,7 +1011,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveLeft:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Left);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1017,7 +1019,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveRight:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Right);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1025,7 +1027,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveUp:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Up);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1033,7 +1035,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveUpLeft:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpLeft);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1041,7 +1043,7 @@ namespace Tibia.Util
 
                     return packet;
                 case OutgoingPacketType.MoveUpRight:
-                    msg.GetByte(); //type
+                    msg.GetByte();
                     packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpRight);
 
                     if (ReceivedMoveOutgoingPacket != null)
@@ -1058,6 +1060,7 @@ namespace Tibia.Util
 
                         return packet;
                     }
+                    break;
                 case OutgoingPacketType.VipAdd:
 					packet = new Packets.Outgoing.VipAddPacket(client);
 
@@ -1138,7 +1141,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Client"
+        #region Client
 
         private void ClientReadPacket(IAsyncResult ar)
         {
@@ -2171,7 +2174,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Debug"
+        #region Debug
 
         private void WRITE_DEBUG(string message)
         {
@@ -2181,7 +2184,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region "Other Functions"
+        #region Other Functions
 
         private int GetSelectedChar(string name)
         {

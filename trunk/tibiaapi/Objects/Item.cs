@@ -646,24 +646,18 @@ namespace Tibia.Objects
             switch (type)
             {
                 case Constants.ItemLocationType.Container:
-                    {
-                        newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
-                        newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)(0x40 + container), 0x00 }, 0);
-                        newPos.Z = (int)position;
-                        break;
-                    }
+                    newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
+                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)(0x40 + container), 0x00 }, 0);
+                    newPos.Z = (int)position;
+                    break;
                 case Constants.ItemLocationType.Slot:
-                    {
-                        newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
-                        newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)slot, 0x00 }, 0);
-                        newPos.Z = 0;
-                        break;
-                    }
+                    newPos.X = (int)BitConverter.ToUInt16(new byte[] { 0xFF, 0xFF }, 0);
+                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)slot, 0x00 }, 0);
+                    newPos.Z = 0;
+                    break;
                 case Constants.ItemLocationType.Ground:
-                    {
-                        newPos = groundLocation;
-                        break;
-                    }
+                    newPos = groundLocation;
+                    break;
             }
 
             return newPos;
