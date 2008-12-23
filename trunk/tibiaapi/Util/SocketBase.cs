@@ -111,6 +111,7 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedSetOutfitOutgoingPacket;
         public event OutgoingPacketListener ReceivedAutoWalkCancelOutgoingPacket;
         public event OutgoingPacketListener ReceivedPingOutgoingPacket;
+        public event OutgoingPacketListener ReceivedFightModesOutgoingPacket;
 
 
         #region ClientPacket
@@ -1393,6 +1394,20 @@ namespace Tibia.Util
                     {
                         if (ReceivedPingOutgoingPacket != null)
                             packet.Forward = ReceivedPingOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.FightModes:
+                    if (DebugOn)
+                        WriteDebug("Outgoing: FightModes");
+
+                    packet = new Packets.Outgoing.FightModesPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedFightModesOutgoingPacket != null)
+                            packet.Forward = ReceivedFightModesOutgoingPacket.Invoke(packet);
 
                         return packet;
                     }

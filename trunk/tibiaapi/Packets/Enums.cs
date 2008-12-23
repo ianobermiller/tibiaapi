@@ -166,6 +166,7 @@ namespace Tibia.Packets
 
         SetOutfit = 0xD3,
         Ping = 0x1E,
+        FightModes = 0xA0,
     }
 
     /// <summary>
