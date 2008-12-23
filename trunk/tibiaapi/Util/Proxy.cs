@@ -11,7 +11,7 @@ using System.Net;
 
 namespace Tibia.Util
 {
-    public class Proxy
+    public class Proxy : SocketBase
     {
         #region Vars
         static byte[] localHostBytes = new byte[] { 127, 0, 0, 1 };
@@ -66,8 +66,6 @@ namespace Tibia.Util
             get { return isConnected; }
         }
 
-        public bool DebugOn { get; set; }
-
         public uint[] XteaKey
         {
             get { return xteaKey; }
@@ -82,8 +80,6 @@ namespace Tibia.Util
 
         #region Events
 
-        public event Action<string> PrintDebug;
-
         public event Action PlayerLogin;
         public event Action PlayerLogout;
         public event Action ClientConnect;
@@ -97,97 +93,6 @@ namespace Tibia.Util
         public event SplitPacket IncomingSplitPacket;
         public event SplitPacket OutgoingSplitPacket;
 
-        public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
-        public delegate bool OutgoingPacketListener(Packets.OutgoingPacket packet);
-
-
-        //incoming
-        public event IncomingPacketListener ReceivedAnimatedTextIncomingPacket;
-        public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
-        public event IncomingPacketListener ReceivedCanReportBugsIncomingPacket;
-        public event IncomingPacketListener ReceivedChannelClosePrivateIncomingPacket;
-        public event IncomingPacketListener ReceivedChannelListIncomingPacket;
-        public event IncomingPacketListener ReceivedChannelOpenIncomingPacket;
-        public event IncomingPacketListener ReceivedChannelOpenPrivateIncomingPacket;
-        public event IncomingPacketListener ReceivedContainerAddItemIncomingPacket;
-        public event IncomingPacketListener ReceivedContainerCloseIncomingPacket;
-        public event IncomingPacketListener ReceivedContainerOpenIncomingPacket;
-        public event IncomingPacketListener ReceivedContainerRemoveItemIncomingPacket;
-        public event IncomingPacketListener ReceivedContainerUpdateItemIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureHealthIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureLightIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureMoveIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureOutfitIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSkullIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSpeakIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSpeedIncomingPacket;
-        public event IncomingPacketListener ReceivedCreatureSquareIncomingPacket;
-        public event IncomingPacketListener ReceivedDeathIncomingPacket;
-        public event IncomingPacketListener ReceivedFloorChangeDownIncomingPacket;
-        public event IncomingPacketListener ReceivedFloorChangeUpIncomingPacket;
-        public event IncomingPacketListener ReceivedFyiMessageIncomingPacket;
-        public event IncomingPacketListener ReceivedInventoryResetSlotIncomingPacket;
-        public event IncomingPacketListener ReceivedInventorySetSlotIncomingPacket;
-        public event IncomingPacketListener ReceivedItemTextWindowIncomingPacket;
-        public event IncomingPacketListener ReceivedMagicEffectIncomingPacket;
-        public event IncomingPacketListener ReceivedMapDescriptionIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveEastIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveNorthIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveSouthIncomingPacket;
-        public event IncomingPacketListener ReceivedMoveWestIncomingPacket;
-        public event IncomingPacketListener ReceivedOutfitWindowIncomingPacket;
-        public event IncomingPacketListener ReceivedPingIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerFlagsIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerSkillsIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerStatusIncomingPacket;
-        public event IncomingPacketListener ReceivedPlayerWalkCancelIncomingPacket;
-        public event IncomingPacketListener ReceivedPrivateChannelCreateIncomingPacket;
-        public event IncomingPacketListener ReceivedProjectileIncomingPacket;
-        public event IncomingPacketListener ReceivedRuleViolationCancelIncomingPacket;
-        public event IncomingPacketListener ReceivedRuleViolationLockIncomingPacket;
-        public event IncomingPacketListener ReceivedRuleViolationOpenIncomingPacket;
-        public event IncomingPacketListener ReceivedRuleViolationRemoveIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
-        public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
-        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
-        public event IncomingPacketListener ReceivedShopSaleGoldCountIncomingPacket;
-        public event IncomingPacketListener ReceivedShopWindowCloseIncomingPacket;
-        public event IncomingPacketListener ReceivedShopWindowOpenIncomingPacket;
-        public event IncomingPacketListener ReceivedTextMessageIncomingPacket;
-        public event IncomingPacketListener ReceivedTileAddThingIncomingPacket;
-        public event IncomingPacketListener ReceivedTileRemoveThingIncomingPacket;
-        public event IncomingPacketListener ReceivedTileTransformThingIncomingPacket;
-        public event IncomingPacketListener ReceivedTileUpdateIncomingPacket;
-        public event IncomingPacketListener ReceivedVipLoginIncomingPacket;
-        public event IncomingPacketListener ReceivedVipLogoutIncomingPacket;
-        public event IncomingPacketListener ReceivedVipStateIncomingPacket;
-        public event IncomingPacketListener ReceivedWaitingListIncomingPacket;
-        public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
-
-        //outgoing
-        public event OutgoingPacketListener ReceivedChannelCloseOutgoingPacket;
-        public event OutgoingPacketListener ReceivedChannelOpenOutgoingPacket;
-        public event OutgoingPacketListener ReceivedPlayerSpeechOutgoingPacket;
-        public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
-        public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
-        public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemUseOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemUseOnOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
-        public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
-        public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
-        public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
-        public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
-        public event OutgoingPacketListener ReceivedShopBuyOutgoingPacket;
-        public event OutgoingPacketListener ReceivedShopSellOutgoingPacket;
-        public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
-        public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
-        public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
-        public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
         #endregion
 
         #region Constructor/Deconstructor
@@ -688,7 +593,7 @@ namespace Tibia.Util
 
                 while (msg.Position < msg.Length)
                 {
-                    OutgoingPacket packet = ParseServerPacket(msg, pos);
+                    OutgoingPacket packet = ParseServerPacket(client, msg, pos);
                     byte[] packetBytes;
 
                     if (packet == null)
@@ -736,336 +641,6 @@ namespace Tibia.Util
                 }
             }
 
-        }
-
-        private OutgoingPacket ParseServerPacket(NetworkMessage msg, Location pos)
-        {
-            OutgoingPacket packet;
-            OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();
-
-            switch (type)
-            {
-                case OutgoingPacketType.ChannelClose:
-                    packet = new Packets.Outgoing.ChannelClosePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedChannelCloseOutgoingPacket != null)
-                            packet.Forward = ReceivedChannelCloseOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ChannelOpen:
-                    packet = new Packets.Outgoing.ChannelOpenPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedChannelOpenOutgoingPacket != null)
-                            packet.Forward = ReceivedChannelOpenOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.PlayerSpeech:
-                    packet = new Packets.Outgoing.PlayerSpeechPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedPlayerSpeechOutgoingPacket != null)
-                            packet.Forward = ReceivedPlayerSpeechOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.Attack:
-                    packet = new Packets.Outgoing.AttackPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedAttackOutgoingPacket != null)
-                            packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.Follow:
-                    packet = new Packets.Outgoing.FollowPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedFollowOutgoingPacket != null)
-                            packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.LookAt:
-                    packet = new Packets.Outgoing.LookAtPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedLookAtOutgoingPacket != null)
-                            packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ItemUse:
-                    packet = new Packets.Outgoing.ItemUsePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedItemUseOutgoingPacket != null)
-                            packet.Forward = ReceivedItemUseOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ItemUseOn:
-                    packet = new Packets.Outgoing.ItemUseOnPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedItemUseOnOutgoingPacket != null)
-                            packet.Forward = ReceivedItemUseOnOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ItemMove:
-                    packet = new Packets.Outgoing.ItemMovePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedItemUseBattlelistOutgoingPacket != null)
-                            packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.CancelMove:
-                    packet = new Packets.Outgoing.CancelMovePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedCancelMoveOutgoingPacket != null)
-                            packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ItemUseBattlelist:
-                    packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedBattleWindowOutgoingPacket != null)
-                            packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.Logout:
-                    packet = new Packets.Outgoing.LogoutPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedLogoutOutgoingPacket != null)
-                            packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ContainerClose:
-                    packet = new Packets.Outgoing.ContainerClosePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedContainerCloseOutgoingPacket != null)
-                            packet.Forward = ReceivedContainerCloseOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ContainerOpenParent:
-                    packet = new Packets.Outgoing.ContainerOpenParentPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedContainerOpenParentOutgoingPacket != null)
-                            packet.Forward = ReceivedContainerOpenParentOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ShopBuy:
-                    packet = new Packets.Outgoing.ShopBuyPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedShopBuyOutgoingPacket != null)
-                            packet.Forward = ReceivedShopBuyOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ShopSell:
-                    packet = new Packets.Outgoing.ShopSellPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedShopSellOutgoingPacket != null)
-                            packet.Forward = ReceivedShopSellOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.TurnDown:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Down);
-
-                    if (ReceivedTurnOutgoingPacket != null)
-                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.TurnUp:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Up);
-
-                    if (ReceivedTurnOutgoingPacket != null)
-                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.TurnLeft:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Left);
-
-                    if (ReceivedTurnOutgoingPacket != null)
-                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.TurnRight:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Right);
-
-                    if (ReceivedTurnOutgoingPacket != null)
-                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveDown:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Down);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveDownLeft:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownLeft);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveDownRight:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownRight);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveLeft:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Left);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveRight:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Right);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveUp:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Up);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveUpLeft:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpLeft);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.MoveUpRight:
-                    msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpRight);
-
-                    if (ReceivedMoveOutgoingPacket != null)
-                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
-
-                    return packet;
-                case OutgoingPacketType.AutoWalk:
-                    packet = new Packets.Outgoing.AutoWalkPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedAutoWalkOutgoingPacket != null)
-                            packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.VipAdd:
-                    packet = new Packets.Outgoing.VipAddPacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedVipAddOutgoingPacket != null)
-                            packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.VipRemove:
-                    packet = new Packets.Outgoing.VipRemovePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedVipRemoveOutgoingPacket != null)
-                            packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                case OutgoingPacketType.ItemRotate:
-                    packet = new Packets.Outgoing.ItemRotatePacket(client);
-
-                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
-                    {
-                        if (ReceivedItemRotateOutgoingPacket != null)
-                            packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
-
-                        return packet;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            return null;
         }
 
         private void ProcessServerSendQueue()
@@ -1171,7 +746,7 @@ namespace Tibia.Util
 
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = ParseClientPacket(msg, ref pos);
+                    IncomingPacket packet = ParseClientPacket(client, msg, ref pos);
                     byte[] packetBytes;
 
                     if (packet == null)
@@ -1256,7 +831,221 @@ namespace Tibia.Util
                 ProcessClientSendQueue();
         }
 
-        private IncomingPacket ParseClientPacket(NetworkMessage msg, ref Objects.Location pos)
+        #endregion
+
+        #region Debug
+        void Proxy_PrintDebug(string message)
+        {
+            if (debugForm.Disposing)
+                return;
+
+            if (debugForm.InvokeRequired)
+            {
+                debugForm.Invoke(new Action<string>(Proxy_PrintDebug), new object[] { message });
+                return;
+            }
+
+            RichTextBox myRichTextBox = (RichTextBox)debugForm.Controls["richTextBox"];
+            myRichTextBox.AppendText(message + "\n");
+            myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
+            myRichTextBox.ScrollToCaret();
+        }
+
+        void debugFrom_Disposed(object sender, EventArgs e)
+        {
+            PrintDebug -= Proxy_PrintDebug;
+            DebugOn = false;
+        }
+
+        #endregion
+
+        #region Other Functions
+        private int GetSelectedChar(string name)
+        {
+            for (int i = 0; i < charList.Length; i++)
+            {
+                if (charList[i].CharName == name)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public Objects.Player GetPlayer()
+        {
+            try
+            {
+                if (player == null)
+                    player = client.GetPlayer();
+            }
+            catch (Exception) { }
+
+            return player;
+        }
+
+        public Objects.Location GetPlayerPosition()
+        {
+            Location pos = Location.GetInvalid();
+
+            try
+            {
+                pos = GetPlayer().Location;
+            }
+            catch (Exception) { }
+
+            return pos;
+        }
+
+        #endregion
+
+        #region Port Checking
+        /// <summary>
+        /// Check if a port is open on localhost
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public static bool CheckPort(ushort port)
+        {
+            try
+            {
+                TcpListener tcpScan = new TcpListener(IPAddress.Any, port);
+                tcpScan.Start();
+                tcpScan.Stop();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost starting at the default 7171
+        /// </summary>
+        /// <returns></returns>
+        public static ushort GetFreePort()
+        {
+            return GetFreePort(7172);
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost beginning at start
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public static ushort GetFreePort(ushort start)
+        {
+            while (!CheckPort(start))
+            {
+                start++;
+            }
+
+            return start;
+        }
+        #endregion
+    }
+
+    public abstract class SocketBase
+    {
+        public event Action<string> PrintDebug;
+
+
+        public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
+        public delegate bool OutgoingPacketListener(Packets.OutgoingPacket packet);
+
+
+        //incoming
+        public event IncomingPacketListener ReceivedAnimatedTextIncomingPacket;
+        public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
+        public event IncomingPacketListener ReceivedCanReportBugsIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelClosePrivateIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelListIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedChannelOpenPrivateIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerAddItemIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerRemoveItemIncomingPacket;
+        public event IncomingPacketListener ReceivedContainerUpdateItemIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureHealthIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureLightIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureMoveIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureOutfitIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSkullIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeakIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSpeedIncomingPacket;
+        public event IncomingPacketListener ReceivedCreatureSquareIncomingPacket;
+        public event IncomingPacketListener ReceivedDeathIncomingPacket;
+        public event IncomingPacketListener ReceivedFloorChangeDownIncomingPacket;
+        public event IncomingPacketListener ReceivedFloorChangeUpIncomingPacket;
+        public event IncomingPacketListener ReceivedFyiMessageIncomingPacket;
+        public event IncomingPacketListener ReceivedInventoryResetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedInventorySetSlotIncomingPacket;
+        public event IncomingPacketListener ReceivedItemTextWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedMagicEffectIncomingPacket;
+        public event IncomingPacketListener ReceivedMapDescriptionIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveEastIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveNorthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveSouthIncomingPacket;
+        public event IncomingPacketListener ReceivedMoveWestIncomingPacket;
+        public event IncomingPacketListener ReceivedOutfitWindowIncomingPacket;
+        public event IncomingPacketListener ReceivedPingIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerFlagsIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerSkillsIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerStatusIncomingPacket;
+        public event IncomingPacketListener ReceivedPlayerWalkCancelIncomingPacket;
+        public event IncomingPacketListener ReceivedPrivateChannelCreateIncomingPacket;
+        public event IncomingPacketListener ReceivedProjectileIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationCancelIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationLockIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedRuleViolationRemoveIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
+        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
+        public event IncomingPacketListener ReceivedShopSaleGoldCountIncomingPacket;
+        public event IncomingPacketListener ReceivedShopWindowCloseIncomingPacket;
+        public event IncomingPacketListener ReceivedShopWindowOpenIncomingPacket;
+        public event IncomingPacketListener ReceivedTextMessageIncomingPacket;
+        public event IncomingPacketListener ReceivedTileAddThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileRemoveThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileTransformThingIncomingPacket;
+        public event IncomingPacketListener ReceivedTileUpdateIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLoginIncomingPacket;
+        public event IncomingPacketListener ReceivedVipLogoutIncomingPacket;
+        public event IncomingPacketListener ReceivedVipStateIncomingPacket;
+        public event IncomingPacketListener ReceivedWaitingListIncomingPacket;
+        public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
+
+        //outgoing
+        public event OutgoingPacketListener ReceivedChannelCloseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedChannelOpenOutgoingPacket;
+        public event OutgoingPacketListener ReceivedPlayerSpeechOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
+        public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseOnOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
+        public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
+        public event OutgoingPacketListener ReceivedShopBuyOutgoingPacket;
+        public event OutgoingPacketListener ReceivedShopSellOutgoingPacket;
+        public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
+        public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
+        public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
+        public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
+
+
+        #region ClientPacket
+        protected IncomingPacket ParseClientPacket(Client client, NetworkMessage msg, ref Objects.Location pos)
         {
             IncomingPacket packet;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
@@ -2075,125 +1864,346 @@ namespace Tibia.Util
 
             return null;
         }
-
         #endregion
 
-        #region Debug
-        private void WriteDebug(string message)
+        #region ServerPacket
+        protected OutgoingPacket ParseServerPacket(Client client, NetworkMessage msg, Location pos)
+        {
+            OutgoingPacket packet;
+            OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();
+
+            switch (type)
+            {
+                case OutgoingPacketType.ChannelClose:
+                    packet = new Packets.Outgoing.ChannelClosePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedChannelCloseOutgoingPacket != null)
+                            packet.Forward = ReceivedChannelCloseOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ChannelOpen:
+                    packet = new Packets.Outgoing.ChannelOpenPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedChannelOpenOutgoingPacket != null)
+                            packet.Forward = ReceivedChannelOpenOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.PlayerSpeech:
+                    packet = new Packets.Outgoing.PlayerSpeechPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedPlayerSpeechOutgoingPacket != null)
+                            packet.Forward = ReceivedPlayerSpeechOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.Attack:
+                    packet = new Packets.Outgoing.AttackPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedAttackOutgoingPacket != null)
+                            packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.Follow:
+                    packet = new Packets.Outgoing.FollowPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedFollowOutgoingPacket != null)
+                            packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.LookAt:
+                    packet = new Packets.Outgoing.LookAtPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedLookAtOutgoingPacket != null)
+                            packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ItemUse:
+                    packet = new Packets.Outgoing.ItemUsePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedItemUseOutgoingPacket != null)
+                            packet.Forward = ReceivedItemUseOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ItemUseOn:
+                    packet = new Packets.Outgoing.ItemUseOnPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedItemUseOnOutgoingPacket != null)
+                            packet.Forward = ReceivedItemUseOnOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ItemMove:
+                    packet = new Packets.Outgoing.ItemMovePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedItemUseBattlelistOutgoingPacket != null)
+                            packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.CancelMove:
+                    packet = new Packets.Outgoing.CancelMovePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedCancelMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ItemUseBattlelist:
+                    packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedBattleWindowOutgoingPacket != null)
+                            packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.Logout:
+                    packet = new Packets.Outgoing.LogoutPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedLogoutOutgoingPacket != null)
+                            packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ContainerClose:
+                    packet = new Packets.Outgoing.ContainerClosePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedContainerCloseOutgoingPacket != null)
+                            packet.Forward = ReceivedContainerCloseOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ContainerOpenParent:
+                    packet = new Packets.Outgoing.ContainerOpenParentPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedContainerOpenParentOutgoingPacket != null)
+                            packet.Forward = ReceivedContainerOpenParentOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ShopBuy:
+                    packet = new Packets.Outgoing.ShopBuyPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedShopBuyOutgoingPacket != null)
+                            packet.Forward = ReceivedShopBuyOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ShopSell:
+                    packet = new Packets.Outgoing.ShopSellPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedShopSellOutgoingPacket != null)
+                            packet.Forward = ReceivedShopSellOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.TurnDown:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Down);
+
+                    if (ReceivedTurnOutgoingPacket != null)
+                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.TurnUp:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Up);
+
+                    if (ReceivedTurnOutgoingPacket != null)
+                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.TurnLeft:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Left);
+
+                    if (ReceivedTurnOutgoingPacket != null)
+                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.TurnRight:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Right);
+
+                    if (ReceivedTurnOutgoingPacket != null)
+                        packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveDown:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Down);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveDownLeft:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownLeft);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveDownRight:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownRight);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveLeft:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Left);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveRight:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Right);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveUp:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Up);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveUpLeft:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpLeft);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.MoveUpRight:
+                    msg.GetByte();
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpRight);
+
+                    if (ReceivedMoveOutgoingPacket != null)
+                        packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
+
+                    return packet;
+                case OutgoingPacketType.AutoWalk:
+                    packet = new Packets.Outgoing.AutoWalkPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedAutoWalkOutgoingPacket != null)
+                            packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.VipAdd:
+                    packet = new Packets.Outgoing.VipAddPacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedVipAddOutgoingPacket != null)
+                            packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.VipRemove:
+                    packet = new Packets.Outgoing.VipRemovePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedVipRemoveOutgoingPacket != null)
+                            packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                case OutgoingPacketType.ItemRotate:
+                    packet = new Packets.Outgoing.ItemRotatePacket(client);
+
+                    if (packet.ParseMessage(msg, PacketDestination.Server, ref pos))
+                    {
+                        if (ReceivedItemRotateOutgoingPacket != null)
+                            packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
+
+                        return packet;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return null;
+        }
+        #endregion
+
+        protected void WriteDebug(string message)
         {
             if (PrintDebug != null)
                 PrintDebug.BeginInvoke(message, null, null);
         }
 
-        void Proxy_PrintDebug(string message)
-        {
-            if (debugForm.Disposing)
-                return;
-
-            if (debugForm.InvokeRequired)
-            {
-                debugForm.Invoke(new Action<string>(Proxy_PrintDebug), new object[] { message });
-                return;
-            }
-
-            RichTextBox myRichTextBox = (RichTextBox)debugForm.Controls["richTextBox"];
-            myRichTextBox.AppendText(message + "\n");
-            myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
-            myRichTextBox.ScrollToCaret();
-        }
-
-        void debugFrom_Disposed(object sender, EventArgs e)
-        {
-            PrintDebug -= Proxy_PrintDebug;
-            DebugOn = false;
-        }
-
-        #endregion
-
-        #region Other Functions
-        private int GetSelectedChar(string name)
-        {
-            for (int i = 0; i < charList.Length; i++)
-            {
-                if (charList[i].CharName == name)
-                    return i;
-            }
-
-            return -1;
-        }
-
-        public Objects.Player GetPlayer()
-        {
-            try
-            {
-                if (player == null)
-                    player = client.GetPlayer();
-            }
-            catch (Exception) { }
-
-            return player;
-        }
-
-        public Objects.Location GetPlayerPosition()
-        {
-            Location pos = Location.GetInvalid();
-
-            try
-            {
-                pos = GetPlayer().Location;
-            }
-            catch (Exception) { }
-
-            return pos;
-        }
-
-        #endregion
-
-        #region Port Checking
-        /// <summary>
-        /// Check if a port is open on localhost
-        /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public static bool CheckPort(ushort port)
-        {
-            try
-            {
-                TcpListener tcpScan = new TcpListener(IPAddress.Any, port);
-                tcpScan.Start();
-                tcpScan.Stop();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Get the first free port on localhost starting at the default 7171
-        /// </summary>
-        /// <returns></returns>
-        public static ushort GetFreePort()
-        {
-            return GetFreePort(7172);
-        }
-
-        /// <summary>
-        /// Get the first free port on localhost beginning at start
-        /// </summary>
-        /// <param name="start"></param>
-        /// <returns></returns>
-        public static ushort GetFreePort(ushort start)
-        {
-            while (!CheckPort(start))
-            {
-                start++;
-            }
-
-            return start;
-        }
-        #endregion
+        protected bool DebugOn { get; set; }
     }
 }
