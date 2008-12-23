@@ -100,7 +100,7 @@ namespace Tibia.Packets
         PlayerSkillsUpdate = 0xA1,
         PlayerFlags = 0xA2,
         CancelTarget = 0xA3,
-        CreatureSpeak = 0xAA,
+        CreatureSpeech = 0xAA,
         ChannelList = 0xAB,
         ChannelOpen = 0xAC,
         ChannelOpenPrivate = 0xAD,

@@ -8,6 +8,12 @@ namespace Tibia.Objects
     /// </summary>
     public struct Location
     {
+        /// <summary>
+        /// Get an invalid instance of this struct. Used for function overloading.
+        /// </summary>
+        /// <returns></returns>
+        public static Location Invalid = new Location(-1, -1, -1);
+
         public int X, Y, Z;
 
         /// <summary>
@@ -40,15 +46,6 @@ namespace Tibia.Objects
             bytes[4] = (byte)Z;
 
             return bytes;
-        }
-
-        /// <summary>
-        /// Get and invalid instance of this struct. Used for function overloading.
-        /// </summary>
-        /// <returns></returns>
-        public static Location GetInvalid()
-        {
-            return new Location(-1, -1, -1);
         }
 
         /// <summary>
@@ -129,7 +126,7 @@ namespace Tibia.Objects
             }
             catch
             {
-                return Location.GetInvalid();
+                return Location.Invalid;
             }
         }
 

@@ -118,7 +118,7 @@
     <Compile Include="Packets\Incoming\CreatureMovePacket.cs" />
     <Compile Include="Packets\Incoming\CreatureOutfitPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSkullPacket.cs" />
-    <Compile Include="Packets\Incoming\CreatureSpeakPacket.cs" />
+    <Compile Include="Packets\Incoming\CreatureSpeechPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSpeedPacket.cs" />
     <Compile Include="Packets\Incoming\CreatureSquarePacket.cs" />
     <Compile Include="Packets\Incoming\DeathPacket.cs" />

@@ -1201,7 +1201,12 @@ namespace Tibia.Objects
         /// <returns>True if the proxy initialized correctly.</returns>
         public bool StartProxy()
         {
-            proxy = new Tibia.Util.Proxy(this);
+            return StartProxy(false);
+        }
+
+        public bool StartProxy(bool debug)
+        {
+            proxy = new Tibia.Util.Proxy(this, debug);
             return UsingProxy;
         }
 

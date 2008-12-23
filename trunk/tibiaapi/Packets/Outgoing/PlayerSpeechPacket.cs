@@ -8,7 +8,7 @@ namespace Tibia.Packets.Outgoing
     public class PlayerSpeechPacket : OutgoingPacket
     {
 
-        public SpeechType SpeakType { get; set; }
+        public SpeechType SpeechType { get; set; }
         public string Receiver { get; set; }
         public string Message { get; set; }
         public ChatChannel ChannelId { get; set; }
@@ -28,9 +28,9 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.PlayerSpeech;
 
-            SpeakType = (SpeechType)msg.GetByte();
+            SpeechType = (SpeechType)msg.GetByte();
 
-            switch (SpeakType)
+            switch (SpeechType)
             {
                 case SpeechType.Private:
                 case SpeechType.PrivateRed:
@@ -58,9 +58,9 @@ namespace Tibia.Packets.Outgoing
 
             msg.AddByte((byte)Type);
 
-            msg.AddByte((byte)SpeakType);
+            msg.AddByte((byte)SpeechType);
 
-            switch (SpeakType)
+            switch (SpeechType)
             {
                 case SpeechType.Private:
                 case SpeechType.PrivateRed:
@@ -86,7 +86,7 @@ namespace Tibia.Packets.Outgoing
         {
             PlayerSpeechPacket p = new PlayerSpeechPacket(client);
 
-            p.SpeakType = type;
+            p.SpeechType = type;
             p.Receiver = receiver;
             p.Message = message;
             p.ChannelId = channel;
