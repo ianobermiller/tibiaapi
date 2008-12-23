@@ -90,32 +90,32 @@ namespace Tibia.Util
         public event IncomingPacketListener ReceivedWorldLightIncomingPacket;
 
         //outgoing
+        public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
+        public event OutgoingPacketListener ReceivedAutoWalkCancelOutgoingPacket;
+        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedChannelCloseOutgoingPacket;
         public event OutgoingPacketListener ReceivedChannelOpenOutgoingPacket;
-        public event OutgoingPacketListener ReceivedPlayerSpeechOutgoingPacket;
-        public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
-        public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
-        public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
+        public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemUseOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemUseOnOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
-        public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedFightModesOutgoingPacket;
+        public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
         public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
-        public event OutgoingPacketListener ReceivedContainerCloseOutgoingPacket;
-        public event OutgoingPacketListener ReceivedContainerOpenParentOutgoingPacket;
+        public event OutgoingPacketListener ReceivedLookAtOutgoingPacket;
+        public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
+        public event OutgoingPacketListener ReceivedPingOutgoingPacket;
+        public event OutgoingPacketListener ReceivedPlayerSpeechOutgoingPacket;
+        public event OutgoingPacketListener ReceivedSetOutfitOutgoingPacket;
         public event OutgoingPacketListener ReceivedShopBuyOutgoingPacket;
         public event OutgoingPacketListener ReceivedShopSellOutgoingPacket;
         public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
-        public event OutgoingPacketListener ReceivedMoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
         public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
         public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
-        public event OutgoingPacketListener ReceivedSetOutfitOutgoingPacket;
-        public event OutgoingPacketListener ReceivedAutoWalkCancelOutgoingPacket;
-        public event OutgoingPacketListener ReceivedPingOutgoingPacket;
-        public event OutgoingPacketListener ReceivedFightModesOutgoingPacket;
         #endregion
 
         #region ClientPacket
