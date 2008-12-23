@@ -86,5 +86,8 @@ namespace Tibia.Addresses
         /// Static address for player Z, used for level spy
         /// </summary>
         public static uint Z = 0x63AA50; // 8.40
+
+        public static uint Y = Z + 4; // 8.40
+        public static uint X = Z + 8; // 8.40
     }
 }
