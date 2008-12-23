@@ -572,7 +572,7 @@ namespace Tibia.Util
                 msg.PrepareToRead();
                 msg.GetUInt16(); //logical packet size
 
-                Objects.Location pos = /*GetPlayerPosition()*/ Location.GetInvalid();
+                Objects.Location pos = /*GetPlayerPosition()*/ Location.Invalid;
 
                 while (msg.Position < msg.Length)
                 {
@@ -842,7 +842,7 @@ namespace Tibia.Util
 
         public Objects.Location GetPlayerPosition()
         {
-            Location pos = Location.GetInvalid();
+            Location pos = Location.Invalid;
 
             try
             {

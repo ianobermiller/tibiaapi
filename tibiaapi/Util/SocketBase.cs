@@ -151,10 +151,10 @@ namespace Tibia.Util
                         return packet;
                     }
                     break;
-                case IncomingPacketType.CreatureSpeak:
+                case IncomingPacketType.CreatureSpeech:
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureSpeak");
-                    packet = new Packets.Incoming.CreatureSpeakPacket(client);
+                    packet = new Packets.Incoming.CreatureSpeechPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Client, ref pos))
                     {
