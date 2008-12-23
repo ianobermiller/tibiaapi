@@ -243,9 +243,11 @@ namespace Tibia.Objects
                 {
                     if (i.Id == itemId)
                     {
-                        if (first == null)
+                        if (first == null && i.Count < 100)
+                        {
                             first = i;
-                        else
+                        }
+                        else if (i.Count < 100)
                         {
                             second = i;
                             break;
