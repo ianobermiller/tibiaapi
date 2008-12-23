@@ -345,13 +345,9 @@ namespace Tibia.Objects
         /// <summary>
         /// Sets the account number.
         /// </summary>
-        public int AccountNumber
+        public string AccountName
         {
-            set
-            {
-                WriteInt32(Addresses.Client.LoginAccountNum, value);
-                WriteString(Addresses.Client.LoginAccountStr, value.ToString());
-            }
+            set { WriteString(Addresses.Client.LoginAccount, value); }
         }
 
         /// <summary>
@@ -359,10 +355,7 @@ namespace Tibia.Objects
         /// </summary>
         public string AccountPassword
         {
-            set
-            {
-                WriteString(Addresses.Client.LoginPassword, value);
-            }
+            set { WriteString(Addresses.Client.LoginPassword, value); }
         }
 
         /// <summary>
@@ -370,10 +363,7 @@ namespace Tibia.Objects
         /// </summary>
         public bool DialogIsOpened
         {
-            get
-            {
-                return (ReadInt32(Addresses.Client.DialogBegin) != 0);
-            }
+            get { return (ReadInt32(Addresses.Client.DialogBegin) != 0); }
         }
 
         /// <summary>
@@ -386,6 +376,7 @@ namespace Tibia.Objects
                 int DialogB = ReadInt32(Addresses.Client.DialogBegin);
                 if (DialogB == 0)
                     return new System.Drawing.Point(0, 0);
+
                 return new System.Drawing.Point(ReadInt32(DialogB + Addresses.Client.DialogLeft), ReadInt32(DialogB + Addresses.Client.DialogTop));
             }
         }
@@ -397,6 +388,7 @@ namespace Tibia.Objects
         {
             get { return pipeIsReady; }
         }
+
         #endregion
 
         #region Open Client
@@ -452,17 +444,14 @@ namespace Tibia.Objects
         {
             Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
             Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
-            if (arguments == null) arguments = "";
-            Util.WinApi.CreateProcess(path,
-                " " + arguments,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                false,
-                Util.WinApi.CREATE_SUSPENDED,
-                IntPtr.Zero,
-                System.IO.Path.GetDirectoryName(path),
-                ref si,
-                out pi);
+            
+            if (arguments == null)
+                arguments = "";
+
+            Util.WinApi.CreateProcess(path, " " + arguments, IntPtr.Zero, IntPtr.Zero,
+                false, Util.WinApi.CREATE_SUSPENDED, IntPtr.Zero,
+                System.IO.Path.GetDirectoryName(path), ref si, out pi);
+
             IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
             Process p = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
             Memory.WriteByte(handle, (long)Tibia.Addresses.Client.DMultiClient, Tibia.Addresses.Client.DMultiClientJMP);
@@ -472,6 +461,7 @@ namespace Tibia.Objects
             Util.WinApi.CloseHandle(handle);
             Util.WinApi.CloseHandle(pi.hProcess);
             Util.WinApi.CloseHandle(pi.hThread);
+
             return new Client(p);
         }           
 
@@ -613,16 +603,16 @@ namespace Tibia.Objects
         public static List<Client> GetClients()
         {
             List<Client> clients = new List<Client>();
-            Process[] processes = Process.GetProcesses();
-            foreach (Process process in processes)
+
+            foreach (Process process in Process.GetProcesses())
             {
                 StringBuilder classname = new StringBuilder();
                 Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
+
                 if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
-                {
                     clients.Add(new Client(process));
-                }
             }
+
             return clients;
         }
 
@@ -631,9 +621,11 @@ namespace Tibia.Objects
             if (process != null && !process.HasExited)
                 process.Kill();
         }
+
         #endregion
 
         #region Client's Objects
+
         /// <summary>
         /// Get the client's player.
         /// </summary>
@@ -828,6 +820,7 @@ namespace Tibia.Objects
         }
 
         #region Transform Items
+
         /// <summary>
         /// Transform the specified item with the default options.
         /// </summary>
@@ -973,16 +966,16 @@ namespace Tibia.Objects
 
         #region Account Info
 
-        public void SetAccountInfo(int account, string password)
+        public void SetAccountInfo(string account, string password)
         {
-            AccountNumber = account;
+            AccountName = account;
             AccountPassword = password;
             WriteBytes(Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
         }
 
         public void ClearAccountInfo()
         {
-            AccountNumber = 0;
+            AccountName = "";
             AccountPassword = string.Empty;
             WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
             WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);

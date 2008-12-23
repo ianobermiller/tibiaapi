@@ -110,15 +110,13 @@ namespace Tibia.Objects
         /// <summary>
         /// Rename this container by sending a packet. 
         /// Doesn't require the user to move the container.
-        /// Only caveat is that you can no longer go back up a container.
         /// </summary>
         /// <param name="newName"></param>
         /// <returns></returns>
         public bool Rename(string newName)
         {
-            //TODO: Find if the container has parent.
             if (client.UsingProxy)
-                return Packets.Incoming.ContainerOpenPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, 0, GetItems());
+                return Packets.Incoming.ContainerOpenPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, Convert.ToByte(HasParent), GetItems());
             else
                 return false;
         }
@@ -212,6 +210,12 @@ namespace Tibia.Objects
             get { return client.ReadInt32(address + Addresses.Container.Distance_Volume); }
             set { client.WriteInt32(address + Addresses.Container.Distance_Volume, value); }
         }
+
+        public bool HasParent
+        {
+            get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Container.Distance_HasParent)); }
+        }
+
         #endregion
     }
 }

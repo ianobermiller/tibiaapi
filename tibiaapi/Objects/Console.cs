@@ -11,9 +11,9 @@ namespace Tibia.Objects
         /// Create a new inventory object with the specified client.
         /// </summary>
         /// <param name="c"></param>
-        public Console(Client c)
+        public Console(Client client)
         {
-            client = c;
+            this.client = client;
         }
         
         /// <summary>
@@ -41,16 +41,15 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public bool Spell(Objects.Spell s)
+        public bool Spell(Objects.Spell spell)
         {
-            return Spell(s.Words);
+            return Say(spell.Words);
         }
         
         /// <summary>
         /// Send a message (generic).
         /// </summary>
         /// <param name="message"></param>
-        /// <returns>message packet</returns>
         public bool Say(ChatMessage message)
         {
             return Packets.Outgoing.PlayerSpeechPacket.Send(client, message.Type, message.Recipient, message.Text, message.Channel); 
@@ -61,7 +60,6 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="message"></param>
         /// <param name="recipient"></param>
-        /// <returns>message packet</returns>
         public bool Say(string message, string recipient)
         {
             return Say(new ChatMessage(message, recipient));

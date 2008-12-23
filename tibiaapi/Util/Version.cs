@@ -62,8 +62,8 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LoginPassword = 0x77F3E4;
-                Client.LoginAccountStr = Client.LoginPassword + 32;
-                Client.LoginAccountNum = Client.LoginAccountStr + 12;
+                Client.LoginAccount = Client.LoginPassword + 32;
+                Client.LoginAccountNum = Client.LoginAccount + 12;
                 Client.Nop = 0x90;
                 Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
                 Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
@@ -296,8 +296,8 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LoginPassword = 0x77F3E4;
-                Client.LoginAccountStr = Client.LoginPassword + 32;
-                Client.LoginAccountNum = Client.LoginAccountStr + 12;
+                Client.LoginAccount = Client.LoginPassword + 32;
+                Client.LoginAccountNum = Client.LoginAccount + 12;
                 Client.Nop = 0x90;
                 Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
                 Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
@@ -471,7 +471,7 @@ namespace Tibia
                 Vip.Distance_Status = 34;
                 Vip.Distance_Icon = 40;
             }
-                #endregion
+            #endregion
             #region 8.21 Addresses
             if (version == "8.21")
             {
@@ -515,8 +515,8 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LoginPassword = 0x77D3C4;
-                Client.LoginAccountStr = Client.LoginPassword + 32;
-                Client.LoginAccountNum = Client.LoginAccountStr + 12;
+                Client.LoginAccount = Client.LoginPassword + 32;
+                Client.LoginAccountNum = Client.LoginAccount + 12;
                 Client.Nop = 0x90;
                 Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
                 Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
@@ -705,8 +705,8 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LoginPassword = 0x77A3C4;
-                Client.LoginAccountStr = Client.LoginPassword + 32;
-                Client.LoginAccountNum = Client.LoginAccountStr + 12;
+                Client.LoginAccount = Client.LoginPassword + 32;
+                Client.LoginAccountNum = Client.LoginAccount + 12;
                 Client.Nop = 0x90;
                 Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
                 Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
@@ -902,7 +902,7 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LoginAccountNum = 0x76C2C0;
-                Client.LoginAccountStr = 0x76C2B4;
+                Client.LoginAccount = 0x76C2B4;
                 Client.LoginPassword = 0x76C294;
                 Client.LoginPatch = 0x47935E;
                 Client.LoginPatch2 = 0x47A2B3;

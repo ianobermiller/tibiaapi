@@ -164,6 +164,7 @@ namespace Tibia.Packets
         VipAdd = 0xDC,
         VipRemove = 0xDD,
 
+        SetOutfit = 0xD3,
     }
 
     /// <summary>

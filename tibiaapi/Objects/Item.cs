@@ -444,8 +444,10 @@ namespace Tibia.Objects
             {
                 foreach (T i in list)
                 {
-                    if (Id == i.Id) return true;
+                    if (Id == i.Id) 
+                        return true;
                 }
+
                 return false;
             }
             else
@@ -662,6 +664,5 @@ namespace Tibia.Objects
 
             return newPos;
         }
-
     }
 }

@@ -54,5 +54,30 @@ namespace Tibia.Objects
 
             return temp;
         }
+
+        public override string ToString()
+        {
+            return "LookType: " + LookType.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Outfit)
+                return Equals((Outfit)obj);
+
+            return false;
+        }
+
+        public bool Equals(Outfit outfit)
+        {
+            return LookType == outfit.LookType && Head == outfit.Head && Body == outfit.Body
+                && Legs == outfit.Legs && Feet == outfit.Feet && Addons == outfit.Addons ||
+                LookType == outfit.LookType && LookItem == outfit.LookItem;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

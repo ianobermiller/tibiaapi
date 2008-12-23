@@ -9,18 +9,19 @@ namespace Tibia.Objects
 {
     public class Screen
     {
-        #region Private Variables
         Client client;
-        #endregion
 
         #region Constructor
+
         public Screen(Client c)
         {
             client = c;
         }
+
         #endregion
 
         #region Text Display
+
         public bool DrawScreenText(string TextName, Location loc, Color color, ClientFont font, string text)
         {
             if (client.Pipe == null)

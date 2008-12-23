@@ -163,6 +163,7 @@
     <Compile Include="Packets\Incoming\WorldLightPacket.cs" />
     <Compile Include="Packets\OutgoingPacket.cs" />
     <Compile Include="Packets\Outgoing\AttackPacket.cs" />
+    <Compile Include="Packets\Outgoing\AutoWalkCancelPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemRotatePacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Packets\Outgoing\ContainerOpenParentPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseOnPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUsePacket.cs" />
+    <Compile Include="Packets\Outgoing\SetOutfitPacket.cs" />
     <Compile Include="Packets\Outgoing\ShopBuyPacket.cs" />
     <Compile Include="Packets\Outgoing\ShopSellPacket.cs" />
     <Compile Include="Packets\Outgoing\TurnPacket.cs" />

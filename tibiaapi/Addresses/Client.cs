@@ -127,6 +127,7 @@ namespace Tibia.Addresses
         /// The floor that the last seen item is on.
         /// </summary>
         public static uint See_Z = See_Id - 0x68;
+        
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
@@ -230,9 +231,9 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x516C40; 
-        public static uint LoginAccountStr = LoginPassword + 32;
-        public static uint LoginAccountNum = LoginAccountStr + 12;
+        public static uint LoginPassword = 0x78832C; //8.40
+        public static uint LoginAccount = LoginPassword + 32;
+        public static uint LoginAccountNum = 0; // only for old clients
 
         public static uint LoginPatch = 0x47935E; // 8.11
         public static uint LoginPatch2 = 0x47A2B3; // 8.11

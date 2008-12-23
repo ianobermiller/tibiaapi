@@ -14,7 +14,8 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="address">The address.</param>
-        public Player(Client client, uint address) : base(client, address) { }
+        public Player(Client client, uint address) 
+            : base(client, address) { }
 
         #region Packet Methods
 
@@ -96,20 +97,15 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
         {
-            byte[] packet = new byte[10];
+            return Packets.Outgoing.SetOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons));
+        }
 
-            packet[0] = 0x08;
-            packet[1] = 0x00;
-            packet[2] = 0xD3;
-            packet[3] = Packet.Lo(Convert.ToInt32(outfitType));
-            packet[4] = Packet.Hi(Convert.ToInt32(outfitType));
-            packet[5] = headColor;
-            packet[6] = bodyColor;
-            packet[7] = legsColor;
-            packet[8] = feetColor;
-            packet[9] = Convert.ToByte(addons);
-            
-            return client.SendToServer(packet);
+        /// <summary>
+        /// Set the player's outfit. Sends a packet.
+        /// </summary>
+        public bool SetOutfit(Outfit outfit)
+        {
+            return Packets.Outgoing.SetOutfitPacket.Send(client, outfit);
         }
 
         #endregion
@@ -139,12 +135,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public long ExpLeft(int levelNeeded)
         {
-            long expNeeded = Calculate.ExpForLevel(levelNeeded);
-            long expToGo = expNeeded - Exp;
-            return expToGo;
+            return Calculate.ExpForLevel(levelNeeded) - Exp;
         }
 
         #region Get/Set Properties
+
         public new int Id
         {
             get { return client.ReadInt32(Addresses.Player.Id); }

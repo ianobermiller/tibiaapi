@@ -23,6 +23,7 @@ namespace Tibia.Addresses
         /// Maximum amount of containers that can be opened.
         /// </summary>
         public static uint Max_Containers = 16;
+
         /// <summary>
         /// The maximum amount of items in one stack.
         /// </summary>
@@ -32,19 +33,25 @@ namespace Tibia.Addresses
         /// The distance from the start of the container to the IsOpen variable.
         /// </summary>
         public static uint Distance_IsOpen = 0;
+
         /// <summary>
         /// The distance from the start of the container to the Id variable.
         /// </summary>
         public static uint Distance_Id = 4;
+
         /// <summary>
         /// The distance from the start of the container to the Name variable.
         /// </summary>
         public static uint Distance_Name = 16;
+
         /// <summary>
         /// The distance from the start of the container to the Volume variable.
         /// Volume is the maximum items the container can hold.
         /// </summary>
         public static uint Distance_Volume = 48;
+
+        public static uint Distance_HasParent = 52; // maybe.. only for test.. 
+
         /// <summary>
         /// The distance from the start of the contianer to the Amount variable.
         /// Amount is the current amount of items in the container.
