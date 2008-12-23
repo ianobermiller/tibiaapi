@@ -443,15 +443,13 @@ namespace Tibia.Util
                     }
                     else
                     {
-                        DisconnectClient(0x14, "Unknow character, please relogin..");
+                        DisconnectClient(0x14, "Unknown character, please relogin.");
                         return;
                     }
 
                 default:
-                    {
-                        Restart();
-                        return;
-                    }
+                    Restart();
+                    return;
             }
         }
 
@@ -818,7 +816,6 @@ namespace Tibia.Util
 
         #endregion
 
-
         #region Other Functions
         private int GetSelectedChar(string name)
         {
@@ -856,53 +853,6 @@ namespace Tibia.Util
             return pos;
         }
 
-        #endregion
-
-        #region Port Checking
-        /// <summary>
-        /// Check if a port is open on localhost
-        /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public static bool CheckPort(ushort port)
-        {
-            try
-            {
-                TcpListener tcpScan = new TcpListener(IPAddress.Any, port);
-                tcpScan.Start();
-                tcpScan.Stop();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Get the first free port on localhost starting at the default 7171
-        /// </summary>
-        /// <returns></returns>
-        public static ushort GetFreePort()
-        {
-            return GetFreePort(7171);
-        }
-
-        /// <summary>
-        /// Get the first free port on localhost beginning at start
-        /// </summary>
-        /// <param name="start"></param>
-        /// <returns></returns>
-        public static ushort GetFreePort(ushort start)
-        {
-            while (!CheckPort(start))
-            {
-                start++;
-            }
-
-            return start;
-        }
         #endregion
     }
 }

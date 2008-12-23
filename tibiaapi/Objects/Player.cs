@@ -347,17 +347,17 @@ namespace Tibia.Objects
             get { return client.ReadInt32(Addresses.Player.Target_BList_Type); }
             set { client.WriteInt32(Addresses.Player.Target_BList_Type, value); }
         }
-        public int Z
+        public new int Z
         {
             get { return client.ReadInt32(Addresses.Player.Z); }
             set { client.WriteInt32(Addresses.Player.Z, value); }
         }
-        public int Y
+        public new int Y
         {
             get { return client.ReadInt32(Addresses.Player.Y); }
             set { client.WriteInt32(Addresses.Player.Y, value); }
         }
-        public int X
+        public new int X
         {
             get { return client.ReadInt32(Addresses.Player.X); }
             set { client.WriteInt32(Addresses.Player.X, value); }

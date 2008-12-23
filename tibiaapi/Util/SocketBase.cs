@@ -14,8 +14,12 @@ namespace Tibia.Util
 {
     public abstract class SocketBase
     {
+        #region Vars
         Form debugForm;
         bool debugOn;
+        #endregion
+
+        #region Events
         public event Action<string> PrintDebug;
 
         public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
@@ -112,7 +116,7 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedAutoWalkCancelOutgoingPacket;
         public event OutgoingPacketListener ReceivedPingOutgoingPacket;
         public event OutgoingPacketListener ReceivedFightModesOutgoingPacket;
-
+        #endregion
 
         #region ClientPacket
         protected IncomingPacket ParseClientPacket(Client client, NetworkMessage msg, ref Objects.Location pos)
@@ -1475,6 +1479,53 @@ namespace Tibia.Util
 
                 debugOn = value;
             }
+        }
+        #endregion
+
+        #region Port Checking
+        /// <summary>
+        /// Check if a port is open on localhost
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        public static bool CheckPort(ushort port)
+        {
+            try
+            {
+                TcpListener tcpScan = new TcpListener(IPAddress.Any, port);
+                tcpScan.Start();
+                tcpScan.Stop();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost starting at the default 7171
+        /// </summary>
+        /// <returns></returns>
+        public static ushort GetFreePort()
+        {
+            return GetFreePort(7171);
+        }
+
+        /// <summary>
+        /// Get the first free port on localhost beginning at start
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public static ushort GetFreePort(ushort start)
+        {
+            while (!CheckPort(start))
+            {
+                start++;
+            }
+
+            return start;
         }
         #endregion
     }
