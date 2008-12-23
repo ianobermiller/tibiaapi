@@ -165,6 +165,7 @@
     <Compile Include="Packets\Outgoing\AttackPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkCancelPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkPacket.cs" />
+    <Compile Include="Packets\Outgoing\FightModesPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemRotatePacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
     <Compile Include="Packets\Outgoing\CancelMovePacket.cs" />
