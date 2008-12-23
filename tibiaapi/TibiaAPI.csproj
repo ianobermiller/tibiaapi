@@ -102,8 +102,11 @@
     <Compile Include="Packets\Incoming\CancelTargetPacket.cs" />
     <Compile Include="Packets\Incoming\CanReportBugsPacket.cs" />
     <Compile Include="Packets\Incoming\ChannelListPacket.cs" />
-    <Compile Include="Packets\Incoming\ContainerClosePacket.cs" />
     <Compile Include="Packets\Incoming\ChannelClosePrivatePacket.cs" />
+    <Compile Include="Packets\Incoming\ChannelOpenPacket.cs" />
+    <Compile Include="Packets\Incoming\ChannelOpenPrivatePacket.cs" />
+    <Compile Include="Packets\Incoming\ContainerClosePacket.cs" />
+    <Compile Include="Packets\Incoming\ContainerOpenPacket.cs" />
     <Compile Include="Packets\Incoming\MapPacket.cs" />
     <Compile Include="Packets\Incoming\ShopWindowClosePacket.cs" />
     <Compile Include="Packets\Incoming\ContainerAddItemPacket.cs" />
@@ -132,9 +135,6 @@
     <Compile Include="Packets\Incoming\MoveNorthPacket.cs" />
     <Compile Include="Packets\Incoming\MoveSouthPacket.cs" />
     <Compile Include="Packets\Incoming\MoveWestPacket.cs" />
-    <Compile Include="Packets\Incoming\ChannelOpenPacket.cs" />
-    <Compile Include="Packets\Incoming\ContainerOpenPacket.cs" />
-    <Compile Include="Packets\Incoming\ChannelOpenPrivatePacket.cs" />
     <Compile Include="Packets\Incoming\ShopWindowOpenPacket.cs" />
     <Compile Include="Packets\Incoming\OutfitWindowPacket.cs" />
     <Compile Include="Packets\Incoming\PingPacket.cs" />
