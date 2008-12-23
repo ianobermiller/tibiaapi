@@ -170,8 +170,6 @@ namespace Tibia.Constants
     public enum OutfitType
     {
         Invisible = 0,               // Stealth Ring Effect Also For Item As Outfit
-
-        // Orcs
         OrcWarlord = 2,
         WarWolf = 3,
         OrcRider = 4,
@@ -179,27 +177,10 @@ namespace Tibia.Constants
         OrcShaman = 6,
         OrcWarrior = 7,
         OrcBerserker = 8,
-        OrcSpearman = 50,
-        OrcLeader = 59,
-
         Necromancer = 9,
-
-        // Butterflies
         ButterflyYellow = 10,
-        ButterflyPink = 213,
-        ButterflyBlue = 227,
-        ButterflyRed = 228,
-
-        // Elementals
         WaterElemental = 11,
-        FireElemental = 49,
-
-        // Demons
         DemonColor = 12,
-        Demon = 35, // Standard Demon
-        Demon2 = 107,
-        Demon3 = 201,
-
         BlackSheep = 13,
         Sheep = 14,
         Troll = 15,
@@ -207,62 +188,38 @@ namespace Tibia.Constants
         Beholder = 17,
         Ghoul = 18,
         Slime = 19,
-
-        // Quara
         QuaraPredator = 20,
-        QuaraConstrictor = 46,
-        QuaraHydromancer = 47,
-        QuaraMantassin = 72,
-        QuaraPincher = 77,
-
         Rat = 21,
         Cyclops = 22,
-
-        // Minotaur
         MinotaurMage = 23,
         MinotaurArcher = 24,
         Minotaur = 25,
-        MinotaurGuard = 29,
-        MinotaurGuard2 = 202,
-        MinotaurGuard3 = 207,
-
         Rotworm = 26,
         Wolf = 27,
         Snake = 28,
-        // Spiders
+        MinotaurGuard = 29,
         Spider = 30,
-        PoisonSpider = 36,
-        GiantSpider = 38,
-        GiantSpider2 = 208,
-        Tarantula = 219,
-        CrystalSpider = 263,
-
         Deer = 31,
         Dog = 32,
         Skeleton = 33,
-
-        // Dragons
         Dragon = 34,
-        DragonLord = 39,
-        DragonLord2 = 204,
-        UndeadDragon = 231,
-        FrostDragon = 248,
-
+        Demon = 35,
+        PoisonSpider = 36,
         DemonSkeleton = 37,
+        GiantSpider = 38,
+        DragonLord = 39,
         FireDevil = 40,
         Lion = 41,
         PolarBear = 42,
         Scorpion = 43,
         Wasp = 44,
         Bug = 45,
+        QuaraConstrictor = 46,
+        QuaraHydromancer = 47,
         Ghost = 48,
-
-        // Djinn
+        FireElemental = 49,
+        OrcSpearman = 50,
         GreenDjinn = 51,
-        BlueDjinn = 80,
-        Efreet = 103,
-        Marid = 104,
-
         WinterWolf = 52,
         FrostTroll = 53,
         Witch = 54,
@@ -270,39 +227,31 @@ namespace Tibia.Constants
         CaveRat = 56,
         Monk = 57,
         Priestess = 58,
+        OrcLeader = 59,
         Pig = 60,
         Goblin = 61,
-
-        // Elves
         Elf = 62,
         ElfArcanist = 63,
         ElfScout = 64,
-        ElfColor = 159,
-        ElfArcanist2 = 203,
-
         Mummy = 65,
+        DwarfGeomancer = 66,
         StoneGolem = 67,
         Vampire = 68,
-
-        // Dwarves
         Dwarf = 69,
         DwarfGuard = 70,
         DwarfSoldier = 71,
-        DwarfGeomancer = 66,
-        DwarfColor = 160,
-
+        QuaraMantassin = 72,
         Hero = 73,
         Rabbit = 74,
         GameMasterVoluntary = 75,
         SwampTroll = 76,
+        QuaraPincher = 77,
         Banshee = 78,
         AncientScarab = 79,
-
+        BlueDjinn = 80,
         Cobra = 81,
         Larva = 82,
         Scarab = 83,
-
-        // Pharaohs
         Pharaoh1 = 84,
         Pharaoh2 = 85,
         Pharaoh3 = 86,
@@ -311,41 +260,33 @@ namespace Tibia.Constants
         Pharaoh4 = 89,
         Pharaoh5 = 90,
         PharaohDressed3 = 91,
-
         Mimic = 92,
+        PirateMarauder = 93,
         Hyaena = 94,
         Gargoyle = 95,
-
-        // Pirates
         PirateCutthroat = 96,
         PirateBuccaneer = 97,
         PirateCorsair = 98,
-        PirateMarauder = 93,
-        PirateSkeleton = 195,
-        PirateGhost = 196,
-
         Lich = 99,
         CryptShambler = 100,
         Bonebeast = 101,
         Deathslicer = 102,
+        Efreet = 103,
+        Marid = 104,
         Badger = 105,
         Skunk = 106,
+        Demon2 = 107,
         ElderBeholder = 108,
         Gazer = 109,
         Yeti = 110,
         Chicken = 111,
         Crab = 112,
-
-        // Lizards
         LizardTemplar = 113,
         LizardSentinel = 114,
         LizardSnakecharmer = 115,
-
-        // Apes
         Kongra = 116,
         Merlkin = 117,
         Sibang = 118,
-
         Crocodile = 119,
         Carniphila = 120,
         Hydra = 121,
@@ -353,11 +294,8 @@ namespace Tibia.Constants
         Panda = 123,
         Centipede = 124,
         Tiger = 125,
-
-        // Human Outfits
         OldFemale = 126,
         OldMale = 127,
-
         CitizenMale = 128,
         HunterMale = 129,
         MageMale = 130,
@@ -365,7 +303,7 @@ namespace Tibia.Constants
         NoblemanMale = 132,
         SummonerMale = 133,
         WarriorMale = 134,
-
+        // Nothing = 135
         CitizenFemale = 136,
         HunterFemale = 137,
         SummonerFemale = 138,
@@ -373,68 +311,65 @@ namespace Tibia.Constants
         NoblemanFemale = 140,
         MageFemale = 141,
         WarriorFemale = 142,
-
         BarbarianMale = 143,
         DruidMale = 144,
         WizardMale = 145,
         OrientalMale = 146,
-
         BarbarianFemale = 147,
         DruidFemale = 148,
         WizardFemale = 149,
         OrientalFemale = 150,
-
         PirateMale = 151,
         AssassinMale = 152,
         BeggarMale = 153,
         ShamanMale = 154,
-
         PirateFemale = 155,
         AssassinFemale = 156,
         BeggarFemale = 157,
         ShamanFemale = 158,
-
-        BrotherhoodMale = 278,
-        BrotherhoodFemale = 279,
-
-        NightmareKnightMale = 268,
-        NightmareKnightFemale = 269,
-
-        JesterFemale = 270,
-        JesterMale = 273,
-
+        ElfColor = 159,
+        DwarfColor = 160,
+        // Nothing = 161-191
         CarrionWorm = 192,
-
-        // Cult
         EnlightenedsOfTheCult = 193,
         AdeptsOfTheCult = 194,
-
+        PirateSkeleton = 195,
+        PirateGhost = 196,
         Tortoise = 197,
         ThornbackTortoise = 198,
         Mammoth = 199,
         BloodCrab = 200,
+        Demon3 = 201,
+        MinotaurGuard2 = 202,
+        ElfArcanist2 = 203,
+        DragonLord2 = 204,
         StoneGolem2 = 205,
         Monk2 = 206,
+        MinotaurGuard3 = 207,
+        GiantSpider2 = 208,
         Necromancer2 = 209,
         ElderBeholder2 = 210,
         Elephant = 211,
         Flamingo = 212,
-
-        // Dworcs
+        ButterflyPink = 213,
         DworcVoodoomaster = 214,
         DworcFleshhunter = 215,
         DworcVenomsniper = 216,
-
         Parrot = 217,
         TerrorBird = 218,
+        Tarantula = 219,
         SerpentSpawn = 220,
         SpitNettle = 221,
         Toad = 222,
         Seagull = 223,
         AzureFrog = 224,
+        DarkMonk = 225,
         FrogColor = 226,
+        ButterflyBlue = 227,
+        ButterflyRed = 228,
         Ferumbras = 229,
         HandOfCursedFate = 230,
+        UndeadDragon = 231,
         LostSoul = 232,
         BetrayedWraith = 233,
         DarkTorturer = 234,
@@ -451,38 +386,48 @@ namespace Tibia.Constants
         Nightmare = 245,
         Blightwalker = 246,
         Plaguesmith = 247,
+        FrostDragon = 248,
+        ChakoyaTribewarden = 249,
         Penguin = 250,
         NorsemanMale = 251,
         NorsemanFemale = 252,
-
-        // Barbarians
         BarbarianHeadsplitter = 253,
         BarbarianSkullhunter = 254,
         BarbarianBloodwalker = 255,
-        BarbarianBrutetamer = 264,
-
         Braindeath = 256,
         FrostGiant = 257,
         Husky = 258,
-
-        // Chakoya
-        ChakoyaTribewarden = 249,
         ChakoyaToolshaper = 259,
         ChakoyaWindcaller = 260,
-
-        DemonHunterMale = 289,
-        DemonHunterFemale = 288,
-
         IceGolem = 261,
         SilverRabbit = 262,
+        CrystalSpider = 263,
+        BarbarianBrutetamer = 264,
         FrostGiantess = 265,
         GameMasterCustomerSupport = 266,
-        DragonSmallGreen = 271,
-        DragonSmallRed = 272,
-        SquirrelLarge = 274,
-        WaterMonster = 275,
+        Swimmer = 267,
+        NightmareKnightMale = 268,
+        NightmareKnightFemale = 269,
+        JesterFemale = 270,
+        DragonHatchling = 271,
+        DragonLordHatchling = 272,
+        JesterMale = 273,
+        Squirrel = 274,
+        SeaSerpent = 275,
         Cat = 276,
-
+        CyclopsSmith = 277,
+        BrotherhoodOfBonesMale = 278,
+        BrotherhoodOfBonesFemale = 279,
+        CyclopsDrone = 280,
+        TrollChampion = 281,
+        IslandTroll = 282,
+        FrostDragonHatchling = 283,
+        Cockroach = 284,
+        EarthOverlord = 285,
+        SlickWaterElemental = 286,
+        TheCount = 287,
+        DemonHunterFemale = 288,
+        DemonHunterMale = 289,
         MassiveEnergyElemental = 290,
         Wyrm = 291,
         Pumpkin = 292,
@@ -496,9 +441,30 @@ namespace Tibia.Constants
         GrimReaper = 300,
         EarthElemental = 301,
         CommunityManager = 302,
-
+        Unknown1 = 303,
+        WorkerGolem = 304,
+        MutatedRat = 305,
+        UndeadGladiator = 306,
+        MutatedBat = 307,
+        Werewolf = 308,
+        Azerus = 309,
+        HauntedTreeling = 310,
+        Zombie = 311,
+        VampireBride = 312,
+        Gozzler = 313,
+        AcidBlob = 314,
+        DeathBlob = 315,
+        MercuryBlob = 316,
+        YoungSeaSerpent = 317,
+        MutatedTiger = 318,
+        Unknown2 = 319,
+        Nightstalker = 320,
+        NightmareScion = 321,
+        Hellspawn = 322,
+        MutatedHuman = 323,
         YalaharianFemale = 324,
-        YalaharianMale = 325
+        YalaharianMale = 325,
+        WarGolem = 326
     }
 
     #endregion
