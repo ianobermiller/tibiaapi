@@ -7,7 +7,6 @@ namespace Tibia.Packets.Incoming
 {
     public class ShopSaleGoldCountPacket : IncomingPacket
     {
-
         public uint Cash { get; set; }
         public List<ShopInfo> ItemList { get; set; }
 

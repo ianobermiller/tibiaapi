@@ -306,8 +306,5 @@ namespace Tibia
         }
 
         #endregion
-
-
-
     }
 }

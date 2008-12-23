@@ -8,9 +8,7 @@ namespace Tibia.Objects
     /// </summary>
     public class Map
     {
-        #region Variables
         private Client client;
-        #endregion
 
         #region Constructor
         /// <summary>

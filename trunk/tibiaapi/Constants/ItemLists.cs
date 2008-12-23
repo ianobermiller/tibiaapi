@@ -255,6 +255,7 @@ namespace Tibia.Constants
 			{ Items.Container.BackpackRed.Id, Items.Container.BackpackRed },
 			{ Items.Container.BackpackStar.Id, Items.Container.BackpackStar },
 			{ Items.Container.BackpackYellow.Id, Items.Container.BackpackYellow },
+            { Items.Container.BackpackOfHolding.Id, Items.Container.BackpackOfHolding}
         };
         #endregion
 

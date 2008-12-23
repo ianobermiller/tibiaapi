@@ -28,7 +28,6 @@ namespace SmartIPChanger
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(uxForm));
             this.uxServer = new System.Windows.Forms.TextBox();
             this.uxPort = new System.Windows.Forms.TextBox();
             this.uxGo = new System.Windows.Forms.Button();
@@ -69,9 +68,9 @@ namespace SmartIPChanger
             this.Controls.Add(this.uxGo);
             this.Controls.Add(this.uxPort);
             this.Controls.Add(this.uxServer);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "uxForm";
             this.Text = "Smart IPChanger";
+            this.Load += new System.EventHandler(this.uxForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
