@@ -165,6 +165,7 @@ namespace Tibia.Packets
         VipRemove = 0xDD,
 
         SetOutfit = 0xD3,
+        Ping = 0x1E,
     }
 
     /// <summary>

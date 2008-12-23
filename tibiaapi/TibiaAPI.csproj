@@ -175,6 +175,7 @@
     <Compile Include="Packets\Outgoing\LookAtPacket.cs" />
     <Compile Include="Packets\Outgoing\ChannelOpenPacket.cs" />
     <Compile Include="Packets\Outgoing\MovePacket.cs" />
+    <Compile Include="Packets\Outgoing\PingPacket.cs" />
     <Compile Include="Packets\Outgoing\PlayerSpeechPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemMovePacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerOpenParentPacket.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="Util\Proxy.cs" />
     <Compile Include="Util\RawSocket.cs" />
     <Compile Include="Util\Scheduler.cs" />
+    <Compile Include="Util\SocketBase.cs" />
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
