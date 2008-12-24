@@ -167,6 +167,11 @@ namespace Tibia.Packets
         SetOutfit = 0xD3,
         Ping = 0x1E,
         FightModes = 0xA0,
+
+        //TODO:
+
+        ContainerUpdate = 0xCA,
+        TileUpdate = 0xC9,
     }
 
     /// <summary>
@@ -187,6 +192,20 @@ namespace Tibia.Packets
         RemoveContextMenu   = 0x0A,
         RemoveAllContextMenus=0x0B,
         OnClickContextMenu  = 0x0C
+    }
+
+    public enum PipeConstantType : byte
+    {
+        PrintName = 0x01,
+        PrintFPS = 0x02,
+        ShowFPS = 0x03,
+        PrintTextFunc = 0x04,
+        NopFPS = 0x05,
+        AddContextMenuFunc = 0x06,
+        OnClickContextMenu = 0x07,
+        SetOutfitContextMenu = 0x08,
+        PartyActionContextMenu = 0x09,
+        CopyNameContextMenu = 0x0A,
     }
     
     /// <summary>

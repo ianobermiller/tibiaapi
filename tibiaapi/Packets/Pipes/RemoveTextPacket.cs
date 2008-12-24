@@ -5,50 +5,40 @@ namespace Tibia.Packets.Pipes
 {
     public class RemoveTextPacket : PipePacket
     {
-        string textname;
+        public string TextName { get; set; }
 
-        public string TextName
+        public RemoveTextPacket(Client client)
+            : base(client)
         {
-            get { return textname; }
+            Type = PipePacketType.RemoveText;
         }
 
-        public RemoveTextPacket(Client c)
-            : base(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.RemoveText;
-            destination = PacketDestination.Pipe;
-        }
-
-        public RemoveTextPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.RemoveText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                textname = p.GetString();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.RemoveText)
                 return false;
-            }
+
+            Type = PipePacketType.RemoveText;
+            TextName = msg.GetString();
+
+            return true;
         }
 
-        public static RemoveTextPacket Create(Client c, string TextName)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.RemoveText);
-            p.AddString(TextName);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new RemoveTextPacket(c, p.GetPacket());
+            msg.AddString(TextName);
+
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client, string textName)
+        {
+            RemoveTextPacket p = new RemoveTextPacket(client);
+            p.TextName = textName;
+            return p.Send();
         }
 
     }

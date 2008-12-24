@@ -34,11 +34,10 @@ namespace Tibia.Objects
             if (TextName == string.Empty || loc.X <= 0 || loc.Y <= 0 || text == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.DisplayTextPacket.Create(client, TextName, loc, color, font, text));
-            return true;
+            return Packets.Pipes.DisplayTextPacket.Send(client, TextName, loc, color, font, text);
         }
 
-        public bool RemoveScreenText(string TextName)
+        public bool RemoveScreenText(string textName)
         {
             if (client.Pipe == null)
             {
@@ -47,11 +46,10 @@ namespace Tibia.Objects
             }
 
             //Testing that user has given valid values
-            if (TextName == string.Empty)
+            if (textName == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.RemoveTextPacket.Create(client, TextName));
-            return true;
+            return Packets.Pipes.RemoveTextPacket.Send(client, textName);
         }
 
         public bool RemoveAllScreenText()
@@ -62,8 +60,7 @@ namespace Tibia.Objects
                 client.PipeIsReady.WaitOne();
             }
 
-            client.Pipe.Send(Tibia.Packets.Pipes.RemoveAllTextPacket.Create(client));
-            return true;
+            return Packets.Pipes.RemoveAllTextPacket.Send(client);
         }
 
         public bool DrawCreatureText(string creatureName, Location loc, Color color, ClientFont font, string text)
@@ -78,8 +75,7 @@ namespace Tibia.Objects
             if (creatureName == string.Empty || text == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(client, 0, creatureName, loc, color, font, text));
-            return true;
+            return Packets.Pipes.DisplayCreatureTextPacket.Send(client, 0, creatureName, loc, color, font, text);
         }
 
         public bool DrawCreatureText(int CreatureID, Location loc, Color color, ClientFont font, string Text)
@@ -94,8 +90,7 @@ namespace Tibia.Objects
             if (CreatureID == 0 || Text == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.DisplayCreatureTextPacket.Create(client, CreatureID, "MyChar", loc, color, font, Text));
-            return true;
+            return Packets.Pipes.DisplayCreatureTextPacket.Send(client, CreatureID, "MyChar", loc, color, font, Text);
         }
 
         public bool UpdateCreatureText(string CreatureName, Location loc, string NewText)
@@ -110,8 +105,7 @@ namespace Tibia.Objects
             if (CreatureName == string.Empty || NewText == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(client, 0, CreatureName, loc, NewText));
-            return true;
+            return Packets.Pipes.UpdateCreatureTextPacket.Send(client, 0, CreatureName, loc, NewText);
         }
 
         public bool UpdateCreatureText(int CreatureID, Location loc, string NewText)
@@ -126,8 +120,7 @@ namespace Tibia.Objects
             if (CreatureID == 0 || NewText == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.UpdateCreatureTextPacket.Create(client, CreatureID, "", loc, NewText));
-            return true;
+            return Packets.Pipes.UpdateCreatureTextPacket.Send(client, CreatureID, "", loc, NewText);
         }
 
         public bool RemoveCreatureText(string CreatureName)
@@ -142,8 +135,7 @@ namespace Tibia.Objects
             if (CreatureName == string.Empty)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(client, 0, CreatureName));
-            return true;
+            return Packets.Pipes.RemoveCreatureTextPacket.Send(client, 0, CreatureName);
         }
 
         public bool RemoveCreatureText(int CreatureID)
@@ -158,8 +150,7 @@ namespace Tibia.Objects
             if (CreatureID == 0)
                 return false;
 
-            client.Pipe.Send(Tibia.Packets.Pipes.RemoveCreatureTextPacket.Create(client, CreatureID, ""));
-            return true;
+            return Packets.Pipes.RemoveCreatureTextPacket.Send(client, CreatureID, "");
         }
         #endregion
     }

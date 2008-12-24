@@ -1,106 +1,76 @@
 ﻿using System;
-using Tibia.Objects;
 using System.Drawing;
 using Tibia.Constants;
+using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
     public class DisplayCreatureTextPacket : PipePacket
     {
-        int creatureID;
-        string creatureName;
-        Location textloc;
-        Color color;
-        int red;
-        int green;
-        int blue;
-        ClientFont font; //TODO: Create Enum of possible text fonts
-        string text;
+        public int CreatureId{get;set;}
+        public string CreatureName{get;set;}
+        public Location Location{get;set;}
+        public Color Color{get;set;}
+        public ClientFont Font{get;set;}
+        public string Text{get;set;}
 
-        public int CreatureID
+        public DisplayCreatureTextPacket(Client client)
+            : base(client)
         {
-            get { return creatureID; }
+            Type = PipePacketType.DisplayCreatureText;
         }
 
-        public string CreatureName
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            get { return creatureName; }
-        }
-
-        public Location TextLoc
-        {
-            get { return textloc; }
-        }
-
-        public Color Color
-        {
-            get { return color; }
-        }
-
-        public ClientFont Font
-        {
-            get { return font; }
-        }
-
-        public string Text
-        {
-            get { return text; }
-        }
-
-        public DisplayCreatureTextPacket(Client c)
-            : base(c)
-        {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.DisplayCreatureText;
-            destination = PacketDestination.Pipe;
-        }
-
-        public DisplayCreatureTextPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.DisplayCreatureText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureID = p.GetLong();
-                creatureName = p.GetString();
-                textloc.X = p.GetShort();
-                textloc.Y = p.GetShort();
-                red = p.GetInt();
-                green = p.GetInt();
-                blue = p.GetInt();
-                color = Color.FromArgb(red, green, blue);
-                font = (ClientFont)p.GetInt();
-                text = p.GetString();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.DisplayCreatureText)
                 return false;
-            }
+
+            Type = PipePacketType.DisplayCreatureText;
+            
+            CreatureId = (int)msg.GetUInt32();
+            CreatureName = msg.GetString();
+            Location = new Location((int)msg.GetUInt32(), (int)msg.GetUInt32(), 0);
+            Color = Color.FromArgb((int)msg.GetUInt32(), (int)msg.GetUInt32(), (int)msg.GetUInt32());
+            Font = (ClientFont)msg.GetUInt32();
+            Text = msg.GetString();
+
+            return true;
         }
 
-        public static DisplayCreatureTextPacket Create(Client c, int creatureID, string creatureName, Location loc, Color color, ClientFont font, string text)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.DisplayCreatureText);
-            p.AddLong(creatureID);
-            p.AddString(creatureName);
-            p.AddShort(loc.X);
-            p.AddShort(loc.Y);
-            p.AddInt(color.R);
-            p.AddInt(color.G);
-            p.AddInt(color.B);
-            p.AddInt((int)font);
-            p.AddString(text);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new DisplayCreatureTextPacket(c, p.GetPacket());
+            msg.AddUInt32((uint)CreatureId);
+            msg.AddString(CreatureName);
+            msg.AddUInt16((ushort)Location.X);
+            msg.AddUInt16((ushort)Location.Y);
+            msg.AddUInt16((ushort)Color.R);
+            msg.AddUInt16((ushort)Color.G);
+            msg.AddUInt16((ushort)Color.B);
+            msg.AddUInt16((ushort)Font);
+            msg.AddString(Text);
+
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, int creatureId , string creatureName, Location location, Color color, ClientFont font, string text)
+        {
+            DisplayCreatureTextPacket p = new DisplayCreatureTextPacket(client);
+
+            p.CreatureId = creatureId;
+            p.CreatureName = creatureName;
+            p.Location = location;
+            p.Color = color;
+            p.Font = font;
+            p.Text = text;
+
+            return p.Send();
+        }
+
     }
 }
+
+
+

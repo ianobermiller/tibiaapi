@@ -1,81 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
     public class AddContextMenuPacket : PipePacket
     {
-        int eventId;
-        string text;
-        ContextMenu.Type ctype;
-        byte hasSeparator;
+        public int EventId { get; set; }
+        public string Text { get; set; }
+        public ContextMenu.Type ContextMenuType { get; set; }
+        public byte HasSeparator { get; set; }
 
-        public int EventId
+        public AddContextMenuPacket(Client client)
+            : base(client)
         {
-            get { return eventId; }
-        }
-        
-        public string MenuText
-        {
-            get { return text; }
+            Type = PipePacketType.AddContextMenu;
         }
 
-        public ContextMenu.Type MenuType
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            get { return ctype; }
-        }
-
-        public bool HasSeparator
-        {
-            get { return Convert.ToBoolean(hasSeparator); }
-        }
-
-        public AddContextMenuPacket(Client c)
-            : base(c)
-        {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.AddContextMenu;
-            destination = PacketDestination.Pipe;
-        }
-
-        public AddContextMenuPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.AddContextMenu || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                eventId = p.GetLong();
-                text = p.GetString();
-                ctype = (ContextMenu.Type)p.GetByte();
-                hasSeparator = p.GetByte();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.AddContextMenu)
                 return false;
-            }
+
+            Type = PipePacketType.AddContextMenu;
+            EventId = (int)msg.GetUInt32();
+            Text = msg.GetString();
+            ContextMenuType = (ContextMenu.Type)msg.GetByte();
+            HasSeparator = msg.GetByte();
+
+            return true;
         }
 
-        public static AddContextMenuPacket Create(Client c, int EventId, string MenuText,ContextMenu.Type Type, bool HasSeparator)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.AddContextMenu);
-            p.AddLong(EventId);
-            p.AddString(MenuText);
-            p.AddByte((byte)Type);
-            p.AddByte(Convert.ToByte(HasSeparator));
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new AddContextMenuPacket(c, p.GetPacket());
+            msg.AddUInt32((uint)EventId);
+            msg.AddString(Text);
+            msg.AddByte((byte)ContextMenuType);
+            msg.AddByte(HasSeparator);
+
+            return msg.Packet;
         }
-    }    
+
+        public static bool Send(Objects.Client client, int eventId, string text, ContextMenu.Type contextMenuType, bool hasSeparator)
+        {
+            AddContextMenuPacket p = new AddContextMenuPacket(client);
+
+            p.EventId = eventId;
+            p.Text = text;
+            p.ContextMenuType = contextMenuType;
+            p.HasSeparator = Convert.ToByte(hasSeparator);
+
+            return p.Send();
+        }
+
+    }
 }
+
+
+

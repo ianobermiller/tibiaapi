@@ -188,8 +188,8 @@
     <Compile Include="Packets\Outgoing\TurnPacket.cs" />
     <Compile Include="Packets\Outgoing\VipAddPacket.cs" />
     <Compile Include="Packets\Outgoing\VipRemovePacket.cs" />
-    <Compile Include="Packets\PacketBuilder.cs" />
     <Compile Include="Packets\Enums.cs" />
+    <Compile Include="Packets\PipePacket.cs" />
     <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayCreatureTextPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayTextPacket.cs" />
@@ -247,7 +247,6 @@
     <Compile Include="Packets\MessageStream.cs" />
     <Compile Include="Util\Misc.cs" />
     <Compile Include="Util\MouseHook.cs" />
-    <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\NetworkMessage.cs" />
     <Compile Include="Util\PathFinder.cs" />
     <Compile Include="Util\Pipe.cs" />

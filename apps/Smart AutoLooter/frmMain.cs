@@ -57,7 +57,6 @@ namespace SmartAutoLooter
             }
             else
                 Application.Exit();
-
         }
 
         void _client_Exited(object sender, EventArgs e)

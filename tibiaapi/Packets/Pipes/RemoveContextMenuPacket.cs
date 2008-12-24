@@ -1,82 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
     public class RemoveContextMenuPacket : PipePacket
     {
-            int eventId;
-            string text;
-            ContextMenu.Type ctype;
-            bool hasSeparator;
+        public int EventId { get; set; }
+        public string Text { get; set; }
+        public ContextMenu.Type ContextMenuType { get; set; }
+        public byte HasSeparator { get; set; }
 
-            public int EventId
-            {
-                get { return eventId; }
-            }
+        public RemoveContextMenuPacket(Client client)
+            : base(client)
+        {
+            Type = PipePacketType.RemoveContextMenu;
+        }
 
-            public string MenuText
-            {
-                get { return text; }
-            }
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
+        {
+            if (msg.GetByte() != (byte)PipePacketType.RemoveContextMenu)
+                return false;
 
-            public ContextMenu.Type MenuType
-            {
-                get { return ctype; }
-            }
+            Type = PipePacketType.RemoveContextMenu;
+            EventId = (int)msg.GetUInt32();
+            Text = msg.GetString();
+            ContextMenuType = (ContextMenu.Type)msg.GetByte();
+            HasSeparator = msg.GetByte();
 
-            public bool HasSeparator
-            {
-                get { return hasSeparator; }
-            }
+            return true;
+        }
 
-            public RemoveContextMenuPacket(Client c)
-                : base(c)
-            {
-                type = PacketType.PipePacket;
-                pipetype = PipePacketType.RemoveContextMenu;
-                destination = PacketDestination.Pipe;
-            }
+        public override byte[] ToByteArray()
+        {
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            public RemoveContextMenuPacket(Client c, byte[] data)
-                : this(c)
-            {
-                ParseData(data);
-            }
+            msg.AddUInt32((uint)EventId);
+            msg.AddString(Text);
+            msg.AddByte((byte)ContextMenuType);
+            msg.AddByte(HasSeparator);
 
-            public new bool ParseData(byte[] packet)
-            {
-                if (base.ParseData(packet))
-                {
-                    if (pipetype != PipePacketType.RemoveContextMenu || type != PacketType.PipePacket) { return false; }
-                    PacketBuilder p = new PacketBuilder(client, packet, 3);
-                    eventId = p.GetLong();
-                    text = p.GetString();
-                    ctype = (ContextMenu.Type)p.GetByte();
-                    hasSeparator = Convert.ToBoolean(p.GetByte());
+            return msg.Packet;
+        }
 
-                    index = p.Index;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+        public static bool Send(Objects.Client client, int eventId, string text, ContextMenu.Type contextMenuType, bool hasSeparator)
+        {
+            RemoveContextMenuPacket p = new RemoveContextMenuPacket(client);
 
-            public static RemoveContextMenuPacket Create(Client c, int EventId, string MenuText, ContextMenu.Type Type, bool HasSeparator)
-            {
-                PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.RemoveContextMenu);
-                p.AddLong(EventId);
-                p.AddString(MenuText);
-                p.AddByte((byte)Type);
-                p.AddByte(Convert.ToByte(HasSeparator));
+            p.EventId = eventId;
+            p.Text = text;
+            p.ContextMenuType = contextMenuType;
+            p.HasSeparator = Convert.ToByte(hasSeparator);
 
-                return new RemoveContextMenuPacket(c, p.GetPacket());
-            }
-        
+            return p.Send();
+        }
+
     }
 }
+
+
+

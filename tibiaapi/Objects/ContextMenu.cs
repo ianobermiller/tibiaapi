@@ -33,9 +33,11 @@ namespace Tibia.Objects
                     client.InitializePipe();
                     client.PipeIsReady.WaitOne();
                 }
-                if (eventId < 0 || text == string.Empty) return false;
 
-                client.Pipe.Send(Tibia.Packets.Pipes.AddContextMenuPacket.Create(client, eventId, text, type, hasSeparator));
+                if (eventId < 0 || text == string.Empty) 
+                    return false;
+
+                Packets.Pipes.AddContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
                 added = true;
                 return true;
             }
@@ -51,9 +53,11 @@ namespace Tibia.Objects
                     client.InitializePipe();
                     client.PipeIsReady.WaitOne();
                 }
-                if (eventId < 0 || text == string.Empty) return false;
 
-                client.Pipe.Send(Tibia.Packets.Pipes.RemoveContextMenuPacket.Create(client, eventId, text, type, hasSeparator));
+                if (eventId < 0 || text == string.Empty) 
+                    return false;
+
+                Packets.Pipes.RemoveContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
                 added = false;
                 return true;
             }
@@ -68,7 +72,7 @@ namespace Tibia.Objects
                 client.PipeIsReady.WaitOne();
             }
 
-            client.Pipe.Send(Tibia.Packets.Pipes.RemoveAllContextMenusPacket.Create(client));
+            Packets.Pipes.RemoveAllContextMenusPacket.Send(client);
         }
     
 
@@ -86,11 +90,9 @@ namespace Tibia.Objects
         //check if the event id matches with the context menu and raise the event
 
 
-
-
         public enum Type : byte
         {
-            AllMenus=0x00,
+            AllMenus = 0x00,
             SetOutfitContextMenu = 0x01,
             PartyActionContextMenu = 0x02,
             CopyNameContextMenu = 0x03

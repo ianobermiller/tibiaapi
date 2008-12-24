@@ -5,50 +5,42 @@ namespace Tibia.Packets.Pipes
 {
     public class InjectDisplayPacket : PipePacket
     {
-        bool injected;
+        public bool Injected { get; set; }
 
-        public bool Injected
+        public InjectDisplayPacket(Client client)
+            : base(client)
         {
-            get { return injected; }
+            Type = PipePacketType.InjectDisplayText;
         }
 
-        public InjectDisplayPacket(Client c)
-            : base(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.InjectDisplayText;
-            destination = PacketDestination.Pipe;
-        }
-
-        public InjectDisplayPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.InjectDisplayText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                injected = Convert.ToBoolean(p.GetByte());
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.InjectDisplayText)
                 return false;
-            }
+
+            Type = PipePacketType.InjectDisplayText;
+            Injected = Convert.ToBoolean(msg.GetByte());
+
+            return true;
         }
 
-        public static InjectDisplayPacket Create(Client c, bool Injected)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.InjectDisplayText);
-            p.AddByte(Convert.ToByte(Injected));
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new InjectDisplayPacket(c, p.GetPacket());
+            msg.AddByte(Convert.ToByte(Injected));
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, bool injected)
+        {
+            InjectDisplayPacket p = new InjectDisplayPacket(client);
+            p.Injected = injected;
+            return p.Send();
+        }
+
     }
 }
+
+

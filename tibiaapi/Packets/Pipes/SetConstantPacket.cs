@@ -5,57 +5,45 @@ namespace Tibia.Packets.Pipes
 {
     public class SetConstantPacket : PipePacket
     {
-        string constantname;
-        int value;
+        public PipeConstantType ConstantType { get; set; }
+        public uint Value { get; set; }
 
-        public string ConstantName
+        public SetConstantPacket(Client client)
+            : base(client)
         {
-            get { return constantname; }
+            Type = PipePacketType.SetConstant;
         }
 
-        public int Value
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            get { return value; }
-        }
-
-        public SetConstantPacket(Client c)
-            : base(c)
-        {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.SetConstant;
-            destination = PacketDestination.Pipe;
-        }
-
-        public SetConstantPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.SetConstant || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                constantname = p.GetString();
-                value = p.GetLong();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.SetConstant)
                 return false;
-            }
+
+            Type = PipePacketType.SetConstant;
+            ConstantType = (PipeConstantType)msg.GetByte();
+            Value = msg.GetUInt32();
+
+            return true;
         }
 
-        public static SetConstantPacket Create(Client c, string ConstantName, uint Value)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.SetConstant);
-            p.AddString(ConstantName);
-            p.AddLong(unchecked((int)Value));
-            return new SetConstantPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
+
+            msg.AddByte((byte)ConstantType);
+            msg.AddUInt32((uint)Value);
+
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, PipeConstantType constantType, uint value)
+        {
+            SetConstantPacket p = new SetConstantPacket(client);
+            p.ConstantType = constantType;
+            p.Value = value;
+            return p.Send();
+        }
+
     }
 }
