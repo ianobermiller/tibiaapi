@@ -1,80 +1,67 @@
 ﻿using System;
+using System.Drawing;
+using Tibia.Constants;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
     public class UpdateCreatureTextPacket : PipePacket
     {
-        int creatureID;
-        string creatureName;
-        Location textLoc; //Used to make sure it's the right text.
-        string newText;
+        public int CreatureId{get;set;}
+        public string CreatureName{get;set;}
+        public Location Location{get;set;}
+        public string Text{get;set;}
 
-        public int CreatureID
+        public UpdateCreatureTextPacket(Client client)
+            : base(client)
         {
-            get { return creatureID; }
+            Type = PipePacketType.UpdateCreatureText;
         }
 
-        public string CreatureName
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            get { return creatureName; }
-        }
-
-        public Location TextLoc
-        {
-            get { return textLoc; }
-        }
-
-        public string NewText
-        {
-            get { return newText; }
-        }
-
-        public UpdateCreatureTextPacket(Client c)
-            : base(c)
-        {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.UpdateCreatureText;
-            destination = PacketDestination.Pipe;
-        }
-
-        public UpdateCreatureTextPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.UpdateCreatureText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureID = p.GetLong();
-                creatureName = p.GetString();
-                textLoc.X = p.GetShort();
-                textLoc.Y = p.GetShort();
-                newText = p.GetString();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.UpdateCreatureText)
                 return false;
-            }
+
+            Type = PipePacketType.UpdateCreatureText;
+            
+            CreatureId = (int)msg.GetUInt32();
+            CreatureName = msg.GetString();
+            Location = new Location((int)msg.GetUInt32(), (int)msg.GetUInt32(), 0);
+            Text = msg.GetString();
+
+            return true;
         }
 
-        public static UpdateCreatureTextPacket Create(Client c, int CreatureID, string CreatureName, Location TextLoc, string NewText)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.UpdateCreatureText);
-            p.AddLong(CreatureID);
-            p.AddString(CreatureName);
-            p.AddShort(TextLoc.X);
-            p.AddShort(TextLoc.Y);
-            p.AddString(NewText);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new UpdateCreatureTextPacket(c, p.GetPacket());
+            msg.AddUInt32((uint)CreatureId);
+            msg.AddString(CreatureName);
+            msg.AddUInt16((ushort)Location.X);
+            msg.AddUInt16((ushort)Location.Y);
+            msg.AddString(Text);
+
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, int creatureId , string creatureName, Location location, string text)
+        {
+            UpdateCreatureTextPacket p = new UpdateCreatureTextPacket(client);
+
+            p.CreatureId = creatureId;
+            p.CreatureName = creatureName;
+            p.Location = location;
+            p.Text = text;
+
+            return p.Send();
+        }
+
     }
 }
+
+
+
+

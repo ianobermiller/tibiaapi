@@ -27,7 +27,7 @@ namespace Tibia.Util
         /// A generic function prototype for pipe events.
         /// </summary>
         /// <param name="packet">The packet that was received.</param>
-        public delegate void PipeListener(Packet packet);
+        public delegate void PipeListener(NetworkMessage msg);
 
         /// <summary>
         /// Called when connected.
@@ -68,22 +68,24 @@ namespace Tibia.Util
         private void BeginWaitForConnection(IAsyncResult ar)
         {
             pipe.EndWaitForConnection(ar);
+
             if (pipe.IsConnected)
             {
                 // Call OnConnected asynchronously
                 if (OnConnected != null)
                     OnConnected.BeginInvoke(null, null);
+
                 pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);
             }
         }
 
         private void BeginRead(IAsyncResult ar)
         {
-            pipe.EndRead(ar);
+            int read = pipe.EndRead(ar);
             // Call OnReceive asynchronously
 
             if (OnReceive != null)
-                OnReceive.BeginInvoke(new Packet(client, buffer), null, null);
+                OnReceive.BeginInvoke(new NetworkMessage(client, buffer, read), null, null);
 
             pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }
@@ -91,12 +93,12 @@ namespace Tibia.Util
         /// <summary>
         /// Sends packet to the destination.
         /// </summary>
-        public void Send(Packet packet)
+        public void Send(NetworkMessage msg)
         {
             if (OnSend != null)
-                OnSend.BeginInvoke(packet, null, null);
+                OnSend.BeginInvoke(msg, null, null);
 
-            pipe.Write(packet.Data, 0, packet.Data.Length);
+            pipe.Write(msg.Packet, 0, msg.Length);
         }
 
         /// <summary>

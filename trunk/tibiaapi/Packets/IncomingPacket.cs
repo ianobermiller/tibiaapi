@@ -20,7 +20,7 @@ namespace Tibia.Packets
         public IncomingPacketType Type { get; set; }
         public Objects.Client Client { get; set; }
 
-        public virtual byte[] ToByteArray() { return new byte[1]; }
+        public virtual byte[] ToByteArray() { return null; }
 
         public bool Send()
         {

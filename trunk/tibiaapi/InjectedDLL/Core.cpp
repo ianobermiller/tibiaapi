@@ -248,34 +248,49 @@ inline void PipeOnRead(){
 	WORD len  = 0;
 	len = Packet::ReadWord(Buffer, &position);
 	BYTE PacketID = Packet::ReadByte(Buffer, &position);
+
+
 	switch (PacketID){
 		case 0x1: // Set Constant
-			{	
-				string ConstantName = Packet::ReadString(Buffer, &position);
-				if (ConstantName == "ptrPrintName") {
-					Consts::ptrPrintName = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrPrintFPS") {
-					Consts::ptrPrintFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrShowFPS") {
-					Consts::ptrShowFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrPrintTextFunc") {
-					PrintText = (_PrintText*)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrNopFPS") {
-					Consts::ptrNopFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} 
-				
-				  else if (ConstantName == "ptrAddContextMenuFunc") {
-					  Consts::ptrAddContextMenu=(DWORD)Packet::ReadDWord(Buffer, &position);
+			{
+				PipeConstantType type = (PipeConstantType)Packet::ReadByte(Buffer, &position);
 
-				} else if (ConstantName == "ptrOnClickContextMenu") {
-					Consts::ptrOnClickContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrSetOutfitContextMenu") {
-					Consts::ptrSetOutfitContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrPartyActionContextMenu") {
-					Consts::ptrPartyActionContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
-				} else if (ConstantName == "ptrCopyNameContextMenu") {
-					Consts::ptrCopyNameContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
-				}				
+				switch(type)
+				{
+					case PrintName:
+						Consts::ptrPrintName = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case PrintFPS:
+						Consts::ptrPrintFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case ShowFPS:
+						Consts::ptrShowFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case PrintTextFunc:
+						PrintText = (_PrintText*)Packet::ReadDWord(Buffer, &position);
+						break;
+					case NopFPS:
+						Consts::ptrNopFPS = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case AddContextMenuFunc:
+						Consts::ptrAddContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case OnClickContextMenu:
+						Consts::ptrOnClickContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case SetOutfitContextMenu:
+						Consts::ptrSetOutfitContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case PartyActionContextMenu:
+						Consts::ptrPartyActionContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					case CopyNameContextMenu:
+						Consts::ptrCopyNameContextMenu = (DWORD)Packet::ReadDWord(Buffer, &position);
+						break;
+					default:
+						break;
+				};
+
 			}
 			break;
 		case 0x2: // DisplayText
@@ -538,7 +553,7 @@ inline void PipeOnRead(){
 			break;
 		default:
 			{
-				MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
+				MessageBoxA(0, "Unknown PacketType!" + PacketID, "Error!", MB_ICONERROR);
 			}
 			break;
 	}

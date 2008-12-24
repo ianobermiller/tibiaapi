@@ -1,47 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
     public class RemoveAllContextMenusPacket : PipePacket
     {
-        public RemoveAllContextMenusPacket(Client c)
-            : base(c)
+
+        public RemoveAllContextMenusPacket(Client client)
+            : base(client)
         {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.RemoveAllContextMenus;
-            destination = PacketDestination.Pipe;
+            Type = PipePacketType.RemoveAllContextMenus;
         }
 
-        public RemoveAllContextMenusPacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.RemoveAllContextMenus || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                index = p.Index;
-
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.RemoveAllContextMenus)
                 return false;
-            }
+
+            Type = PipePacketType.RemoveAllContextMenus;
+
+            return true;
         }
 
-        public static RemoveAllContextMenusPacket Create(Client c)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.RemoveAllContextMenus);
-            return new RemoveAllContextMenusPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client)
+        {
+            RemoveAllContextMenusPacket p = new RemoveAllContextMenusPacket(client);
+            return p.Send();
+        }
+
     }
 }
+
+
+
+

@@ -1256,20 +1256,20 @@ namespace Tibia.Objects
         private void OnPipeConnect()
         {
             //Set constants for displaying
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintName", Tibia.Addresses.TextDisplay.PrintName));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintFPS", Tibia.Addresses.TextDisplay.PrintFPS));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrShowFPS", Tibia.Addresses.TextDisplay.ShowFPS));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPrintTextFunc", Tibia.Addresses.TextDisplay.PrintTextFunc));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrNopFPS", Tibia.Addresses.TextDisplay.NopFPS));
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.PrintName, Tibia.Addresses.TextDisplay.PrintName);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.PrintFPS, Tibia.Addresses.TextDisplay.PrintFPS);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.ShowFPS, Tibia.Addresses.TextDisplay.ShowFPS);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.PrintTextFunc, Tibia.Addresses.TextDisplay.PrintTextFunc);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.NopFPS, Tibia.Addresses.TextDisplay.NopFPS);
 
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrAddContextMenuFunc", Tibia.Addresses.ContextMenus.AddContextMenuPtr));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrOnClickContextMenu", Tibia.Addresses.ContextMenus.OnClickContextMenuVf));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrSetOutfitContextMenu", Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrPartyActionContextMenu", Tibia.Addresses.ContextMenus.AddPartyActionContextMenu));
-            pipe.Send(Tibia.Packets.Pipes.SetConstantPacket.Create(this, "ptrCopyNameContextMenu", Tibia.Addresses.ContextMenus.AddCopyNameContextMenu));
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.AddContextMenuFunc, Tibia.Addresses.ContextMenus.AddContextMenuPtr);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.OnClickContextMenu, Tibia.Addresses.ContextMenus.OnClickContextMenuPtr);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.SetOutfitContextMenu, Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.PartyActionContextMenu, Tibia.Addresses.ContextMenus.AddPartyActionContextMenu);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.CopyNameContextMenu, Tibia.Addresses.ContextMenus.AddCopyNameContextMenu);
 
             //Hook Display functions
-            pipe.Send(Tibia.Packets.Pipes.InjectDisplayPacket.Create(this, true));
+            Packets.Pipes.InjectDisplayPacket.Send(this, true);
             pipeIsReady.Set();
         }
 

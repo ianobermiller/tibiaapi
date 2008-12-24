@@ -5,58 +5,46 @@ namespace Tibia.Packets.Pipes
 {
     public class RemoveCreatureTextPacket : PipePacket
     {
-        int creatureID;
-        string creatureName;
+        public int CreatureId{get;set;}
+        public string CreatureName { get; set; }
 
-        public int CreatureID
+        public RemoveCreatureTextPacket(Client client)
+            : base(client)
         {
-            get { return creatureID; }
+            Type = PipePacketType.RemoveCreatureText;
         }
 
-        public string CreatureName
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            get { return creatureName; }
-        }
-
-        public RemoveCreatureTextPacket(Client c)
-            : base(c)
-        {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.RemoveCreatureText;
-            destination = PacketDestination.Pipe;
-        }
-
-        public RemoveCreatureTextPacket(Client c, byte[] data)
-            : this(c)
-        {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.RemoveCreatureText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                creatureID = p.GetLong();
-                creatureName = p.GetString();
-
-                index = p.Index;
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.RemoveCreatureText)
                 return false;
-            }
+
+            Type = PipePacketType.RemoveCreatureText;
+            CreatureId = (int)msg.GetUInt32();
+            CreatureName = msg.GetString();
+
+            return true;
         }
 
-        public static RemoveCreatureTextPacket Create(Client c, int CreatureID, string CreatureName)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.RemoveCreatureText);
-            p.AddLong(CreatureID);
-            p.AddString(CreatureName);
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
 
-            return new RemoveCreatureTextPacket(c, p.GetPacket());
+            msg.AddUInt32((uint)CreatureId);
+            msg.AddString(CreatureName);
+
+            return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, int creatureId, string creatureName)
+        {
+            RemoveCreatureTextPacket p = new RemoveCreatureTextPacket(client);
+            p.CreatureId = creatureId;
+            p.CreatureName = creatureName;
+            return p.Send();
+        }
+
     }
 }
+

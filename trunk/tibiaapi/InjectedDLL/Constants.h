@@ -1,9 +1,9 @@
 #if MSC_VER > 100
 #pragma once
 #endif
+
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
-
 
 namespace Consts {
 
@@ -34,6 +34,21 @@ extern CRITICAL_SECTION NormalTextCriticalSection;
 extern CRITICAL_SECTION CreatureTextCriticalSection;
 extern CRITICAL_SECTION ContextMenuCriticalSection;
 extern CRITICAL_SECTION OnClickCriticalSection;
+
+
+enum PipeConstantType : BYTE
+{
+        PrintName = 0x01,
+        PrintFPS = 0x02,
+        ShowFPS = 0x03,
+        PrintTextFunc = 0x04,
+        NopFPS = 0x05,
+        AddContextMenuFunc = 0x06,
+        OnClickContextMenu = 0x07,
+        SetOutfitContextMenu = 0x08,
+        PartyActionContextMenu = 0x09,
+        CopyNameContextMenu = 0x0A,
+};
 
 /* Structures */
 //Display Normal Text Strcture
@@ -69,4 +84,5 @@ struct ContextMenu
 	BYTE Type;
 	BYTE HasSeparator;
 };
+
 #endif

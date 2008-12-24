@@ -5,40 +5,38 @@ namespace Tibia.Packets.Pipes
 {
     public class RemoveAllTextPacket : PipePacket
     {
-        public RemoveAllTextPacket(Client c)
-            : base(c)
+
+        public RemoveAllTextPacket(Client client)
+            : base(client)
         {
-            type = PacketType.PipePacket;
-            pipetype = PipePacketType.RemoveAllText;
-            destination = PacketDestination.Pipe;
+            Type = PipePacketType.RemoveAllText;
         }
 
-        public RemoveAllTextPacket(Client c, byte[] data)
-            : this(c)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            ParseData(data);
-        }
-
-        public new bool ParseData(byte[] packet)
-        {
-            if (base.ParseData(packet))
-            {
-                if (pipetype != PipePacketType.RemoveAllText || type != PacketType.PipePacket) { return false; }
-                PacketBuilder p = new PacketBuilder(client, packet, 3);
-                index = p.Index;
-
-                return true;
-            }
-            else
-            {
+            if (msg.GetByte() != (byte)PipePacketType.RemoveAllText)
                 return false;
-            }
+
+            Type = PipePacketType.RemoveAllText;
+
+            return true;
         }
 
-        public static RemoveAllTextPacket Create(Client c)
+        public override byte[] ToByteArray()
         {
-            PacketBuilder p = new PacketBuilder(c, (PacketType)PipePacketType.RemoveAllText);
-            return new RemoveAllTextPacket(c, p.GetPacket());
+            NetworkMessage msg = new NetworkMessage(Client, 0);
+            msg.AddByte((byte)Type);
+            return msg.Packet;
+        }
+
+        public static bool Send(Objects.Client client)
+        {
+            RemoveAllTextPacket p = new RemoveAllTextPacket(client);
+            return p.Send();
         }
     }
 }
+
+
+
+
