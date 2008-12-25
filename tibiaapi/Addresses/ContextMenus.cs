@@ -5,14 +5,14 @@
         /// <summary>
         /// The function used to add a context menu item.
         /// </summary>
-        public static uint AddContextMenuPtr = 0x450B00;
+        public static uint AddContextMenuPtr = 0x450B00; //8.4
 
         /// <summary>
         /// The function used to process Tibia's "OnClick" events,
         /// that is, the events issued when you click a context
         /// menu item.
         /// </summary>
-        public static uint OnClickContextMenuPtr = 0x44D2F0;
+        public static uint OnClickContextMenuPtr = 0x44D2F0; //8.4
 
         /// <summary>
         /// The address in the virtual function table where the
@@ -25,14 +25,14 @@
         /// OnClickContextMenuPtr from your hooked function to
         /// process standard Tibia events.
         /// </summary>
-        public static uint OnClickContextMenuVf = 0x5B0980;
+        public static uint OnClickContextMenuVf = 0x5B0980; //8.?
 
         /// <summary>
         /// The "Set Outfit" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to your character
         /// </summary>
-        public static uint AddSetOutfitContextMenu = 0x451A32;
+        public static uint AddSetOutfitContextMenu = 0x451A32; //8.4
 
         /// <summary>
         /// The "Invite to Party" / "Leave Party" context menu
@@ -40,13 +40,13 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to other players.
         /// </summary>
-        public static uint AddPartyActionContextMenu = 0x451A83;
+        public static uint AddPartyActionContextMenu = 0x451A83; //8.4
 
         /// <summary>
         /// The "Copy Name" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to creatures (including you and monsters).
         /// </summary>
-        public static uint AddCopyNameContextMenu = 0x451A9A;
+        public static uint AddCopyNameContextMenu = 0x451A9A; //8.4
     }
 }

@@ -12,10 +12,10 @@ namespace Tibia.Objects
         string text;
         ContextMenu.Type type;
         bool hasSeparator;
-        bool added=false;
+        bool added = false;
 
 
-        public ContextMenu(Client client,int EventId, string MenuText, Type Type, bool HasSeparator)
+        public ContextMenu(Client client, int EventId, string MenuText, Type Type, bool HasSeparator)
         {
             this.client = client;
             eventId = EventId;
@@ -34,7 +34,7 @@ namespace Tibia.Objects
                     client.PipeIsReady.WaitOne();
                 }
 
-                if (eventId < 0 || text == string.Empty) 
+                if (eventId < 0 || text == string.Empty)
                     return false;
 
                 Packets.Pipes.AddContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
@@ -54,7 +54,7 @@ namespace Tibia.Objects
                     client.PipeIsReady.WaitOne();
                 }
 
-                if (eventId < 0 || text == string.Empty) 
+                if (eventId < 0 || text == string.Empty)
                     return false;
 
                 Packets.Pipes.RemoveContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
@@ -74,7 +74,7 @@ namespace Tibia.Objects
 
             Packets.Pipes.RemoveAllContextMenusPacket.Send(client);
         }
-    
+
 
         /// <summary>
         /// A generic function prototype for context menu events.

@@ -206,6 +206,7 @@ namespace Tibia.Packets
         SetOutfitContextMenu = 0x08,
         PartyActionContextMenu = 0x09,
         CopyNameContextMenu = 0x0A,
+        OnClickContextMenuVf = 0x0B,
     }
     
     /// <summary>
