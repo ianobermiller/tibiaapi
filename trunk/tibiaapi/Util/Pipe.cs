@@ -82,8 +82,8 @@ namespace Tibia.Util
         private void BeginRead(IAsyncResult ar)
         {
             int read = pipe.EndRead(ar);
+            
             // Call OnReceive asynchronously
-
             if (OnReceive != null)
                 OnReceive.BeginInvoke(new NetworkMessage(client, buffer, read), null, null);
 

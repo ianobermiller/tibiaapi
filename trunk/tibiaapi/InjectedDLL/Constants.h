@@ -18,6 +18,7 @@ namespace Consts {
 	extern DWORD ptrSetOutfitContextMenu;
 	extern DWORD ptrPartyActionContextMenu;
 	extern DWORD ptrCopyNameContextMenu;
+	extern DWORD prtOnClickContextMenuVf;
 }
 
 /* DLL Injection Related Stuff */
@@ -48,6 +49,7 @@ enum PipeConstantType : BYTE
         SetOutfitContextMenu = 0x08,
         PartyActionContextMenu = 0x09,
         CopyNameContextMenu = 0x0A,
+		OnClickContextMenuVf = 0x0B,
 };
 
 /* Structures */
