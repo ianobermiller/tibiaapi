@@ -50,6 +50,7 @@ namespace Tibia.Util
 
         public delegate void SplitPacket(byte type, byte[] packet);
         public event SplitPacket IncomingSplitPacket;
+        public event SplitPacket OutgoingSplitPacket;
 
         public delegate void RawPacketListener(byte[] packet, string flags);
         public RawPacketListener ReceivedIPPacketFromClient;
@@ -269,7 +270,7 @@ namespace Tibia.Util
                                 ReceivedIPPacketFromClient((byte[])ipPacket.Clone(), String.Copy(flags));
                             if(ReceivedTCPPacketFromClient!=null)
                                 ReceivedTCPPacketFromClient((byte[])tcpPacket.Clone(), String.Copy(flags));
-                            RaiseOutgoingEvent(gameRawPacket);
+                            RaiseOutgoingEvents(gameRawPacket);
                         }
                     }
                 }
@@ -281,16 +282,43 @@ namespace Tibia.Util
             }
         }
 
-        private void RaiseOutgoingEvent(byte[] data)
+        private void RaiseOutgoingEvents(byte[] data)
         {
             if (ReceivedMessageFromClient != null)
                 ReceivedMessageFromClient(new NetworkMessage(client, data));
 
             NetworkMessage msg = new NetworkMessage(client, data);
+
             msg.PrepareToRead();
             msg.GetUInt16();
 
-            OutgoingPacket packet = ParseServerPacket(client, msg, Location.Invalid);
+            Objects.Location pos =  Location.Invalid;
+
+            while (msg.Position < msg.Length)
+            {
+                OutgoingPacket packet = ParseServerPacket(client, msg, pos);
+                byte[] packetBytes;
+
+                if (packet == null)
+                {
+                    packetBytes = msg.GetBytes(msg.Length - msg.Position);
+
+                    if (packetBytes.Length > 0)
+                    {
+                        if (OutgoingSplitPacket != null)
+                            OutgoingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+                    }
+                    break;
+                }
+                else
+                {
+
+                    packetBytes = packet.ToByteArray();
+
+                    if (OutgoingSplitPacket != null)
+                        OutgoingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+                }
+            }
         }
 
         private void ParseServerToClient(byte[] packet, string flags)
@@ -422,18 +450,17 @@ namespace Tibia.Util
                 }
             }
             if (!moreToCome) 
-            ProcessIncomingGamePacketQueue();
+                ProcessIncomingGamePacketQueue();
         }
 
         private void ProcessIncomingGamePacketQueue()
         {
             while (IncomingGamePacketQueue.Count > 0)
             {
-
-                NetworkMessage msg = new NetworkMessage(client,IncomingGamePacketQueue.Dequeue());
                 
+                NetworkMessage msg = new NetworkMessage(client,IncomingGamePacketQueue.Dequeue());
                 if (ReceivedMessageFromServer != null)
-                    ReceivedMessageFromServer(msg);
+                    ReceivedMessageFromServer.Invoke(msg);
 
                 msg.PrepareToRead();
                 msg.GetUInt16(); //logical packet size
@@ -463,7 +490,6 @@ namespace Tibia.Util
 
                         if (IncomingSplitPacket != null)
                             IncomingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
-
                     }
                 }
             }

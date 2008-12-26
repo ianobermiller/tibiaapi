@@ -15,10 +15,11 @@ namespace SmartPacketSniffer
 {
     public partial class MainForm : Form
     {
-        RawSocket sock;
         Client client;
         List<Client> lc;
-        List<CapturedPacket> captPackets=new List<CapturedPacket>();
+        List<CapturedPacket> captPackets = new List<CapturedPacket>();
+        Dictionary<byte, string> incomingPacketTypeNames = new Dictionary<byte, string>();
+        Dictionary<byte, string> outgoingPacketTypeNames = new Dictionary<byte, string>();
         byte[] displayedPacket = null;
 
         public MainForm()
@@ -30,12 +31,19 @@ namespace SmartPacketSniffer
         {
             ReloadClients();
             SetSocket();
+            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
+            {
+                incomingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.IncomingPacketType), t));
+            }
+
+            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.OutgoingPacketType)))
+            {
+                outgoingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.OutgoingPacketType), t));
+            }
         }
 
         private void btnClient_Click(object sender, EventArgs e)
-        {
-            if(sock!=null)
-                sock.Close();            
+        {         
             SetSocket();
         }
 
@@ -50,12 +58,12 @@ namespace SmartPacketSniffer
             if (btnLog.Text == "Stop Packet Logging")
             {
                 btnLog.Text = "Start Packet Logging";
-                if (sock != null) sock.Enabled = false;
+                client.StopRawSocket();
             }
             else if (btnLog.Text == "Start Packet Logging")
             {
                 btnLog.Text = "Stop Packet Logging";
-                if (sock != null) sock.Enabled = true;
+                client.StartRawSocket();
             }
         }
 
@@ -79,94 +87,73 @@ namespace SmartPacketSniffer
             if (comboBox1.Items.Count > 0)
             {
                 client = lc[comboBox1.SelectedIndex];
-                if (client != null)
+                if (client.RawSocket == null)
                 {
-                    sock = new RawSocket(client, true);
-                    sock.ReceivedGamePacketFromClient += ClientPacket;
-                    sock.ReceivedGamePacketFromServer += ServerPacket;
-                    sock.SplitPacketFromServer+=SplitPacket;
+                    client.StartRawSocket();
+                    client.RawSocket.IncomingSplitPacket+=new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
+                    client.RawSocket.OutgoingSplitPacket+=new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
                     EventHandler e = new EventHandler(RadioChanged);
                     e.Invoke(new Object(), new EventArgs());
-                    sock.Enabled = true;
                 }
             }
         }
 
-        private void ClientPacket(Packet p)
+
+
+        private void RawSocket_OutgoingSplitPacket(byte type, byte[] packet)
         {
             if (chkClient.Checked)
             {
                 if (chkType.Checked)
                 {
-                    txtType.Invoke(new EventHandler(delegate
+                    if (txtType.Text.Length == 2 &&
+                        type == txtType.Text.ToBytesAsHex()[0])
                     {
-                        if (txtType.Text.Length == 2)
-                        {
-                            if (p.Data[2] == txtType.Text.ToBytesAsHex()[0])
-                            {
-                                LogPacket(p.Client, p.Data, "CLIENT", "SERVER");
-                            }
-                        }
-                    }));
+                        LogPacket(packet, "CLIENT", "SERVER");
+                    }                    
                 }
-                else LogPacket(p.Client, p.Data, "CLIENT", "SERVER");
+                else LogPacket(packet, "CLIENT", "SERVER");
             }
         }
-        private void ServerPacket(Packet p)
+
+        private void RawSocket_IncomingSplitPacket(byte type, byte[] packet)
         {
             if (chkServer.Checked)
             {
                 if (chkType.Checked)
                 {
-                    txtType.Invoke(new EventHandler(delegate
+                    if (txtType.Text.Length == 2 &&
+                        type== txtType.Text.ToBytesAsHex()[0])
                     {
-                        if (txtType.Text.Length == 2)
-                        {
-                            if (p.Data[2] == txtType.Text.ToBytesAsHex()[0])
-                            {
-                                LogPacket(p.Client, p.Data, "CLIENT", "SERVER");
-                            }
-                        }
-                    }));
+                        LogPacket(packet, "SERVER", "CLIENT");
+                    }                    
                 }
-                else LogPacket(p.Client, p.Data, "SERVER", "CLIENT");
+                else LogPacket(packet, "SERVER", "CLIENT");
             }
         }
-        private void SplitPacket(Packet p)
+
+        private void LogPacket(byte[] packet, string from, string to)
         {
-            if (chkServer.Checked && chkSplit.Checked)
-            {
-                if (chkType.Checked)
-                {
-                    txtType.Invoke(new EventHandler(delegate
-                    {
-                        if (txtType.Text.Length == 2)
-                        {
-                            if (p.Data[2] == txtType.Text.ToBytesAsHex()[0])
-                            {
-                                LogPacket(p.Client, p.Data, "CLIENT*", "SERVER");
-                            }
-                        }
-                    }));
-                }
-                else LogPacket(p.Client, p.Data, "SERVER*", "CLIENT");
-            }
-        }
-        private void LogPacket(Client client,byte[] packet, string from, string to)
-        {
-            if (sock.Enabled)
+            if (client.RawSocket.Enabled)
             {
                 PacketList.Invoke(new EventHandler(delegate
                 {
-                    CapturedPacket cp = new CapturedPacket(client.ToString(),packet, from, packet.Length, to);
+                    CapturedPacket cp = new CapturedPacket(packet, from, packet.Length, to);
                     captPackets.Add(cp);
+                    string name = "";
+
+                    if (cp.Source == "SERVER" && incomingPacketTypeNames.ContainsKey(cp.Type))
+                        name = incomingPacketTypeNames[cp.Type];
+                    if (cp.Source == "CLIENT" && outgoingPacketTypeNames.ContainsKey(cp.Type))
+                        name = outgoingPacketTypeNames[cp.Type];
+
                     PacketList.Items.Add(new ListViewItem(new string[]{
-                        cp.client,
                         cp.Time,
                         cp.Source,
                         cp.Destination,
                         cp.Length.ToString(),
-                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper()
+                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper(),
+                        name
                     }));
                     PacketList.EnsureVisible(PacketList.Items.Count - 1);
                 }));
@@ -234,7 +221,6 @@ namespace SmartPacketSniffer
 
         public struct CapturedPacket
         {
-            public string client;
             public byte[] Data;
             public string Time;
             public string Source;
@@ -242,15 +228,14 @@ namespace SmartPacketSniffer
             public int Length;
             public byte Type;
 
-            public CapturedPacket(string ClientToString,byte[] data, string source, int length, string destination)
+            public CapturedPacket(byte[] data, string source, int length, string destination)
             {
-                client = ClientToString;
                 Data = data;
                 Time = DateTime.Now.ToString("hh:mm:ss.ffff");
                 Source = source;
                 Destination = destination;
                 Length = length;
-                Type = data[2];
+                Type = data[0];
             }
 
             public override string ToString()
@@ -261,12 +246,12 @@ namespace SmartPacketSniffer
 
         private void RadioChanged(object sender, EventArgs e)
         {
-            if (radioDefault.Checked) sock.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
-            else if (radioSpecial.Checked) sock.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
+            if (radioDefault.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
+            else if (radioSpecial.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
             else if (radioProxy.Checked)
             {
-                sock.Mode = RawSocket.SocketMode.UsingProxy;
-                sock.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
+                client.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
+                client.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
             }
         }
 
