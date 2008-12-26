@@ -166,7 +166,15 @@ namespace Tibia.Objects
 
         public uint[] XteaKey
         {
-            get { return ReadBytes(Tibia.Addresses.Client.XTeaKey,16).ToUInt32Array(); }
+            get 
+            {
+                //if we are using proxy the xteakey is parsed from the first login msg
+                //so we dont have to read it from the clients memory.
+                if (UsingProxy)
+                    return proxy.XteaKey;
+                else
+                    return ReadBytes(Tibia.Addresses.Client.XTeaKey, 16).ToUInt32Array(); 
+            }
         }
 
         /// <summary>
@@ -1175,14 +1183,16 @@ namespace Tibia.Objects
 
         public void StartRawSocket(bool Adler)
         {
-            if(rawsocket==null)
+            if (rawsocket == null)
                 rawsocket = new Tibia.Util.RawSocket(this, Adler);
-            rawsocket.Enabled=true;
+            
+            rawsocket.Enabled = true;
         }
 
         public void StopRawSocket()
         {
-            if (rawsocket != null) rawsocket.Enabled = false;
+            if (rawsocket != null) 
+                rawsocket.Enabled = false;
         }
 
         public Util.RawSocket RawSocket
@@ -1190,7 +1200,6 @@ namespace Tibia.Objects
             get { return rawsocket; }
         }
         #endregion
-
 
         #region Proxy wrappers
 

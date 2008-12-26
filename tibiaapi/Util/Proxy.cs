@@ -70,6 +70,11 @@ namespace Tibia.Util
             get { return portServer; }
             set { portServer = value; }
         }
+
+        public uint[] XteaKey
+        {
+            get { return xteaKey; }
+        }
         #endregion
 
         #region Events
