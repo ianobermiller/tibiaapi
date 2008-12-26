@@ -36,6 +36,7 @@ namespace Tibia.Objects
         private Inventory inventory;
         private Random random;
         private Console console;
+        private Util.RawSocket rawsocket;
         private Util.Proxy proxy;
         private Util.Pipe pipe = null; //For Displaying Text
         private Screen screen;
@@ -161,6 +162,11 @@ namespace Tibia.Objects
         public Constants.LoginStatus Status
         {
             get { return (Constants.LoginStatus)ReadByte(Addresses.Client.Status); }
+        }        
+
+        public uint[] XteaKey
+        {
+            get { return ReadBytes(Tibia.Addresses.Client.XTeaKey,16).ToUInt32Array(); }
         }
 
         /// <summary>
@@ -1159,6 +1165,32 @@ namespace Tibia.Objects
         }
 
         #endregion
+
+        #region RawSocket wrappers
+
+        public void StartRawSocket()
+        {
+            StartRawSocket(true);
+        }
+
+        public void StartRawSocket(bool Adler)
+        {
+            if(rawsocket==null)
+                rawsocket = new Tibia.Util.RawSocket(this, Adler);
+            rawsocket.Enabled=true;
+        }
+
+        public void StopRawSocket()
+        {
+            if (rawsocket != null) rawsocket.Enabled = false;
+        }
+
+        public Util.RawSocket RawSocket
+        {
+            get { return rawsocket; }
+        }
+        #endregion
+
 
         #region Proxy wrappers
 
