@@ -1276,6 +1276,7 @@ namespace Tibia.Objects
             Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.SetOutfitContextMenu, Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu);
             Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.PartyActionContextMenu, Tibia.Addresses.ContextMenus.AddPartyActionContextMenu);
             Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.CopyNameContextMenu, Tibia.Addresses.ContextMenus.AddCopyNameContextMenu);
+            Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.TradeWithContextMenu, Tibia.Addresses.ContextMenus.AddTradeWithContextMenu);
             Packets.Pipes.SetConstantPacket.Send(this, PipeConstantType.OnClickContextMenuVf, Tibia.Addresses.ContextMenus.OnClickContextMenuVf);
 
             //Hook Display functions

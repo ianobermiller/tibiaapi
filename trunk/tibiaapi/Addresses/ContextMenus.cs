@@ -48,5 +48,8 @@
         /// that is specific to creatures (including you and monsters).
         /// </summary>
         public static uint AddCopyNameContextMenu = 0x451A9A; //8.4
+
+
+        public static uint AddTradeWithContextMenu = 0x4516A9; //8.4
     }
 }

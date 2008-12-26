@@ -587,6 +587,7 @@ namespace Tibia.Constants
         AllMenus = 0x00,
         SetOutfitContextMenu = 0x01,
         PartyActionContextMenu = 0x02,
-        CopyNameContextMenu = 0x03
+        CopyNameContextMenu = 0x03,
+        TradeWithContextMenu = 0x04,
     }
 }
