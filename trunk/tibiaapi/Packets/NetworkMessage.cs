@@ -86,7 +86,7 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt()
         {
-            if (Client.Proxy.XteaKey == null)
+            if (Client.XteaKey == null)
                 return false;
 
             int msgSize = messageStream.Length - 6;
@@ -146,9 +146,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                y += (z << 4 ^ z >> 5) + z ^ sum + Client.Proxy.XteaKey[sum & 3];
+                y += (z << 4 ^ z >> 5) + z ^ sum + Client.XteaKey[sum & 3];
                 sum += delta;
-                z += (y << 4 ^ y >> 5) + y ^ sum + Client.Proxy.XteaKey[sum >> 11 & 3];
+                z += (y << 4 ^ y >> 5) + y ^ sum + Client.XteaKey[sum >> 11 & 3];
             }
 
             v[index] = y;
@@ -167,9 +167,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                z -= (y << 4 ^ y >> 5) + y ^ sum + Client.Proxy.XteaKey[sum >> 11 & 3];
+                z -= (y << 4 ^ y >> 5) + y ^ sum + Client.XteaKey[sum >> 11 & 3];
                 sum -= delta;
-                y -= (z << 4 ^ z >> 5) + z ^ sum + Client.Proxy.XteaKey[sum & 3];
+                y -= (z << 4 ^ z >> 5) + z ^ sum + Client.XteaKey[sum & 3];
             }
 
             v[index] = y;

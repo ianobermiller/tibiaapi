@@ -65,11 +65,6 @@ namespace Tibia.Util
             get { return isConnected; }
         }
 
-        public uint[] XteaKey
-        {
-            get { return xteaKey; }
-        }
-
         public ushort Port
         {
             get { return portServer; }
@@ -498,7 +493,7 @@ namespace Tibia.Util
                         case 0x1E: //Patching exe/dat/spr messages
                         case 0x1F:
                         case 0x20:
-                            DisconnectClient(0x0A, "A new client are avalible, please download it first!");
+                            DisconnectClient(0x0A, "A new client is avalible, please download it first!");
                             return;
                         case 0x28: //Select other login server
                             selectedLoginServer = (uint)randon.Next(0, loginServers.Length - 1);
@@ -735,7 +730,7 @@ namespace Tibia.Util
                     if (packet == null)
                     {
                         if (DebugOn)
-                            WriteDebug("Unknow incoming packet.. skping the rest! type: " + msg.PeekByte().ToString("X"));
+                            WriteDebug("Unknown incoming packet.. skiping the rest! type: " + msg.PeekByte().ToString("X"));
 
                         packetBytes = msg.GetBytes(msg.Length - msg.Position);
 

@@ -12,11 +12,9 @@ using Tibia.Util;
 
 namespace Tibia.Util
 {
-
     //FIXME: Update to new packet system.
-
-    /*
-    public class RawSocket
+    
+    public class RawSocket:SocketBase
     {
         [DllImport("iphlpapi.dll", SetLastError = true)]
         static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, TCP_TABLE_CLASS tblClass, int reserved);
@@ -32,7 +30,7 @@ namespace Tibia.Util
         private SocketMode mode=SocketMode.UsingDefaultRemotePort;
         private byte[] receive_buf = new byte[4096];
         private bool Adler;
-        private bool log = false;
+        private bool enabled = false;
         private bool moreToCome = false;
         private int bytesLeftToCome = 0;
         private byte[] toJoin;
@@ -40,63 +38,27 @@ namespace Tibia.Util
         private Queue<byte[]> OutgoingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> packetServerToClientQueue=new Queue<byte[]>();
         private Queue<string> flagServerToClientQueue=new Queue<string>();
-        private int partialRemaining=0;
-        public byte[] xtea=new byte[16];
         #endregion
         #region Events
-        public delegate void RawPacketListener(byte[] packet, string flags);
-        public delegate void PacketListener(Packet p);
-        public delegate void SocketNotification(string message);
 
-        public SocketNotification OnError;
+        public delegate void Notification(string where,string messsage);
+        public Notification OnError;
+
+        public delegate void MessageListener(NetworkMessage message);
+        public event MessageListener ReceivedMessageFromClient;
+        public event MessageListener ReceivedMessageFromServer;
+
+        public delegate void SplitPacket(byte type, byte[] packet);
+        public event SplitPacket IncomingSplitPacket;
+
+        public delegate void RawPacketListener(byte[] packet, string flags);
         public RawPacketListener ReceivedIPPacketFromClient;
         public RawPacketListener ReceivedIPPacketFromServer;
         public RawPacketListener ReceivedTCPPacketFromClient;
         public RawPacketListener ReceivedTCPPacketFromServer;
         public RawPacketListener ReceivedRawGamePacketFromServer;
-        public PacketListener ReceivedGamePacketFromClient;
-        public PacketListener ReceivedGamePacketFromServer;
-        public PacketListener SplitPacketFromServer;
 
-        public PacketListener ReceivedAnimatedTextPacket;
-        public PacketListener ReceivedBookOpenPacket;
-        public PacketListener ReceivedCancelAutoWalkPacket;
-        public PacketListener ReceivedChannelListPacket;
-        public PacketListener ReceivedChannelOpenPacket;
-        public PacketListener ReceivedChatMessagePacket;
-        public PacketListener ReceivedContainerClosedPacket;
-        public PacketListener ReceivedContainerItemAddPacket;
-        public PacketListener ReceivedContainerItemRemovePacket;
-        public PacketListener ReceivedContainerItemUpdatePacket;
-        public PacketListener ReceivedContainerOpenedPacket;
-        public PacketListener ReceivedCreatureHealthPacket;
-        public PacketListener ReceivedCreatureLightPacket;
-        public PacketListener ReceivedCreatureMovePacket;
-        public PacketListener ReceivedCreatureOutfitPacket;
-        public PacketListener ReceivedCreatureSpeedPacket;
-        public PacketListener ReceivedCreatureSkullPacket;
-        public PacketListener ReceivedCreatureSquarePacket;
-        public PacketListener ReceivedEqItemAddPacket;
-        public PacketListener ReceivedEqItemRemovePacket;
-        public PacketListener ReceivedFlagUpdatePacket;
-        public PacketListener ReceivedInformationBoxPacket;
-        public PacketListener ReceivedMapItemAddPacket;
-        public PacketListener ReceivedMapItemRemovePacket;
-        public PacketListener ReceivedMapItemUpdatePacket;
-        public PacketListener ReceivedNpcTradeListPacket;
-        public PacketListener ReceivedNpcTradeGoldCountPacket;
-        public PacketListener ReceivedPartyInvitePacket;
-        public PacketListener ReceivedPrivateChannelOpenPacket;
-        public PacketListener ReceivedProjectilePacket;
-        public PacketListener ReceivedSkillUpdatePacket;
-        public PacketListener ReceivedStatusMessagePacket;
-        public PacketListener ReceivedStatusUpdatePacket;
-        public PacketListener ReceivedTileAnimationPacket;
-        public PacketListener ReceivedVipAddPacket;
-        public PacketListener ReceivedVipLoginPacket;
-        public PacketListener ReceivedVipLogoutPacket;
-        public PacketListener ReceivedWorldLightPacket;
-#endregion
+        #endregion
         #region Structs and Enums
 
         public enum SocketMode
@@ -194,6 +156,7 @@ namespace Tibia.Util
             return tTable;
         }
         #endregion       
+
         #region socket core
         public RawSocket(Client client, bool Adler)
         {
@@ -208,8 +171,8 @@ namespace Tibia.Util
                 strIP = HosyEntry.AddressList[0].ToString();
                 //Console.WriteLine("IP: " + strIP);
             }
-            else{}
-                //Console.WriteLine("No ip assigned");
+            else{/*cry
+                Console.WriteLine("No ip assigned");*/}
             mainSocket = new Socket(AddressFamily.InterNetwork,
                     SocketType.Raw, ProtocolType.IP);
 
@@ -245,7 +208,7 @@ namespace Tibia.Util
             try
             {
                 int bytesRead = mainSocket.EndReceive(ar);
-                if (log && bytesRead > 0)
+                if (enabled && bytesRead > 0)
                 {
                     PreParse(receive_buf, bytesRead);
                 }
@@ -255,12 +218,12 @@ namespace Tibia.Util
             catch (ObjectDisposedException)
             {
                 if (OnError != null)
-                OnError("Objected Disposed Exception");
+                OnError("OnReceive","Objected Disposed Exception");
             }
             catch (Exception ex)
             {
                 if (OnError != null)
-                OnError(ex.Message);
+                    OnError("OnReceive", ex.Message);
             }
         }
 
@@ -306,7 +269,7 @@ namespace Tibia.Util
                                 ReceivedIPPacketFromClient((byte[])ipPacket.Clone(), String.Copy(flags));
                             if(ReceivedTCPPacketFromClient!=null)
                                 ReceivedTCPPacketFromClient((byte[])tcpPacket.Clone(), String.Copy(flags));
-                            RaiseOutgoingEvents(gameRawPacket);
+                            RaiseOutgoingEvent(gameRawPacket);
                         }
                     }
                 }
@@ -314,14 +277,20 @@ namespace Tibia.Util
             catch (Exception ex)
             {
                 if(OnError!=null)
-                OnError(ex.Message);
+                OnError("PreParse",ex.Message);
             }
         }
 
-        private void RaiseOutgoingEvents(byte[] packet)
+        private void RaiseOutgoingEvent(byte[] data)
         {
-            if (ReceivedGamePacketFromClient != null)
-                ReceivedGamePacketFromClient(new Packet(client, DecryptPacket(packet)));
+            if (ReceivedMessageFromClient != null)
+                ReceivedMessageFromClient(new NetworkMessage(client, data));
+
+            NetworkMessage msg = new NetworkMessage(client, data);
+            msg.PrepareToRead();
+            msg.GetUInt16();
+
+            OutgoingPacket packet = ParseServerPacket(client, msg, Location.Invalid);
         }
 
         private void ParseServerToClient(byte[] packet, string flags)
@@ -458,313 +427,55 @@ namespace Tibia.Util
 
         private void ProcessIncomingGamePacketQueue()
         {
-            if (IncomingGamePacketQueue.Count > 0)
+            while (IncomingGamePacketQueue.Count > 0)
             {
 
-                byte[] original = IncomingGamePacketQueue.Dequeue();
-                byte[] decrypted = DecryptPacket(original);
+                NetworkMessage msg = new NetworkMessage(client,IncomingGamePacketQueue.Dequeue());
+                
+                if (ReceivedMessageFromServer != null)
+                    ReceivedMessageFromServer(msg);
 
-                int remaining = 0; // the bytes worth of logical packets left
+                msg.PrepareToRead();
+                msg.GetUInt16(); //logical packet size
 
-                // Always call the default (if attached to)
-                if (ReceivedGamePacketFromServer != null)
-                    ReceivedGamePacketFromServer(new Packet(client,decrypted));
+                Objects.Location pos = GetPlayerPosition();
 
-                // Is this a part of a larger packet?
-                if (partialRemaining > 0)
+                while (msg.Position < msg.Length)
                 {
+                    IncomingPacket packet = ParseClientPacket(client, msg, ref pos);
+                    byte[] packetBytes;
 
-                    // Subtract from the remaining needed
-                    partialRemaining -= decrypted.Length;
-                }
-                else
-                {
-                    // No, create a new partial packet
-                    //partial = new PacketBuilder(client, decrypted);
-                    remaining = BitConverter.ToInt16(decrypted,0);
-                    partialRemaining = remaining - (decrypted.Length - 2); // packet length - part we already have
-                }
-
-                // Do we have a complete packet now?
-                if (partialRemaining == 0)
-                {
-                    int length = 0;
-
-                    // Keep going until no more logical packets
-                    while (remaining > 0)
+                    if (packet == null)
                     {
-                        length = RaiseIncomingEvents(decrypted);
+                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
 
-                        // If packet not found in database, skip the rest
-                        if (length == -1)                        
-                            break;
-                        
+                        if (packetBytes.Length > 0)
+                        {
+                            if (IncomingSplitPacket != null)
+                                IncomingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
 
-                        length++;
-                        //not tested yet
-                        if (SplitPacketFromServer != null)
-                            SplitPacketFromServer(new Packet(client, Packet.Repackage(decrypted, 2, length)));
-
-
-                        // Subtract the amount that was parsed
-                        remaining -= length;
-
-                        // Repackage decrypted without the first logical packet
-                        if (remaining > 0)
-                            decrypted = Packet.Repackage(decrypted, length + 2);
+                        }
+                        break;
                     }
+                    else
+                    {
+                        packetBytes = packet.ToByteArray();
 
+                        if (IncomingSplitPacket != null)
+                            IncomingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+
+                    }
                 }
-
-                if (IncomingGamePacketQueue.Count > 0)
-                    ProcessIncomingGamePacketQueue();
             }
         }
 
-        private int RaiseIncomingEvents(byte[] packet)
-        {
-            int length = -1;
-            if (packet.Length < 3) return length;
-            Packet p;
-            PacketType type = (PacketType)packet[2];
-            switch (type)
-            {
-                case PacketType.AnimatedText:
-                    p = new AnimatedTextPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedAnimatedTextPacket != null)
-                         ReceivedAnimatedTextPacket(p);
-                    break;
-                case PacketType.BookOpen:
-                    p = new BookOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedBookOpenPacket != null)
-                         ReceivedBookOpenPacket(p);
-                    break;
-                case PacketType.CancelAutoWalk:
-                    p = new CancelAutoWalkPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCancelAutoWalkPacket != null)
-                         ReceivedCancelAutoWalkPacket(p);
-                    break;
-                case PacketType.ChannelList:
-                    p = new ChannelListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChannelListPacket != null)
-                         ReceivedChannelListPacket(p);
-                    break;
-                case PacketType.ChannelOpen:
-                    p = new ChannelOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChannelOpenPacket != null)
-                         ReceivedChannelOpenPacket(p);
-                    break;
-                case PacketType.ChatMessage:
-                    p = new ChatMessagePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedChatMessagePacket != null)
-                         ReceivedChatMessagePacket(p);
-                    break;
-                case PacketType.ContainerClosed:
-                    p = new ContainerClosedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerClosedPacket != null)
-                         ReceivedContainerClosedPacket(p);
-                    break;
-                case PacketType.ContainerItemAdd:
-                    p = new ContainerItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemAddPacket != null)
-                         ReceivedContainerItemAddPacket(p);
-                    break;
-                case PacketType.ContainerItemRemove:
-                    p = new ContainerItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemRemovePacket != null)
-                         ReceivedContainerItemRemovePacket(p);
-                    break;
-                case PacketType.ContainerItemUpdate:
-                    p = new ContainerItemUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerItemUpdatePacket != null)
-                         ReceivedContainerItemUpdatePacket(p);
-                    break;
-                case PacketType.ContainerOpened:
-                    p = new ContainerOpenedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedContainerOpenedPacket != null)
-                         ReceivedContainerOpenedPacket(p);
-                    break;
-                case PacketType.CreatureHealth:
-                    p = new CreatureHealthPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureHealthPacket != null)
-                         ReceivedCreatureHealthPacket(p);
-                    break;
-                case PacketType.CreatureLight:
-                    p = new CreatureLightPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureLightPacket != null)
-                         ReceivedCreatureLightPacket(p);
-                    break;
-                case PacketType.CreatureMove:
-                    p = new CreatureMovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureMovePacket != null)
-                         ReceivedCreatureMovePacket(p);
-                    break;
-                case PacketType.CreatureOutfit:
-                    p = new CreatureOutfitPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureOutfitPacket != null)
-                         ReceivedCreatureOutfitPacket(p);
-                    break;
-                case PacketType.CreatureSkull:
-                    p = new CreatureSkullPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSkullPacket != null)
-                         ReceivedCreatureSkullPacket(p);
-                    break;
-                case PacketType.CreatureSpeed:
-                    p = new CreatureSpeedPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSpeedPacket != null)
-                         ReceivedCreatureSpeedPacket(p);
-                    break;
-                case PacketType.CreatureSquare:
-                    p = new CreatureSquarePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedCreatureSquarePacket != null)
-                         ReceivedCreatureSquarePacket(p);
-                    break;
-                case PacketType.EqItemAdd:
-                    p = new EqItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedEqItemAddPacket != null)
-                         ReceivedEqItemAddPacket(p);
-                    break;
-                case PacketType.EqItemRemove:
-                    p = new EqItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedEqItemRemovePacket != null)
-                         ReceivedEqItemRemovePacket(p);
-                    break;
-                case PacketType.FlagUpdate:
-                    p = new FlagUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedFlagUpdatePacket != null)
-                         ReceivedFlagUpdatePacket(p);
-                    break;
-                case PacketType.InformationBox:
-                    p = new InformationBoxPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedInformationBoxPacket != null)
-                         ReceivedInformationBoxPacket(p);
-                    break;
-                case PacketType.MapItemAdd:
-                    p = new MapItemAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemAddPacket != null)
-                         ReceivedMapItemAddPacket(p);
-                    break;
-                case PacketType.MapItemRemove:
-                    p = new MapItemRemovePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemRemovePacket != null)
-                         ReceivedMapItemRemovePacket(p);
-                    break;
-                case PacketType.MapItemUpdate:
-                    p = new MapItemUpdatePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedMapItemUpdatePacket != null)
-                         ReceivedMapItemUpdatePacket(p);
-                    break;
-                case PacketType.NpcTradeList:
-                    p = new NpcTradeListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedNpcTradeListPacket != null)
-                         ReceivedNpcTradeListPacket(p);
-                    break;
-                case PacketType.NpcTradeGoldCountSaleList:
-                    p = new NpcTradeGoldCountSaleListPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedNpcTradeGoldCountPacket != null)
-                         ReceivedNpcTradeGoldCountPacket(p);
-                    break;
-                case PacketType.PartyInvite:
-                    p = new PartyInvitePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedPartyInvitePacket != null)
-                         ReceivedPartyInvitePacket(p);
-                    break;
-                case PacketType.PrivateChannelOpen:
-                    p = new PrivateChannelOpenPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedPrivateChannelOpenPacket != null)
-                         ReceivedPrivateChannelOpenPacket(p);
-                    break;
-                case PacketType.Projectile:
-                    p = new ProjectilePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedProjectilePacket != null)
-                         ReceivedProjectilePacket(p);
-                    break;
-                case PacketType.SkillUpdate:
-                    p = new SkillUpdatePacket(client, packet);
-                    if (ReceivedSkillUpdatePacket != null)
-                         ReceivedSkillUpdatePacket(p);
-                    break;
-                case PacketType.StatusMessage:
-                    p = new StatusMessagePacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedStatusMessagePacket != null)
-                         ReceivedStatusMessagePacket(p);
-                    break;
-                case PacketType.StatusUpdate:
-                    p = new StatusUpdatePacket(client, packet, Adler);
-                    length = p.Index;
-                    if (ReceivedStatusUpdatePacket != null)
-                         ReceivedStatusUpdatePacket(p);
-                    break;
-                case PacketType.TileAnimation:
-                    p = new TileAnimationPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedTileAnimationPacket != null)
-                         ReceivedTileAnimationPacket(p);
-                    break;
-                case PacketType.VipAdd:
-                    p = new VipAddPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipAddPacket != null)
-                         ReceivedVipAddPacket(p);
-                    break;
-                case PacketType.VipLogin:
-                    p = new VipLoginPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipLoginPacket != null)
-                         ReceivedVipLoginPacket(p);
-                    break;
-                case PacketType.VipLogout:
-                    p = new VipLogoutPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedVipLogoutPacket != null)
-                         ReceivedVipLogoutPacket(p);
-                    break;
-                case PacketType.WorldLight:
-                    p = new WorldLightPacket(client, packet);
-                    length = p.Index;
-                    if (ReceivedWorldLightPacket != null)
-                         ReceivedWorldLightPacket(p);
-                    break;
-            }
-            return length;
-        }
         #endregion
+        
         #region properties
         public bool Enabled
         {
-            get { return log; }
-            set { log = value; }
+            get { return enabled; }
+            set { enabled = value; }
         }
 
         public ushort ProxyPort
@@ -780,7 +491,8 @@ namespace Tibia.Util
         }
 
         #endregion
-        #region ports, flags and encryption/decryption
+
+        #region ports, flags
 
         public void UpdatePorts()
         {
@@ -869,24 +581,24 @@ namespace Tibia.Util
             }
             return strFlags;
         }
-                
 
-        public byte[] DecryptPacket(byte[] packet)
+        private Objects.Location GetPlayerPosition()
         {
-            xtea=client.ReadBytes(Tibia.Addresses.Client.XTeaKey, 16);
-            return XTEA.Decrypt(packet,xtea , Adler);
-        }
+            Location pos = Location.Invalid;
 
-        public byte[] EncryptPacket(byte[] packet)
-        {
-            xtea = client.ReadBytes(Tibia.Addresses.Client.XTeaKey, 16);
-            return XTEA.Encrypt(packet, xtea, Adler);
+            try
+            {
+                pos = client.GetPlayer().Location;
+            }
+            catch (Exception) { }
+
+            return pos;
         }
         #endregion
 
 
     }
-     * */
+     
 }
 
 
