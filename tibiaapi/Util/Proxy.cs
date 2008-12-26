@@ -623,7 +623,6 @@ namespace Tibia.Util
                     ProcessClientSendQueue();
                 }
             }
-
         }
 
         private void ProcessServerSendQueue()

@@ -32,7 +32,10 @@
             this.chkServer = new System.Windows.Forms.CheckBox();
             this.chkClient = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkSplit = new System.Windows.Forms.CheckBox();
+            this.numProxyPort = new System.Windows.Forms.NumericUpDown();
+            this.radioProxy = new System.Windows.Forms.RadioButton();
+            this.radioSpecial = new System.Windows.Forms.RadioButton();
+            this.radioDefault = new System.Windows.Forms.RadioButton();
             this.btnReload = new System.Windows.Forms.Button();
             this.btnLog = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
@@ -43,23 +46,19 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.PacketList = new System.Windows.Forms.ListView();
-            this.ClientHeader = new System.Windows.Forms.ColumnHeader();
             this.ReceivedHeader = new System.Windows.Forms.ColumnHeader();
             this.SourceHeader = new System.Windows.Forms.ColumnHeader();
             this.DestinationHeader = new System.Windows.Forms.ColumnHeader();
             this.LengthHeader = new System.Windows.Forms.ColumnHeader();
             this.TypeHeader = new System.Windows.Forms.ColumnHeader();
             this.txtPacket = new System.Windows.Forms.TextBox();
-            this.radioDefault = new System.Windows.Forms.RadioButton();
-            this.radioSpecial = new System.Windows.Forms.RadioButton();
-            this.radioProxy = new System.Windows.Forms.RadioButton();
-            this.numProxyPort = new System.Windows.Forms.NumericUpDown();
+            this.NameHeader = new System.Windows.Forms.ColumnHeader();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -103,7 +102,6 @@
             this.groupBox1.Controls.Add(this.radioProxy);
             this.groupBox1.Controls.Add(this.radioSpecial);
             this.groupBox1.Controls.Add(this.radioDefault);
-            this.groupBox1.Controls.Add(this.chkSplit);
             this.groupBox1.Controls.Add(this.btnReload);
             this.groupBox1.Controls.Add(this.btnLog);
             this.groupBox1.Controls.Add(this.btnClear);
@@ -121,15 +119,57 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Packet Options";
             // 
-            // chkSplit
+            // numProxyPort
             // 
-            this.chkSplit.AutoSize = true;
-            this.chkSplit.Location = new System.Drawing.Point(89, 57);
-            this.chkSplit.Name = "chkSplit";
-            this.chkSplit.Size = new System.Drawing.Size(88, 17);
-            this.chkSplit.TabIndex = 11;
-            this.chkSplit.Text = "Split Packets";
-            this.chkSplit.UseVisualStyleBackColor = true;
+            this.numProxyPort.Location = new System.Drawing.Point(117, 183);
+            this.numProxyPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numProxyPort.Name = "numProxyPort";
+            this.numProxyPort.Size = new System.Drawing.Size(56, 20);
+            this.numProxyPort.TabIndex = 15;
+            this.numProxyPort.Value = new decimal(new int[] {
+            16000,
+            0,
+            0,
+            0});
+            // 
+            // radioProxy
+            // 
+            this.radioProxy.AutoSize = true;
+            this.radioProxy.Location = new System.Drawing.Point(6, 183);
+            this.radioProxy.Name = "radioProxy";
+            this.radioProxy.Size = new System.Drawing.Size(109, 17);
+            this.radioProxy.TabIndex = 14;
+            this.radioProxy.Text = "Using Proxy. Port:";
+            this.radioProxy.UseVisualStyleBackColor = true;
+            this.radioProxy.CheckedChanged += new System.EventHandler(this.RadioChanged);
+            // 
+            // radioSpecial
+            // 
+            this.radioSpecial.AutoSize = true;
+            this.radioSpecial.Location = new System.Drawing.Point(6, 159);
+            this.radioSpecial.Name = "radioSpecial";
+            this.radioSpecial.Size = new System.Drawing.Size(122, 17);
+            this.radioSpecial.TabIndex = 13;
+            this.radioSpecial.Text = "Special Remote Port";
+            this.radioSpecial.UseVisualStyleBackColor = true;
+            this.radioSpecial.CheckedChanged += new System.EventHandler(this.RadioChanged);
+            // 
+            // radioDefault
+            // 
+            this.radioDefault.AutoSize = true;
+            this.radioDefault.Checked = true;
+            this.radioDefault.Location = new System.Drawing.Point(6, 136);
+            this.radioDefault.Name = "radioDefault";
+            this.radioDefault.Size = new System.Drawing.Size(121, 17);
+            this.radioDefault.TabIndex = 12;
+            this.radioDefault.TabStop = true;
+            this.radioDefault.Text = "Default Remote Port";
+            this.radioDefault.UseVisualStyleBackColor = true;
+            this.radioDefault.CheckedChanged += new System.EventHandler(this.RadioChanged);
             // 
             // btnReload
             // 
@@ -232,12 +272,12 @@
             // PacketList
             // 
             this.PacketList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ClientHeader,
             this.ReceivedHeader,
             this.SourceHeader,
             this.DestinationHeader,
             this.LengthHeader,
-            this.TypeHeader});
+            this.TypeHeader,
+            this.NameHeader});
             this.PacketList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PacketList.FullRowSelect = true;
             this.PacketList.GridLines = true;
@@ -250,11 +290,6 @@
             this.PacketList.UseCompatibleStateImageBehavior = false;
             this.PacketList.View = System.Windows.Forms.View.Details;
             this.PacketList.SelectedIndexChanged += new System.EventHandler(this.PacketList_SelectedIndexChanged);
-            // 
-            // ClientHeader
-            // 
-            this.ClientHeader.Text = "Client";
-            this.ClientHeader.Width = 118;
             // 
             // ReceivedHeader
             // 
@@ -280,9 +315,9 @@
             // 
             // TypeHeader
             // 
-            this.TypeHeader.Text = "PacketType";
+            this.TypeHeader.Text = "Type";
             this.TypeHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TypeHeader.Width = 69;
+            this.TypeHeader.Width = 88;
             // 
             // txtPacket
             // 
@@ -295,57 +330,10 @@
             this.txtPacket.Size = new System.Drawing.Size(496, 174);
             this.txtPacket.TabIndex = 12;
             // 
-            // radioDefault
+            // NameHeader
             // 
-            this.radioDefault.AutoSize = true;
-            this.radioDefault.Checked = true;
-            this.radioDefault.Location = new System.Drawing.Point(6, 136);
-            this.radioDefault.Name = "radioDefault";
-            this.radioDefault.Size = new System.Drawing.Size(121, 17);
-            this.radioDefault.TabIndex = 12;
-            this.radioDefault.TabStop = true;
-            this.radioDefault.Text = "Default Remote Port";
-            this.radioDefault.UseVisualStyleBackColor = true;
-            this.radioDefault.CheckedChanged += new System.EventHandler(this.RadioChanged);
-            // 
-            // radioSpecial
-            // 
-            this.radioSpecial.AutoSize = true;
-            this.radioSpecial.Location = new System.Drawing.Point(6, 159);
-            this.radioSpecial.Name = "radioSpecial";
-            this.radioSpecial.Size = new System.Drawing.Size(122, 17);
-            this.radioSpecial.TabIndex = 13;
-            this.radioSpecial.Text = "Special Remote Port";
-            this.radioSpecial.UseVisualStyleBackColor = true;
-            this.radioSpecial.CheckedChanged += new System.EventHandler(this.RadioChanged);
-            // 
-            // radioProxy
-            // 
-            this.radioProxy.AutoSize = true;
-            this.radioProxy.Location = new System.Drawing.Point(6, 183);
-            this.radioProxy.Name = "radioProxy";
-            this.radioProxy.Size = new System.Drawing.Size(109, 17);
-            this.radioProxy.TabIndex = 14;
-            this.radioProxy.Text = "Using Proxy. Port:";
-            this.radioProxy.UseVisualStyleBackColor = true;
-            this.radioProxy.CheckedChanged += new System.EventHandler(this.RadioChanged);
-            // 
-            // numProxyPort
-            // 
-            this.numProxyPort.Location = new System.Drawing.Point(117, 183);
-            this.numProxyPort.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.numProxyPort.Name = "numProxyPort";
-            this.numProxyPort.Size = new System.Drawing.Size(56, 20);
-            this.numProxyPort.TabIndex = 15;
-            this.numProxyPort.Value = new decimal(new int[] {
-            16000,
-            0,
-            0,
-            0});
+            this.NameHeader.Text = "Name";
+            this.NameHeader.Width = 121;
             // 
             // MainForm
             // 
@@ -360,12 +348,12 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numProxyPort)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -386,18 +374,17 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView PacketList;
-        private System.Windows.Forms.ColumnHeader ClientHeader;
         private System.Windows.Forms.ColumnHeader ReceivedHeader;
         private System.Windows.Forms.ColumnHeader SourceHeader;
         private System.Windows.Forms.ColumnHeader DestinationHeader;
         private System.Windows.Forms.ColumnHeader LengthHeader;
         private System.Windows.Forms.ColumnHeader TypeHeader;
         private System.Windows.Forms.TextBox txtPacket;
-        private System.Windows.Forms.CheckBox chkSplit;
         private System.Windows.Forms.RadioButton radioProxy;
         private System.Windows.Forms.RadioButton radioSpecial;
         private System.Windows.Forms.RadioButton radioDefault;
         private System.Windows.Forms.NumericUpDown numProxyPort;
+        private System.Windows.Forms.ColumnHeader NameHeader;
     }
 }
 
