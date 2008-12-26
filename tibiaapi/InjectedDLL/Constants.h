@@ -18,6 +18,7 @@ namespace Consts {
 	extern DWORD ptrSetOutfitContextMenu;
 	extern DWORD ptrPartyActionContextMenu;
 	extern DWORD ptrCopyNameContextMenu;
+	extern DWORD ptrTradeWithContextMenu;
 	extern DWORD prtOnClickContextMenuVf;
 }
 
@@ -50,6 +51,7 @@ enum PipeConstantType : BYTE
         PartyActionContextMenu = 0x09,
         CopyNameContextMenu = 0x0A,
 		OnClickContextMenuVf = 0x0B,
+		TradeWithContextMenu = 0x0C,
 };
 
 /* Structures */

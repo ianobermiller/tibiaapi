@@ -143,15 +143,12 @@ namespace Tibia.Packets
         ItemUseBattlelist = 0x84,
         ContainerClose = 0x87,
         ContainerOpenParent = 0x88,
-
         TurnUp = 0x6F,
         TurnRight = 0x70,
         TurnDown = 0x71,
         TurnLeft = 0x72,
-
         AutoWalk = 0x64,
         AutoWalkCancel = 0x69,
-
         MoveUp = 0x65,
         MoveRight = 0x66,
         MoveDown = 0x67,
@@ -160,16 +157,13 @@ namespace Tibia.Packets
         MoveDownRight = 0x6B,
         MoveDownLeft = 0x6C,
         MoveUpLeft = 0x6D,
-
         VipAdd = 0xDC,
         VipRemove = 0xDD,
-
         SetOutfit = 0xD3,
         Ping = 0x1E,
         FightModes = 0xA0,
 
         //TODO:
-
         ContainerUpdate = 0xCA,
         TileUpdate = 0xC9,
     }
@@ -207,6 +201,7 @@ namespace Tibia.Packets
         PartyActionContextMenu = 0x09,
         CopyNameContextMenu = 0x0A,
         OnClickContextMenuVf = 0x0B,
+        TradeWithContextMenu = 0x0C,
     }
     
     /// <summary>

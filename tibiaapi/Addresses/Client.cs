@@ -116,6 +116,16 @@ namespace Tibia.Addresses
         public static uint Click_Z = Click_Id - 0x68;
 
         /// <summary>
+        /// Used for show item id functions
+        /// </summary>
+        public static uint ClickContextMenuItem_Id = 0x788418;
+
+        /// <summary>
+        /// Used for show item id functions
+        /// </summary>
+        public static uint ClickContextMenuItem_Ground_Id = 0x788424;
+
+        /// <summary>
         /// The id of the last item seen (looked at).
         /// </summary>
         public static uint See_Id = Click_Id + 12;

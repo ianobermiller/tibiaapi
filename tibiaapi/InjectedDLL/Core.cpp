@@ -45,6 +45,7 @@ BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
 DWORD OldSetOutfitContextMenu = 0;  //Used for restoring SetOutfitContextMenu ~
 DWORD OldPartyActionContextMenu = 0;//Used for restoring PartyActionContextMenu ~
 DWORD OldCopyNameContextMenu = 0;   //Used for restoring CopyNameContextMenu ~
+DWORD OldTradeWithContextMenu = 0;
 list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
 
 //Asynchronisation variables
@@ -161,6 +162,30 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 	{
 		//CopyNameContextMenu or AllMenus
 		if(it->Type == 0x03 || it->Type == 0x00)
+		{
+			const char* custom = it->MenuText;
+			const char* shortcut_ = "";
+			int eventid = it->EventId;
+
+			if(it->HasSeparator == 0x00)
+				AddContextMenu(eventid, custom, shortcut_);
+			else if(it->HasSeparator == 0x01)
+				AddContextMenuEx(eventid, custom, shortcut_);
+		}
+	}
+}
+
+void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char* shortcut)
+{
+	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+	AddContextMenu(eventId, text, shortcut);
+
+	//FIX HERE
+	list<ContextMenu>::iterator it;
+	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
+	{
+		//CopyNameContextMenu or AllMenus
+		if(it->Type == 0x04 || it->Type == 0x00)
 		{
 			const char* custom = it->MenuText;
 			const char* shortcut_ = "";
@@ -324,6 +349,9 @@ inline void PipeOnRead()
 					case OnClickContextMenuVf:
 						Consts::prtOnClickContextMenuVf = Packet::ReadDWord(Buffer, &position);
 						break;
+					case TradeWithContextMenu:
+						Consts::ptrTradeWithContextMenu = Packet::ReadDWord(Buffer, &position);
+						break;
 					default:
 						break;
 				};
@@ -405,7 +433,7 @@ inline void PipeOnRead()
 				/* Testing that every constant contains a value */
 				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
-					|| !Consts::prtOnClickContextMenuVf) 
+					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu) 
 				{
 					MessageBoxA(0, "Error. All the constant doesn't contain a value", "Error", MB_ICONERROR);
 					break;
@@ -425,6 +453,7 @@ inline void PipeOnRead()
 					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
 					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
 					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
+					OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 
 					//OnClickContextMenuEvent..
 					DWORD dwOldProtect, dwNewProtect, funcAddress;
@@ -455,6 +484,8 @@ inline void PipeOnRead()
 						UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
 					if(OldCopyNameContextMenu)
 						UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+					if(OldTradeWithContextMenu)
+						UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
 					if (OldNopFPS)
 						UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
@@ -547,9 +578,10 @@ inline void PipeOnRead()
 				char *lpNewText = (char*)calloc(NewText.size() + 1, sizeof(char));
 				char *OldText;
 				strcpy(lpNewText, NewText.c_str());
-				list<PlayerText>::iterator newit;
+				
 				EnterCriticalSection(&CreatureTextCriticalSection);
 
+				list<PlayerText>::iterator newit;
 				for(newit = CreatureTexts.begin(); newit != CreatureTexts.end(); ++newit) 
 				{
 					if (newit->CreatureId == 0) 
@@ -601,17 +633,15 @@ inline void PipeOnRead()
 			}
 		case 0xA://remove item from ContextMenus
 			{
-				MessageBoxA(0, "Remove", "Error!", MB_ICONERROR);
-
+				//MessageBoxA(0, "Remove", "Error!", MB_ICONERROR);
 				int id = Packet::ReadDWord(Buffer, &position);
-				string text=Packet::ReadString(Buffer, &position);
+				string text = Packet::ReadString(Buffer, &position);
 				BYTE type = Packet::ReadByte(Buffer,&position);
-				BYTE hasSeparator=Packet::ReadByte(Buffer,&position);
-
-				list<ContextMenu>::iterator cmIT;
+				BYTE hasSeparator = Packet::ReadByte(Buffer,&position);
 
 				EnterCriticalSection(&ContextMenuCriticalSection);
 
+				list<ContextMenu>::iterator cmIT;
 				for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ) 
 				{
 					if (cmIT->EventId == id && cmIT->MenuText == text
@@ -741,6 +771,8 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 				UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
 			if(OldCopyNameContextMenu)
 				UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+			if(OldTradeWithContextMenu)
+				UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
 			if (OldNopFPS)
 				UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 

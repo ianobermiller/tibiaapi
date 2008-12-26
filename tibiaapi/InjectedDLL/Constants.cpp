@@ -17,6 +17,7 @@ namespace Consts {
 	DWORD ptrSetOutfitContextMenu = 0;
 	DWORD ptrPartyActionContextMenu = 0;
 	DWORD ptrCopyNameContextMenu = 0;
+	DWORD ptrTradeWithContextMenu = 0;
 	DWORD prtOnClickContextMenuVf = 0;
 }
 
