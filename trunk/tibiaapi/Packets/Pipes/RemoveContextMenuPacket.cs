@@ -7,7 +7,7 @@ namespace Tibia.Packets.Pipes
     {
         public int EventId { get; set; }
         public string Text { get; set; }
-        public ContextMenu.Type ContextMenuType { get; set; }
+        public Constants.ContextMenuType ContextMenuType { get; set; }
         public byte HasSeparator { get; set; }
 
         public RemoveContextMenuPacket(Client client)
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Pipes
             Type = PipePacketType.RemoveContextMenu;
             EventId = (int)msg.GetUInt32();
             Text = msg.GetString();
-            ContextMenuType = (ContextMenu.Type)msg.GetByte();
+            ContextMenuType = (Constants.ContextMenuType)msg.GetByte();
             HasSeparator = msg.GetByte();
 
             return true;
@@ -43,7 +43,7 @@ namespace Tibia.Packets.Pipes
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, int eventId, string text, ContextMenu.Type contextMenuType, bool hasSeparator)
+        public static bool Send(Objects.Client client, int eventId, string text, Constants.ContextMenuType contextMenuType, bool hasSeparator)
         {
             RemoveContextMenuPacket p = new RemoveContextMenuPacket(client);
 

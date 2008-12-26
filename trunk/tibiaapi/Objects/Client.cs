@@ -40,6 +40,8 @@ namespace Tibia.Objects
         private Util.Pipe pipe = null; //For Displaying Text
         private Screen screen;
         private Util.PathFinder pathFinder;
+        private ContextMenu contextMenu;
+
         #endregion
 
         #region Events
@@ -102,6 +104,7 @@ namespace Tibia.Objects
             screen = new Screen(this);
 
             pathFinder = new Tibia.Util.PathFinder(this);
+            contextMenu = new ContextMenu(this);
         }
 
         /// <summary>
@@ -116,6 +119,11 @@ namespace Tibia.Objects
         #endregion
 
         #region Properties
+
+        public ContextMenu ContextMenu
+        {
+            get { return contextMenu; }
+        }
 
         public Util.PathFinder PathFinder
         {
@@ -1248,6 +1256,7 @@ namespace Tibia.Objects
 
             pipe = new Tibia.Util.Pipe(this, "TibiaAPI" + process.Id.ToString());
             pipe.OnConnected += new Tibia.Util.Pipe.PipeNotification(OnPipeConnect);
+            contextMenu.AddInternalEvents();
 
             if (!InjectDLL(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
                 throw new Tibia.Exceptions.InjectDLLNotFoundException();

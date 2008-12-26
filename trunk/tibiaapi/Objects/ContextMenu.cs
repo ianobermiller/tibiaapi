@@ -5,63 +5,59 @@ using System.Text;
 
 namespace Tibia.Objects
 {
-    public class ContextMenu //should we deal with them separately like this or like screen class?
+    public class ContextMenu
     {
         Client client;
-        int eventId;
-        string text;
-        ContextMenu.Type type;
-        bool hasSeparator;
-        bool added = false;
 
-
-        public ContextMenu(Client client, int EventId, string MenuText, Type Type, bool HasSeparator)
+        public ContextMenu(Client client)
         {
             this.client = client;
-            eventId = EventId;
-            text = MenuText;
-            type = Type;
-            hasSeparator = HasSeparator;
         }
 
-        public bool Add()
+        /// <summary>
+        /// Call this function only if you know what you are doing
+        /// </summary>
+        public void AddInternalEvents()
         {
-            if (!added)
-            {
-                if (client.Pipe == null)
-                {
-                    client.InitializePipe();
-                    client.PipeIsReady.WaitOne();
-                }
-
-                if (eventId < 0 || text == string.Empty)
-                    return false;
-
-                Packets.Pipes.AddContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
-                added = true;
-                return true;
-            }
-            return false;
+            client.Pipe.OnReceive += new Tibia.Util.Pipe.PipeListener(Pipe_OnReceive);
         }
 
-        public bool Remove()
+        private void Pipe_OnReceive(Tibia.Packets.NetworkMessage msg)
         {
-            if (added)
+            if (msg.GetUInt16() == 5 && msg.GetByte() == (byte)Packets.PipePacketType.OnClickContextMenu)
             {
-                if (client.Pipe == null)
-                {
-                    client.InitializePipe();
-                    client.PipeIsReady.WaitOne();
-                }
-
-                if (eventId < 0 || text == string.Empty)
-                    return false;
-
-                Packets.Pipes.RemoveContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
-                added = false;
-                return true;
+                //raise the event
+                if (Click != null)
+                    Click.BeginInvoke((int)msg.GetUInt32(), null, null);
             }
-            return false;
+        }
+
+        public bool AddContextMenu(int eventId, string text, Constants.ContextMenuType type, bool hasSeparator)
+        {
+            if (client.Pipe == null)
+            {
+                client.InitializePipe();
+                client.PipeIsReady.WaitOne();
+            }
+
+            if (eventId < 0 || eventId > 2000 || text == string.Empty)
+                return false;
+
+            return Packets.Pipes.AddContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
+        }
+
+        public bool RemoveContextMenu(int eventId, string text, Constants.ContextMenuType type, bool hasSeparator)
+        {
+            if (client.Pipe == null)
+            {
+                client.InitializePipe();
+                client.PipeIsReady.WaitOne();
+            }
+
+            if (eventId < 0 || eventId > 2000 || text == string.Empty)
+                return false;
+
+            return Packets.Pipes.RemoveContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
         }
 
         public void RemoveAll()
@@ -79,23 +75,11 @@ namespace Tibia.Objects
         /// <summary>
         /// A generic function prototype for context menu events.
         /// </summary>
-        public delegate void ContextMenuEvent();
+        public delegate void ContextMenuEvent(int eventId);
 
         /// <summary>
         /// Called when the context menu is clicked.
         /// </summary>
-        public ContextMenuEvent OnClick;
-
-        //TODO:When pipe receive a OnClickContextMenuPacket,
-        //check if the event id matches with the context menu and raise the event
-
-
-        public enum Type : byte
-        {
-            AllMenus = 0x00,
-            SetOutfitContextMenu = 0x01,
-            PartyActionContextMenu = 0x02,
-            CopyNameContextMenu = 0x03
-        }
+        public event ContextMenuEvent Click;
     }
 }

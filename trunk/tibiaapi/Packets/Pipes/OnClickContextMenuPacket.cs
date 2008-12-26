@@ -37,9 +37,7 @@ namespace Tibia.Packets.Pipes
         public static bool Send(Objects.Client client, int eventId)
         {
             AddContextMenuPacket p = new AddContextMenuPacket(client);
-
             p.EventId = eventId;
-
             return p.Send();
         }
 

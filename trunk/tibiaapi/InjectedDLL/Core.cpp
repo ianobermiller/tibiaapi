@@ -45,7 +45,6 @@ BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
 DWORD OldSetOutfitContextMenu = 0;  //Used for restoring SetOutfitContextMenu ~
 DWORD OldPartyActionContextMenu = 0;//Used for restoring PartyActionContextMenu ~
 DWORD OldCopyNameContextMenu = 0;   //Used for restoring CopyNameContextMenu ~
-DWORD OldOnClickContextMenuVf = 0;
 list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
 
 //Asynchronisation variables
@@ -175,37 +174,41 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 	}
 }
 
-
 //function from http://www.tpforums.org/forum/showthread.php?t=2399 by Vitor
 void __stdcall MyOnClickContextMenu (int eventId)
 {
-    __asm mov esi, ecx // Compiler will ensure esi register is safe to use
+    __asm mov esi, ecx //; Compiler will ensure esi register is safe to use
 
     if (eventId >= 0x2000)
     {
         __asm
         {
             push eventId
-            mov ecx, esi // Ensure ecx carries the right value - you never know!
-			mov eax, Consts::ptrOnClickContextMenu
+            mov ecx, esi //; Ensure ecx carries the right value - you never know!
+            mov eax, Consts::ptrOnClickContextMenu
             call eax
         }
         return;
     }
 
+	/*WARNING:
+	Again, as AddContextMenu, this function is a thiscall. But, unfortunately this time,
+	the registers that carry the this are ecx and eax, registers commonly used to do random
+	tasks at function's epilogue (that is, the code executed by the compiler when it enters
+	a function). If, however, you can confirm that your compiler does not change ecx - or
+	that it does not change eax, case in which you could move eax to ecx - you are ok to go on.
+	If you can not confirm or you are not sure, we have to go deeper.
+	*/
+
     /* Either switch event IDs if application is C++ or, if using TibiaAPI, send this information to the caller code using a pipe.
      * Here, we'll exemplify using a switch statement.
      */
-    switch (eventId)
-    {
-        case 0x1000:
-        {
-            /* DO SOMETHING! */
-        }
-        break;
-    }
-}
 
+	Packet* packet = new Packet();
+	packet->AddByte(0x0C);
+	packet->AddDWord(eventId);
+	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+}
 
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 {   
@@ -401,7 +404,8 @@ inline void PipeOnRead()
 				BYTE Inject = Packet::ReadByte(Buffer, &position);
 				/* Testing that every constant contains a value */
 				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
-					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu) 
+					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
+					|| !Consts::prtOnClickContextMenuVf) 
 				{
 					MessageBoxA(0, "Error. All the constant doesn't contain a value", "Error", MB_ICONERROR);
 					break;
@@ -421,8 +425,14 @@ inline void PipeOnRead()
 					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
 					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
 					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
-					//OldOnClickContextMenuVf = HookCall(Consts::prtOnClickContextMenuVf, (DWORD)&MyOnClickContextMenu);
 
+					//OnClickContextMenuEvent..
+					DWORD dwOldProtect, dwNewProtect, funcAddress;
+					funcAddress = (DWORD)&MyOnClickContextMenu;
+					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
+					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					
 					//TODO: Add Bytes nop to Constants
 					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
 					HookInjected = true;
@@ -445,11 +455,16 @@ inline void PipeOnRead()
 						UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
 					if(OldCopyNameContextMenu)
 						UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
-					//if(OldOnClickContextMenuVf)
-						//UnhookCall(Consts::prtOnClickContextMenuVf, OldOnClickContextMenuVf);
 					if (OldNopFPS)
 						UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
+					//OnClickContextMenuEvent..
+					DWORD dwOldProtect, dwNewProtect, funcAddress;
+					funcAddress = (DWORD)&MyOnClickContextMenu;
+					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
+					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					
 					HookInjected = false;
 				}
 			}
@@ -534,6 +549,7 @@ inline void PipeOnRead()
 				strcpy(lpNewText, NewText.c_str());
 				list<PlayerText>::iterator newit;
 				EnterCriticalSection(&CreatureTextCriticalSection);
+
 				for(newit = CreatureTexts.begin(); newit != CreatureTexts.end(); ++newit) 
 				{
 					if (newit->CreatureId == 0) 
@@ -558,6 +574,7 @@ inline void PipeOnRead()
 						break;
 					}
 				}
+
 				LeaveCriticalSection(&CreatureTextCriticalSection);
 			}
 			break;
@@ -577,9 +594,7 @@ inline void PipeOnRead()
 				memcpy(ctxt.MenuText, text.c_str(), text.size() + 1);
 				
 				EnterCriticalSection(&ContextMenuCriticalSection);
-
 				ContextMenus.push_back(ctxt);
-
 				LeaveCriticalSection(&ContextMenuCriticalSection);
 
 				break;
@@ -631,7 +646,7 @@ inline void PipeOnRead()
 			//and the matching contextmenu eventid would raise its event
 			break;
 		default:
-			MessageBoxA(0, "Unknown PacketType!" + PacketID, "Error!", MB_ICONERROR);
+			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
 	}
 }
@@ -642,6 +657,7 @@ void PipeThreadProc(HMODULE Module)
 	if (WaitNamedPipeA(PipeName.c_str(), NMPWAIT_WAIT_FOREVER)) 
 	{
 		pipe.Attach(::CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL));
+		
 		if (pipe == INVALID_HANDLE_VALUE)
 		{
 			errorStatus = ::GetLastError();
@@ -685,6 +701,69 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			errorStatus = ::GetLastError();
 			MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 		}
+	}
+	else
+	{
+		//pipe disconnected 
+		//clean everything and remove the hook
+		//MessageBoxA(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
+		//TODO: need more tests.
+
+		if(HookInjected) 
+		{
+			//remove all text
+			list<NormalText>::iterator ntIT;
+			EnterCriticalSection(&NormalTextCriticalSection);
+			for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
+			{
+				delete [] ntIT->text;
+				delete [] ntIT->TextName;
+			}
+			DisplayTexts.clear();
+			LeaveCriticalSection(&NormalTextCriticalSection);
+
+			//remove all contextmenus
+			list<ContextMenu>::iterator cmIT;
+			EnterCriticalSection(&ContextMenuCriticalSection);
+			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
+				delete [] cmIT->MenuText;
+			ContextMenus.clear();
+			LeaveCriticalSection(&ContextMenuCriticalSection);
+
+			if (OldPrintName)
+				UnhookCall(Consts::ptrPrintName, OldPrintName);
+			if (OldPrintFPS)
+				UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
+			if(OldSetOutfitContextMenu)
+				UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
+			if(OldPartyActionContextMenu)
+				UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
+			if(OldCopyNameContextMenu)
+				UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+			if (OldNopFPS)
+				UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
+
+			//OnClickContextMenuEvent..
+			DWORD dwOldProtect, dwNewProtect, funcAddress;
+			funcAddress = (DWORD)&MyOnClickContextMenu;
+			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+			memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
+			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					
+			HookInjected = false;
+		}
+		
+		pipe.Detach();
+		//::DeleteFileA(PipeName.c_str());
+		//TerminateThread(PipeThread, EXIT_SUCCESS);
+		DeleteCriticalSection(&PipeReadCriticalSection);
+		DeleteCriticalSection(&NormalTextCriticalSection);
+		DeleteCriticalSection(&CreatureTextCriticalSection);
+		DeleteCriticalSection(&ContextMenuCriticalSection);
+		DeleteCriticalSection(&OnClickCriticalSection);
+
+		UninjectSelf(hMod);
 	}
 }
 

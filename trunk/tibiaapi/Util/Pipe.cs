@@ -32,17 +32,17 @@ namespace Tibia.Util
         /// <summary>
         /// Called when connected.
         /// </summary>
-        public PipeNotification OnConnected;
+        public event PipeNotification OnConnected;
 
         /// <summary>
         ///  Called when data is received.
         /// </summary>
-        public PipeListener OnReceive;
+        public event PipeListener OnReceive;
 
         /// <summary>
         ///  Called when data is sent.
         /// </summary>
-        public PipeListener OnSend;
+        public event PipeListener OnSend;
         #endregion
 
         /// <summary>
@@ -82,7 +82,10 @@ namespace Tibia.Util
         private void BeginRead(IAsyncResult ar)
         {
             int read = pipe.EndRead(ar);
-            
+
+            if (read == 0)
+                return;
+
             // Call OnReceive asynchronously
             if (OnReceive != null)
                 OnReceive.BeginInvoke(new NetworkMessage(client, buffer, read), null, null);
