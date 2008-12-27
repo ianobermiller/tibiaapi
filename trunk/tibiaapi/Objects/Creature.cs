@@ -30,7 +30,9 @@ namespace Tibia.Objects
         public bool InParty()
         {
             Constants.Party party = Party;
-            return (party == Constants.Party.Member || party == Constants.Party.Leader || party == Constants.Party.LeaderSharedExp || party == Constants.Party.LeaderSharedExpInactive || party == Constants.Party.MemberSharedExp || party == Constants.Party.MemberSharedExpInactive);
+            return (party != Constants.Party.None
+                && party != Constants.Party.Invitee 
+                && party != Constants.Party.Inviter);
         }
 
         /// <summary>
