@@ -54,5 +54,14 @@ namespace Tibia.Packets.Incoming
 
             return msg.Packet;
         }
+
+        public static bool Send(Objects.Client client, string message, Objects.Location position, TextColor color)
+        {
+            AnimatedTextPacket p = new AnimatedTextPacket(client);
+            p.Message = message;
+            p.Position = position;
+            p.Color = color;
+            return p.Send();
+        }
     }
 }
