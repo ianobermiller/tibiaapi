@@ -237,6 +237,8 @@ namespace Tibia.Constants
             public static Item Pick = new Item(3456, "Pick");
             public static Item Shovel = new Item(3457, "Shovel");
             public static Item Scythe = new Item(3453, "Scythe");
+            public static Item LightShovel = new Item(5710, "Light Shovel");
+            public static Item ElvenhairRope = new Item(646, "Elvenhair Rope");
         }
 
         public static class Valuable

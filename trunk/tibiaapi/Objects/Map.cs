@@ -119,11 +119,15 @@ namespace Tibia.Objects
             if (sameFloor)
             {
                 playerSquare = GetSquareWithPlayer();
-                int playerFloor = playerSquare.MemoryLocation.Z;
-                startNumber = Map.ConvertMemoryLocationToSquareNumber(
-                    new Location(0, 0, playerFloor));
-                endNumber = Map.ConvertMemoryLocationToSquareNumber(
-                    new Location(0, 0, playerFloor + 1));
+
+                if (playerSquare != null)
+                {
+                    int playerFloor = playerSquare.MemoryLocation.Z;
+                    startNumber = Map.ConvertMemoryLocationToSquareNumber(
+                        new Location(0, 0, playerFloor));
+                    endNumber = Map.ConvertMemoryLocationToSquareNumber(
+                        new Location(0, 0, playerFloor + 1));
+                }
             }
 
             for (uint i = startNumber; i < endNumber; i++)
@@ -132,21 +136,18 @@ namespace Tibia.Objects
                 if (getWorldLocation)
                 {
                     if (playerSquare == null)
-                    {
                         playerSquare = GetSquareWithPlayer();
-                    }
+
                     mapSquare = CreateMapSquare(i, playerSquare);
                 }
                 else
-                {
                     mapSquare = CreateMapSquare(i);
-                }
 
                 if (match(mapSquare))
-                {
                     squares.Add(mapSquare);
-                }
-                if (squares.Count >= maxSquares) break;
+
+                if (squares.Count >= maxSquares) 
+                    break;
             }
 
             return squares;

@@ -13,8 +13,8 @@ using Tibia.Util;
 namespace Tibia.Util
 {
     //FIXME: Update to new packet system.
-    
-    public class RawSocket:SocketBase
+
+    public class RawSocket : SocketBase
     {
         [DllImport("iphlpapi.dll", SetLastError = true)]
         static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, TCP_TABLE_CLASS tblClass, int reserved);
@@ -26,8 +26,8 @@ namespace Tibia.Util
         private Socket mainSocket;
         private ushort localPort;
         private ushort remotePort;
-        private ushort proxyPort=0;
-        private SocketMode mode=SocketMode.UsingDefaultRemotePort;
+        private ushort proxyPort = 0;
+        private SocketMode mode = SocketMode.UsingDefaultRemotePort;
         private byte[] receive_buf = new byte[4096];
         private bool Adler;
         private bool enabled = false;
@@ -36,12 +36,12 @@ namespace Tibia.Util
         private byte[] toJoin;
         private Queue<byte[]> IncomingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> OutgoingGamePacketQueue = new Queue<byte[]>();
-        private Queue<byte[]> packetServerToClientQueue=new Queue<byte[]>();
-        private Queue<string> flagServerToClientQueue=new Queue<string>();
+        private Queue<byte[]> packetServerToClientQueue = new Queue<byte[]>();
+        private Queue<string> flagServerToClientQueue = new Queue<string>();
         #endregion
         #region Events
 
-        public delegate void Notification(string where,string messsage);
+        public delegate void Notification(string where, string messsage);
         public Notification OnError;
 
         public delegate void MessageListener(NetworkMessage message);
@@ -104,7 +104,7 @@ namespace Tibia.Util
             public uint dwNumEntries;
             MIB_TCPROW_OWNER_PID table;
         }
-        #endregion        
+        #endregion
         #region TCP table
 
         //public TcpRow[] GetAllTcpConnections()
@@ -156,13 +156,13 @@ namespace Tibia.Util
 
             return tTable;
         }
-        #endregion       
+        #endregion
 
         #region socket core
         public RawSocket(Client client, bool Adler)
         {
             this.Adler = Adler;
-            this.client=client;
+            this.client = client;
             pid = client.Process.Id;
             string strIP = null;
 
@@ -172,8 +172,10 @@ namespace Tibia.Util
                 strIP = HosyEntry.AddressList[0].ToString();
                 //Console.WriteLine("IP: " + strIP);
             }
-            else{/*cry
-                Console.WriteLine("No ip assigned");*/}
+            else
+            {/*cry
+                Console.WriteLine("No ip assigned");*/
+            }
             mainSocket = new Socket(AddressFamily.InterNetwork,
                     SocketType.Raw, ProtocolType.IP);
 
@@ -219,7 +221,7 @@ namespace Tibia.Util
             catch (ObjectDisposedException)
             {
                 if (OnError != null)
-                OnError("OnReceive","Objected Disposed Exception");
+                    OnError("OnReceive", "Objected Disposed Exception");
             }
             catch (Exception ex)
             {
@@ -257,18 +259,18 @@ namespace Tibia.Util
                         {
                             if (ReceivedRawGamePacketFromServer != null)
                                 ReceivedRawGamePacketFromServer((byte[])gameRawPacket.Clone(), String.Copy(flags));
-                            if(ReceivedIPPacketFromClient!=null)
+                            if (ReceivedIPPacketFromClient != null)
                                 ReceivedIPPacketFromClient((byte[])ipPacket.Clone(), String.Copy(flags));
-                            if(ReceivedTCPPacketFromClient!=null)
+                            if (ReceivedTCPPacketFromClient != null)
                                 ReceivedTCPPacketFromClient((byte[])tcpPacket.Clone(), String.Copy(flags));
                             ParseServerToClient(gameRawPacket, flags);
                         }
                         //packet from client
                         else if (sourcePort == localPort && destinationPort == remotePort)
                         {
-                            if(ReceivedIPPacketFromClient!=null)
+                            if (ReceivedIPPacketFromClient != null)
                                 ReceivedIPPacketFromClient((byte[])ipPacket.Clone(), String.Copy(flags));
-                            if(ReceivedTCPPacketFromClient!=null)
+                            if (ReceivedTCPPacketFromClient != null)
                                 ReceivedTCPPacketFromClient((byte[])tcpPacket.Clone(), String.Copy(flags));
                             RaiseOutgoingEvents(gameRawPacket);
                         }
@@ -277,8 +279,8 @@ namespace Tibia.Util
             }
             catch (Exception ex)
             {
-                if(OnError!=null)
-                OnError("PreParse",ex.Message);
+                if (OnError != null)
+                    OnError("PreParse", ex.Message);
             }
         }
 
@@ -292,7 +294,7 @@ namespace Tibia.Util
             msg.PrepareToRead();
             msg.GetUInt16();
 
-            Objects.Location pos =  Location.Invalid;
+            Objects.Location pos = Location.Invalid;
 
             while (msg.Position < msg.Length)
             {
@@ -394,7 +396,7 @@ namespace Tibia.Util
                         }
                     }
                 }
-            }                       
+            }
             for (int i = 0; i < N; i++)
             {
                 flagServerToClientQueue.Enqueue(flags[i]);
@@ -434,7 +436,7 @@ namespace Tibia.Util
                     int packetlength = BitConverter.ToInt16(gamePacket, offset) + 2;
                     if (packetlength <= bytesRead)
                     {
-                        byte[] packet= new byte[packetlength];
+                        byte[] packet = new byte[packetlength];
                         Array.Copy(gamePacket, offset, packet, 0, packetlength);
 
                         IncomingGamePacketQueue.Enqueue(packet);
@@ -449,7 +451,7 @@ namespace Tibia.Util
                     offset += packetlength;
                 }
             }
-            if (!moreToCome) 
+            if (!moreToCome)
                 ProcessIncomingGamePacketQueue();
         }
 
@@ -457,8 +459,8 @@ namespace Tibia.Util
         {
             while (IncomingGamePacketQueue.Count > 0)
             {
-                
-                NetworkMessage msg = new NetworkMessage(client,IncomingGamePacketQueue.Dequeue());
+
+                NetworkMessage msg = new NetworkMessage(client, IncomingGamePacketQueue.Dequeue());
                 if (ReceivedMessageFromServer != null)
                     ReceivedMessageFromServer.Invoke(msg);
 
@@ -496,7 +498,7 @@ namespace Tibia.Util
         }
 
         #endregion
-        
+
         #region properties
         public bool Enabled
         {
@@ -525,14 +527,14 @@ namespace Tibia.Util
             MIB_TCPROW_OWNER_PID[] tcptable = GetAllTcpConnections();
             switch (mode)
             {
-                case SocketMode.UsingDefaultRemotePort:                
+                case SocketMode.UsingDefaultRemotePort:
                     for (int i = 0; i < tcptable.Length; i++)
                     {
-                        ushort remote_ = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2,tcptable[i].remotePort1}, 0);
+                        ushort remote_ = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2, tcptable[i].remotePort1 }, 0);
                         if (remote_ == 7171 && tcptable[i].owningPid == pid)
                         {
                             remotePort = 7171;
-                            localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1}, 0);
+                            localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 }, 0);
                             return;
                         }
                     }
@@ -542,12 +544,12 @@ namespace Tibia.Util
                     {
                         if (tcptable[i].owningPid == pid)
                         {
-                            remotePort = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2,tcptable[i].remotePort1}, 0);
-                            localPort= BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 }, 0);
+                            remotePort = BitConverter.ToUInt16(new byte[2] { tcptable[i].remotePort2, tcptable[i].remotePort1 }, 0);
+                            localPort = BitConverter.ToUInt16(new byte[2] { tcptable[i].localPort2, tcptable[i].localPort1 }, 0);
                             return;
                         }
                     }
-                    localPort=0;
+                    localPort = 0;
                     break;
                 case SocketMode.UsingProxy:
                     for (int i = 0; i < tcptable.Length; i++)
@@ -567,7 +569,7 @@ namespace Tibia.Util
         }
 
         private string GetFlags(byte[] ipData)
-        {                             
+        {
             ushort dataOffsetAndFlags = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(ipData, 12));
             int nFlags = dataOffsetAndFlags & 0x3F;
             string strFlags = string.Format("0x{0:x2} (", nFlags);
@@ -624,9 +626,5 @@ namespace Tibia.Util
 
 
     }
-     
+
 }
-
-
-
-    

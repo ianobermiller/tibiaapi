@@ -51,6 +51,7 @@ namespace Tibia.Objects
         /// Event raised when the Tibia client is exited.
         /// </summary>
         public event EventHandler Exited;
+        public event EventHandler PipeInizialazed;
 
         private void process_Exited(object sender, EventArgs e)
         {
@@ -1323,6 +1324,10 @@ namespace Tibia.Objects
             //Hook Display functions
             Packets.Pipes.InjectDisplayPacket.Send(this, true);
             pipeIsReady.Set();
+
+            if (PipeInizialazed != null)
+                PipeInizialazed.BeginInvoke(this, new EventArgs(), null, null);
+
         }
 
         #endregion
