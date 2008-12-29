@@ -27,11 +27,13 @@ namespace SmartIPChanger
         private void Go()
         {
             Client client = ClientChooser.ShowBox(new ClientChooserOptions() { ShowOTOption = false });
+            
             if (client == null)
             {
                 client = Client.Open();
                 System.Threading.Thread.Sleep(1000);
             }
+
             client.SetOT(uxServer.Text, short.Parse(uxPort.Text));
         }
 
@@ -41,6 +43,11 @@ namespace SmartIPChanger
             {
                 Go();
             }
+        }
+
+        private void uxForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

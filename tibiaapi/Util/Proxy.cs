@@ -645,11 +645,18 @@ namespace Tibia.Util
             {
                 writingServer = true;
 
-                if (networkStreamServer.CanWrite)
-                    networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
-                else
+                try
                 {
-                    //TODO: Handle the error.
+                    if (networkStreamServer.CanWrite)
+                        networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
+                    else
+                    {
+                        //TODO: Handle the error.
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteDebug(ex.Message);
                 }
             }
         }

@@ -331,6 +331,8 @@ namespace Tibia.Constants
 			{ Items.Tool.Pick.Id, Items.Tool.Pick }, 
 			{ Items.Tool.Shovel.Id, Items.Tool.Shovel },
 			{ Items.Tool.Scythe.Id, Items.Tool.Scythe },
+            { Items.Tool.LightShovel.Id, Items.Tool.LightShovel },
+            { Items.Tool.ElvenhairRope.Id, Items.Tool.ElvenhairRope },
         };
         #endregion
 

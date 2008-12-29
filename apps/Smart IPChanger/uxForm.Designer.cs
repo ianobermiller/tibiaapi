@@ -70,6 +70,7 @@ namespace SmartIPChanger
             this.Controls.Add(this.uxServer);
             this.Name = "uxForm";
             this.Text = "Smart IPChanger";
+            this.Load += new System.EventHandler(this.uxForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
