@@ -87,6 +87,7 @@
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
     <Compile Include="Addresses\Vip.cs" />
+    <Compile Include="Clientless\Connection.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemLists.cs" />
     <Compile Include="Constants\Spells.cs" />
@@ -290,8 +291,5 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clientless\" />
   </ItemGroup>
 </Project>

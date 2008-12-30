@@ -29,6 +29,12 @@ namespace Tibia.Packets
             messageStream.Position = 6;
         }
 
+        public NetworkMessage(byte[] data)
+        {
+            messageStream = new MessageStream(data);
+            messageStream.Position = 0;
+        }
+
         public NetworkMessage(Objects.Client client)
         {
             Client = client;
@@ -144,6 +150,12 @@ namespace Tibia.Packets
 
         private void XteaEncode(ref uint[] v, int index)
         {
+            XteaEncode(ref v, index, Client.XteaKey);
+        }
+
+
+        private void XteaEncode(ref uint[] v, int index,uint[] XteaKey)
+        {
             uint y = v[index];
             uint z = v[index + 1];
             uint sum = 0;
@@ -152,9 +164,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                y += (z << 4 ^ z >> 5) + z ^ sum + Client.XteaKey[sum & 3];
+                y += (z << 4 ^ z >> 5) + z ^ sum + XteaKey[sum & 3];
                 sum += delta;
-                z += (y << 4 ^ y >> 5) + y ^ sum + Client.XteaKey[sum >> 11 & 3];
+                z += (y << 4 ^ y >> 5) + y ^ sum + XteaKey[sum >> 11 & 3];
             }
 
             v[index] = y;
@@ -162,6 +174,11 @@ namespace Tibia.Packets
         }
 
         private void XteaDecode(ref uint[] v, int index)
+        {
+            XteaDecode(ref v, index, Client.XteaKey);
+        }
+
+        private void XteaDecode(ref uint[] v, int index, uint[] XteaKey)
         {
             uint n = 32;
             uint sum;
@@ -173,9 +190,9 @@ namespace Tibia.Packets
 
             while (n-- > 0)
             {
-                z -= (y << 4 ^ y >> 5) + y ^ sum + Client.XteaKey[sum >> 11 & 3];
+                z -= (y << 4 ^ y >> 5) + y ^ sum + XteaKey[sum >> 11 & 3];
                 sum -= delta;
-                y -= (z << 4 ^ z >> 5) + z ^ sum + Client.XteaKey[sum & 3];
+                y -= (z << 4 ^ z >> 5) + z ^ sum + XteaKey[sum & 3];
             }
 
             v[index] = y;
