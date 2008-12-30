@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Tibia.Packets.Outgoing
+namespace Tibia.Packets.RSA
 {
-    public class LoginServerRequestPacket
+    public static class LoginServerRequestPacket
     {
         public static NetworkMessage CreateLoginServerRequestPacket(ushort Version,
     byte[] Signatures, string AccountName, string Password)
