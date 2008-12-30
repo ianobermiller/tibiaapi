@@ -189,7 +189,7 @@ namespace Tibia.Util
         /// <summary>
         /// Location of where to read/save the selected client's path. Default: %APPDATA%\TibiaAPI\clientPaths.xml.
         /// </summary>
-        public string SavedClientPathsLocation = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"TibiaAPI\clientPaths.xml");
+        public string SavedClientPathsLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"clientPaths.xml");
 
         public List<string> addresses;
 

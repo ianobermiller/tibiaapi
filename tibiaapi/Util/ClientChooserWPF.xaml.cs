@@ -218,6 +218,9 @@ namespace Tibia.Util
                                         clientPath.Attributes.Append(version);
                                         clientPaths.AppendChild(clientPath);
 
+                                        if (!Directory.Exists(Constants.TAConstants.AppDataPath))
+                                            Directory.CreateDirectory(Constants.TAConstants.AppDataPath);
+
                                         document.Save(options.SavedClientPathsLocation);
                                     }
                                 }
