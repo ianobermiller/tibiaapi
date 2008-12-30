@@ -35,6 +35,18 @@ namespace Tibia.Packets
             messageStream.Position = 0;
         }
 
+        public NetworkMessage( int length)
+        {
+            messageStream = new MessageStream(length);
+            messageStream.Position = 0;
+        }
+
+        public NetworkMessage(byte[] data, int length)
+        {
+            messageStream = new MessageStream(data,0,length);
+            messageStream.Position = 0;
+        }
+
         public NetworkMessage(Objects.Client client)
         {
             Client = client;
@@ -98,6 +110,11 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt()
         {
+            return XteaEncrypt(Client.XteaKey);
+        }
+
+        public bool XteaEncrypt(uint[] XteaKey)
+        {
             if (Client.XteaKey == null)
                 return false;
 
@@ -113,7 +130,7 @@ namespace Tibia.Packets
             uint[] msgUInt = originalMsg.ToUInt32Array();
 
             for (int i = 0; i < msgUInt.Length; i += 2)
-                this.XteaEncode(ref msgUInt, i);
+                this.XteaEncode(ref msgUInt, i, XteaKey);
 
 
             byte[] encryptMsg = msgUInt.ToByteArray();
@@ -124,6 +141,11 @@ namespace Tibia.Packets
         }
 
         public bool XteaDecrypt()
+        {
+            return XteaDecrypt(Client.XteaKey);
+        }
+
+        public bool XteaDecrypt(uint[] XteaKey)
         {
             if (messageStream.Length <= 6)
                 return false;
@@ -137,7 +159,7 @@ namespace Tibia.Packets
             uint[] encryptUInt = encryptMsg.ToUInt32Array();
 
             for (int i = 0; i < encryptUInt.Length; i += 2)
-                XteaDecode(ref encryptUInt, i);
+                XteaDecode(ref encryptUInt, i, XteaKey);
 
             byte[] decrpytMsg = encryptUInt.ToByteArray();
             int decrpytMsgLen = (int)BitConverter.ToUInt16(decrpytMsg, 0) + 2;
@@ -147,12 +169,6 @@ namespace Tibia.Packets
 
             return true;
         }
-
-        private void XteaEncode(ref uint[] v, int index)
-        {
-            XteaEncode(ref v, index, Client.XteaKey);
-        }
-
 
         private void XteaEncode(ref uint[] v, int index,uint[] XteaKey)
         {
@@ -171,11 +187,6 @@ namespace Tibia.Packets
 
             v[index] = y;
             v[index + 1] = z;
-        }
-
-        private void XteaDecode(ref uint[] v, int index)
-        {
-            XteaDecode(ref v, index, Client.XteaKey);
         }
 
         private void XteaDecode(ref uint[] v, int index, uint[] XteaKey)
@@ -434,7 +445,12 @@ namespace Tibia.Packets
 
         public bool PrepareToSend()
         {
-            if (!XteaEncrypt())
+            return PrepareToSend(Client.XteaKey);
+        }
+
+        public bool PrepareToSend(uint[] XteaKey)
+        {
+            if (!XteaEncrypt(XteaKey))
                 return false;
 
             InsertAdler32();
@@ -445,7 +461,12 @@ namespace Tibia.Packets
 
         public bool PrepareToRead()
         {
-            if (!CheckAdler32() || !XteaDecrypt())
+            return PrepareToRead(Client.XteaKey);
+        }
+
+        public bool PrepareToRead(uint[] XteaKey)
+        {
+            if (!CheckAdler32() || !XteaDecrypt(XteaKey))
                 return false;
 
             messageStream.Position = 6;

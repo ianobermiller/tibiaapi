@@ -31,7 +31,10 @@ namespace Tibia.Packets.RSA
         public static NetworkMessage CreateLoginServerRequestPacket(byte OS, ushort Version,
             byte[] Signatures, byte[] XteaKey, string AccountName, string Password,bool OpenTibia)
         {
-            NetworkMessage msg = new NetworkMessage();
+            NetworkMessage msg = new NetworkMessage(149);
+            msg.AddByte(0x95);
+            msg.AddByte(0x00);
+            msg.Position += 4;
             msg.AddByte(0x01);
             msg.AddUInt16(OS);
             msg.AddUInt16(Version);
@@ -43,7 +46,6 @@ namespace Tibia.Packets.RSA
             if (OpenTibia) msg.RsaOTEncrypt(23);
             else msg.RsaCipEncrypt(23);
             msg.InsertAdler32();
-            msg.InsertPacketHeader();
             return msg;
         }
         
