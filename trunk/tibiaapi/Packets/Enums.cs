@@ -126,6 +126,8 @@ namespace Tibia.Packets
 
     public enum OutgoingPacketType : byte
     {
+        LoginServerRequest = 0x01,
+        GameServerRequest = 0x0A,
         Logout = 0x14,
         ItemMove = 0x78,
         ShopSell = 0x7A,

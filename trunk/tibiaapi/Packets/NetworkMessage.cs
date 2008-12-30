@@ -23,6 +23,12 @@ namespace Tibia.Packets
 
         #region "Contructors"
 
+        public NetworkMessage()
+        {
+            messageStream = new MessageStream();
+            messageStream.Position = 6;
+        }
+
         public NetworkMessage(Objects.Client client)
         {
             Client = client;
