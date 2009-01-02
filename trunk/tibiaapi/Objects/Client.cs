@@ -320,7 +320,14 @@ namespace Tibia.Objects
             get
             {
                 int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
-                return ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
+                double value = 1000 / ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
+                
+                //FIX HERE: Does the .net have some function to do this?
+                double valueL = Math.Floor(value);
+                if (valueL + 0.5 < value)
+                    return Math.Ceiling(value);
+                else
+                    return valueL;
             }
             set
             {
@@ -731,6 +738,11 @@ namespace Tibia.Objects
 
         #region Client MultiFunctions
 
+        /// <summary>
+        /// This will set the FPSLimit with the value you gine
+        /// NOTE: The official value it's 1000/fpsmax
+        /// </summary>
+        /// <param name="value"></param>
         public void SetFPSLimit(double value)
         {
             int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
