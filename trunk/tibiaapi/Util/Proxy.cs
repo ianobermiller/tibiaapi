@@ -806,8 +806,13 @@ namespace Tibia.Util
                 if (lastClientWrite.AddMilliseconds(125) > DateTime.UtcNow)
                     System.Threading.Thread.Sleep(125);
 
-                if (networkStreamClient.CanWrite)
-                    networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
+                try
+                {
+
+                    if (networkStreamClient.CanWrite)
+                        networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
+                }
+                catch (Exception) { }
             }
         }
 

@@ -96,7 +96,11 @@ namespace Tibia.Util
                 switch ((string)uxClients.SelectedItem)
                 {
                     case NewClientDefaultText:
-                        client = Client.Open();
+                        //if already have one client open, offcourse the user whats to open a mc.
+                        if (uxClients.Items.Count > 2)
+                            client = Client.OpenMC();
+                        else
+                            client = Client.Open();
                         break;
                     case NewClientCustomText:
                         OpenFileDialog dialog = new OpenFileDialog();
@@ -104,8 +108,8 @@ namespace Tibia.Util
                            "executable files (*.exe)|*.exe|All files (*.*)|*.*";
                         dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                         dialog.Title = "Select a Tibia client executable";
-                        client = (dialog.ShowDialog() == DialogResult.OK)
-                           ? Client.Open(dialog.FileName) : null;
+                        client = (dialog.ShowDialog() == DialogResult.OK) ? uxClients.Items.Count > 2 ?
+                            Client.OpenMC(dialog.FileName, "") : Client.Open(dialog.FileName) : null;
                         break;
                 }
                 if (client != null)

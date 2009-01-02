@@ -460,6 +460,12 @@ namespace Tibia.Objects
             return new Client(p);
         }
 
+
+        public static Client OpenMC()
+        {
+            return OpenMC(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe"), "");
+        }
+
         /// <summary>
         /// Opens a client with dynamic multi-clienting support
         /// </summary>
@@ -724,6 +730,12 @@ namespace Tibia.Objects
         #endregion
 
         #region Client MultiFunctions
+
+        public void SetFPSLimit(double value)
+        {
+            int frameRateBegin = ReadInt32(Addresses.Client.FrameRatePointer);
+            WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, value);  
+        }
 
         /// <summary>
         /// Eat food found in any container.

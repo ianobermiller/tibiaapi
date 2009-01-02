@@ -91,7 +91,7 @@ namespace Tibia.Constants
             public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 0);
             public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 0);
             public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 0);
-            public static Objects.Food Cheese = new Objects.Food(3607, "Cheese", 0);
+            public static Objects.Food Cheese = new Objects.Food(169, "Cheese", 0);
             public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 0);
             public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 0);
             public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 0);
