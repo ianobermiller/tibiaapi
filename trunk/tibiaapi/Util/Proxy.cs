@@ -78,7 +78,6 @@ namespace Tibia.Util
         #endregion
 
         #region Events
-
         public event Action PlayerLogin;
         public event Action PlayerLogout;
         public event Action ClientConnect;
@@ -86,12 +85,6 @@ namespace Tibia.Util
         public delegate void MessageListener(NetworkMessage message);
         public event MessageListener ReceivedMessageFromClient;
         public event MessageListener ReceivedMessageFromServer;
-
-        public delegate void SplitPacket(byte type, byte[] packet);
-
-        public event SplitPacket IncomingSplitPacket;
-        public event SplitPacket OutgoingSplitPacket;
-
         #endregion
 
         #region Constructor/Deconstructor
@@ -588,8 +581,7 @@ namespace Tibia.Util
 
                         if (packetBytes.Length > 0)
                         {
-                            if (OutgoingSplitPacket != null)
-                                OutgoingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+                            CallOutgoingSplitPacket(packetBytes[0], packetBytes);
 
                             //skip the rest...
                             haveContent = true;
@@ -603,8 +595,7 @@ namespace Tibia.Util
 
                         packetBytes = packet.ToByteArray();
 
-                        if (OutgoingSplitPacket != null)
-                            OutgoingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+                        CallOutgoingSplitPacket((byte)packet.Type, packetBytes);
 
                         if (packet.Forward)
                         {
@@ -747,8 +738,7 @@ namespace Tibia.Util
 
                         if (packetBytes.Length > 0)
                         {
-                            if (IncomingSplitPacket != null)
-                                IncomingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+                            CallIncomingSplitPacket(packetBytes[0], packetBytes);
 
                             //skip the rest...
                             haveContent = true;
@@ -761,8 +751,7 @@ namespace Tibia.Util
                     {
                         packetBytes = packet.ToByteArray();
 
-                        if (IncomingSplitPacket != null)
-                            IncomingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+                        CallIncomingSplitPacket((byte)packet.Type, packetBytes);
 
                         if (packet.Forward)
                         {

@@ -25,6 +25,10 @@ namespace Tibia.Util
         public delegate bool IncomingPacketListener(Packets.IncomingPacket packet);
         public delegate bool OutgoingPacketListener(Packets.OutgoingPacket packet);
 
+        public delegate void SplitPacket(byte type, byte[] packet);
+        public event SplitPacket IncomingSplitPacket;
+        public event SplitPacket OutgoingSplitPacket;
+
         //incoming
         public event IncomingPacketListener ReceivedAnimatedTextIncomingPacket;
         public event IncomingPacketListener ReceivedCancelTargetIncomingPacket;
@@ -116,6 +120,19 @@ namespace Tibia.Util
         public event OutgoingPacketListener ReceivedTurnOutgoingPacket;
         public event OutgoingPacketListener ReceivedVipAddOutgoingPacket;
         public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
+        #endregion
+
+        #region Event callers
+        protected void CallIncomingSplitPacket(byte type, byte[] packet)
+        {
+            if (IncomingSplitPacket != null)
+                IncomingSplitPacket.BeginInvoke(type, packet, null, null);
+        }
+        protected void CallOutgoingSplitPacket(byte type, byte[] packet)
+        {
+            if (OutgoingSplitPacket != null)
+                OutgoingSplitPacket.BeginInvoke(type, packet, null, null);
+        }
         #endregion
 
         #region ClientPacket

@@ -16,10 +16,10 @@ namespace Tibia.Util
 
     public class RawSocket : SocketBase
     {
+
+        #region Variables
         [DllImport("iphlpapi.dll", SetLastError = true)]
         static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, TCP_TABLE_CLASS tblClass, int reserved);
-
-        #region variables
         private Client client;
         private int pid;
 
@@ -39,6 +39,7 @@ namespace Tibia.Util
         private Queue<byte[]> packetServerToClientQueue = new Queue<byte[]>();
         private Queue<string> flagServerToClientQueue = new Queue<string>();
         #endregion
+
         #region Events
 
         public delegate void Notification(string where, string messsage);
@@ -48,10 +49,6 @@ namespace Tibia.Util
         public event MessageListener ReceivedMessageFromClient;
         public event MessageListener ReceivedMessageFromServer;
 
-        public delegate void SplitPacket(byte type, byte[] packet);
-        public event SplitPacket IncomingSplitPacket;
-        public event SplitPacket OutgoingSplitPacket;
-
         public delegate void RawPacketListener(byte[] packet, string flags);
         public RawPacketListener ReceivedIPPacketFromClient;
         public RawPacketListener ReceivedIPPacketFromServer;
@@ -60,6 +57,7 @@ namespace Tibia.Util
         public RawPacketListener ReceivedRawGamePacketFromServer;
 
         #endregion
+
         #region Structs and Enums
 
         public enum SocketMode
@@ -105,6 +103,7 @@ namespace Tibia.Util
             MIB_TCPROW_OWNER_PID table;
         }
         #endregion
+
         #region TCP table
 
         //public TcpRow[] GetAllTcpConnections()
@@ -169,7 +168,7 @@ namespace Tibia.Util
             IPHostEntry HosyEntry = Dns.GetHostEntry((Dns.GetHostName()));
             if (HosyEntry.AddressList.Length > 0)
             {
-                strIP = HosyEntry.AddressList[0].ToString();
+                strIP = HosyEntry.AddressList[1].ToString();
                 //Console.WriteLine("IP: " + strIP);
             }
             else
@@ -187,8 +186,11 @@ namespace Tibia.Util
                                        SocketOptionName.HeaderIncluded, //Set the include the header
                                        true);
 
-            byte[] byTrue = new byte[4] { 1, 0, 0, 0 };
-            byte[] byOut = new byte[4] { 1, 0, 0, 0 }; //Capture outgoing packets
+            // FIX THIS PART!
+            //byte[] byTrue = new byte[4] { 1, 0, 0, 0 };
+            //byte[] byOut = new byte[4] { 1, 0, 0, 0 }; //Capture outgoing packets
+            byte[] byTrue = BitConverter.GetBytes(0);
+            byte[] byOut = BitConverter.GetBytes(0); //Capture outgoing packets
 
             //Socket.IOControl is analogous to the WSAIoctl method of Winsock 2
             mainSocket.IOControl(IOControlCode.ReceiveAll,              //Equivalent to SIO_RCVALL constant
@@ -307,8 +309,7 @@ namespace Tibia.Util
 
                     if (packetBytes.Length > 0)
                     {
-                        if (OutgoingSplitPacket != null)
-                            OutgoingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
+                        CallOutgoingSplitPacket(packetBytes[0], packetBytes);
                     }
                     break;
                 }
@@ -317,8 +318,7 @@ namespace Tibia.Util
 
                     packetBytes = packet.ToByteArray();
 
-                    if (OutgoingSplitPacket != null)
-                        OutgoingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+                    CallOutgoingSplitPacket((byte)packet.Type, packetBytes);
                 }
             }
         }
@@ -480,18 +480,14 @@ namespace Tibia.Util
 
                         if (packetBytes.Length > 0)
                         {
-                            if (IncomingSplitPacket != null)
-                                IncomingSplitPacket.BeginInvoke(packetBytes[0], packetBytes, null, null);
-
+                            CallIncomingSplitPacket(packetBytes[0], packetBytes);
                         }
                         break;
                     }
                     else
                     {
                         packetBytes = packet.ToByteArray();
-
-                        if (IncomingSplitPacket != null)
-                            IncomingSplitPacket.BeginInvoke((byte)packet.Type, packetBytes, null, null);
+                        CallIncomingSplitPacket((byte)packet.Type, packetBytes);
                     }
                 }
             }
