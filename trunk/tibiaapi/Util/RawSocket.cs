@@ -187,10 +187,8 @@ namespace Tibia.Util
                                        true);
 
             // FIX THIS PART!
-            //byte[] byTrue = new byte[4] { 1, 0, 0, 0 };
-            //byte[] byOut = new byte[4] { 1, 0, 0, 0 }; //Capture outgoing packets
-            byte[] byTrue = BitConverter.GetBytes(0);
-            byte[] byOut = BitConverter.GetBytes(0); //Capture outgoing packets
+            byte[] byTrue = new byte[4] { 1, 0, 0, 0 };
+            byte[] byOut = new byte[4] { 1, 0, 0, 0 }; //Capture outgoing packets
 
             //Socket.IOControl is analogous to the WSAIoctl method of Winsock 2
             mainSocket.IOControl(IOControlCode.ReceiveAll,              //Equivalent to SIO_RCVALL constant
