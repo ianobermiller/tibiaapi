@@ -140,7 +140,7 @@ namespace Tibia.Clientless
                     xteaKey,AccName, Password).Packet);
                 socket.BeginReceive(dataLoginServer, 0, dataLoginServer.Length, SocketFlags.None, (AsyncCallback)LoginServerReceived, null);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
 
             }
@@ -255,7 +255,7 @@ namespace Tibia.Clientless
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

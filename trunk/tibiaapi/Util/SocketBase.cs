@@ -1545,5 +1545,23 @@ namespace Tibia.Util
             return start;
         }
         #endregion
+
+        #region Misc
+        public static string GetDefaultLocalIp()
+        {
+            string localIp = null;
+            IPHostEntry hostEntry = Dns.GetHostEntry((Dns.GetHostName()));
+            foreach (IPAddress ipa in hostEntry.AddressList)
+            {
+                // Find the first IPv4 address
+                if (ipa.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIp = ipa.ToString();
+                    break;
+                }
+            }
+            return localIp;
+        }
+        #endregion
     }
 }

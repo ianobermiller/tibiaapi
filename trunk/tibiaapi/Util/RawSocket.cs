@@ -12,8 +12,6 @@ using Tibia.Util;
 
 namespace Tibia.Util
 {
-    //FIXME: Update to new packet system.
-
     public class RawSocket : SocketBase
     {
 
@@ -38,6 +36,27 @@ namespace Tibia.Util
         private Queue<byte[]> OutgoingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> packetServerToClientQueue = new Queue<byte[]>();
         private Queue<string> flagServerToClientQueue = new Queue<string>();
+        #endregion
+
+        #region Properties
+        public bool Enabled
+        {
+            get { return enabled; }
+            set { enabled = value; }
+        }
+
+        public ushort ProxyPort
+        {
+            get { return proxyPort; }
+            set { proxyPort = value; }
+        }
+
+        public SocketMode Mode
+        {
+            get { return mode; }
+            set { mode = value; }
+        }
+
         #endregion
 
         #region Events
@@ -157,29 +176,20 @@ namespace Tibia.Util
         }
         #endregion
 
-        #region socket core
-        public RawSocket(Client client, bool Adler)
+        #region Socket Core
+        public RawSocket(Client client, bool adler)
+            : this(client, adler, GetDefaultLocalIp()) { }
+        public RawSocket(Client client, bool adler, string localIp)
         {
-            this.Adler = Adler;
+            this.Adler = adler;
             this.client = client;
             pid = client.Process.Id;
-            string strIP = null;
 
-            IPHostEntry HosyEntry = Dns.GetHostEntry((Dns.GetHostName()));
-            if (HosyEntry.AddressList.Length > 0)
-            {
-                strIP = HosyEntry.AddressList[1].ToString();
-                //Console.WriteLine("IP: " + strIP);
-            }
-            else
-            {/*cry
-                Console.WriteLine("No ip assigned");*/
-            }
             mainSocket = new Socket(AddressFamily.InterNetwork,
                     SocketType.Raw, ProtocolType.IP);
 
             //Bind the socket to the selected IP address
-            mainSocket.Bind(new IPEndPoint(IPAddress.Parse(strIP), 0));
+            mainSocket.Bind(new IPEndPoint(IPAddress.Parse(localIp), 0));
 
             //Set the socket  options
             mainSocket.SetSocketOption(SocketOptionLevel.IP,            //Applies only to IP packets
@@ -493,28 +503,7 @@ namespace Tibia.Util
 
         #endregion
 
-        #region properties
-        public bool Enabled
-        {
-            get { return enabled; }
-            set { enabled = value; }
-        }
-
-        public ushort ProxyPort
-        {
-            get { return proxyPort; }
-            set { proxyPort = value; }
-        }
-
-        public SocketMode Mode
-        {
-            get { return mode; }
-            set { mode = value; }
-        }
-
-        #endregion
-
-        #region ports, flags
+        #region Ports, Flags
 
         public void UpdatePorts()
         {
@@ -617,8 +606,5 @@ namespace Tibia.Util
             return pos;
         }
         #endregion
-
-
     }
-
 }
