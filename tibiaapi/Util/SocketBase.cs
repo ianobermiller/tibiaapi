@@ -123,12 +123,12 @@ namespace Tibia.Util
         #endregion
 
         #region Event callers
-        protected void CallIncomingSplitPacket(byte type, byte[] packet)
+        protected void OnIncomingSplitPacket(byte type, byte[] packet)
         {
             if (IncomingSplitPacket != null)
                 IncomingSplitPacket.BeginInvoke(type, packet, null, null);
         }
-        protected void CallOutgoingSplitPacket(byte type, byte[] packet)
+        protected void OnOutgoingSplitPacket(byte type, byte[] packet)
         {
             if (OutgoingSplitPacket != null)
                 OutgoingSplitPacket.BeginInvoke(type, packet, null, null);
