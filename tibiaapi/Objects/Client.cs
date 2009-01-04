@@ -1214,6 +1214,14 @@ namespace Tibia.Objects
             rawsocket.Enabled = true;
         }
 
+        public void StartRawSocket(bool Adler, string localIp)
+        {
+            if (rawsocket == null)
+                rawsocket = new Tibia.Util.RawSocket(this, Adler, localIp);
+
+            rawsocket.Enabled = true;
+        }
+
         public void StopRawSocket()
         {
             if (rawsocket != null) 
