@@ -309,7 +309,7 @@ namespace Tibia.Util
 
                     if (packetBytes.Length > 0)
                     {
-                        CallOutgoingSplitPacket(packetBytes[0], packetBytes);
+                        OnOutgoingSplitPacket(packetBytes[0], packetBytes);
                     }
                     break;
                 }
@@ -318,7 +318,7 @@ namespace Tibia.Util
 
                     packetBytes = packet.ToByteArray();
 
-                    CallOutgoingSplitPacket((byte)packet.Type, packetBytes);
+                    OnOutgoingSplitPacket((byte)packet.Type, packetBytes);
                 }
             }
         }
@@ -480,14 +480,14 @@ namespace Tibia.Util
 
                         if (packetBytes.Length > 0)
                         {
-                            CallIncomingSplitPacket(packetBytes[0], packetBytes);
+                            OnIncomingSplitPacket(packetBytes[0], packetBytes);
                         }
                         break;
                     }
                     else
                     {
                         packetBytes = packet.ToByteArray();
-                        CallIncomingSplitPacket((byte)packet.Type, packetBytes);
+                        OnIncomingSplitPacket((byte)packet.Type, packetBytes);
                     }
                 }
             }
