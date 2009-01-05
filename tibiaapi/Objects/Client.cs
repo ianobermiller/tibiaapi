@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -348,6 +349,39 @@ namespace Tibia.Objects
                 return new Rect(r);
             }
         }
+
+        /// <summary>
+        /// Sends a string to the client
+        /// </summary>
+        /// <param name="s"></param>
+        public void SendString(string s)
+        {
+            foreach (var c in s)
+                SendKey(Convert.ToInt32(c));
+        }
+
+        /// <summary>
+        /// Sends a key to the client
+        /// </summary>
+        /// <param name="key"></param>
+        public void SendKey(Keys key)
+        {
+            SendMessage(Hooks.WM_KEYDOWN, (int)key, 0);
+            SendMessage(Hooks.VM_CHAR, (int)key, 0);
+            SendMessage(Hooks.WM_KEYUP, (int)key, 0);
+        }
+
+        /// <summary>
+        /// Sends a key to the client
+        /// </summary>
+        /// <param name="key"></param>
+        public void SendKey(int key)
+        {
+            SendMessage(Hooks.WM_KEYDOWN, key, 0);
+            SendMessage(Hooks.VM_CHAR, key, 0);
+            SendMessage(Hooks.WM_KEYUP, key, 0);
+        }
+
         /// <summary>
         /// Wrapper for SendMessage function
         /// </summary>
@@ -359,6 +393,7 @@ namespace Tibia.Objects
         {
             Util.WinApi.SendMessage(MainWindowHandle, MessageId, wParam, lParam);
         }
+
         /// <summary>
         /// Clicks with the mouse somewhere on the screen
         /// </summary>
@@ -739,8 +774,81 @@ namespace Tibia.Objects
         #region Client MultiFunctions
 
         /// <summary>
-        /// This will set the FPSLimit with the value you gine
-        /// NOTE: The official value it's 1000/fpsmax
+        ///
+        /// </summary>
+        /// <param name="login">The account name.</param>
+        /// <param name="password">The account password.</param>
+        /// <param name="charName">The character name.</param>
+        /// <param name="world">The character world name.</param>
+        /// <returns></returns>
+        public bool AutoLogin(string login, string password, string charName, string world)
+        {
+            //if the player is logged or the window is minimazed return false.
+            if (LoggedIn || IsMinimized)
+                return false;
+
+            //sure the screen is clean, no dialog open
+            SendKey(Keys.Escape);
+            SendKey(Keys.Escape);
+
+            //reset the selected char value..
+            WriteUInt32(Tibia.Addresses.Client.LoginSelectedChar, 0);
+            //reset the char count value..
+            WriteInt32(Tibia.Addresses.Client.LoginCharListLength, 0);
+
+            //click the enter the game button
+            Click(120, Window.Height - 250);
+
+            //wait the dialog open
+            while (!DialogIsOpened)
+                Thread.Sleep(10);
+
+            //now we have to send the login and the password
+            SendString(login);
+            //press tab
+            SendKey(Keys.Tab);
+            //put the pass
+            SendString(password);
+            //press entrer..
+            SendKey(Keys.Enter);
+
+            //wait for the charlist dialog
+            int waitTime = 4000; // 2 sec
+            while (CharListCount == 0 || waitTime > 0)
+            {
+                Thread.Sleep(10);
+                waitTime -= 10;
+            }
+
+            //timeout
+            if (waitTime <= 0 && CharListCount == 0)
+                return false;
+
+            //now we loop at the charlist to find the selected char..
+            foreach (var ch in CharList)
+            {
+                //we start at position 0
+                if (ch.CharName.ToLower() == charName.ToLower() && ch.WorldName.ToLower() == world.ToLower())
+                {
+                    //we found the char
+                    //lets press the entrer key
+                    SendKey(Keys.Enter);
+                    return true;
+                }
+
+                //move to the next char
+                SendKey(Keys.Down);
+                Thread.Sleep(50); //make sure the client process the msg
+            }
+
+            //char not found.
+            return false;
+        }
+
+
+        /// <summary>
+        /// This will set the FPSLimit with the value you give
+        /// NOTE: The official value is 1000/fpsmax
         /// </summary>
         /// <param name="value"></param>
         public void SetFPSLimit(double value)
