@@ -1449,7 +1449,7 @@ namespace Tibia.Util
                 PrintDebug.BeginInvoke(message, null, null);
         }
 
-        protected void startDebugForm()
+        protected void StartDebugForm()
         {
             debugForm = new Form();
             RichTextBox myRichTextBox = new RichTextBox();
@@ -1490,7 +1490,7 @@ namespace Tibia.Util
             set
             {
                 if (value && debugForm == null)
-                    startDebugForm();
+                    StartDebugForm();
                 else if (!value && debugForm != null)
                     debugForm.Close();
 

@@ -174,6 +174,7 @@
     <Compile Include="Packets\Outgoing\ChannelClosePacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerClosePacket.cs" />
     <Compile Include="Packets\Outgoing\FollowPacket.cs" />
+    <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\RSA\GameServerRequestPacket.cs" />
     <Compile Include="Packets\RSA\LoginServerRequestPacket.cs" />
     <Compile Include="Packets\Outgoing\LogoutPacket.cs" />
