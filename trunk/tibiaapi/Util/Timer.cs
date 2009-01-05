@@ -21,7 +21,7 @@ namespace Tibia.Util
         /// <summary>
         /// Called when the timer is executed.
         /// </summary>
-        public TimerExecution OnExecute;
+        public event TimerExecution Execute;
 
         /// <summary>
         /// Creates a timer with a specified interval, and starts after the specified delay.
@@ -97,11 +97,11 @@ namespace Tibia.Util
 
         public void Tick(object obj)
         {
-            if (timerState == TimerState.Running && OnExecute != null)
+            if (timerState == TimerState.Running && Execute != null)
             {
                 lock (this)
                 {
-                    OnExecute();
+                    Execute();
                 }
             }
         }

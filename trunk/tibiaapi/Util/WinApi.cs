@@ -178,7 +178,15 @@ namespace Tibia.Util
             public int right;
             public int bottom;
         }
+
         public static int MakeLParam(int LoWord, int HiWord)
+        {
+            return ((HiWord << 16) | (LoWord & 0xffff));
+        }
+
+        //the same function but with another name =D
+        // just for understand the code better.
+        public static int MakeWParam(int LoWord, int HiWord)
         {
             return ((HiWord << 16) | (LoWord & 0xffff));
         } 

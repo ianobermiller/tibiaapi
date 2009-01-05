@@ -78,9 +78,9 @@ namespace Tibia.Util
         #endregion
 
         #region Events
-        public event Action PlayerLogin;
-        public event Action PlayerLogout;
-        public event Action ClientConnect;
+        public event EventHandler PlayerLogin;
+        public event EventHandler PlayerLogout;
+        public event EventHandler ClientConnect;
 
         public delegate void MessageListener(NetworkMessage message);
         public event MessageListener ReceivedMessageFromClient;
@@ -127,7 +127,7 @@ namespace Tibia.Util
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
             if (PlayerLogin != null)
-                Scheduler.addTask(PlayerLogin, null, 500);
+                Scheduler.addTask(PlayerLogin, new object[] {this, new EventArgs()}, 500);
 
             isConnected = true;
             return true;
@@ -207,7 +207,7 @@ namespace Tibia.Util
                     player = null;
 
                     if (PlayerLogout != null)
-                        PlayerLogout.BeginInvoke(null, null);
+                        PlayerLogout.BeginInvoke(this, new EventArgs(), null, null);
                 }
 
                 isConnected = false;
@@ -248,7 +248,7 @@ namespace Tibia.Util
                 networkStreamServer = new NetworkStream(socketServer);
 
             if (ClientConnect != null)
-                ClientConnect.BeginInvoke(null, null);
+                ClientConnect.BeginInvoke(this, new EventArgs(), null, null);
 
             acceptingConnection = false;
 
@@ -399,7 +399,13 @@ namespace Tibia.Util
 
                     xteaKey = key;
 
-                    msg.GetByte();
+                    //the fisrt byte must be only 0
+                    if (msg.GetByte() != 0)
+                    {
+                        Restart();
+                        return;
+                    }
+
                     msg.GetString();
                     string name = msg.GetString();
 
