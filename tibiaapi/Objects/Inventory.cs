@@ -122,7 +122,7 @@ namespace Tibia.Objects
             }
             lastFound = (item == null ? new Item(client, 0) : item);
 
-            return lastFound;
+            return item;
         }
 
         /// <summary>

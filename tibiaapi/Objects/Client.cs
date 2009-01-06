@@ -800,8 +800,12 @@ namespace Tibia.Objects
             Click(120, Window.Height - 250);
 
             //wait the dialog open
-            while (!DialogIsOpened)
+            int waitTime = 4000;
+            while (!DialogIsOpened && waitTime > 0)
                 Thread.Sleep(10);
+
+            if (waitTime <= 0 && !DialogIsOpened)
+                return false;
 
             //now we have to send the login and the password
             SendString(login);
@@ -813,8 +817,8 @@ namespace Tibia.Objects
             SendKey(Keys.Enter);
 
             //wait for the charlist dialog
-            int waitTime = 4000; // 2 sec
-            while (CharListCount == 0 || waitTime > 0)
+            waitTime = 4000; // 2 sec
+            while (CharListCount == 0 && waitTime > 0)
             {
                 Thread.Sleep(10);
                 waitTime -= 10;
@@ -827,6 +831,8 @@ namespace Tibia.Objects
             //now we loop at the charlist to find the selected char..
             foreach (var ch in CharList)
             {
+
+                Thread.Sleep(100); //make sure the client process the msg
                 //we start at position 0
                 if (ch.CharName.ToLower() == charName.ToLower() && ch.WorldName.ToLower() == world.ToLower())
                 {
@@ -837,8 +843,7 @@ namespace Tibia.Objects
                 }
 
                 //move to the next char
-                SendKey(Keys.Down);
-                Thread.Sleep(50); //make sure the client process the msg
+                SendKey(Keys.Down);       
             }
 
             //char not found.
