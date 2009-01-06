@@ -31,7 +31,12 @@ namespace Tibia.Objects
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            if (this.Equals(Invalid))
+                return (-1).GetHashCode();
+            ushort shortX = (ushort)X;
+            ushort shortY = (ushort)Y;
+            byte byteZ = (byte)Z;
+            return ((shortX << 3) + (shortY << 1) + byteZ).GetHashCode();
         }
 
         /// <summary>
