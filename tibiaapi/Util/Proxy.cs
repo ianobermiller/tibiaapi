@@ -631,7 +631,9 @@ namespace Tibia.Util
             if (serverSendQueue.Count > 0)
             {
                 NetworkMessage msg = serverSendQueue.Dequeue();
-                ServerWrite(msg.Packet);
+
+                if (msg != null)
+                    ServerWrite(msg.Packet);
             }
         }
 

@@ -31,6 +31,7 @@ namespace Tibia.Objects
         private AutoResetEvent pipeIsReady;
         int defBarY, defRectX, defRectY, defRectW, defRectH;
 
+
         // References to commonly used objects
         private BattleList battleList;
         private Map map;
@@ -122,6 +123,10 @@ namespace Tibia.Objects
         #endregion
 
         #region Properties
+        public bool HasExited
+        {
+            get { return process.HasExited; }
+        }
 
         public ContextMenu ContextMenu
         {
@@ -802,8 +807,12 @@ namespace Tibia.Objects
             //wait the dialog open
             int waitTime = 4000;
             while (!DialogIsOpened && waitTime > 0)
+            {
                 Thread.Sleep(10);
+                waitTime -= 10;
+            }
 
+            //4 sec and the dialog did not open..
             if (waitTime <= 0 && !DialogIsOpened)
                 return false;
 
