@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Tibia.Objects
 {
@@ -12,15 +13,21 @@ namespace Tibia.Objects
         public uint Number;
         public uint Address;
         public uint Id;
+        public List<Item> Items;
 
         public Tile(uint n) : this(n, 0) { }
-        public Tile(uint n, uint a) : this(n, a, new Location(), 0) { }
+        public Tile(uint id, Location l) : this(0, 0, l, id)
+        {
+            Items = new List<Item>();
+        }
+        public Tile(uint n, uint a) : this(n, a, Location.Invalid, 0) { }
         public Tile(uint n, uint a, Location l, uint i)
         {
             Location = l;
             Number = n;
             Address = a;
             Id = i;
+            Items = null;
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
 {
@@ -9,12 +10,12 @@ namespace Tibia.Packets.Incoming
         protected NetworkMessage stream;
         protected short m_skipTiles;
 
-        protected List<Objects.Item> items = new List<Tibia.Objects.Item> { };
-        protected List<PacketCreature> creatures = new List<PacketCreature> { };
+        protected List<Tile> tiles = new List<Tile>();
+        protected List<PacketCreature> creatures = new List<PacketCreature>();
 
-        public List<Objects.Item> Items
+        public List<Tile> Tiles
         {
-            get { return items; }
+            get { return tiles; }
         }
 
         public List<PacketCreature> Creatures
@@ -106,6 +107,8 @@ namespace Tibia.Packets.Incoming
         protected bool setTileDescription(NetworkMessage msg, Objects.Location pos)
         {
             int n = 0;
+            bool ret = true;
+            Tile tile = new Tile(0, pos);
             while (true)
             {
                 //avoid infinite loop
@@ -116,21 +119,25 @@ namespace Tibia.Packets.Incoming
                 if (inspectTileId >= 0xFF00)
                 {
                     //end of the tile
-                    return true;
+                    ret = true;
+                    break;
                 }
                 else
                 {
                     if (n > 10)
                     {
-                        return false;
+                        ret = false;
+                        break;
                     }
                     //read tile things: items and creatures
-                    internalGetThing(msg, pos);
+                    internalGetThing(msg, pos, tile, n);
                 }
             }
+            tiles.Add(tile);
+            return ret;
         }
 
-        protected bool internalGetThing(NetworkMessage msg, Objects.Location pos)
+        protected bool internalGetThing(NetworkMessage msg, Location pos, Tile tile, int n)
         {
             //get thing type
             ushort thingId = msg.GetUInt16();
@@ -227,16 +234,29 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Objects.Item item = new Tibia.Objects.Item(Client, thingId);
+                byte extra = 0;
+                Item item = new Item(Client, thingId);
 
                 if (item.HasExtraByte)
                 {
-                    item.Count = msg.GetByte();
+                    extra = msg.GetByte();
                     stream.AddByte(item.Count);
                 }
 
-                item.Loc = new Tibia.Objects.ItemLocation(pos);
-                items.Add(item);
+                if (n == 0) // first item is tile
+                {
+                    tile.Id = thingId;
+                }
+                else
+                {
+                    if (item.HasExtraByte)
+                    {
+                        item.Count = extra;
+                    }
+
+                    item.Loc = new ItemLocation(pos);
+                    tile.Items.Add(item);
+                }
 
                 return true;
             }
