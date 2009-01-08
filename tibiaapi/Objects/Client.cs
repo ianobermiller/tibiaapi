@@ -19,6 +19,22 @@ namespace Tibia.Objects
     /// </summary>
     public class Client
     {
+        #region Constants
+        public static readonly LoginServer[] DefaultLoginServers = 
+        {
+            new LoginServer("login01.tibia.com"),
+            new LoginServer("login02.tibia.com"),
+            new LoginServer("login03.tibia.com"),
+            new LoginServer("login04.tibia.com"),
+            new LoginServer("login05.tibia.com"),
+            new LoginServer("tibia01.cipsoft.com"),
+            new LoginServer("tibia02.cipsoft.com"),
+            new LoginServer("tibia03.cipsoft.com"),
+            new LoginServer("tibia04.cipsoft.com"),
+            new LoginServer("tibia05.cipsoft.com")
+        };
+        #endregion
+
         #region Variables
 
         private Process process;
