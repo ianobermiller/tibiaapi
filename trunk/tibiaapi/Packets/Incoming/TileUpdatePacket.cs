@@ -13,7 +13,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.TileUpdate;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             int position = msg.Position;
 
@@ -27,7 +27,7 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                pos = msg.GetLocation();
+                Objects.Location pos = msg.GetLocation();
                 stream.AddLocation(pos);
 
                 ushort thingId = msg.PeekUInt16();

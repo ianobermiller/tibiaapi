@@ -18,7 +18,7 @@ namespace Tibia.Packets.Incoming
             Destination = PacketDestination.Client;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             int position = msg.Position;
 

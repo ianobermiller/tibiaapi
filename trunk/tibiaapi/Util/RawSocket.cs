@@ -475,11 +475,9 @@ namespace Tibia.Util
                 msg.PrepareToRead();
                 msg.GetUInt16(); //logical packet size
 
-                Objects.Location pos = GetPlayerPosition();
-
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = ParseClientPacket(client, msg, ref pos);
+                    IncomingPacket packet = ParseClientPacket(client, msg);
                     byte[] packetBytes;
 
                     if (packet == null)
