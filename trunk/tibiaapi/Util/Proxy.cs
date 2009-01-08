@@ -97,6 +97,9 @@ namespace Tibia.Util
 
             loginServers = client.LoginServers;
 
+            if (loginServers[0].Server == "localhost")
+                loginServers = Client.DefaultLoginServers;
+
             if (portServer == 0)
                 portServer = GetFreePort();
 
