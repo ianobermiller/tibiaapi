@@ -306,10 +306,14 @@ namespace Tibia.Util
                 serverReceiveQueue.Enqueue(msg);
                 ProcessServerReceiveQueue();
 
-                if (networkStreamServer.CanRead)
+                try
+                {
                     networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
-                else
+                }
+                catch (Exception)
+                {
                     Restart();
+                }
             }
         }
 
@@ -459,7 +463,14 @@ namespace Tibia.Util
             if (DebugOn)
                 WriteDebug("OnCharListReceived Function.");
 
-            readBytesClient = networkStreamClient.EndRead(ar);
+            try
+            {
+                readBytesClient = networkStreamClient.EndRead(ar);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             if (readBytesClient == 2)
             {
@@ -469,10 +480,14 @@ namespace Tibia.Util
 
                 while (readBytesClient < packetSizeClient)
                 {
-                    if (networkStreamClient.CanRead)
+                    try
+                    {
                         readBytesClient += networkStreamClient.Read(msg.GetBuffer(), readBytesClient, packetSizeClient - readBytesClient);
-                    else
+                    }
+                    catch (Exception)
+                    {
                         Restart();
+                    }
                 }
 
                 if (ReceivedMessageFromClient != null)
@@ -648,11 +663,13 @@ namespace Tibia.Util
 
                 try
                 {
-                    if (networkStreamServer.CanWrite)
-                        networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
-                    else
+                    try
                     {
-                        //TODO: Handle the error.
+                        networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
+                    }
+                    catch (Exception)
+                    {
+                        Restart();
                     }
                 }
                 catch (Exception ex)
@@ -702,10 +719,14 @@ namespace Tibia.Util
 
             while (readBytesClient < packetSizeClient)
             {
-                if (networkStreamClient.CanRead)
+                try
+                {
                     readBytesClient += networkStreamClient.Read(msg.GetBuffer(), readBytesClient, packetSizeClient - readBytesClient);
-                else
+                }
+                catch (Exception)
+                {
                     Restart();
+                }
             }
 
             if (ReceivedMessageFromClient != null)
@@ -714,10 +735,14 @@ namespace Tibia.Util
             clientReceiveQueue.Enqueue(msg);
             ProcessClientReceiveQueue();
 
-            if (networkStreamClient.CanRead)
+            try
+            {
                 networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)ClientReadPacket, null);
-            else
+            }
+            catch (Exception)
+            {
                 Restart();
+            }
 
         }
 
@@ -732,11 +757,9 @@ namespace Tibia.Util
                 msg.PrepareToRead();
                 msg.GetUInt16(); //logical packet size
 
-                Objects.Location pos = GetPlayerPosition();
-
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = ParseClientPacket(client, msg, ref pos);
+                    IncomingPacket packet = ParseClientPacket(client, msg);
                     byte[] packetBytes;
 
                     if (packet == null)
@@ -811,7 +834,10 @@ namespace Tibia.Util
                     if (networkStreamClient.CanWrite)
                         networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
                 }
-                catch (Exception) { }
+                catch (Exception) 
+                {
+                    Restart();
+                }
             }
         }
 

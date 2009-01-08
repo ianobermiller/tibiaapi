@@ -29,7 +29,7 @@ namespace Tibia.Packets.Incoming
             Destination = PacketDestination.Client;
         }
 
-        public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos);
+        public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination);
 
         protected bool setMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height)
         {

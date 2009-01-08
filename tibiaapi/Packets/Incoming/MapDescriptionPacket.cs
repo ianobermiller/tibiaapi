@@ -13,7 +13,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.MapDescription;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             int position = msg.Position;
 
@@ -27,9 +27,10 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                pos = msg.GetLocation();
-                stream.AddLocation(pos);
-                setMapDescription(msg, pos.X - 8, pos.Y - 6, pos.Z, 18, 14);
+                //the client send the player location here.
+                Client.PlayerLocation = msg.GetLocation();
+                stream.AddLocation(Client.PlayerLocation);
+                setMapDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, Client.PlayerLocation.Z, 18, 14);
             }
             catch (Exception)
             {

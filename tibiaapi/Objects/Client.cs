@@ -31,6 +31,7 @@ namespace Tibia.Objects
         private AutoResetEvent pipeIsReady;
         int defBarY, defRectX, defRectY, defRectW, defRectH;
 
+        internal Location PlayerLocation = Location.Invalid;
 
         // References to commonly used objects
         private BattleList battleList;
@@ -123,6 +124,7 @@ namespace Tibia.Objects
         #endregion
 
         #region Properties
+
         public bool HasExited
         {
             get { return process.HasExited; }

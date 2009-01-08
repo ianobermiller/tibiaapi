@@ -83,7 +83,7 @@ namespace Tibia.Packets
         }
         #endregion
 
-        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         { 
             return false;
         }

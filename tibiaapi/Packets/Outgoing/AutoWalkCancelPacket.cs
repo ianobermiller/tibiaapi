@@ -14,7 +14,7 @@ namespace Tibia.Packets.Outgoing
             Destination = PacketDestination.Server;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             if (msg.GetByte() != (byte)OutgoingPacketType.AutoWalkCancel)
                 return false;

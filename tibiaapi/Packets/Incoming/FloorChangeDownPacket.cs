@@ -14,7 +14,7 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.FloorChangeDown;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, ref Objects.Location pos)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             int position = msg.Position;
 
@@ -26,21 +26,21 @@ namespace Tibia.Packets.Incoming
             stream = new NetworkMessage(Client, 0);
             stream.AddByte((byte)Type);
 
-            pos.Z++;
+            Client.PlayerLocation.Z++;
 
             try
             {
                 //going from surface to underground
-                if (pos.Z == 8)
+                if (Client.PlayerLocation.Z == 8)
                 {
                     int j, i;
-                    for (i = pos.Z, j = -1; i < pos.Z + 3; ++i, --j)
-                        setFloorDescription(msg, pos.X - 8, pos.Y - 6, i, 18, 14, j);
+                    for (i = Client.PlayerLocation.Z, j = -1; i < Client.PlayerLocation.Z + 3; ++i, --j)
+                        setFloorDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, i, 18, 14, j);
 
                 }
                 //going further down
-                else if (pos.Z > 8 && pos.Z < 14)
-                    setFloorDescription(msg, pos.X - 8, pos.Y - 6, pos.Z + 2, 18, 14, -3);
+                else if (Client.PlayerLocation.Z > 8 && Client.PlayerLocation.Z < 14)
+                    setFloorDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, Client.PlayerLocation.Z + 2, 18, 14, -3);
             }
             catch (Exception)
             {
@@ -48,8 +48,8 @@ namespace Tibia.Packets.Incoming
                 return false;
             }
 
-            pos.X--;
-            pos.Y--;
+            Client.PlayerLocation.X--;
+            Client.PlayerLocation.Y--;
 
             return true;
         }
