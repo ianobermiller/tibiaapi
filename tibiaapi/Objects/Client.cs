@@ -1332,6 +1332,9 @@ namespace Tibia.Objects
 
         public void StartRawSocket(bool Adler)
         {
+            if (LoggedIn)
+                PlayerLocation = GetPlayer().Location;
+
             if (rawsocket == null)
                 rawsocket = new Tibia.Util.RawSocket(this, Adler);
             
@@ -1340,6 +1343,9 @@ namespace Tibia.Objects
 
         public void StartRawSocket(bool Adler, string localIp)
         {
+            if (LoggedIn)
+                PlayerLocation = GetPlayer().Location;
+
             if (rawsocket == null)
                 rawsocket = new Tibia.Util.RawSocket(this, Adler, localIp);
 
