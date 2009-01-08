@@ -240,7 +240,7 @@ namespace Tibia.Packets.Incoming
                 if (item.HasExtraByte)
                 {
                     extra = msg.GetByte();
-                    stream.AddByte(item.Count);
+                    stream.AddByte(extra);
                 }
 
                 if (n == 0) // first item is tile

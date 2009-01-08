@@ -282,9 +282,11 @@ namespace Tibia.Util
 
             while (readBytesServer < packetSizeServer)
             {
-                if (networkStreamServer.CanRead)
+                try
+                {
                     readBytesServer += networkStreamServer.Read(msg.GetBuffer(), readBytesServer, packetSizeServer - readBytesServer);
-                else
+                }
+                catch (Exception)
                 {
                     Restart();
                     return;
