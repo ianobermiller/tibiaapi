@@ -26,21 +26,21 @@ namespace Tibia.Packets.Incoming
             stream = new NetworkMessage(Client, 0);
             stream.AddByte((byte)Type);
 
-            Client.PlayerLocation.Z++;
+            Client.playerLocation.Z++;
 
             try
             {
                 //going from surface to underground
-                if (Client.PlayerLocation.Z == 8)
+                if (Client.playerLocation.Z == 8)
                 {
                     int j, i;
-                    for (i = Client.PlayerLocation.Z, j = -1; i < Client.PlayerLocation.Z + 3; ++i, --j)
-                        setFloorDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, i, 18, 14, j);
+                    for (i = Client.playerLocation.Z, j = -1; i < Client.playerLocation.Z + 3; ++i, --j)
+                        setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, j);
 
                 }
                 //going further down
-                else if (Client.PlayerLocation.Z > 8 && Client.PlayerLocation.Z < 14)
-                    setFloorDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, Client.PlayerLocation.Z + 2, 18, 14, -3);
+                else if (Client.playerLocation.Z > 8 && Client.playerLocation.Z < 14)
+                    setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z + 2, 18, 14, -3);
             }
             catch (Exception)
             {
@@ -48,8 +48,8 @@ namespace Tibia.Packets.Incoming
                 return false;
             }
 
-            Client.PlayerLocation.X--;
-            Client.PlayerLocation.Y--;
+            Client.playerLocation.X--;
+            Client.playerLocation.Y--;
 
             return true;
         }

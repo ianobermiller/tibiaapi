@@ -958,7 +958,7 @@ namespace Tibia.Util
         #endregion
 
         #region ServerPacket
-        protected OutgoingPacket ParseServerPacket(Client client, NetworkMessage msg, Location pos)
+        protected OutgoingPacket ParseServerPacket(Client client, NetworkMessage msg)
         {
             OutgoingPacket packet;
             OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();

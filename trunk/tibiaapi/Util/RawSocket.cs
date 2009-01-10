@@ -304,11 +304,9 @@ namespace Tibia.Util
             msg.PrepareToRead();
             msg.GetUInt16();
 
-            Objects.Location pos = Location.Invalid;
-
             while (msg.Position < msg.Length)
             {
-                OutgoingPacket packet = ParseServerPacket(client, msg, pos);
+                OutgoingPacket packet = ParseServerPacket(client, msg);
                 byte[] packetBytes;
 
                 if (packet == null)

@@ -49,7 +49,6 @@ namespace Tibia.Util
         private CharList[] charList;
         private uint[] xteaKey;
 
-        private Objects.Player player;
         private bool isConnected;
 
         #endregion
@@ -207,8 +206,6 @@ namespace Tibia.Util
 
                 if (isConnected)
                 {
-                    player = null;
-
                     if (PlayerLogout != null)
                         PlayerLogout.BeginInvoke(this, new EventArgs(), null, null);
                 }
@@ -256,7 +253,15 @@ namespace Tibia.Util
             acceptingConnection = false;
 
             isFirstMsg = true;
-            networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
+
+            try
+            {
+                networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
+            }
+            catch (Exception)
+            {
+                Restart();
+            }
         }
 
         private void ServerReadPacket(IAsyncResult ar)
@@ -297,7 +302,7 @@ namespace Tibia.Util
             }
 
             if (ReceivedMessageFromServer != null)
-                ReceivedMessageFromServer.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
+                ReceivedMessageFromServer.Invoke(msg);
 
             if (isFirstMsg)
             {
@@ -588,55 +593,62 @@ namespace Tibia.Util
                 NetworkMessage output = new NetworkMessage(Client);
                 bool haveContent = false;
 
-                msg.PrepareToRead();
-                msg.GetUInt16(); //logical packet size
-
-                Objects.Location pos = /*GetPlayerPosition()*/ Location.Invalid;
-
-                while (msg.Position < msg.Length)
+                //if the adler dont match we forward the packet to the server without read.
+                if (msg.CheckAdler32())
                 {
-                    OutgoingPacket packet = ParseServerPacket(client, msg, pos);
-                    byte[] packetBytes;
+                    msg.PrepareToRead();
+                    msg.GetUInt16(); //logical packet size
 
-                    if (packet == null)
+                    while (msg.Position < msg.Length)
                     {
-                        if (DebugOn)
-                            WriteDebug("Unknown outgoing packet.. skipping the rest! type: " + msg.PeekByte().ToString("X"));
+                        OutgoingPacket packet = ParseServerPacket(client, msg);
+                        byte[] packetBytes;
 
-                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
-
-                        if (packetBytes.Length > 0)
+                        if (packet == null)
                         {
-                            OnOutgoingSplitPacket(packetBytes[0], packetBytes);
+                            if (DebugOn)
+                                WriteDebug("Unknown outgoing packet.. skipping the rest! type: " + msg.PeekByte().ToString("X"));
 
-                            //skip the rest...
-                            haveContent = true;
-                            output.AddBytes(packetBytes);
+                            packetBytes = msg.GetBytes(msg.Length - msg.Position);
+
+                            if (packetBytes.Length > 0)
+                            {
+                                OnOutgoingSplitPacket(packetBytes[0], packetBytes);
+
+                                //skip the rest...
+                                haveContent = true;
+                                output.AddBytes(packetBytes);
+                            }
+
+                            break;
+                        }
+                        else
+                        {
+
+                            packetBytes = packet.ToByteArray();
+
+                            OnOutgoingSplitPacket((byte)packet.Type, packetBytes);
+
+                            if (packet.Forward)
+                            {
+                                haveContent = true;
+                                output.AddBytes(packetBytes);
+                            }
                         }
 
-                        break;
                     }
-                    else
+
+                    if (haveContent)
                     {
-
-                        packetBytes = packet.ToByteArray();
-
-                        OnOutgoingSplitPacket((byte)packet.Type, packetBytes);
-
-                        if (packet.Forward)
-                        {
-                            haveContent = true;
-                            output.AddBytes(packetBytes);
-                        }
+                        output.InsetLogicalPacketHeader();
+                        output.PrepareToSend();
+                        clientSendQueue.Enqueue(output);
+                        ProcessClientSendQueue();
                     }
-
                 }
-
-                if (haveContent)
+                else
                 {
-                    output.InsetLogicalPacketHeader();
-                    output.PrepareToSend();
-                    clientSendQueue.Enqueue(output);
+                    clientSendQueue.Enqueue(msg);
                     ProcessClientSendQueue();
                 }
             }
@@ -732,8 +744,10 @@ namespace Tibia.Util
                 }
             }
 
+            //if the programmer want to change the orignal packet it can..
+            //but if he return an worng msg format it gonna crash the proxy
             if (ReceivedMessageFromClient != null)
-                ReceivedMessageFromClient.BeginInvoke(new NetworkMessage(client, msg.Packet), null, null);
+                ReceivedMessageFromClient.Invoke(msg);
 
             clientReceiveQueue.Enqueue(msg);
             ProcessClientReceiveQueue();
@@ -757,52 +771,61 @@ namespace Tibia.Util
                 NetworkMessage output = new NetworkMessage(client);
                 bool haveContent = false;
 
-                msg.PrepareToRead();
-                msg.GetUInt16(); //logical packet size
-
-                while (msg.Position < msg.Length)
+                //if the adler dont match we forward the packet to the client without read.
+                if (msg.CheckAdler32())
                 {
-                    IncomingPacket packet = ParseClientPacket(client, msg);
-                    byte[] packetBytes;
+                    msg.PrepareToRead();
+                    msg.GetUInt16(); //logical packet size
 
-                    if (packet == null)
+                    while (msg.Position < msg.Length)
                     {
-                        if (DebugOn)
-                            WriteDebug("Unknown incoming packet.. skiping the rest! type: " + msg.PeekByte().ToString("X"));
+                        IncomingPacket packet = ParseClientPacket(client, msg);
+                        byte[] packetBytes;
 
-                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
-
-                        if (packetBytes.Length > 0)
+                        if (packet == null)
                         {
-                            OnIncomingSplitPacket(packetBytes[0], packetBytes);
+                            if (DebugOn)
+                                WriteDebug("Unknown incoming packet.. skiping the rest! type: " + msg.PeekByte().ToString("X"));
 
-                            //skip the rest...
-                            haveContent = true;
-                            output.AddBytes(packetBytes);
+                            packetBytes = msg.GetBytes(msg.Length - msg.Position);
+
+                            if (packetBytes.Length > 0)
+                            {
+                                OnIncomingSplitPacket(packetBytes[0], packetBytes);
+
+                                //skip the rest...
+                                haveContent = true;
+                                output.AddBytes(packetBytes);
+                            }
+
+                            break;
+                        }
+                        else
+                        {
+                            packetBytes = packet.ToByteArray();
+
+                            OnIncomingSplitPacket((byte)packet.Type, packetBytes);
+
+                            if (packet.Forward)
+                            {
+                                haveContent = true;
+                                output.AddBytes(packetBytes);
+                            }
                         }
 
-                        break;
                     }
-                    else
+
+                    if (haveContent)
                     {
-                        packetBytes = packet.ToByteArray();
-
-                        OnIncomingSplitPacket((byte)packet.Type, packetBytes);
-
-                        if (packet.Forward)
-                        {
-                            haveContent = true;
-                            output.AddBytes(packetBytes);
-                        }
+                        output.InsetLogicalPacketHeader();
+                        output.PrepareToSend();
+                        serverSendQueue.Enqueue(output);
+                        ProcessServerSendQueue();
                     }
-
                 }
-
-                if (haveContent)
+                else
                 {
-                    output.InsetLogicalPacketHeader();
-                    output.PrepareToSend();
-                    serverSendQueue.Enqueue(output);
+                    serverSendQueue.Enqueue(msg);
                     ProcessServerSendQueue();
                 }
             }
@@ -866,32 +889,6 @@ namespace Tibia.Util
 
             return -1;
         }
-
-        public Objects.Player GetPlayer()
-        {
-            try
-            {
-                if (player == null)
-                    player = client.GetPlayer();
-            }
-            catch (Exception) { }
-
-            return player;
-        }
-
-        public Objects.Location GetPlayerPosition()
-        {
-            Location pos = Location.Invalid;
-
-            try
-            {
-                pos = GetPlayer().Location;
-            }
-            catch (Exception) { }
-
-            return pos;
-        }
-
         #endregion
     }
 }
