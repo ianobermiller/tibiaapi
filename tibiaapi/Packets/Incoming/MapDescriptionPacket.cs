@@ -28,9 +28,9 @@ namespace Tibia.Packets.Incoming
             try
             {
                 //the client send the player location here.
-                Client.PlayerLocation = msg.GetLocation();
-                stream.AddLocation(Client.PlayerLocation);
-                setMapDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y - 6, Client.PlayerLocation.Z, 18, 14);
+                Client.playerLocation = msg.GetLocation();
+                stream.AddLocation(Client.playerLocation);
+                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14);
             }
             catch (Exception)
             {

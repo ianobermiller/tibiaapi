@@ -47,7 +47,7 @@ namespace Tibia.Objects
         private AutoResetEvent pipeIsReady;
         int defBarY, defRectX, defRectY, defRectW, defRectH;
 
-        internal Location PlayerLocation = Location.Invalid;
+        internal Location playerLocation = Location.Invalid;
 
         // References to commonly used objects
         private BattleList battleList;
@@ -140,6 +140,19 @@ namespace Tibia.Objects
         #endregion
 
         #region Properties
+
+        public Location PlayerLocation
+        {
+            get
+            {
+                if (UsingProxy || RawSocket.Enabled)
+                    return playerLocation;
+                else if (LoggedIn)
+                    return GetPlayer().Location;
+                else
+                    return Location.Invalid;
+            }
+        }
 
         public bool HasExited
         {
@@ -1349,7 +1362,7 @@ namespace Tibia.Objects
         public void StartRawSocket(bool Adler)
         {
             if (LoggedIn)
-                PlayerLocation = GetPlayer().Location;
+                playerLocation = GetPlayer().Location;
 
             if (rawsocket == null)
                 rawsocket = new Tibia.Util.RawSocket(this, Adler);
@@ -1360,7 +1373,7 @@ namespace Tibia.Objects
         public void StartRawSocket(bool Adler, string localIp)
         {
             if (LoggedIn)
-                PlayerLocation = GetPlayer().Location;
+                playerLocation = GetPlayer().Location;
 
             if (rawsocket == null)
                 rawsocket = new Tibia.Util.RawSocket(this, Adler, localIp);

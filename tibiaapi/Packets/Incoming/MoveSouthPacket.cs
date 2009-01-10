@@ -25,11 +25,11 @@ namespace Tibia.Packets.Incoming
             stream = new NetworkMessage(Client, 0);
             stream.AddByte((byte)Type);
 
-            Client.PlayerLocation.Y++;
+            Client.playerLocation.Y++;
 
             try
             {
-                setMapDescription(msg, Client.PlayerLocation.X - 8, Client.PlayerLocation.Y + 7, Client.PlayerLocation.Z, 18, 1);
+                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y + 7, Client.playerLocation.Z, 18, 1);
             }
             catch (Exception)
             {

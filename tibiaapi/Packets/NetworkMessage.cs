@@ -468,7 +468,7 @@ namespace Tibia.Packets
 
         public bool PrepareToRead(uint[] XteaKey)
         {
-            if (!CheckAdler32() || !XteaDecrypt(XteaKey))
+            if (!XteaDecrypt(XteaKey))
                 return false;
 
             messageStream.Position = 6;
