@@ -596,7 +596,9 @@ namespace Tibia.Util
                 //if the adler dont match we forward the packet to the server without read.
                 if (msg.CheckAdler32())
                 {
-                    msg.PrepareToRead();
+                    if (!msg.PrepareToRead())
+                        continue;
+
                     msg.GetUInt16(); //logical packet size
 
                     while (msg.Position < msg.Length)
@@ -774,7 +776,10 @@ namespace Tibia.Util
                 //if the adler dont match we forward the packet to the client without read.
                 if (msg.CheckAdler32())
                 {
-                    msg.PrepareToRead();
+                    //skip the msg if we cant decrypt it.
+                    if (!msg.PrepareToRead())
+                        continue;
+
                     msg.GetUInt16(); //logical packet size
 
                     while (msg.Position < msg.Length)
@@ -851,8 +856,10 @@ namespace Tibia.Util
             {
                 writingClient = true;
 
-                if (lastClientWrite.AddMilliseconds(125) > DateTime.UtcNow)
-                    System.Threading.Thread.Sleep(125);
+                //TODO: Check the exactly interval time.
+                int lastWrite = (int)(lastClientWrite.AddMilliseconds(125) - DateTime.UtcNow).TotalMilliseconds;
+                if (lastWrite > 0)
+                    System.Threading.Thread.Sleep(lastWrite);
 
                 try
                 {
@@ -870,6 +877,7 @@ namespace Tibia.Util
         private void ClientWriteDone(IAsyncResult ar)
         {
             networkStreamClient.EndWrite(ar);
+            lastClientWrite = DateTime.UtcNow;
             writingClient = false;
 
             if (clientSendQueue.Count > 0)

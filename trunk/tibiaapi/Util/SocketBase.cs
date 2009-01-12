@@ -1473,7 +1473,12 @@ namespace Tibia.Util
             }
 
             RichTextBox myRichTextBox = (RichTextBox)debugForm.Controls["richTextBox"];
-            myRichTextBox.AppendText("[" + DateTime.Now.ToLongTimeString() + "] " + message + "\n");
+            if (myRichTextBox.Lines.Length > 300)
+            {
+                System.IO.File.AppendAllText(Application.StartupPath + @"\proxy_log.txt", myRichTextBox.Text);
+                myRichTextBox.Clear();
+            }
+            myRichTextBox.AppendText("[" + DateTime.Now.ToLongTimeString() + "] " + message + "\n");  
             myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
             myRichTextBox.ScrollToCaret();
         }
