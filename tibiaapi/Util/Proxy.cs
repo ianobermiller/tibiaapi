@@ -413,7 +413,7 @@ namespace Tibia.Util
 
                     xteaKey = key;
 
-                    //the fisrt byte must be only 0
+                    //the fisrt byte must be always 0
                     if (msg.GetByte() != 0)
                     {
                         Restart();
@@ -501,66 +501,74 @@ namespace Tibia.Util
                 if (ReceivedMessageFromClient != null)
                     ReceivedMessageFromClient.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
 
-                msg.PrepareToRead();
-                msg.GetUInt16(); //packet size..
-
-                while (msg.Position < msg.Length)
+                if (msg.CheckAdler32())
                 {
-                    byte cmd = msg.GetByte();
-
-                    switch (cmd)
+                    if (!msg.PrepareToRead())
                     {
-                        case 0x0A: //Error message
-                            msg.GetString();
-                            break;
-                        case 0x0B: //For your information
-                            msg.GetString();
-                            break;
-                        case 0x14: //MOTD
-                            msg.GetString();
-                            break;
-                        case 0x1E: //Patching exe/dat/spr messages
-                        case 0x1F:
-                        case 0x20:
-                            DisconnectClient(0x0A, "A new client is avalible, please download it first!");
-                            return;
-                        case 0x28: //Select other login server
-                            selectedLoginServer = (uint)randon.Next(0, loginServers.Length - 1);
-                            break;
-                        case 0x64: //character list
-                            int nChar = (int)msg.GetByte();
-                            charList = new CharList[nChar];
-
-                            for (int i = 0; i < nChar; i++)
-                            {
-                                charList[i].CharName = msg.GetString();
-                                charList[i].WorldName = msg.GetString();
-                                charList[i].WorldIP = msg.PeekUInt32();
-                                msg.AddBytes(localHostBytes);
-                                charList[i].WorldPort = msg.PeekUInt16();
-                                msg.AddUInt16(portServer);
-                            }
-
-                            //ushort premmy = msg.GetUInt16();
-                            //send this data to client
-
-                            msg.PrepareToSend();
-
-                            if (networkStreamServer.CanWrite)
-                                networkStreamServer.Write(msg.Packet, 0, msg.Length);
-
-                            Restart();
-                            return;
-                        default:
-                            break;
+                        Restart();
+                        return;
                     }
+
+                    msg.GetUInt16(); //packet size..
+
+                    while (msg.Position < msg.Length)
+                    {
+                        byte cmd = msg.GetByte();
+
+                        switch (cmd)
+                        {
+                            case 0x0A: //Error message
+                                msg.GetString();
+                                break;
+                            case 0x0B: //For your information
+                                msg.GetString();
+                                break;
+                            case 0x14: //MOTD
+                                msg.GetString();
+                                break;
+                            case 0x1E: //Patching exe/dat/spr messages
+                            case 0x1F:
+                            case 0x20:
+                                DisconnectClient(0x0A, "A new client is avalible, please download it first!");
+                                return;
+                            case 0x28: //Select other login server
+                                selectedLoginServer = (uint)randon.Next(0, loginServers.Length - 1);
+                                break;
+                            case 0x64: //character list
+                                int nChar = (int)msg.GetByte();
+                                charList = new CharList[nChar];
+
+                                for (int i = 0; i < nChar; i++)
+                                {
+                                    charList[i].CharName = msg.GetString();
+                                    charList[i].WorldName = msg.GetString();
+                                    charList[i].WorldIP = msg.PeekUInt32();
+                                    msg.AddBytes(localHostBytes);
+                                    charList[i].WorldPort = msg.PeekUInt16();
+                                    msg.AddUInt16(portServer);
+                                }
+
+                                //ushort premmy = msg.GetUInt16();
+                                //send this data to client
+
+                                msg.PrepareToSend();
+
+                                if (networkStreamServer.CanWrite)
+                                    networkStreamServer.Write(msg.Packet, 0, msg.Length);
+
+                                Restart();
+                                return;
+                            default:
+                                break;
+                        }
+                    }
+
+                    msg.PrepareToSend();
+                    networkStreamServer.Write(msg.Packet, 0, msg.Length);
+
+                    Restart();
+                    return;
                 }
-
-                msg.PrepareToSend();
-                networkStreamServer.Write(msg.Packet, 0, msg.Length);
-
-                Restart();
-                return;
 
             }
             else

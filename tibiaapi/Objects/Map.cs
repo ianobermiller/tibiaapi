@@ -204,7 +204,7 @@ namespace Tibia.Objects
 
         public uint ConvertSquareNumberToMapSquareAddress(uint squareNumber)
         {
-            uint mapBegin = Convert.ToUInt32(client.ReadInt32(Addresses.Map.MapPointer));
+            uint mapBegin = client.ReadUInt32(Addresses.Map.MapPointer);
             uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
             return address;
         }
