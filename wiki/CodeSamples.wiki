@@ -29,7 +29,7 @@ if (client == null)
 
 *VB.Net*
 {{{
-client = ClientChooser.ShowBox()
+Dim client as Client = ClientChooser.ShowBox()
 If client Is Nothing Then
 	MsgBox("No active client.")
 	Application.[Exit]()
