@@ -41,24 +41,24 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsReachable()
         {
-            var squareList = client.Map.GetSquares(delegate(MapSquare square) { return true; }, true, false, Addresses.Map.Max_Squares);
-            var playerSquare = squareList.GetPlayerMapSquare(Client);
-            var creatureSquare = squareList.GetCreatureMapSquare(Id);
+            var tileList = client.Map.GetTiles(delegate(Tile tile) { return true; }, true, false, Addresses.Map.Max_Squares);
+            var playerTile = tileList.GetPlayerMapSquare(Client);
+            var creatureTile = tileList.GetCreatureMapSquare(Id);
 
-            if (playerSquare == null || creatureSquare == null)
+            if (playerTile == null || creatureTile == null)
                 return false;
 
             int xDiff, yDiff, xNew, yNew;
             var Creatures = client.BattleList.GetCreatures(client.ReadInt32(Addresses.Player.Z));
             int playerId = client.ReadInt32(Addresses.Player.Id);
 
-            xDiff = (int)playerSquare.MemoryLocation.X - 8;
-            yDiff = (int)playerSquare.MemoryLocation.Y - 6;
+            xDiff = (int)playerTile.MemoryLocation.X - 8;
+            yDiff = (int)playerTile.MemoryLocation.Y - 6;
 
-            foreach (MapSquare square in squareList)
+            foreach (Tile tile in tileList)
             {
-                xNew = square.MemoryLocation.X - xDiff;
-                yNew = square.MemoryLocation.Y - yDiff;
+                xNew = tile.MemoryLocation.X - xDiff;
+                yNew = tile.MemoryLocation.Y - yDiff;
 
                 if (xNew > 17)
                     xNew -= 18;
@@ -70,18 +70,16 @@ namespace Tibia.Objects
                 else if (yNew < 0)
                     yNew += 14;
 
-                square.MemoryLocation.X = xNew;
-                square.MemoryLocation.Y = yNew;
 
-                Item Ground = new Item(client, square.Tile.Id);
+                tile.MemoryLocation = new Location(xNew, yNew, tile.MemoryLocation.Z);
 
-                if (Ground.GetFlag(Addresses.DatItem.Flag.Blocking) ||
-                    Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
-                    square.Items.Find(delegate(Item item)
+                if (tile.Ground.GetFlag(Addresses.DatItem.Flag.Blocking) ||
+                    tile.Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
+                    tile.Items.Find(delegate(Item item)
                     {
                         return item.GetFlag(Addresses.DatItem.Flag.Blocking) ||
                             item.GetFlag(Addresses.DatItem.Flag.BlocksPath);
-                    }) != null || square.Objects.Find(delegate(MapObject obj)
+                    }) != null || tile.Objects.Find(delegate(TileObject obj)
                     {
                         foreach (Creature c in Creatures)
                         {
@@ -92,16 +90,16 @@ namespace Tibia.Objects
                         return false;
                     }) != null)
                 {
-                    client.PathFinder.Grid[square.MemoryLocation.X, square.MemoryLocation.Y] = 0;
+                    client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 0;
                 }
                 else
                 {
-                    client.PathFinder.Grid[square.MemoryLocation.X, square.MemoryLocation.Y] = 1;
+                    client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 1;
                 }
             }
 
-            return client.PathFinder.FindPath(new Point(playerSquare.MemoryLocation.X, playerSquare.MemoryLocation.Y),
-                new Point(creatureSquare.MemoryLocation.X, creatureSquare.MemoryLocation.Y)) != null;
+            return client.PathFinder.FindPath(new Point(playerTile.MemoryLocation.X, playerTile.MemoryLocation.Y),
+                new Point(creatureTile.MemoryLocation.X, creatureTile.MemoryLocation.Y)) != null;
         }
 
 

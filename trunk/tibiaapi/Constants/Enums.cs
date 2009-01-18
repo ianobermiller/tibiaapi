@@ -7,6 +7,12 @@ namespace Tibia.Constants
 {
     #region General
 
+    public enum ObjectType
+    {
+        Memory,
+        Packet,
+    }
+
     /// <summary>
     /// The direction to walk in.
     /// </summary>

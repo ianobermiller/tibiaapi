@@ -366,8 +366,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, Location onLocation)
         {
-            MapSquare square = client.Map.CreateMapSquare(onLocation);
-            return UseItem(id, square.Tile);
+            return UseItem(id, client.Map.CreateMapTile(onLocation));
         }
 
         /// <summary>
@@ -390,7 +389,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id, Tile onTile)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>

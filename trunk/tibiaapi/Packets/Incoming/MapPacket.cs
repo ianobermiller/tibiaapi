@@ -108,7 +108,7 @@ namespace Tibia.Packets.Incoming
         {
             int n = 0;
             bool ret = true;
-            Tile tile = new Tile(0, pos);
+            Tile tile = new Tile(Client, 0, pos);
             while (true)
             {
                 //avoid infinite loop
@@ -133,6 +133,7 @@ namespace Tibia.Packets.Incoming
                     internalGetThing(msg, pos, tile, n);
                 }
             }
+
             tiles.Add(tile);
             return ret;
         }
@@ -234,29 +235,18 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                byte extra = 0;
-                Item item = new Item(Client, thingId);
+                Item item = new Item(Client, thingId, 0, "", new ItemLocation(pos, (byte)n), true);
 
                 if (item.HasExtraByte)
                 {
-                    extra = msg.GetByte();
-                    stream.AddByte(extra);
+                    item.Count = msg.GetByte();
+                    stream.AddByte(item.Count);
                 }
 
-                if (n == 0) // first item is tile
-                {
-                    tile.Id = thingId;
-                }
+                if (n == 0) // first item is ground
+                    tile.Ground = item;
                 else
-                {
-                    if (item.HasExtraByte)
-                    {
-                        item.Count = extra;
-                    }
-
-                    item.Loc = new ItemLocation(pos);
                     tile.Items.Add(item);
-                }
 
                 return true;
             }

@@ -145,7 +145,7 @@ namespace Tibia.Objects
         {
             get
             {
-                if (UsingProxy || RawSocket.Enabled)
+                if (UsingProxy || (RawSocket != null && RawSocket.Enabled))
                     return playerLocation;
                 else if (LoggedIn)
                     return GetPlayer().Location;
