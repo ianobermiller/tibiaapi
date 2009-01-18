@@ -5,43 +5,6 @@ using System.Collections.Generic;
 namespace Tibia.Objects
 {
     /// <summary>
-    /// Represents a tile in the map structure
-    /// </summary>
-    public struct Tile
-    {
-        public Location Location;
-        public uint Number;
-        public uint Address;
-        public uint Id;
-        public List<Item> Items;
-
-        public Tile(uint n) : this(n, 0) { }
-        public Tile(uint id, Location l) : this(0, 0, l, id)
-        {
-            Items = new List<Item>();
-        }
-        public Tile(uint n, uint a) : this(n, a, Location.Invalid, 0) { }
-        public Tile(uint n, uint a, Location l, uint i)
-        {
-            Location = l;
-            Number = n;
-            Address = a;
-            Id = i;
-            Items = null;
-        }
-
-        /// <summary>
-        /// Returns the string representation of this struct.
-        /// </summary>
-        /// <returns>The string representation.</returns>
-        public override string ToString()
-        {
-            return string.Format("/{ Number={0}, Address={1}, Id={2} /}", 
-                Number.ToString(), Address.ToString(), Id.ToString());
-        }
-    }
-
-    /// <summary>
     /// Represents a Login Server
     /// </summary>
     public class LoginServer

@@ -99,6 +99,7 @@
     <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\Outfit.cs" />
     <Compile Include="Objects\Screen.cs" />
+    <Compile Include="Objects\Tile.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\CancelTargetPacket.cs" />
@@ -222,7 +223,6 @@
       <DependentUpon>ClientChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="Objects\Hotkey.cs" />
-    <Compile Include="Objects\MapSquare.cs" />
     <Compile Include="Objects\Creature.cs" />
     <Compile Include="Objects\Inventory.cs" />
     <Compile Include="Objects\Map.cs" />

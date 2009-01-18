@@ -41,7 +41,6 @@ namespace Tibia.Util
         private int readBytesClient;
         private int packetSizeClient;
         private bool writingClient;
-        private DateTime lastClientWrite = DateTime.UtcNow;
         private Queue<NetworkMessage> clientSendQueue = new Queue<NetworkMessage> { };
         private Queue<NetworkMessage> clientReceiveQueue = new Queue<NetworkMessage> { };
 
@@ -332,10 +331,9 @@ namespace Tibia.Util
 
             msg.Position = 6;
 
-            byte protocolId = msg.GetByte();
             uint[] key = new uint[4];
-
             int pos;
+            byte protocolId = msg.GetByte();
 
             switch (protocolId)
             {
@@ -381,7 +379,6 @@ namespace Tibia.Util
                         DisconnectClient(0x0A, "Connection time out.");
                         return;
                     }
-
 
                     if (IsOtServer)
                         msg.RsaOTEncrypt(pos);
@@ -549,8 +546,8 @@ namespace Tibia.Util
                                 }
 
                                 //ushort premmy = msg.GetUInt16();
-                                //send this data to client
 
+                                //send this data to client
                                 msg.PrepareToSend();
 
                                 if (networkStreamServer.CanWrite)
@@ -589,7 +586,6 @@ namespace Tibia.Util
             msg.PrepareToSend();
 
             networkStreamServer.Write(msg.Packet, 0, msg.Length);
-
             Restart();
         }
 
@@ -636,7 +632,6 @@ namespace Tibia.Util
                         {
 
                             packetBytes = packet.ToByteArray();
-
                             OnOutgoingSplitPacket((byte)packet.Type, packetBytes);
 
                             if (packet.Forward)
@@ -666,36 +661,30 @@ namespace Tibia.Util
 
         private void ProcessServerSendQueue()
         {
-
-            if (writingServer)
-                return;
-
-            if (serverSendQueue.Count > 0)
+            lock ("ProcessServerSendQueue")
             {
-                NetworkMessage msg = serverSendQueue.Dequeue();
+                if (writingServer)
+                    return;
 
-                if (msg != null)
-                    ServerWrite(msg.Packet);
+                if (serverSendQueue.Count > 0)
+                {
+                    NetworkMessage msg = serverSendQueue.Dequeue();
+
+                    if (msg != null)
+                        ServerWrite(msg.Packet);
+                }
             }
         }
 
         private void ServerWrite(byte[] buffer)
         {
-
             if (!writingServer)
             {
                 writingServer = true;
 
                 try
                 {
-                    try
-                    {
-                        networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
-                    }
-                    catch (Exception)
-                    {
-                        Restart();
-                    }
+                    networkStreamServer.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ServerWriteDone, null);
                 }
                 catch (Exception ex)
                 {
@@ -706,7 +695,12 @@ namespace Tibia.Util
 
         private void ServerWriteDone(IAsyncResult ar)
         {
-            networkStreamServer.EndWrite(ar);
+            try
+            {
+                networkStreamServer.EndWrite(ar);
+            }
+            catch { }
+
             writingServer = false;
 
             if (serverSendQueue.Count > 0)
@@ -846,15 +840,18 @@ namespace Tibia.Util
 
         private void ProcessClientSendQueue()
         {
-            if (writingClient)
-                return;
-
-            if (clientSendQueue.Count > 0)
+            lock ("ProcessClientSendQueue")
             {
-                NetworkMessage msg = clientSendQueue.Dequeue();
+                if (writingClient)
+                    return;
 
-                if (msg != null)
-                    ClientWrite(msg.Packet);
+                if (clientSendQueue.Count > 0)
+                {
+                    NetworkMessage msg = clientSendQueue.Dequeue();
+
+                    if (msg != null)
+                        ClientWrite(msg.Packet);
+                }
             }
         }
 
@@ -864,28 +861,25 @@ namespace Tibia.Util
             {
                 writingClient = true;
 
-                //TODO: Check the exactly interval time.
-                int lastWrite = (int)(lastClientWrite.AddMilliseconds(125) - DateTime.UtcNow).TotalMilliseconds;
-                if (lastWrite > 0)
-                    System.Threading.Thread.Sleep(lastWrite);
-
                 try
                 {
-
-                    if (networkStreamClient.CanWrite)
-                        networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
+                    networkStreamClient.BeginWrite(buffer, 0, buffer.Length, (AsyncCallback)ClientWriteDone, null);
                 }
-                catch (Exception) 
+                catch (Exception ex)
                 {
-                    Restart();
+                    WriteDebug(ex.Message);
                 }
             }
         }
 
         private void ClientWriteDone(IAsyncResult ar)
         {
-            networkStreamClient.EndWrite(ar);
-            lastClientWrite = DateTime.UtcNow;
+            try
+            {
+                networkStreamClient.EndWrite(ar);
+            }
+            catch (Exception) { }
+
             writingClient = false;
 
             if (clientSendQueue.Count > 0)

@@ -9,6 +9,8 @@ namespace Tibia.Objects
     public class Map
     {
         private Client client;
+        private static List<TileObject> treeList;
+
 
         #region Constructor
         /// <summary>
@@ -22,204 +24,143 @@ namespace Tibia.Objects
         #endregion
 
         #region Get Squares
+
         /// <summary>
         /// Get all the adjacent squares to a world location, including the square at that location
         /// </summary>
         /// <param name="loc"></param>
         /// <returns></returns>
-        public List<MapSquare> GetSquaresAdjacentTo(Location worldLocation)
+        public List<Tile> GetTilesAdjacentTo(Location worldLocation)
         {
-            MapSquare playerSquare = GetSquareWithPlayer();
-            List<MapSquare> squares = new List<MapSquare>(9);
+            Tile playerTile = GetTileWithPlayer();
+            List<Tile> tiles = new List<Tile>(9);
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    Location offset = new Location(
-                        worldLocation.X + x, 
-                        worldLocation.Y + y, 
-                        worldLocation.Z);
-                    squares.Add(CreateMapSquare(offset, playerSquare));
+                    Location offset = new Location(worldLocation.X + x,
+                        worldLocation.Y + y, worldLocation.Z);
+                    tiles.Add(createMapTile(offset, playerTile));
                 }
             }
-            return squares;
+            return tiles;
         }
 
-        public MapSquare GetSquareWithPlayer()
+        public Tile GetTileWithPlayer()
         {
             int playerId = client.ReadInt32(Addresses.Player.Id);
-            return GetSingleSquare(GetSquaresWithObject(new MapObject(
-                0x63,
-                playerId,
-                0), false, false));
+            return getSingleTile(GetTilesWithObject(new TileObject(
+                0x63, playerId, 0), false, false));
         }
 
-        public List<MapSquare> GetSquaresWithTile(uint tileId, bool sameFloor)
+        public List<Tile> GetTilesWithGround(uint groundId, bool sameFloor)
         {
-            return GetSquares(delegate(MapSquare square)
+            return GetTiles(delegate(Tile tile)
             {
-                if (square.Tile.Id == tileId)
+                if (tile.Ground.Id == groundId)
                     return true;
+
                 return false;
             }, sameFloor);
         }
 
-        public List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor)
+        public List<Tile> GetTilesWithObject(TileObject testObject, bool sameFloor)
         {
-            return GetSquaresWithObject(testObject, sameFloor, true);
+            return GetTilesWithObject(testObject, sameFloor, true);
         }
 
-        public List<MapSquare> GetSquaresWithObject(MapObject testObject, bool sameFloor, bool getWorldLocation)
+        public List<Tile> GetTilesWithObject(TileObject testObject, bool sameFloor, bool getWorldLocation)
         {
-            return GetSquares(delegate(MapSquare square)
+            return GetTiles(delegate(Tile tile)
             {
-                foreach (MapObject oldObject in square.Objects)
+                foreach (var oldObject in tile.Objects)
                 {
-                    if ((testObject.Id == 0 ||
-                            oldObject.Id == testObject.Id) &&
-                        (testObject.Data == 0 ||
-                            oldObject.Data == testObject.Data) &&
-                        (testObject.DataEx == 0 ||
-                            oldObject.DataEx == testObject.DataEx))
+                    if ((testObject.Id == 0 || oldObject.Id == testObject.Id) &&
+                        (testObject.Data == 0 || oldObject.Data == testObject.Data) &&
+                        (testObject.DataEx == 0 || oldObject.DataEx == testObject.DataEx))
                         return true;
                 }
                 return false;
             }, sameFloor, getWorldLocation, Addresses.Map.Max_Squares);
         }
 
-        public MapSquare GetSquare(Predicate<MapSquare> match, bool sameFloor)
+        public Tile GetTile(Predicate<Tile> match, bool sameFloor)
         {
-            return GetSingleSquare(GetSquares(match, sameFloor, true, 1));
+            return getSingleTile(GetTiles(match, sameFloor, true, 1));
         }
 
-        private MapSquare GetSingleSquare(List<MapSquare> squares)
+        private Tile getSingleTile(List<Tile> tiles)
         {
-            if (squares.Count > 0)
-            {
-                return squares[0];
-            }
+            if (tiles.Count > 0)
+                return tiles[0];
             else
-            {
                 return null;
-            }
         }
 
-        public List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor)
+        public List<Tile> GetTiles(Predicate<Tile> match, bool sameFloor)
         {
-            return GetSquares(match, sameFloor, true, Addresses.Map.Max_Squares);
+            return GetTiles(match, sameFloor, true, Addresses.Map.Max_Squares);
         }
 
-        public List<MapSquare> GetSquares(Predicate<MapSquare> match, bool sameFloor, bool getWorldLocation, uint maxSquares)
+        public List<Tile> GetTiles(Predicate<Tile> match, bool sameFloor, bool getWorldLocation, uint maxTiles)
         {
-            List<MapSquare> squares = new List<MapSquare>();
-            MapSquare playerSquare = null;
+            List<Tile> tiles = new List<Tile>();
+            Tile playerTile = null;
             uint startNumber = 0;
             uint endNumber = Addresses.Map.Max_Squares + 1;
 
             if (sameFloor)
             {
-                playerSquare = GetSquareWithPlayer();
+                playerTile = GetTileWithPlayer();
 
-                if (playerSquare != null)
+                if (playerTile != null)
                 {
-                    int playerFloor = playerSquare.MemoryLocation.Z;
-                    startNumber = Map.ConvertMemoryLocationToSquareNumber(
-                        new Location(0, 0, playerFloor));
-                    endNumber = Map.ConvertMemoryLocationToSquareNumber(
-                        new Location(0, 0, playerFloor + 1));
+                    int playerFloor = playerTile.MemoryLocation.Z;
+                    startNumber = new Location(0, 0, playerFloor).ToTileNumber();
+                    endNumber = new Location(0, 0, playerFloor + 1).ToTileNumber();
                 }
             }
+
+            if (getWorldLocation && playerTile == null)
+                playerTile = GetTileWithPlayer();
 
             for (uint i = startNumber; i < endNumber; i++)
             {
-                MapSquare mapSquare;
+                Tile mapTile;
+
                 if (getWorldLocation)
-                {
-                    if (playerSquare == null)
-                        playerSquare = GetSquareWithPlayer();
-
-                    mapSquare = CreateMapSquare(i, playerSquare);
-                }
+                    mapTile = createMapTile(i, playerTile);
                 else
-                    mapSquare = CreateMapSquare(i);
+                    mapTile = createMapTile(i);
 
-                if (match(mapSquare))
-                    squares.Add(mapSquare);
+                 if (match(mapTile))
+                    tiles.Add(mapTile);
 
-                if (squares.Count >= maxSquares) 
+                if (tiles.Count >= maxTiles) 
                     break;
             }
 
-            return squares;
+            return tiles;
         }
         #endregion
 
         #region Conversions
-        public static Location ConvertSquareNumberToMemoryLocation(uint squareNumber)
-        {
-            Location l = new Location();
-
-            l.Z = Convert.ToInt32(squareNumber / (14 * 18));
-            l.Y = Convert.ToInt32((squareNumber - l.Z * 14 * 18) / 18);
-            l.X = Convert.ToInt32((squareNumber - l.Z * 14 * 18) - l.Y * 18);
-
-            return l;
-        }
-
-        /// <summary>
-        /// Convert a local location to a square number.
-        /// </summary>
-        /// <param name="l"></param>
-        /// <returns></returns>
-        public static uint ConvertMemoryLocationToSquareNumber(Location l)
-        {
-            return Convert.ToUInt32(l.X + l.Y * 18 + l.Z * 14 * 18);
-        }
-
-        public Location ConvertMemoryLocationToWorldLocation(Location loc, MapSquare playerSquare)
-        {
-            Location globalPlayerLoc = client.GetPlayer().Location;
-            Location localPlayerLoc = playerSquare.MemoryLocation;
-            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
-            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
-            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
-            return new Location(
-                loc.X + xAdjustment,
-                loc.Y + yAdjustment,
-                loc.Z + zAdjustment);
-        }
-
-        public Location ConvertWorldLocationToMemoryLocation(Location loc, MapSquare playerSquare)
-        {
-            Location globalPlayerLoc = client.GetPlayer().Location;
-            Location localPlayerLoc = playerSquare.MemoryLocation;
-            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
-            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
-            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
-            return new Location(
-                loc.X - xAdjustment,
-                loc.Y - yAdjustment,
-                loc.Z - zAdjustment);
-        }
-
-        public uint ConvertSquareNumberToMapSquareAddress(uint squareNumber)
-        {
-            uint mapBegin = client.ReadUInt32(Addresses.Map.MapPointer);
-            uint address = mapBegin + (Addresses.Map.Step_Square * squareNumber);
-            return address;
-        }
-
         public Location OffsetMemoryLocation(Location loc, int offsetX, int offsetY)
         {
             Location newLoc = new Location();
 
             newLoc.X = loc.X + offsetX;
-            if (newLoc.X < 0) newLoc.X += 18;
-            if (newLoc.X > 17) newLoc.X -= 18;
+
+            if (newLoc.X < 0) 
+                newLoc.X += 18;
+            if (newLoc.X > 17) 
+                newLoc.X -= 18;
 
             newLoc.Y = loc.Y + offsetY;
-            if (newLoc.Y < 0) newLoc.Y += 14;
-            if (newLoc.Y > 13) newLoc.Y -= 14;
+            if (newLoc.Y < 0) 
+                newLoc.Y += 14;
+            if (newLoc.Y > 13) 
+                newLoc.Y -= 14;
 
             newLoc.Z = loc.Z;
 
@@ -233,57 +174,42 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="loc"></param>
         /// <returns></returns>
-        public MapSquare CreateMapSquare(Location worldLocation)
+        public Tile CreateMapTile(Location worldLocation)
         {
-            return CreateMapSquare(worldLocation, GetSquareWithPlayer());
+            return createMapTile(worldLocation, GetTileWithPlayer());
         }
 
-        public MapSquare CreateMapSquare(Location worldLocation, MapSquare playerSquare)
+        private Tile createMapTile(Location worldLocation, Tile playerTile)
         {
-            Location memoryLocation = ConvertWorldLocationToMemoryLocation(worldLocation, playerSquare);
-            uint squareNumber = ConvertMemoryLocationToSquareNumber(memoryLocation);
-            return new MapSquare(
-                client, 
-                ConvertSquareNumberToMapSquareAddress(squareNumber), 
-                squareNumber, 
-                worldLocation);
+            Location memoryLocation = worldLocation.ToMemoryLocation(playerTile, client);
+            uint tileNumber = memoryLocation.ToTileNumber();
+            return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
         }
 
-        private MapSquare CreateMapSquare(uint squareNumber)
+        private Tile createMapTile(uint tileNumber)
         {
-            return new MapSquare(
-                client,
-                ConvertSquareNumberToMapSquareAddress(squareNumber),
-                squareNumber);
+            return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber);
         }
 
-        private MapSquare CreateMapSquare(uint squareNumber, MapSquare playerSquare)
+        private Tile createMapTile(uint tileNumber, Tile playerTile)
         {
-            Location worldLocation = ConvertMemoryLocationToWorldLocation(
-                ConvertSquareNumberToMemoryLocation(squareNumber), playerSquare);
-            return new MapSquare(
-                client,
-                ConvertSquareNumberToMapSquareAddress(squareNumber),
-                squareNumber,
-                worldLocation);
+            Location worldLocation = tileNumber.ToMemoryLocation().ToWorldLocation(playerTile, client);
+            return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
         }
         #endregion
 
         #region Replace
+
         /// <summary>
         /// Replace all tiles in a list with a new id.
         /// </summary>
-        /// <param name="idList"></param>
-        /// <param name="newTileId"></param>
-        /// <param name="sameFloor"></param>
-        /// <returns></returns>
-        public int ReplaceTiles(List<uint> idList, uint newTileId, bool sameFloor)
+        public int ReplaceGround(List<uint> idList, uint newTileId, bool sameFloor)
         {
-            return GetSquares(delegate(MapSquare mapSquare)
+            return GetTiles(delegate(Tile mapTile)
             {
-                if (idList.Contains(mapSquare.Tile.Id))
+                if (idList.Contains(mapTile.Ground.Id))
                 {
-                    mapSquare.ReplaceTile(newTileId);
+                    mapTile.ReplaceGround(newTileId);
                     return true;
                 }
                 return false;
@@ -293,31 +219,24 @@ namespace Tibia.Objects
         /// <summary>
         /// Replace all tiles matching the old id with the new id.
         /// </summary>
-        /// <param name="oldTileId"></param>
-        /// <param name="newTileId"></param>
-        /// <param name="sameFloor"></param>
-        /// <returns></returns>
-        public int ReplaceTile(uint oldTileId, uint newTileId, bool sameFloor)
+        public int ReplaceGround(uint oldTileId, uint newTileId, bool sameFloor)
         {
-            return ReplaceTiles(new List<uint>() { oldTileId }, newTileId, sameFloor);
+            return ReplaceGround(new List<uint>() { oldTileId }, newTileId, sameFloor);
         }
 
-        public int ReplaceObjects(List<MapObject> objectList, MapObject newObject, bool sameFloor)
+        public int ReplaceObjects(List<TileObject> objectList, TileObject newObject, bool sameFloor)
         {
-            return GetSquares(delegate(MapSquare mapSquare)
+            return GetTiles(delegate(Tile mapTile)
             {
-                foreach (MapObject oldObject in mapSquare.Objects)
+                foreach (TileObject oldObject in mapTile.Objects)
                 {
-                    foreach (MapObject testObject in objectList)
+                    foreach (TileObject testObject in objectList)
                     {
-                        if ((testObject.Id == 0 || 
-                                oldObject.Id == testObject.Id) &&
-                            (testObject.Data == 0 || 
-                                oldObject.Data == testObject.Data) &&
-                            (testObject.DataEx == 0 || 
-                                oldObject.DataEx == testObject.DataEx))
+                        if ((testObject.Id == 0 || oldObject.Id == testObject.Id) &&
+                            (testObject.Data == 0 || oldObject.Data == testObject.Data) &&
+                            (testObject.DataEx == 0 || oldObject.DataEx == testObject.DataEx))
                         {
-                            mapSquare.ReplaceObject(oldObject, newObject);
+                            mapTile.ReplaceObject(oldObject, newObject);
                             return true;
                         }
                     }
@@ -326,12 +245,10 @@ namespace Tibia.Objects
             }, sameFloor).Count;
         }
 
-        public int ReplaceObject(MapObject testObject, MapObject newObject, bool sameFloor)
+        public int ReplaceObject(TileObject testObject, TileObject newObject, bool sameFloor)
         {
-            return ReplaceObjects(
-                new List<MapObject>() { testObject }, 
-                newObject, 
-                sameFloor);
+            return ReplaceObjects(new List<TileObject>() { testObject },
+                newObject, sameFloor);
         }
 
         /// <summary>
@@ -340,26 +257,15 @@ namespace Tibia.Objects
         /// <returns></returns>
         public int ReplaceTrees()
         {
-            int[] treearray =
+            if (treeList == null)
             {
-                957,
-                3608, 3609, 3613, 3614, 3615, 3616, 3617, 3618, 3619, 3620,
-                3621, 3622, 3623, 3624, 3625, 3626, 3631, 3632, 3633, 3634,
-                3635, 3636, 3637, 3638, 3639, 3640, 3641, 3647, 3649, 3687,
-                3688, 3689, 3691, 3692, 3694, 3742, 3743, 3744, 3745, 3750,
-                3751, 3752, 3753, 3754, 3755, 3756, 3757, 3758, 3759, 3760,
-                3761, 3762, 3780, 3871, 3872, 3873, 3877, 3878, 3884, 3885,
-                3899, 3901, 3902, 3903, 3905, 3908, 3909, 3910, 3911, 3920,
-                3921, 5091, 5092, 5093, 5094, 5095, 5155, 5156, 5389, 5390,
-                5391, 5392, 6094, 7020, 7021, 7022, 7023, 7024
-            };
-            List<MapObject> trees = new List<MapObject>(treearray.Length);
-            foreach (int id in treearray)
-            {
-                trees.Add(new MapObject(id, 0, 0));
+                treeList = new List<TileObject>(Tibia.Constants.Items.TreeArray.Length);
+                foreach (int id in Tibia.Constants.Items.TreeArray)
+                    treeList.Add(new TileObject(id, 0, 0));
             }
-            MapObject smallFirTree = new MapObject(3682, 0, 0);
-            return ReplaceObjects(trees, smallFirTree, true);
+
+            TileObject smallFirTree = new TileObject(3682, 0, 0);
+            return ReplaceObjects(treeList, smallFirTree, true);
         }
         #endregion
 
@@ -369,12 +275,12 @@ namespace Tibia.Objects
             Player player = client.GetPlayer();
             List<Tile> tiles = new List<Tile>();
             List<uint> fishIds = Constants.Tiles.Water.GetFishIds();
-            GetSquares(delegate(MapSquare square)
+            GetTiles(delegate(Tile tile)
             {
-                if (fishIds.Contains(square.Tile.Id))
-                    if (square.Tile.Location.Z == player.Location.Z && square.Tile.Location.X - player.Location.X < 7 && square.Tile.Location.Y - player.Location.Y < 6)
+                if (fishIds.Contains(tile.Ground.Id))
+                    if (tile.Location.Z == player.Location.Z && tile.Location.X - player.Location.X < 7 && tile.Location.Y - player.Location.Y < 6)
                     {
-                        tiles.Add(square.Tile);
+                        tiles.Add(tile);
                         return true;
                     }
                 return false;

@@ -76,7 +76,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Id, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>
@@ -87,8 +87,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Location onLocation)
         {
-            MapSquare square = client.Map.CreateMapSquare(onLocation);
-            return Use(square.Tile);
+            return Use(client.Map.CreateMapTile(onLocation));
         }
 
         /// <summary>

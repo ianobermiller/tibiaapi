@@ -202,25 +202,89 @@ namespace Tibia
         #endregion
 
         #region Map
+        /// <summary>
+        /// Convert a memory location to a world location.
+        /// </summary>
+        /// <returns></returns>
+        public static Location ToWorldLocation(this Location memoryLocation, Tile playerTile, Client client)
+        {
+            Location globalPlayerLoc = client.PlayerLocation;
+            Location localPlayerLoc = playerTile.MemoryLocation;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
 
-        public static Objects.MapSquare GetPlayerMapSquare(this List<Objects.MapSquare> squares, Objects.Client client)
+            return new Location(memoryLocation.X + xAdjustment, memoryLocation.Y + yAdjustment, memoryLocation.Z + zAdjustment);
+        }
+
+        /// <summary>
+        /// Convert a wolrd location to a memory location.
+        /// </summary>
+        /// <returns></returns>
+        public static Location ToMemoryLocation(this Location worldLocation, Tile playerTile, Client client)
+        {
+            Location globalPlayerLoc = client.PlayerLocation;
+            Location localPlayerLoc = playerTile.MemoryLocation;
+            int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
+            int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
+            int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+
+            return new Location(worldLocation.X - xAdjustment, worldLocation.Y - yAdjustment, worldLocation.Z - zAdjustment);
+        }
+
+
+        /// <summary>
+        /// Convert a tile number to map tile address
+        /// </summary>
+        /// <returns></returns>
+        public static uint ToMapTileAddress(this uint tileNumber, Client client)
+        {
+            return client.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.Step_Square * tileNumber);
+        }
+
+        /// <summary>
+        /// Convert a memory location to a square number.
+        /// </summary>
+        /// <returns></returns>
+        public static uint ToTileNumber(this Location memoryLocation)
+        {
+            return Convert.ToUInt32(memoryLocation.X + memoryLocation.Y * 18 + memoryLocation.Z * 14 * 18);
+        }
+
+        /// <summary>
+        /// Converts the tile number in tile memory location.
+        /// </summary>
+        /// <param name="tileNumber"></param>
+        /// <returns></returns>
+        public static Location ToMemoryLocation(this uint tileNumber)
+        {
+            Location l = new Location();
+
+            l.Z = Convert.ToInt32(tileNumber / (14 * 18));
+            l.Y = Convert.ToInt32((tileNumber - l.Z * 14 * 18) / 18);
+            l.X = Convert.ToInt32((tileNumber - l.Z * 14 * 18) - l.Y * 18);
+
+            return l;
+        }
+
+        public static Objects.Tile GetPlayerMapSquare(this List<Objects.Tile> tiles, Objects.Client client)
         {
             int playerId = client.ReadInt32(Addresses.Player.Id);
 
-            return squares.Find(delegate(Objects.MapSquare square)
+            return tiles.Find(delegate(Objects.Tile tile)
             {
-                return square.Objects.Find(delegate(Objects.MapObject obj)
+                return tile.Objects.Find(delegate(Objects.TileObject obj)
                 {
                     return obj.Id == 0x63 && obj.Data == playerId;
                 }) != null;
             });
         }
 
-        public static Objects.MapSquare GetCreatureMapSquare(this List<Objects.MapSquare> squares, int creatureId)
+        public static Objects.Tile GetCreatureMapSquare(this List<Objects.Tile> tiles, int creatureId)
         {
-            return squares.Find(delegate(Objects.MapSquare square)
+            return tiles.Find(delegate(Objects.Tile tile)
             {
-                return square.Objects.Find(delegate(Objects.MapObject obj)
+                return tile.Objects.Find(delegate(Objects.TileObject obj)
                 {
                     return obj.Data == creatureId;
                 }) != null;
