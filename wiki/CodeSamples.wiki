@@ -97,25 +97,27 @@ client.Proxy.ServerMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_
 client.Proxy.ClientMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_ClientMessageArrived);
 
 
-        // Sample event handlers
-        void Proxy_ClientMessageArrived(Tibia.Packets.NetworkMessage message)
-        {
-            LogPacket(message.Packet, "CLIENT");
-        }
+// These sample event handlers are other methods, outside Form_Load
+// LogPacket assumes you have a textbox called uxLog
+void Proxy_ClientMessageArrived(Tibia.Packets.NetworkMessage message)
+{
+	LogPacket(message.Packet, "CLIENT");
+}
 
-        void Proxy_ServerMessageArrived(Tibia.Packets.NetworkMessage message)
-        {
-            LogPacket(message.Packet, "SERVER");
-        }
+void Proxy_ServerMessageArrived(Tibia.Packets.NetworkMessage message)
+{
+	LogPacket(message.Packet, "SERVER");
+}
 
-        private void LogPacket(byte[] packet, string from)
-        {
-            uxPackets.Invoke(new EventHandler(delegate
-            {
-                string s = "from " + from + Environment.NewLine;
-                s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
-            }));
-        }
+private void LogPacket(byte[] packet, string from)
+{
+	uxPackets.Invoke(new EventHandler(delegate
+	{
+		string s = "from " + from + Environment.NewLine;
+		s += Packet.ByteArrayToHexString(packet) + Environment.NewLine + Environment.NewLine;
+		uxLog.Text += s;
+	}));
+}
 }}}
 
 == Perform name spy or level spy ==
