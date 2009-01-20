@@ -12,18 +12,18 @@ namespace Tibia.Objects
     public class Tile
     {
         #region Vars
-        private ObjectType _type;
+        private ObjectType type;
 
-        private int _objectCount;
-        private uint _address;
-        private uint _squareNumber;
+        private int objectCount;
+        private uint address;
+        private uint squareNumber;
 
-        private Location _location;
-        private Location _memoryLocation;
+        private Location location;
+        private Location memoryLocation;
 
-        private Item _ground;
-        private List<Item> _items;
-        private Client _client;
+        private Item ground;
+        private List<Item> items;
+        private Client client;
         #endregion
 
         #region Constructors
@@ -31,60 +31,92 @@ namespace Tibia.Objects
         public Tile(Client client, uint address, uint squareNumber, Location location)
             : this(client, address, squareNumber)
         {
-            _location = location;
+            this.location = location;
         }
 
         public Tile(Client client, uint address, uint squareNumber)
         {
-            _type = ObjectType.Memory;
-            _client = client;
-            _squareNumber = squareNumber;
-            _address = address;
-            _memoryLocation = squareNumber.ToMemoryLocation();
+            type = ObjectType.Memory;
+            this.client = client;
+            this.squareNumber = squareNumber;
+            this.address = address;
+            memoryLocation = squareNumber.ToMemoryLocation();
 
-            _objectCount = _client.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
-            _ground = new Item(_client, _client.ReadUInt32(address + 
+            objectCount = client.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
+            ground = new Item(client, client.ReadUInt32(address + 
                 Tibia.Addresses.Map.Distance_Square_Objects + Tibia.Addresses.Map.Distance_Object_Id));
         }
 
         //packet tile constructors
         public Tile(Client client, uint groundId, Location location)
         {
-            _type = ObjectType.Packet;
-            _client = client;
-            _location = location;
-            _items = new List<Item> { };
+            type = ObjectType.Packet;
+            this.client = client;
+            this.location = location;
+            items = new List<Item> { };
 
             if (groundId > 0)
-                _ground = new Item(_client, groundId);
+                ground = new Item(client, groundId);
         }
         #endregion
 
-        #region Proprietys
+        #region Properties
         public ObjectType Type
         {
-            get { return _type; }
+            get { return type; }
+        }
+
+        public Location Location
+        {
+            get { return location; }
+        }
+
+        public Client Client
+        {
+            get { return client; }
+        }
+
+        public Item Ground
+        {
+            get { return ground; }
+            set { ground = value; }
+        }
+
+        public uint Address
+        {
+            get { return address; }
+        }
+
+        public int ObjectCount
+        {
+            get
+            {
+                if (type == ObjectType.Packet)
+                    return items.Count;
+                else
+                    return objectCount;
+            }
         }
 
         public List<TileObject> Objects
         {
             get
             {
-                if (_type == ObjectType.Packet)
+                if (type == ObjectType.Packet)
                     return null;
 
                 List<TileObject> objects = new List<TileObject>();
-                uint pointer = _address + Addresses.Map.Distance_Square_Objects;
+                uint pointer = address + Addresses.Map.Distance_Square_Objects;
 
-                for (int i = 0; i < _objectCount; i++)
+                for (int i = 0; i < objectCount; i++)
                 {
                     // Go to the next object
                     pointer += Addresses.Map.Step_Square_Object;
 
                     objects.Add(new TileObject(
-                        _client.ReadInt32(pointer + Addresses.Map.Distance_Object_Id),
-                        _client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data),
-                        _client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data_Ex),
+                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Id),
+                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data),
+                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data_Ex),
                         i + 1));
                 }
 
@@ -96,62 +128,30 @@ namespace Tibia.Objects
         {
             get
             {
-                if (_type == ObjectType.Memory)
-                    return _memoryLocation;
+                if (type == ObjectType.Memory)
+                    return memoryLocation;
                 else
                     return Location.Invalid;
             }
-            set { _memoryLocation = value; }
-        }
-
-        public Location Location
-        {
-            get { return _location; }
-        }
-
-        public Client Client
-        {
-            get { return _client; }
+            set { memoryLocation = value; }
         }
 
         public List<Item> Items
         {
             get
             {
-                if (_type == ObjectType.Packet)
-                    return _items;
+                if (type == ObjectType.Packet)
+                    return items;
                 else
                 {
-                    List<Item> items = new List<Item>();
+                    items = new List<Item>();
 
                     foreach (TileObject tileObject in Objects)
-                        items.Add(new Item(_client, (uint)tileObject.Id, (byte)tileObject.Data, "",
-                            new ItemLocation(_location, (byte)tileObject.StackOrder), true));
+                        items.Add(new Item(client, (uint)tileObject.Id, (byte)tileObject.Data, "",
+                            new ItemLocation(location, (byte)tileObject.StackOrder), true));
 
                     return items;
                 }
-            }
-        }
-
-        public Item Ground
-        {
-            get { return _ground; }
-            set { _ground = value; }
-        }
-
-        public uint Address
-        {
-            get { return _address; }
-        }
-
-        public int ObjectCount
-        {
-            get
-            {
-                if (_type == ObjectType.Packet)
-                    return _items.Count;
-                else
-                    return _objectCount;
             }
         }
         #endregion
@@ -159,30 +159,31 @@ namespace Tibia.Objects
         #region Public Methods
         public bool ReplaceGround(uint newId)
         {
-            if (_type == ObjectType.Packet)
+            if (type == ObjectType.Packet)
                 return false;
 
-            return _client.WriteUInt32(_address +
+            return client.WriteUInt32(address +
                 Addresses.Map.Distance_Square_Objects +
                 Addresses.Map.Distance_Object_Id, newId);
         }
 
         public bool ReplaceObject(TileObject oldObject, TileObject newObject)
         {
-            if (_type == ObjectType.Packet)
+            if (type == ObjectType.Packet)
                 return false;
 
-            uint pointer = (uint)(_address +
+            uint pointer = (uint)(address +
                 (Addresses.Map.Distance_Square_Objects +
                 Addresses.Map.Step_Square_Object * oldObject.StackOrder));
 
-            return _client.WriteInt32(pointer + Addresses.Map.Distance_Object_Id, newObject.Id) &&
-                _client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data, newObject.Data) &&
-                _client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data_Ex, newObject.DataEx);
+            return client.WriteInt32(pointer + Addresses.Map.Distance_Object_Id, newObject.Id) &&
+                client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data, newObject.Data) &&
+                client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data_Ex, newObject.DataEx);
         }
         #endregion
     }
 
+    #region TileObject
     /// <summary>
     /// Represents an object on a memory Tile
     /// </summary>
@@ -204,4 +205,5 @@ namespace Tibia.Objects
             DataEx = dataEx;
         }
     }
+    #endregion
 }

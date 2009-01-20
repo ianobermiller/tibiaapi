@@ -98,30 +98,30 @@ namespace Tibia.Constants
 
         public static class Food
         {
-            public static Objects.Food Apple = new Objects.Food(3585, "Apple", 0);
-            public static Objects.Food Banana = new Objects.Food(3587, "Banana", 0);
-            public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 0);
-            public static Objects.Food Bread = new Objects.Food(3600, "Bread", 0);
-            public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 0);
-            public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 0);
-            public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 0);
-            public static Objects.Food Cheese = new Objects.Food(169, "Cheese", 0);
-            public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 0);
-            public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 0);
-            public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 0);
-            public static Objects.Food Corncob = new Objects.Food(3597, "Corncob", 0);
-            public static Objects.Food DragonHam = new Objects.Food(3583, "Dragon Ham", 0);
-            public static Objects.Food Egg = new Objects.Food(3606, "Egg", 0);
-            public static Objects.Food Fish = new Objects.Food(3578, "Fish", 0);
-            public static Objects.Food Grapes = new Objects.Food(3592, "Grapes", 0);
-            public static Objects.Food GreenMushroom = new Objects.Food(3732, "Green Mushroom", 0);
-            public static Objects.Food Ham = new Objects.Food(3582, "Ham", 0);
-            public static Objects.Food Meat = new Objects.Food(3577, "Meat", 0);
-            public static Objects.Food Mellon = new Objects.Food(3593, "Mellon", 0);
-            public static Objects.Food Orange = new Objects.Food(3586, "Orange", 0);
-            public static Objects.Food Roll = new Objects.Food(3601, "Roll", 0);
-            public static Objects.Food Salmon = new Objects.Food(3579, "Salmon", 0);
-            public static Objects.Food WhiteMushroom = new Objects.Food(3723, "White Mushroom", 0);
+            public static Objects.Food Apple = new Objects.Food(3585, "Apple", 72);
+            public static Objects.Food Banana = new Objects.Food(3587, "Banana", 96);
+            public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 12);
+            public static Objects.Food Bread = new Objects.Food(3600, "Bread", 120);
+            public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 96);
+            public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 264);
+            public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 60);
+            public static Objects.Food Cheese = new Objects.Food(3607, "Cheese", 108);
+            public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 12);
+            public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 216);
+            public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 24);
+            public static Objects.Food Corncob = new Objects.Food(3597, "Corncob", 108);
+            public static Objects.Food DragonHam = new Objects.Food(3583, "Dragon Ham", 720);
+            public static Objects.Food Egg = new Objects.Food(3606, "Egg", 72);
+            public static Objects.Food Fish = new Objects.Food(3578, "Fish", 144);
+            public static Objects.Food Grapes = new Objects.Food(3592, "Grapes", 108);
+            public static Objects.Food GreenMushroom = new Objects.Food(3732, "Green Mushroom", 60);
+            public static Objects.Food Ham = new Objects.Food(3582, "Ham", 360);
+            public static Objects.Food Meat = new Objects.Food(3577, "Meat", 180);
+            public static Objects.Food Mellon = new Objects.Food(3593, "Mellon", 240);
+            public static Objects.Food Orange = new Objects.Food(3586, "Orange", 156);
+            public static Objects.Food Roll = new Objects.Food(3601, "Roll", 36);
+            public static Objects.Food Salmon = new Objects.Food(3579, "Salmon", 120);
+            public static Objects.Food WhiteMushroom = new Objects.Food(3723, "White Mushroom", 108);
         }
 
         public static class Neck
