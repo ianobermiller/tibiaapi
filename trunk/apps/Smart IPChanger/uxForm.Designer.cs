@@ -28,31 +28,14 @@ namespace SmartIPChanger
         /// </summary>
         private void InitializeComponent()
         {
-            this.uxServer = new System.Windows.Forms.TextBox();
-            this.uxPort = new System.Windows.Forms.TextBox();
             this.uxGo = new System.Windows.Forms.Button();
+            this.uxServer = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
-            // 
-            // uxServer
-            // 
-            this.uxServer.Location = new System.Drawing.Point(4, 6);
-            this.uxServer.Name = "uxServer";
-            this.uxServer.Size = new System.Drawing.Size(148, 20);
-            this.uxServer.TabIndex = 0;
-            this.uxServer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
-            // 
-            // uxPort
-            // 
-            this.uxPort.Location = new System.Drawing.Point(158, 5);
-            this.uxPort.Name = "uxPort";
-            this.uxPort.Size = new System.Drawing.Size(45, 20);
-            this.uxPort.TabIndex = 1;
-            this.uxPort.Text = "7171";
-            this.uxPort.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
             // 
             // uxGo
             // 
-            this.uxGo.Location = new System.Drawing.Point(209, 3);
+            this.uxGo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxGo.Location = new System.Drawing.Point(244, 3);
             this.uxGo.Name = "uxGo";
             this.uxGo.Size = new System.Drawing.Size(58, 23);
             this.uxGo.TabIndex = 2;
@@ -60,27 +43,35 @@ namespace SmartIPChanger
             this.uxGo.UseVisualStyleBackColor = true;
             this.uxGo.Click += new System.EventHandler(this.uxGo_Click);
             // 
+            // uxServer
+            // 
+            this.uxServer.AllowDrop = true;
+            this.uxServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxServer.FormattingEnabled = true;
+            this.uxServer.Location = new System.Drawing.Point(6, 3);
+            this.uxServer.Name = "uxServer";
+            this.uxServer.Size = new System.Drawing.Size(232, 21);
+            this.uxServer.TabIndex = 3;
+            // 
             // uxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(272, 30);
-            this.Controls.Add(this.uxGo);
-            this.Controls.Add(this.uxPort);
+            this.ClientSize = new System.Drawing.Size(307, 30);
             this.Controls.Add(this.uxServer);
+            this.Controls.Add(this.uxGo);
             this.Name = "uxForm";
             this.Text = "Smart IPChanger";
             this.Load += new System.EventHandler(this.uxForm_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox uxServer;
-        private System.Windows.Forms.TextBox uxPort;
         private System.Windows.Forms.Button uxGo;
+        private System.Windows.Forms.ComboBox uxServer;
     }
 }
 

@@ -153,7 +153,10 @@ namespace Tibia.Util
                 switch ((string)uxClients.SelectedItem)
                 {
                     case NewClientDefaultText:
-                        client = Client.Open();
+                        if (uxClients.Items.Count > 2)
+                            client = Client.OpenMC();
+                        else
+                            client = Client.Open();
                         break;
                     case NewClientCustomText:
                         OpenFileDialog dialog = new OpenFileDialog();

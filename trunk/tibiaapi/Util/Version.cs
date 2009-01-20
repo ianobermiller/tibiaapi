@@ -8,6 +8,7 @@ namespace Tibia
     public class Version
     {
         public const ushort CurrentVersion = 840;
+        public const string CurrentVersionString = "8.40";
 
         public static void Set(string version)
         {

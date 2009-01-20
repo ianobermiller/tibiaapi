@@ -11,23 +11,22 @@ namespace Tibia.Objects
     {
         public string Server { get; set; }
         public short Port { get; set; }
+        public string Version { get; set; }
 
-        public LoginServer() 
-        {
-            Server = "";
-            Port = 7171;
-        }
+        public LoginServer()
+            : this("") { }
 
         public LoginServer(string server)
-        {
-            Port = 7171;
-            Server = server;
-        }
+            : this(server, 7171) { }
 
         public LoginServer(string server, short port)
+            : this(server, port, Tibia.Version.CurrentVersionString) { }
+
+        public LoginServer(string server, short port, string version)
         {
             Server = server;
             Port = port;
+            Version = version;
         }
 
         public override string ToString()
