@@ -1,0 +1,24 @@
+#summary Guildlines for developers wishing to contribute to the TibiaAPI codebase.
+#labels Featured,Phase-Implementation
+
+= Becoming a Member =
+
+If you are not a member of the google code project, but would like to contribute, here is what you can do:
+  # Write your contribution as a patch, and submit it to one of the project admins (Ian or Ame/Hugge) via email or a PM at tpforums.
+  # If we like your work, and find the code useful and well-written, you will be a candidate for membership.
+  # The existing members will discuss any new members and decide as a group whether or not to include someone new.
+  # New members also must have a plan of what they will contribute (new features, keeping up with releases, etc)
+
+= Writing code =
+
+  * Must use proper coding convention, explained at http://www.irritatedvowel.com/Programming/Standards.aspx
+  * Remember to use the [http://code.google.com/p/tibiaapi/issues/list issue list]! When you want to work on something, or want others to work on it, make an issue. When you complete a task, close the corresponding issue.
+  * When committing, add comments explaining which issue you're fixing. Examples:
+    # "In the last revision, r100 something broke. Fix for that." (r100 will be replaced with link to the specific revision automatically)
+    # "Fixed issue 99 by changing..." (issue 99 will be replaced with a link to the issue)
+  * The same as above goes for creating issues: if you need to, reference the specific revision something broke or another related issue that must be accomplished first.
+
+= Reviewing code =
+
+  * Please review the code that others have written often.
+  * Feel free to comment on their code at the revision page (at the bottom), and discuss potential changes or problems.
