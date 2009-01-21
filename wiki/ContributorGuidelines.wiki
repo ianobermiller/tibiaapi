@@ -4,7 +4,7 @@
 = Becoming a Member =
 
 If you are not a member of the google code project, but would like to contribute, here is what you can do:
-  # Write your contribution as a patch, and submit it to one of the project admins (Ian or Ame/Hugge) via email or a PM at tpforums.
+  # Write your contribution as a patch, and submit it to one of the project admins ( 	 [http://tpforums.org/forum/private.php?do=newpm&u=902 ian]/ian320, [http://tpforums.org/forum/private.php?do=newpm&u=116 ame]/hugo.persson) via email or a PM at tpforums.
   # If we like your work, and find the code useful and well-written, you will be a candidate for membership.
   # The existing members will discuss any new members and decide as a group whether or not to include someone new.
   # New members also must have a plan of what they will contribute (new features, keeping up with releases, etc)
