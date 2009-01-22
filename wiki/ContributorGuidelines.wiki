@@ -17,6 +17,9 @@ If you are not a member of the google code project, but would like to contribute
     # "Fixed issue 99 by changing..." (issue 99 will be replaced with a link to the issue)
   * The same as above goes for creating issues: if you need to, reference the specific revision something broke or another related issue that must be accomplished first.
   * Must use proper coding conventions (table based on http://www.irritatedvowel.com/Programming/Standards.aspx):
+
+== Coding Conventions (C# and C++) ==
+
 || *Type* || *Convention* || *Example* ||
 || Classes and Structs || Pascal Case || Client, !ContextMenu, !VipList||
 || Collection, Delegate, Exception, or Attribute classes || Follow class naming conventions, but add the appropriate nown to the end || !WidgetCollection, !WidgetCallbackDelegate, !InvalidTransactionException, !WebServiceAttribute ||
@@ -29,6 +32,7 @@ If you are not a member of the google code project, but would like to contribute
 || Class-level private or protected variables || Camel Case || processHandle, pipeIsReady, screen ||
 || Controls on Forms || "ux" prefix || uxLog, uxStart, uxMap ||
 || Constants || Pascal Case || !DefaultLoginServers, !MaxConnections ||
+
 
 = Reviewing code =
 
