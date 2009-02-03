@@ -15,8 +15,9 @@ namespace Tibia.Util
     public abstract class SocketBase
     {
         #region Vars
-        Form debugForm;
-        bool debugOn;
+        private Form debugForm;
+        private bool debugOn;
+        private uint nextPacketId = 1;
         #endregion
 
         #region Events
@@ -147,6 +148,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: AnimatedText");
                     packet = new Packets.Incoming.AnimatedTextPacket(client);
+                    packet.Id = nextPacketId++;
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedAnimatedTextIncomingPacket != null)
@@ -159,6 +161,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ContainerClose");
                     packet = new Packets.Incoming.ContainerClosePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -172,6 +175,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureSpeak");
                     packet = new Packets.Incoming.CreatureSpeechPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -185,6 +189,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ChannelOpen");
                     packet = new Packets.Incoming.ChannelOpenPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -198,6 +203,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: PlayerWalkCancel");
                     packet = new Packets.Incoming.PlayerWalkCancelPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -211,6 +217,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ChannelList");
                     packet = new Packets.Incoming.ChannelListPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -224,6 +231,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureMove");
                     packet = new Packets.Incoming.CreatureMovePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -237,6 +245,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: TextMessage");
                     packet = new Packets.Incoming.TextMessagePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -250,6 +259,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: TileAddThing");
                     packet = new Packets.Incoming.TileAddThingPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -263,6 +273,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureOutfit");
                     packet = new Packets.Incoming.CreatureOutfitPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -276,6 +287,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureLight");
                     packet = new Packets.Incoming.CreatureLightPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -289,6 +301,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureHealth");
                     packet = new Packets.Incoming.CreatureHealthPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -302,6 +315,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureSpeed");
                     packet = new Packets.Incoming.CreatureSpeedPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -315,6 +329,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureSquare");
                     packet = new Packets.Incoming.CreatureSquarePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -328,6 +343,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: TileTransformThing");
                     packet = new Packets.Incoming.TileTransformThingPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -341,6 +357,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: TileRemoveThing");
                     packet = new Packets.Incoming.TileRemoveThingPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -354,6 +371,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ContainerAddItem");
                     packet = new Packets.Incoming.ContainerAddItemPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -367,6 +385,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ContainerRemoveItem");
                     packet = new Packets.Incoming.ContainerRemoveItemPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -380,6 +399,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ContainerUpdateItem");
                     packet = new Packets.Incoming.ContainerUpdateItemPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -393,6 +413,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ContainerOpen");
                     packet = new Packets.Incoming.ContainerOpenPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -406,6 +427,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ItemTextWindow");
                     packet = new Packets.Incoming.ItemTextWindowPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -419,6 +441,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: WorldLight");
                     packet = new Packets.Incoming.WorldLightPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -432,6 +455,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: Projectile");
                     packet = new Packets.Incoming.ProjectilePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -445,6 +469,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MapDescription");
                     packet = new Packets.Incoming.MapDescriptionPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -458,6 +483,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MoveNorth");
                     packet = new Packets.Incoming.MoveNorthPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -471,6 +497,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MoveSouth");
                     packet = new Packets.Incoming.MoveSouthPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -484,6 +511,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MoveEast");
                     packet = new Packets.Incoming.MoveEastPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -497,6 +525,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MoveWest");
                     packet = new Packets.Incoming.MoveWestPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -510,6 +539,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: SelfAppear");
                     packet = new Packets.Incoming.SelfAppearPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -523,6 +553,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: MagicEffect");
                     packet = new Packets.Incoming.MagicEffectPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -536,6 +567,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: FloorChangeDown");
                     packet = new Packets.Incoming.FloorChangeDownPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -549,6 +581,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: FloorChangeUp");
                     packet = new Packets.Incoming.FloorChangeUpPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -562,6 +595,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: PlayerStatus");
                     packet = new Packets.Incoming.PlayerStatusPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -575,6 +609,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CreatureSkull");
                     packet = new Packets.Incoming.CreatureSkullPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -588,6 +623,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: WaitingList");
                     packet = new Packets.Incoming.WaitingListPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -601,6 +637,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: Ping");
                     packet = new Packets.Incoming.PingPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -614,6 +651,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: Death");
                     packet = new Packets.Incoming.DeathPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -627,6 +665,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: CanReportBugs");
                     packet = new Packets.Incoming.CanReportBugsPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -640,6 +679,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: TileUpdate");
                     packet = new Packets.Incoming.TileUpdatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -653,6 +693,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: FyiMessage");
                     packet = new Packets.Incoming.FyiMessagePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -666,6 +707,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: InventorySetSlot");
                     packet = new Packets.Incoming.InventorySetSlotPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -679,6 +721,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: InventoryResetSlot");
                     packet = new Packets.Incoming.InventoryResetSlotPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -692,6 +735,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: SafeTradeRequestAck");
                     packet = new Packets.Incoming.SafeTradeRequestAckPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -705,6 +749,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: SafeTradeRequestNoAck");
                     packet = new Packets.Incoming.SafeTradeRequestNoAckPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -718,6 +763,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: SafeTradeClose");
                     packet = new Packets.Incoming.SafeTradeClosePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -731,6 +777,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: PlayerSkillsUpdate");
                     packet = new Packets.Incoming.PlayerSkillsPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -744,6 +791,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: PlayerFlags");
                     packet = new Packets.Incoming.PlayerFlagsPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -757,6 +805,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ChannelOpenPrivate");
                     packet = new Packets.Incoming.ChannelOpenPrivatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -770,6 +819,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: PrivateChannelCreate");
                     packet = new Packets.Incoming.PrivateChannelCreatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -783,6 +833,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ChannelClosePrivate");
                     packet = new Packets.Incoming.ChannelClosePrivatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -796,6 +847,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: VipState");
                     packet = new Packets.Incoming.VipStatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -809,6 +861,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: VipLogin");
                     packet = new Packets.Incoming.VipLoginPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -822,6 +875,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: VipLogout");
                     packet = new Packets.Incoming.VipLogoutPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -835,6 +889,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ShopSaleGoldCount");
                     packet = new Packets.Incoming.ShopSaleGoldCountPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -848,6 +903,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ShopWindowOpen");
                     packet = new Packets.Incoming.ShopWindowOpenPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -861,6 +917,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: ShopWindowClose");
                     packet = new Packets.Incoming.ShopWindowClosePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -874,6 +931,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: OutfitWindow");
                     packet = new Packets.Incoming.OutfitWindowPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -887,6 +945,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: RuleViolationOpen");
                     packet = new Packets.Incoming.RuleViolationOpenPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -900,6 +959,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: RuleViolationRemove");
                     packet = new Packets.Incoming.RuleViolationRemovePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -913,6 +973,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: RuleViolationCancel");
                     packet = new Packets.Incoming.RuleViolationCancelPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -926,6 +987,7 @@ namespace Tibia.Util
                     if (DebugOn)
                         WriteDebug("Incoming: RuleViolationLock");
                     packet = new Packets.Incoming.RuleViolationLockPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -940,6 +1002,7 @@ namespace Tibia.Util
                         WriteDebug("Incoming: CancelTarget");
 
                     packet = new Packets.Incoming.CancelTargetPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
@@ -970,6 +1033,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ChannelClose");
 
                     packet = new Packets.Outgoing.ChannelClosePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -984,6 +1048,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ChannelOpen");
 
                     packet = new Packets.Outgoing.ChannelOpenPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -998,6 +1063,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: PlayerSpeech");
 
                     packet = new Packets.Outgoing.PlayerSpeechPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1012,6 +1078,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: Attack");
 
                     packet = new Packets.Outgoing.AttackPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1026,6 +1093,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: Follow");
 
                     packet = new Packets.Outgoing.FollowPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1040,6 +1108,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: LookAt");
 
                     packet = new Packets.Outgoing.LookAtPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1054,6 +1123,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ItemUse");
 
                     packet = new Packets.Outgoing.ItemUsePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1068,6 +1138,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ItemUseOn");
 
                     packet = new Packets.Outgoing.ItemUseOnPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1082,6 +1153,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ItemMove");
 
                     packet = new Packets.Outgoing.ItemMovePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1096,6 +1168,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: CancelMove");
 
                     packet = new Packets.Outgoing.CancelMovePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1110,6 +1183,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ItemUseBattlelist");
 
                     packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1124,6 +1198,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: Logout");
 
                     packet = new Packets.Outgoing.LogoutPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1138,6 +1213,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ContainerClose");
 
                     packet = new Packets.Outgoing.ContainerClosePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1152,6 +1228,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ContainerOpenParent");
 
                     packet = new Packets.Outgoing.ContainerOpenParentPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1166,6 +1243,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ShopBuy");
 
                     packet = new Packets.Outgoing.ShopBuyPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1180,6 +1258,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ShopSell");
 
                     packet = new Packets.Outgoing.ShopSellPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1326,6 +1405,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: AutoWalk");
 
                     packet = new Packets.Outgoing.AutoWalkPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1340,6 +1420,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: VipAdd");
 
                     packet = new Packets.Outgoing.VipAddPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1354,6 +1435,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: VipRemove");
 
                     packet = new Packets.Outgoing.VipRemovePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1368,6 +1450,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: ItemRotate");
 
                     packet = new Packets.Outgoing.ItemRotatePacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1382,6 +1465,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: SetOutfit");
 
                     packet = new Packets.Outgoing.SetOutfitPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1396,6 +1480,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: AutoWalkCancel");
 
                     packet = new Packets.Outgoing.AutoWalkCancelPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1410,6 +1495,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: Ping");
 
                     packet = new Packets.Outgoing.PingPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1424,6 +1510,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: FightModes");
 
                     packet = new Packets.Outgoing.FightModesPacket(client);
+                    packet.Id = nextPacketId++;
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1478,7 +1565,7 @@ namespace Tibia.Util
                 System.IO.File.AppendAllText(Application.StartupPath + @"\proxy_log.txt", myRichTextBox.Text);
                 myRichTextBox.Clear();
             }
-            myRichTextBox.AppendText("[" + DateTime.Now.ToLongTimeString() + "] " + message + "\n");  
+            myRichTextBox.AppendText("[" + DateTime.Now.ToLongTimeString() + "] " + message + "\n");
             myRichTextBox.Select(myRichTextBox.TextLength - 1, 0);
             myRichTextBox.ScrollToCaret();
         }
