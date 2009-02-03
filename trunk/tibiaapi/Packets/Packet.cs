@@ -8,7 +8,7 @@ namespace Tibia.Packets
 {
     public class Packet
     {
-        public uint Id { get; set; }
+        public uint PacketId { get; set; }
         public bool Forward { get; set; }
         public PacketDestination Destination { get; set; }
         public Objects.Client Client { get; set; }
