@@ -234,8 +234,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = (uint)client.ReadInt32(Addresses.Client.DatPointer);
-                return (uint)client.ReadInt32(baseAddr + 8) + 0x4C * (id - 100);
+                uint baseAddr = client.ReadUInt32(Addresses.Client.DatPointer);
+                return client.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
             }
         }
 
@@ -296,10 +296,16 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets the DatAddress of the sprite structure of the item.
         /// </summary>
-        public int Sprites
+        public byte[] Sprite
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Sprites); }
-            //set { client.WriteInt(DatAddress + Addresses.DatItem.Sprites, value); }
+            get
+            {
+                return client.ReadBytes(DatAddress + Addresses.DatItem.Sprite, 4);
+            }
+            set 
+            {
+                client.WriteBytes(DatAddress + Addresses.DatItem.Sprite, value, 4); 
+            }
         }
 
         /// <summary>

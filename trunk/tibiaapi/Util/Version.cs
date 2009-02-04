@@ -122,7 +122,7 @@ namespace Tibia
                 Addresses.DatItem.PatternY = 20;
                 Addresses.DatItem.PatternDepth = 24;
                 Addresses.DatItem.Phase = 28;
-                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Sprite = 32;
                 Addresses.DatItem.Flags = 36;
                 Addresses.DatItem.WalkSpeed = 40;
                 Addresses.DatItem.TextLimit = 44;
@@ -350,7 +350,7 @@ namespace Tibia
                 Addresses.DatItem.PatternY = 20;
                 Addresses.DatItem.PatternDepth = 24;
                 Addresses.DatItem.Phase = 28;
-                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Sprite = 32;
                 Addresses.DatItem.Flags = 36;
                 Addresses.DatItem.WalkSpeed = 40;
                 Addresses.DatItem.TextLimit = 44;
@@ -569,7 +569,7 @@ namespace Tibia
                 Addresses.DatItem.PatternY = 20;
                 Addresses.DatItem.PatternDepth = 24;
                 Addresses.DatItem.Phase = 28;
-                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Sprite = 32;
                 Addresses.DatItem.Flags = 36;
                 Addresses.DatItem.WalkSpeed = 40;
                 Addresses.DatItem.TextLimit = 44;
@@ -759,7 +759,7 @@ namespace Tibia
                 Addresses.DatItem.PatternY = 20;
                 Addresses.DatItem.PatternDepth = 24;
                 Addresses.DatItem.Phase = 28;
-                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Sprite = 32;
                 Addresses.DatItem.Flags = 36;
                 Addresses.DatItem.WalkSpeed = 40;
                 Addresses.DatItem.TextLimit = 44;
@@ -957,7 +957,7 @@ namespace Tibia
                 Addresses.DatItem.PatternY = 20;
                 Addresses.DatItem.PatternDepth = 24;
                 Addresses.DatItem.Phase = 28;
-                Addresses.DatItem.Sprites = 32;
+                Addresses.DatItem.Sprite = 32;
                 Addresses.DatItem.Flags = 36;
                 Addresses.DatItem.WalkSpeed = 40;
                 Addresses.DatItem.TextLimit = 44;

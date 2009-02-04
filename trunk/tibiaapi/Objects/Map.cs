@@ -9,9 +9,7 @@ namespace Tibia.Objects
     public class Map
     {
         private Client client;
-        private static List<TileObject> treeList;
-
-
+        
         #region Constructor
         /// <summary>
         /// Create a map object.
@@ -255,17 +253,21 @@ namespace Tibia.Objects
         /// Replace all the trees on the map with small fir trees.
         /// </summary>
         /// <returns></returns>
-        public int ReplaceTrees()
+        public void ReplaceTrees()
         {
-            if (treeList == null)
+            uint smallFirTreeId = 3682;
+            byte[] smallFirTreeBytes = client.ReadBytes(
+                client.ReadUInt32(
+                    client.ReadUInt32(Addresses.Client.DatPointer) + 8)
+                + Addresses.DatItem.Sprite
+                + (uint)(0x4C * (smallFirTreeId - 100)), 3);
+            foreach (int id in Tibia.Constants.Items.TreeArray)
             {
-                treeList = new List<TileObject>(Tibia.Constants.Items.TreeArray.Length);
-                foreach (int id in Tibia.Constants.Items.TreeArray)
-                    treeList.Add(new TileObject(id, 0, 0));
+                uint address = client.ReadUInt32(client.ReadUInt32(Addresses.Client.DatPointer) + 8) 
+                    + Addresses.DatItem.Sprite 
+                    + (uint)(0x4C * (id - 100));
+                client.WriteBytes(address, smallFirTreeBytes, 3); 
             }
-
-            TileObject smallFirTree = new TileObject(3682, 0, 0);
-            return ReplaceObjects(treeList, smallFirTree, true);
         }
         #endregion
 
