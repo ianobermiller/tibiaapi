@@ -24,7 +24,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public bool Turn(Constants.TurnDirection direction)
+        public bool Turn(Constants.Direction direction)
         {
             return Packets.Outgoing.TurnPacket.Send(client, direction);
         }
@@ -34,7 +34,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public bool Walk(Constants.WalkDirection direction)
+        public bool Walk(Constants.Direction direction)
         {
             return Packets.Outgoing.MovePacket.Send(client, direction);
         }
@@ -44,7 +44,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public bool Walk(List<Constants.WalkDirection> list)
+        public bool Walk(List<Constants.Direction> list)
         {
             return Packets.Outgoing.AutoWalkPacket.Send(client, list);
         }

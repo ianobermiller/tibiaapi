@@ -1273,7 +1273,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: TurnDown");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Down);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Down);
 
                     if (ReceivedTurnOutgoingPacket != null)
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
@@ -1284,7 +1284,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: TurnUp");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Up);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Up);
 
                     if (ReceivedTurnOutgoingPacket != null)
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
@@ -1295,7 +1295,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: TurnLeft");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Left);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Left);
 
                     if (ReceivedTurnOutgoingPacket != null)
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
@@ -1306,7 +1306,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: TurnRight");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.TurnDirection.Right);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Right);
 
                     if (ReceivedTurnOutgoingPacket != null)
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
@@ -1317,7 +1317,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveDown");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Down);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Down);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1328,7 +1328,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveDownLeft");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownLeft);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.DownLeft);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1339,7 +1339,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveDownRight");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.DownRight);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.DownRight);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1350,7 +1350,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveLeft");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Left);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Left);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1361,7 +1361,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveRight");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Right);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Right);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1372,7 +1372,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveUp");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.Up);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Up);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1383,7 +1383,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveUpLeft");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpLeft);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.UpLeft);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
@@ -1394,7 +1394,7 @@ namespace Tibia.Util
                         WriteDebug("Outgoing: MoveUpRight");
 
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.WalkDirection.UpRight);
+                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.UpRight);
 
                     if (ReceivedMoveOutgoingPacket != null)
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);

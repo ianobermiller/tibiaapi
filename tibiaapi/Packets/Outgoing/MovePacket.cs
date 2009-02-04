@@ -7,37 +7,37 @@ namespace Tibia.Packets.Outgoing
 {
     public class MovePacket : OutgoingPacket
     {
-        public Constants.WalkDirection Direction { get; set; }
+        public Constants.Direction Direction { get; set; }
 
-        public MovePacket(Objects.Client c, Constants.WalkDirection direction)
+        public MovePacket(Objects.Client c, Constants.Direction direction)
             : base(c)
         {
             Direction = direction;
 
             switch (direction)
             {
-                case Tibia.Constants.WalkDirection.Down:
+                case Tibia.Constants.Direction.Down:
                     Type = OutgoingPacketType.MoveDown;
                     break;
-                case Tibia.Constants.WalkDirection.Up:
+                case Tibia.Constants.Direction.Up:
                     Type = OutgoingPacketType.MoveUp;
                     break;
-                case Tibia.Constants.WalkDirection.Right:
+                case Tibia.Constants.Direction.Right:
                     Type = OutgoingPacketType.MoveRight;
                     break;
-                case Tibia.Constants.WalkDirection.Left:
+                case Tibia.Constants.Direction.Left:
                     Type = OutgoingPacketType.MoveLeft;
                     break;
-                case Tibia.Constants.WalkDirection.DownLeft:
+                case Tibia.Constants.Direction.DownLeft:
                     Type = OutgoingPacketType.MoveDownLeft;
                     break;
-                case Tibia.Constants.WalkDirection.DownRight:
+                case Tibia.Constants.Direction.DownRight:
                     Type = OutgoingPacketType.MoveDownRight;
                     break;
-                case Tibia.Constants.WalkDirection.UpLeft:
+                case Tibia.Constants.Direction.UpLeft:
                     Type = OutgoingPacketType.MoveUpLeft;
                     break;
-                case Tibia.Constants.WalkDirection.UpRight:
+                case Tibia.Constants.Direction.UpRight:
                     Type = OutgoingPacketType.MoveUpRight;
                     break;
             }
@@ -57,7 +57,7 @@ namespace Tibia.Packets.Outgoing
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, Constants.WalkDirection direction)
+        public static bool Send(Objects.Client client, Constants.Direction direction)
         {
             MovePacket p = new MovePacket(client, direction);
             return p.Send();

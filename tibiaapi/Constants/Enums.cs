@@ -14,9 +14,9 @@ namespace Tibia.Constants
     }
 
     /// <summary>
-    /// The direction to walk in.
+    /// The direction to walk in or turn to.
     /// </summary>
-    public enum WalkDirection
+    public enum Direction
     {
         Up = 0,
         Right = 1,
@@ -26,17 +26,6 @@ namespace Tibia.Constants
         DownRight = 6,
         DownLeft = 7,
         UpLeft = 8
-    }
-
-    /// <summary>
-    /// The direction to turn.
-    /// </summary>
-    public enum TurnDirection : byte
-    {
-        Up = 0,
-        Right = 1,
-        Down = 2,
-        Left = 3
     }
 
     /// <summary>

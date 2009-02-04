@@ -7,27 +7,31 @@ namespace Tibia.Packets.Outgoing
 {
     public class TurnPacket : OutgoingPacket
     {
-        public Constants.TurnDirection Direction { get; set; }
+        public Constants.Direction Direction { get; set; }
 
-        public TurnPacket(Objects.Client c, Constants.TurnDirection direction)
+        public TurnPacket(Objects.Client c, Constants.Direction direction)
             : base(c)
         {
             Direction = direction;
 
             switch (direction)
             {
-                case Tibia.Constants.TurnDirection.Down:
+                case Tibia.Constants.Direction.Down:
                     Type = OutgoingPacketType.TurnDown;
                     break;
-                case Tibia.Constants.TurnDirection.Up:
+                case Tibia.Constants.Direction.Up:
                     Type = OutgoingPacketType.TurnUp;
                     break;
-                case Tibia.Constants.TurnDirection.Right:
+                case Tibia.Constants.Direction.Right:
                     Type = OutgoingPacketType.TurnRight;
                     break;
-                case Tibia.Constants.TurnDirection.Left:
+                case Tibia.Constants.Direction.Left:
                     Type = OutgoingPacketType.TurnLeft;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        "direction", 
+                        "Valid directions for turning are Up, Right, Down, and Left.");
             }
 
             Destination = PacketDestination.Server;
@@ -45,7 +49,7 @@ namespace Tibia.Packets.Outgoing
             return msg.Packet;
         }
 
-        public static bool Send(Objects.Client client, Constants.TurnDirection direction)
+        public static bool Send(Objects.Client client, Constants.Direction direction)
         {
             TurnPacket p = new TurnPacket(client, direction);
             return p.Send();
