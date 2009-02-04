@@ -31,11 +31,9 @@ namespace Tibia.Util
             this.uxClients = new System.Windows.Forms.ComboBox();
             this.uxChoose = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.uxPort = new System.Windows.Forms.TextBox();
-            this.uxServer = new System.Windows.Forms.TextBox();
-            this.uxPortLabel = new System.Windows.Forms.Label();
-            this.uxServerLabel = new System.Windows.Forms.Label();
+            this.uxLoginServerLabel = new System.Windows.Forms.Label();
             this.uxUseOT = new System.Windows.Forms.CheckBox();
+            this.uxLoginServer = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,57 +65,24 @@ namespace Tibia.Util
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.uxPort);
-            this.groupBox1.Controls.Add(this.uxServer);
-            this.groupBox1.Controls.Add(this.uxPortLabel);
-            this.groupBox1.Controls.Add(this.uxServerLabel);
+            this.groupBox1.Controls.Add(this.uxLoginServer);
+            this.groupBox1.Controls.Add(this.uxLoginServerLabel);
             this.groupBox1.Controls.Add(this.uxUseOT);
             this.groupBox1.Location = new System.Drawing.Point(4, 32);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(279, 75);
+            this.groupBox1.Size = new System.Drawing.Size(279, 49);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             // 
-            // uxPort
+            // uxLoginServerLabel
             // 
-            this.uxPort.Enabled = false;
-            this.uxPort.Location = new System.Drawing.Point(52, 47);
-            this.uxPort.Name = "uxPort";
-            this.uxPort.Size = new System.Drawing.Size(39, 20);
-            this.uxPort.TabIndex = 4;
-            this.uxPort.Text = "7171";
-            this.uxPort.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
-            // 
-            // uxServer
-            // 
-            this.uxServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxServer.Enabled = false;
-            this.uxServer.Location = new System.Drawing.Point(52, 20);
-            this.uxServer.Name = "uxServer";
-            this.uxServer.Size = new System.Drawing.Size(219, 20);
-            this.uxServer.TabIndex = 3;
-            this.uxServer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CommonKeyUp);
-            // 
-            // uxPortLabel
-            // 
-            this.uxPortLabel.AutoSize = true;
-            this.uxPortLabel.Enabled = false;
-            this.uxPortLabel.Location = new System.Drawing.Point(7, 47);
-            this.uxPortLabel.Name = "uxPortLabel";
-            this.uxPortLabel.Size = new System.Drawing.Size(26, 13);
-            this.uxPortLabel.TabIndex = 5;
-            this.uxPortLabel.Text = "Port";
-            // 
-            // uxServerLabel
-            // 
-            this.uxServerLabel.AutoSize = true;
-            this.uxServerLabel.Enabled = false;
-            this.uxServerLabel.Location = new System.Drawing.Point(7, 20);
-            this.uxServerLabel.Name = "uxServerLabel";
-            this.uxServerLabel.Size = new System.Drawing.Size(38, 13);
-            this.uxServerLabel.TabIndex = 4;
-            this.uxServerLabel.Text = "Server";
+            this.uxLoginServerLabel.AutoSize = true;
+            this.uxLoginServerLabel.Enabled = false;
+            this.uxLoginServerLabel.Location = new System.Drawing.Point(7, 23);
+            this.uxLoginServerLabel.Name = "uxLoginServerLabel";
+            this.uxLoginServerLabel.Size = new System.Drawing.Size(60, 13);
+            this.uxLoginServerLabel.TabIndex = 4;
+            this.uxLoginServerLabel.Text = "Server:Port";
             // 
             // uxUseOT
             // 
@@ -130,12 +95,20 @@ namespace Tibia.Util
             this.uxUseOT.UseVisualStyleBackColor = true;
             this.uxUseOT.CheckedChanged += new System.EventHandler(this.uxUseOT_CheckedChanged);
             // 
+            // uxLoginServer
+            // 
+            this.uxLoginServer.FormattingEnabled = true;
+            this.uxLoginServer.Location = new System.Drawing.Point(68, 20);
+            this.uxLoginServer.Name = "uxLoginServer";
+            this.uxLoginServer.Size = new System.Drawing.Size(203, 21);
+            this.uxLoginServer.TabIndex = 5;
+            // 
             // ClientChooser
             // 
             this.AcceptButton = this.uxChoose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 110);
+            this.ClientSize = new System.Drawing.Size(287, 85);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.uxChoose);
             this.Controls.Add(this.uxClients);
@@ -157,10 +130,8 @@ namespace Tibia.Util
         private System.Windows.Forms.ComboBox uxClients;
         private System.Windows.Forms.Button uxChoose;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox uxPort;
-        private System.Windows.Forms.TextBox uxServer;
-        private System.Windows.Forms.Label uxPortLabel;
-        private System.Windows.Forms.Label uxServerLabel;
+        private System.Windows.Forms.Label uxLoginServerLabel;
         private System.Windows.Forms.CheckBox uxUseOT;
+        private System.Windows.Forms.ComboBox uxLoginServer;
     }
 }
