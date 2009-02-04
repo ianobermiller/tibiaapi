@@ -424,7 +424,7 @@ namespace Tibia.Objects
             Item item;
             uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
             byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
-            uint id = (uint)client.ReadInt32(address);
+            uint id = client.ReadUInt32(address);
             if (id > 0)
             {
                 item = new Item(client, id, count, "", new ItemLocation(s), true);

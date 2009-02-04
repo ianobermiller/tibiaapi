@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         public static uint PatternY = 20;
         public static uint PatternDepth = 24;
         public static uint Phase = 28;
-        public static uint Sprites = 32;
+        public static uint Sprite = 32;
         public static uint Flags = 36;
         public static uint WalkSpeed = 40;
         public static uint TextLimit = 44; // If it is readable/writable
