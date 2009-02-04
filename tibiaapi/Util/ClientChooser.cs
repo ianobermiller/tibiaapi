@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using Tibia.Objects;
+using System.Diagnostics;
 
 namespace Tibia.Util
 {
@@ -11,8 +12,7 @@ namespace Tibia.Util
         private static ClientChooser newClientChooser;
         private static Objects.Client client;
 
-        private const string NewClientDefaultText = "New default client...";
-        private const string NewClientCustomText = "New client (choose location)...";
+        private ClientChooserOptions options;
         
         public ClientChooser()
         {
@@ -35,35 +35,73 @@ namespace Tibia.Util
         /// <returns></returns>
         public static Client ShowBox(ClientChooserOptions options)
         {
-            List<Objects.Client> clients = Objects.Client.GetClients();
-            if (options.Smart && !options.ShowOTOption && clients.Count == 1)
+            List<Objects.Client> clients = null;
+            if (options.LookUpClients)
+            {
+                clients = Objects.Client.GetClients();
+            }
+            if (options.Smart && 
+                options.LookUpClients && 
+                !options.ShowOTOption && 
+                clients != null && 
+                clients.Count == 1)
+            {
                 return clients[0];
+            }
             else
             {
                 newClientChooser = new ClientChooser();
-                newClientChooser.Text = options.Title == string.Empty ? "Choose a client." : options.Title;
-                foreach (Client c in clients)
-                    newClientChooser.uxClients.Items.Add(c);
+                newClientChooser.Text = String.IsNullOrEmpty(options.Title) ? "Choose a client." : options.Title;
+
+                if (options.LookUpClients)
+                {
+                    foreach (Client c in clients)
+                    {
+                        newClientChooser.uxClients.Items.Add(c);
+                    }
+                }
+
                 if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Tibia\tibia.exe")))
                 {
-                    newClientChooser.uxClients.Items.Add(NewClientDefaultText);
+                    newClientChooser.uxClients.Items.Add(ClientChooserBase.NewClientDefaultText);
                 }
-                newClientChooser.uxClients.Items.Add(NewClientCustomText);
+
+                foreach (ClientPathInfo cpi in
+                    ClientChooserBase.GetClientPaths(options.SavedClientPathsLocation))
+                {
+                    newClientChooser.uxClients.Items.Add(cpi);
+                }
+
+                newClientChooser.uxClients.Items.Add(ClientChooserBase.NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
+
+                foreach (string address in options.Addresses)
+                {
+                    newClientChooser.uxLoginServer.Items.Add(address);
+                }
+
+                if (newClientChooser.uxLoginServer.Items.Count > 0)
+                    newClientChooser.uxLoginServer.SelectedIndex = 0;
+
+                newClientChooser.uxUseOT.IsExpanded = options.UseOT;
+                if (options.UseOT)
+                {
+                    newClientChooser.uxLoginServer.Text = options.Server + ":" + options.Port.ToString();
+                }
 
                 if (options.ShowOTOption)
                 {
-                    newClientChooser.Height = 134;
+                    newClientChooser.Height = 109;
                     newClientChooser.uxUseOT.Checked = options.UseOT;
                     newClientChooser.SetOTState();
-                    newClientChooser.uxServer.Text = options.Server;
-                    newClientChooser.uxPort.Text = options.Port.ToString();
+                    newClientChooser.uxLoginServer.Text = options.Server + ":" + options.Port.ToString();
                 }
                 else
                 {
                     newClientChooser.Height = 54;
                 }
 
+                newClientChooser.options = options;
                 newClientChooser.ShowDialog();
                 return client;
             }
@@ -78,55 +116,25 @@ namespace Tibia.Util
         {
             SetOTState();
             if (uxUseOT.Checked)
-                uxServer.Focus();
+                uxLoginServer.Focus();
         }
 
         public void SetOTState()
         {
-            newClientChooser.uxServer.Enabled = uxUseOT.Checked;
-            newClientChooser.uxServerLabel.Enabled = uxUseOT.Checked;
-            newClientChooser.uxPort.Enabled = uxUseOT.Checked;
-            newClientChooser.uxPortLabel.Enabled = uxUseOT.Checked;
+            newClientChooser.uxLoginServer.Enabled = uxUseOT.Checked;
+            newClientChooser.uxLoginServerLabel.Enabled = uxUseOT.Checked;
         }
 
         private void ChooseClient()
         {
-            if (uxClients.SelectedItem.GetType() == typeof(string))
+            options.UseOT = uxUseOT.Checked;
+            LoginServer ls = null;
+            if (options.UseOT)
             {
-                switch ((string)uxClients.SelectedItem)
-                {
-                    case NewClientDefaultText:
-                        //if already have one client open, offcourse the user whats to open a mc.
-                        if (uxClients.Items.Count > 2)
-                            client = Client.OpenMC();
-                        else
-                            client = Client.Open();
-                        break;
-                    case NewClientCustomText:
-                        OpenFileDialog dialog = new OpenFileDialog();
-                        dialog.Filter =
-                           "executable files (*.exe)|*.exe|All files (*.*)|*.*";
-                        dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-                        dialog.Title = "Select a Tibia client executable";
-                        client = (dialog.ShowDialog() == DialogResult.OK) ? uxClients.Items.Count > 2 ?
-                            Client.OpenMC(dialog.FileName, "") : Client.Open(dialog.FileName) : null;
-                        break;
-                }
-                if (client != null)
-                    System.Threading.Thread.Sleep(1000);
+                string[] split = uxLoginServer.Text.Split(new char[] { ':' });
+                ls = new LoginServer(split[0], short.Parse(split[1]));
             }
-            else
-            {
-                client = (Client)uxClients.SelectedItem;
-            }
-
-            // Set OT server
-            if (client != null && uxUseOT.Checked)
-            {
-                LoginServer ls = new LoginServer(uxServer.Text, short.Parse(uxPort.Text));
-                client.OpenTibiaServer = ls;
-                client.SetOT(ls);
-            }
+            client = ClientChooserBase.ChooseClient(options, uxClients.SelectedItem, ls);
             newClientChooser.Dispose();
         }
 
@@ -137,86 +145,5 @@ namespace Tibia.Util
                 ChooseClient();
             }
         }
-    }
-
-    /// <summary>
-    /// Options for the ClientChooser class
-    /// </summary>
-    public class ClientChooserOptions
-    {
-        /// <summary>
-        /// If true, will not open a box if there is only one 
-        /// client; just returns that client.
-        /// </summary>
-        public bool Smart = true;
-
-        /// <summary>
-        /// Use a custom title for the client chooser.
-        /// </summary>
-        public string Title = string.Empty;
-
-        /// <summary>
-        /// Show the open tibia server section
-        /// </summary>
-        public bool ShowOTOption = true;
-
-        /// <summary>
-        /// Default value for the Use OT checkbox
-        /// </summary>
-        public bool UseOT = false;
-
-        /// <summary>
-        /// Default value for the server box
-        /// </summary>
-        public string Server = null;
-
-        /// <summary>
-        /// Default value for the port box
-        /// </summary>
-        public short Port = 7171;
-
-        /// <summary>
-        /// Get already running clients and in default locations.
-        /// </summary>
-        public bool LookUpClients = true;
-
-        /// <summary>
-        /// Saves the selected client's path
-        /// </summary>
-        public bool SaveClientPath = true;
-
-        /// <summary>
-        /// Command-line arguments for client
-        /// </summary>
-        public string Arguments = "";
-
-        /// <summary>
-        /// Location of where to read/save the selected client's path. Default: %APPDATA%\TibiaAPI\clientPaths.xml.
-        /// </summary>
-        public string SavedClientPathsLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"clientPaths.xml");
-
-        public List<string> addresses;
-
-        public ClientChooserOptions(){
-            clientPaths = new List<string>();
-            addresses = new List<string>(new string[]{
-            "login01.tibia.com:7171",
-            "login02.tibia.com:7171",
-            "login03.tibia.com:7171",
-            "login04.tibia.com:7171",
-            "login05.tibia.com:7171",
-            "tibia01.cipsoft.com:7171",
-            "tibia02.cipsoft.com:7171",
-            "tibia03.cipsoft.com:7171",
-            "tibia04.cipsoft.com:7171",
-            "tibia05.cipsoft.com:7171"
-            });
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<string> clientPaths;
     }
 }
