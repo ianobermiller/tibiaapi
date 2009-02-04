@@ -83,12 +83,6 @@ namespace Tibia.Util
                 if (newClientChooser.uxLoginServer.Items.Count > 0)
                     newClientChooser.uxLoginServer.SelectedIndex = 0;
 
-                newClientChooser.uxUseOT.IsExpanded = options.UseOT;
-                if (options.UseOT)
-                {
-                    newClientChooser.uxLoginServer.Text = options.Server + ":" + options.Port.ToString();
-                }
-
                 if (options.ShowOTOption)
                 {
                     newClientChooser.Height = 109;

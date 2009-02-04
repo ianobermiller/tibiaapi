@@ -247,9 +247,9 @@ namespace Tibia.Objects
             set { client.WriteInt32(address + Addresses.Creature.Distance_WalkSpeed, value); }
         }
 
-        public Constants.TurnDirection Direction
+        public Constants.Direction Direction
         {
-            get { return (Constants.TurnDirection)client.ReadInt32(address + Addresses.Creature.Distance_Direction); }
+            get { return (Constants.Direction)client.ReadInt32(address + Addresses.Creature.Distance_Direction); }
             set { client.WriteInt32(address + Addresses.Creature.Distance_Direction, (int)value); }
         }
 
