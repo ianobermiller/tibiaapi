@@ -155,7 +155,7 @@ if (!KeyboardHook.Enabled)
     KeyboardHook.Enable();
     KeyboardHook.Add(Keys.A, new KeyboardHook.KeyPressed(delegate()
     {
-        if (Client.IsActive)
+        if (client.IsActive)
         {
             if (KeyboardHook.Control && KeyboardHook.Alt)
             {
