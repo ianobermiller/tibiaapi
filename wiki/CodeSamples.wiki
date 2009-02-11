@@ -1,19 +1,6 @@
 #summary Snippets of code to get you started with TibiaAPI.
 #labels Featured,Phase-Implementation
 
-=== Note ===
-Most of these samples assume you have imported Tibia and Tibia.Objects:
-*C#*
-{{{
-using Tibia;
-using Tibia.Objects;
-}}}
-*VB.Net*
-{{{
-Imports Tibia
-Imports Tibia.Objects
-
-}}}
 === Table of Contents ===
  * [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
  * [CodeSamples#Getting_player_information_from_the_Tibia_website Getting player information from the Tibia website]
@@ -28,6 +15,21 @@ Imports Tibia.Objects
  * [CodeSamples#Replace_all_the_trees_with_small_fir_trees Replace all the trees with small fir trees]
  * [CodeSamples#Make_a_simple_lighthack Make a simple lighthack]
  * [CodeSamples#Draw_players_hitpoints_in_percents_above_his_name Draw players hitpoints in percents above his name]
+
+=== Note ===
+Most of these samples assume you have imported Tibia and Tibia.Objects:
+
+*C#*
+{{{
+using Tibia;
+using Tibia.Objects;
+}}}
+
+*VB.Net*
+{{{
+Imports Tibia
+Imports Tibia.Objects
+}}}
 
 == Get a client object to work with ==
 *C#*
