@@ -114,7 +114,7 @@ namespace Tibia.Objects
         }
     }
 
-    public struct CharList
+    public struct CharacterLoginInfo
     {
         public string CharName { get; set; }
         public string WorldName { get; set; }

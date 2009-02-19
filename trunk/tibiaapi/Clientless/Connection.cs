@@ -14,60 +14,26 @@ namespace Tibia.Clientless
     public class Connection
     {
         Random rand = new Random();
-        Socket socket;
+        Socket loginSocket;
         byte[] xteaKey;
 
-        private CharList[] charList;
-        private static LoginServer[] loginServers = new LoginServer[] {
-            new LoginServer("login01.tibia.com", 7171),
-            new LoginServer("login02.tibia.com", 7171),
-            new LoginServer("login03.tibia.com", 7171),
-            new LoginServer("login04.tibia.com", 7171),
-            new LoginServer("login05.tibia.com", 7171),
-            new LoginServer("tibia01.cipsoft.com", 7171),
-            new LoginServer("tibia02.cipsoft.com", 7171),
-            new LoginServer("tibia03.cipsoft.com", 7171),
-            new LoginServer("tibia04.cipsoft.com", 7171),
-            new LoginServer("tibia05.cipsoft.com", 7171)
-        };
-        string AccName;
-        string Password;
+        private CharacterLoginInfo[] charList;
+        private LoginServer[] loginServers;
+        string accName;
+        string password;
         ushort version;
         bool ot;
         bool debug;
-        byte OS;
+        byte os;
 
 
         byte[] dataLoginServer=new byte[1000];
-        int LoginServerIndex;
-        int MaxLoginServers;
+        int loginServerIndex;
+        int maxLoginServers;
         bool retry;
+        
+        //Socket gameSocket;
 
-
-        /*
-        Socket gameSocket;
-
-        byte[] bufferServer = new byte[2];
-        private byte[] bufferServer = new byte[2];
-        private int readBytesServer;
-        private int packetSizeServer;
-        private bool writingServer;
-        private Queue<NetworkMessage> serverSendQueue = new Queue<NetworkMessage> { };
-        private Queue<NetworkMessage> serverReceiveQueue = new Queue<NetworkMessage> { };
-        private ushort portServer = 0;
-        private bool isFirstMsg;
-
-        private byte[] bufferClient = new byte[2];
-        private int readBytesClient;
-        private int packetSizeClient;
-        private bool writingClient;
-        private DateTime lastClientWrite = DateTime.UtcNow;
-        private Queue<NetworkMessage> clientSendQueue = new Queue<NetworkMessage> { };
-        private Queue<NetworkMessage> clientReceiveQueue = new Queue<NetworkMessage> { };
-
-        private bool acceptingConnection;
-        private uint[] xteaKey;
-        private bool isConnected;*/
 
         public delegate void Notification(string message);
 
@@ -85,7 +51,7 @@ namespace Tibia.Clientless
         public Notification LoginServer_ReceivedNothing;
 
         #region Properties
-        public CharList[] CharList
+        public CharacterLoginInfo[] CharList
         {
             get { return charList; }
         }
@@ -97,48 +63,59 @@ namespace Tibia.Clientless
         #endregion
 
         #region Constructors/Destructors
-        public Connection(OperationalSystem OpSystem, ushort Version, string AccountName, string Password, bool OpenTibia, bool Debug) :
-            this(OpSystem,Version, AccountName, Password, OpenTibia, loginServers, Debug) { }
+        public Connection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, bool debug) :
+            this(opSystem, version, accountName, password, openTibia, 
+            new LoginServer[] {
+            new LoginServer("login01.tibia.com", 7171),
+            new LoginServer("login02.tibia.com", 7171),
+            new LoginServer("login03.tibia.com", 7171),
+            new LoginServer("login04.tibia.com", 7171),
+            new LoginServer("login05.tibia.com", 7171),
+            new LoginServer("tibia01.cipsoft.com", 7171),
+            new LoginServer("tibia02.cipsoft.com", 7171),
+            new LoginServer("tibia03.cipsoft.com", 7171),
+            new LoginServer("tibia04.cipsoft.com", 7171),
+            new LoginServer("tibia05.cipsoft.com", 7171)}, debug) { }
 
-        public Connection(OperationalSystem OpSystem,ushort Version, string AccountName, string Password, bool OpenTibia,LoginServer[] ls,bool Debug)
+        public Connection(OperationalSystem opSystem,ushort version, string accountName, string password, bool openTibia,LoginServer[] loginServers,bool debug)
         {
-            version = Version;
-            AccName = AccountName;
-            this.Password = Password;
-            ot = OpenTibia;
-            debug = Debug;
-            loginServers = ls;
-            MaxLoginServers = ls.Length;
-            OS = (byte)OpSystem;
+            this.version = version;
+            this.accName = accountName;
+            this.password = password;
+            this.ot = openTibia;
+            this.debug = debug;
+            this.loginServers = loginServers;
+            this.maxLoginServers = loginServers.Length;
+            this.os = (byte)opSystem;
         }
         #endregion
 
-        public void GetCharacters(bool RetryIfError)
+        public void GetCharacters(bool retryIfError)
         {
             retry = RetryIfError;
-            LoginServerIndex = 0;
-            TryLoginServer(LoginServerIndex);
+            loginServerIndex = 0;
+            TryLoginServer();
         }
 
-        private void TryLoginServer(int index)
+        private void TryLoginServer()
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.BeginConnect(loginServers[LoginServerIndex].Server,
-                loginServers[LoginServerIndex].Port, (AsyncCallback)LoginServerConnected, null);
+            loginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            loginSocket.BeginConnect(loginServers[loginServerIndex].Server,
+                loginServers[loginServerIndex].Port, (AsyncCallback)LoginServerConnected, null);
         }
 
         private void LoginServerConnected(IAsyncResult ar)
         {
             try
             {
-                socket.EndConnect(ar);
+                loginSocket.EndConnect(ar);
                 xteaKey = new byte[16];
                 rand.NextBytes(xteaKey);
                 if (Socket_Connected != null)
                     Socket_Connected("Login Server");
-                socket.Send(LoginServerRequestPacket.CreateLoginServerRequestPacket(OS,version, Signatures.Tibia840,
-                    xteaKey,AccName, Password).Packet);
-                socket.BeginReceive(dataLoginServer, 0, dataLoginServer.Length, SocketFlags.None, (AsyncCallback)LoginServerReceived, null);
+                loginSocket.Send(LoginServerRequestPacket.CreateLoginServerRequestPacket(os,version, Signatures.Tibia840,
+                    xteaKey,accName, password).Packet);
+                loginSocket.BeginReceive(dataLoginServer, 0, dataLoginServer.Length, SocketFlags.None, (AsyncCallback)LoginServerReceived, null);
             }
             catch(Exception)
             {
@@ -150,7 +127,7 @@ namespace Tibia.Clientless
         {
             try
             {
-                int dataLength = socket.EndReceive(ar);
+                int dataLength = loginSocket.EndReceive(ar);
                 if (dataLength > 0)
                 {
                     byte[] tmp = new byte[dataLength];
@@ -190,24 +167,27 @@ namespace Tibia.Clientless
                                     LoginServer_SelectAnother("Select another login server.");
                                 if (retry)
                                 {
-                                    if (LoginServerIndex < MaxLoginServers - 1)
-                                        TryLoginServer(LoginServerIndex++);
-                                    else 
+                                    if (loginServerIndex < maxLoginServers - 1)
+                                    {
+                                        loginServerIndex++;
+                                        TryLoginServer();
+                                    }
+                                    else
                                     {
                                         if (LoginServer_CouldNotConnect != null)
                                             LoginServer_CouldNotConnect("Select another login server.");
 
-                                        socket.Disconnect(true);
+                                        loginSocket.Disconnect(true);
                                         if (Socket_Disconnected != null)
                                             Socket_Disconnected("dataLength<=0");
                                     }
                                 }
                                 break;
                             case 0x64: //character list
-                                int nChar = (int)msg.GetByte();
-                                charList = new CharList[nChar];
+                                int nChars = (int)msg.GetByte();
+                                charList = new CharacterLoginInfo[nChars];
 
-                                for (int i = 0; i < nChar; i++)
+                                for (int i = 0; i < nChars; i++)
                                 {
                                     charList[i].CharName = msg.GetString();
                                     charList[i].WorldName = msg.GetString();
@@ -219,7 +199,7 @@ namespace Tibia.Clientless
                                 if (LoginServer_CharList != null)
                                     LoginServer_CharList("Charlist received.");
                                 
-                                socket.Disconnect(true);
+                                loginSocket.Disconnect(true);
                                 if (Socket_Disconnected != null)
                                     Socket_Disconnected("Charlist received.");
                                 return;
@@ -228,7 +208,7 @@ namespace Tibia.Clientless
                                 if (LoginServer_UnknownMsg != null)
                                     LoginServer_UnknownMsg(msg.Packet.ToHexString());
 
-                                socket.Disconnect(true);
+                                loginSocket.Disconnect(true);
                                 if (Socket_Disconnected != null)
                                     Socket_Disconnected("Unknown Message.");
                                 break;
@@ -238,17 +218,20 @@ namespace Tibia.Clientless
                 else //we didn't receive anything
                 {
                     if (LoginServer_ReceivedNothing != null)
-                        LoginServer_ReceivedNothing("Nothing received on LoginServerIndex=" + LoginServerIndex);
+                        LoginServer_ReceivedNothing("Nothing received on LoginServerIndex=" + loginServerIndex);
                     if(retry)
                     {
-                        if(LoginServerIndex<MaxLoginServers-1)
-                            TryLoginServer(LoginServerIndex++);
+                        if (loginServerIndex < maxLoginServers - 1)
+                        {
+                            loginServerIndex++;
+                            TryLoginServer();
+                        }
                         else
                         {
                             if (LoginServer_CouldNotConnect != null)
                                 LoginServer_CouldNotConnect("dataLength<=0");
 
-                            socket.Disconnect(true);
+                            loginSocket.Disconnect(true);
                             if (Socket_Disconnected != null)
                                 Socket_Disconnected("dataLength<=0");
                         }
@@ -260,6 +243,11 @@ namespace Tibia.Clientless
             }
         }
 
+        public static string IPBytesToString(byte[] data, int index)
+        {
+            return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
+        }
+
 
         public class Signatures //4 bytes each file(tibia.dat,tibia.spr,tibia.pic)
         {
@@ -267,12 +255,5 @@ namespace Tibia.Clientless
                                                         0x7C,0x4E,0x3D,0x49,
                                                         0x78,0x41,0x14,0x49};
         }
-
-        public static string IPBytesToString(byte[] data, int index)
-        {
-            return "" + data[index] + "." + data[index + 1] + "." + data[index + 2] + "." + data[index + 3];
-        }
-
-
     }
 }

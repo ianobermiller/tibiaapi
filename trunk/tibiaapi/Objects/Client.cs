@@ -1296,7 +1296,7 @@ namespace Tibia.Objects
             }
         }
 
-        public bool SetCharListServer(CharList[] charList)
+        public bool SetCharListServer(CharacterLoginInfo[] charList)
         {
             byte count = CharListCount;
 
@@ -1319,11 +1319,11 @@ namespace Tibia.Objects
             return true;
         }
 
-        public CharList[] CharList
+        public CharacterLoginInfo[] CharList
         {
             get
             {
-                CharList[] charList = new CharList[CharListCount];
+                CharacterLoginInfo[] charList = new CharacterLoginInfo[CharListCount];
 
                 uint pointer = ReadUInt32(Addresses.Client.LoginCharList);
 
