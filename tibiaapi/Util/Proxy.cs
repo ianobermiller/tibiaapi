@@ -45,7 +45,7 @@ namespace Tibia.Util
         private Queue<NetworkMessage> clientReceiveQueue = new Queue<NetworkMessage> { };
 
         private bool acceptingConnection;
-        private CharList[] charList;
+        private CharacterLoginInfo[] charList;
         private uint[] xteaKey;
 
         private bool isConnected;
@@ -532,10 +532,10 @@ namespace Tibia.Util
                                 selectedLoginServer = (uint)randon.Next(0, loginServers.Length - 1);
                                 break;
                             case 0x64: //character list
-                                int nChar = (int)msg.GetByte();
-                                charList = new CharList[nChar];
+                                int nChars = (int)msg.GetByte();
+                                charList = new CharacterLoginInfo[nChars];
 
-                                for (int i = 0; i < nChar; i++)
+                                for (int i = 0; i < nChars; i++)
                                 {
                                     charList[i].CharName = msg.GetString();
                                     charList[i].WorldName = msg.GetString();
