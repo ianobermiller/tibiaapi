@@ -118,8 +118,9 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt(uint[] XteaKey)
         {
-            if (Client.XteaKey == null)
-                return false;
+            if (Client != null)
+                if (Client.XteaKey == null)
+                    return false;
 
             int msgSize = messageStream.Length - 6;
             int pad = msgSize % 8;

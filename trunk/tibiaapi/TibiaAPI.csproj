@@ -87,7 +87,8 @@
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
     <Compile Include="Addresses\Vip.cs" />
-    <Compile Include="Clientless\Connection.cs" />
+    <Compile Include="Clientless\GameServerConnection.cs" />
+    <Compile Include="Clientless\LoginServerConnection.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemLists.cs" />
     <Compile Include="Constants\Spells.cs" />

@@ -8,26 +8,26 @@ namespace Tibia.Packets.RSA
     public class GameServerRequestPacket
     {
 
-        public static NetworkMessage CreateGameServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
           string AccountName, string CharacterName, string Password)
         {
             byte[] XteaKey = new byte[16];
             new Random().NextBytes(XteaKey);
-            return CreateGameServerRequestPacket(OS, Version, XteaKey, AccountName, CharacterName, Password);
+            return Create(OS, Version, XteaKey, AccountName, CharacterName, Password);
         }
 
-        public static NetworkMessage CreateGameServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
          byte[] XteaKey, string AccountName, string CharacterName, string Password)
         {
-            return CreateGameServerRequestPacket(OS, Version, XteaKey, AccountName, CharacterName, Password, false);
+            return Create(OS, Version, XteaKey, AccountName, CharacterName, Password, false);
         }
 
 
-        public static NetworkMessage CreateGameServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
          byte[] XteaKey, string AccountName,string CharacterName, string Password, bool OpenTibia)
         {
-            NetworkMessage msg = new NetworkMessage(137);
-            msg.AddByte(0x95);
+            NetworkMessage msg = new NetworkMessage(139);
+            msg.AddByte(0x89);
             msg.AddByte(0x00);
             msg.Position += 4;
             msg.AddByte(0x0A);
@@ -35,6 +35,7 @@ namespace Tibia.Packets.RSA
             msg.AddUInt16(Version);
             msg.AddByte(0x0);
             msg.AddBytes(XteaKey);
+            msg.AddByte(0x0);
             msg.AddString(AccountName);
             msg.AddString(CharacterName);
             msg.AddString(Password);
