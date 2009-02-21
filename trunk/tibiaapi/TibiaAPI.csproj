@@ -259,6 +259,7 @@
     <Compile Include="Util\RawSocket.cs" />
     <Compile Include="Util\Scheduler.cs" />
     <Compile Include="Util\SocketBase.cs" />
+    <Compile Include="Util\SpriteReader.cs" />
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
