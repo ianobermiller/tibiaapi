@@ -311,7 +311,7 @@ namespace Tibia.Objects
         {
             set
             {
-                Util.WinApi.ShowWindow(MainWindowHandle, (int)((value) ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE));
+                Util.WinApi.ShowWindow(MainWindowHandle, value ? Util.WinApi.SW_SHOW : Util.WinApi.SW_HIDE);
                 isVisible = value;
             }
             get { return isVisible; }
@@ -815,9 +815,8 @@ namespace Tibia.Objects
         /// <param name="login">The account name.</param>
         /// <param name="password">The account password.</param>
         /// <param name="charName">The character name.</param>
-        /// <param name="world">The character world name.</param>
         /// <returns></returns>
-        public bool AutoLogin(string login, string password, string charName, string world)
+        public bool AutoLogin(string login, string password, string charName)
         {
             //if the player is logged or the window is minimazed return false.
             if (LoggedIn || IsMinimized)
@@ -874,7 +873,7 @@ namespace Tibia.Objects
 
                 Thread.Sleep(100); //make sure the client process the msg
                 //we start at position 0
-                if (ch.CharName.ToLower() == charName.ToLower() && ch.WorldName.ToLower() == world.ToLower())
+                if (ch.CharName.ToLower() == charName.ToLower())
                 {
                     //we found the char
                     //lets press the entrer key

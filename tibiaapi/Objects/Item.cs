@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Tibia.Packets;
+using System.Drawing;
+using Tibia.Util;
 
 namespace Tibia.Objects
 {
@@ -305,6 +307,30 @@ namespace Tibia.Objects
             set 
             {
                 client.WriteBytes(DatAddress + Addresses.DatItem.Sprite, value, 4); 
+            }
+        }
+
+        public int SpriteCount
+        {
+            get
+            {
+                return Width * Height * Layers * PatternX * PatternY * PatternDepth * Phase;
+            }
+        }
+
+        public Image[] Sprites
+        {
+            get
+            {
+                int count = SpriteCount;
+                Image[] sprites = new Bitmap[count];
+                uint address = client.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
+                for (int i = 0; i < count; i++)
+                {
+                    int spriteId = client.ReadInt32(address + i * 4);
+                    sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
+                }
+                return sprites;
             }
         }
 
