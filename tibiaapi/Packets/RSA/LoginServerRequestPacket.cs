@@ -7,28 +7,28 @@ namespace Tibia.Packets.RSA
 {
     public static class LoginServerRequestPacket
     {
-        public static NetworkMessage CreateLoginServerRequestPacket(ushort Version,
+        public static NetworkMessage Create(ushort Version,
     byte[] Signatures, string AccountName, string Password)
         {
-            return CreateLoginServerRequestPacket(0x02, Version, Signatures, AccountName, Password);
+            return Create(0x02, Version, Signatures, AccountName, Password);
         }
 
 
-        public static NetworkMessage CreateLoginServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
             byte[] Signatures, string AccountName, string Password)
         {
             byte[] XteaKey=new byte[16];
             new Random().NextBytes(XteaKey);
-            return CreateLoginServerRequestPacket(OS, Version, Signatures, XteaKey, AccountName, Password, false);
+            return Create(OS, Version, Signatures, XteaKey, AccountName, Password, false);
         }
         
-        public static NetworkMessage CreateLoginServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
             byte[] Signatures, byte[] XteaKey, string AccountName, string Password)
         {
-            return CreateLoginServerRequestPacket(OS, Version, Signatures, XteaKey, AccountName, Password, false);
+            return Create(OS, Version, Signatures, XteaKey, AccountName, Password, false);
         }
 
-        public static NetworkMessage CreateLoginServerRequestPacket(byte OS, ushort Version,
+        public static NetworkMessage Create(byte OS, ushort Version,
             byte[] Signatures, byte[] XteaKey, string AccountName, string Password,bool OpenTibia)
         {
             NetworkMessage msg = new NetworkMessage(149);

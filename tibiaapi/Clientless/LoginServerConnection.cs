@@ -11,12 +11,11 @@ using Tibia.Constants;
 
 namespace Tibia.Clientless
 {
-    public class Connection
+    public class LoginServerConnection
     {
         Random rand = new Random();
         Socket loginSocket;
         byte[] xteaKey;
-
         private CharacterLoginInfo[] charList;
         private LoginServer[] loginServers;
         string accName;
@@ -25,15 +24,10 @@ namespace Tibia.Clientless
         bool ot;
         bool debug;
         byte os;
-
-
-        byte[] dataLoginServer=new byte[1000];
+        byte[] dataLoginServer = new byte[1000];
         int loginServerIndex;
         int maxLoginServers;
         bool retry;
-        
-        //Socket gameSocket;
-
 
         public delegate void Notification(string message);
 
@@ -63,8 +57,8 @@ namespace Tibia.Clientless
         #endregion
 
         #region Constructors/Destructors
-        public Connection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, bool debug) :
-            this(opSystem, version, accountName, password, openTibia, 
+        public LoginServerConnection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, bool debug) :
+            this(opSystem, version, accountName, password, openTibia,
             new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
             new LoginServer("login02.tibia.com", 7171),
@@ -77,7 +71,7 @@ namespace Tibia.Clientless
             new LoginServer("tibia04.cipsoft.com", 7171),
             new LoginServer("tibia05.cipsoft.com", 7171)}, debug) { }
 
-        public Connection(OperationalSystem opSystem,ushort version, string accountName, string password, bool openTibia,LoginServer[] loginServers,bool debug)
+        public LoginServerConnection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, LoginServer[] loginServers, bool debug)
         {
             this.version = version;
             this.accName = accountName;
@@ -92,7 +86,7 @@ namespace Tibia.Clientless
 
         public void GetCharacters(bool retryIfError)
         {
-            retry = RetryIfError;
+            retry = retryIfError;
             loginServerIndex = 0;
             TryLoginServer();
         }
@@ -113,11 +107,11 @@ namespace Tibia.Clientless
                 rand.NextBytes(xteaKey);
                 if (Socket_Connected != null)
                     Socket_Connected("Login Server");
-                loginSocket.Send(LoginServerRequestPacket.CreateLoginServerRequestPacket(os,version, Signatures.Tibia840,
-                    xteaKey,accName, password).Packet);
+                loginSocket.Send(LoginServerRequestPacket.Create(os, version, Signatures.Tibia840,
+                    xteaKey, accName, password).Packet);
                 loginSocket.BeginReceive(dataLoginServer, 0, dataLoginServer.Length, SocketFlags.None, (AsyncCallback)LoginServerReceived, null);
             }
-            catch(Exception)
+            catch (Exception)
             {
 
             }
@@ -134,7 +128,7 @@ namespace Tibia.Clientless
                     Array.Copy(dataLoginServer, tmp, dataLength);
                     NetworkMessage msg = new NetworkMessage(tmp);
                     msg.PrepareToRead(xteaKey.ToUInt32Array());
-                    msg.GetUInt16(); 
+                    msg.GetUInt16();
                     while (msg.Position < msg.Length)
                     {
                         byte cmd = msg.GetByte();
@@ -142,7 +136,7 @@ namespace Tibia.Clientless
                         switch (cmd)
                         {
                             case 0x0A: //Error message
-                                message=msg.GetString();
+                                message = msg.GetString();
                                 if (LoginServer_OnError != null)
                                     LoginServer_OnError(message);
                                 break;
@@ -192,13 +186,13 @@ namespace Tibia.Clientless
                                     charList[i].CharName = msg.GetString();
                                     charList[i].WorldName = msg.GetString();
                                     charList[i].WorldIP = msg.GetUInt32();
-                                    charList[i].WorldIPString = IPBytesToString(BitConverter.GetBytes(charList[i].WorldIP),0);
+                                    charList[i].WorldIPString = IPBytesToString(BitConverter.GetBytes(charList[i].WorldIP), 0);
                                     charList[i].WorldPort = msg.GetUInt16();
                                 }
 
                                 if (LoginServer_CharList != null)
                                     LoginServer_CharList("Charlist received.");
-                                
+
                                 loginSocket.Disconnect(true);
                                 if (Socket_Disconnected != null)
                                     Socket_Disconnected("Charlist received.");
@@ -219,7 +213,7 @@ namespace Tibia.Clientless
                 {
                     if (LoginServer_ReceivedNothing != null)
                         LoginServer_ReceivedNothing("Nothing received on LoginServerIndex=" + loginServerIndex);
-                    if(retry)
+                    if (retry)
                     {
                         if (loginServerIndex < maxLoginServers - 1)
                         {
