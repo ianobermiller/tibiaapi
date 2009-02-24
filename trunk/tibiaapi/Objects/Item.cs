@@ -327,8 +327,15 @@ namespace Tibia.Objects
                 uint address = client.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
                 for (int i = 0; i < count; i++)
                 {
-                    int spriteId = client.ReadInt32(address + i * 4);
-                    sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
+                    int spriteId = client.ReadInt16(address + i * 2);
+                    try
+                    {
+                        sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        sprites[i] = null;
+                    }
                 }
                 return sprites;
             }
