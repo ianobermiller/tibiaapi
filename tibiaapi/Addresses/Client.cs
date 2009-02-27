@@ -17,6 +17,16 @@ namespace Tibia.Addresses
         public static uint XTeaKey = 0x784D0C; //8.40
 
         /// <summary>
+        /// Address of the socket struct
+        /// </summary>
+        public static uint SocketStruct = 0x784CE0;
+
+        /// <summary>
+        /// Pointer to the WS2_32.Send function
+        /// </summary>
+        public static uint SendPointer = 0x5AB600;
+
+        /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
         public static uint FrameRatePointer = 0x788EB4; //8.40
