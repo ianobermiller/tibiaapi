@@ -130,6 +130,9 @@ namespace Tibia.Util
                 ref STARTUPINFO si,
                 out PROCESS_INFORMATION pi);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern Int32 WaitForSingleObject(IntPtr Handle, UInt32 Wait);
+
         [DllImport("kernel32.dll")]
         public static extern uint ResumeThread(IntPtr hThread);
 

@@ -39,10 +39,12 @@ namespace Tibia.Objects
 
         private Process process;
         private IntPtr processHandle;
+        private IntPtr pSender;
 
         private int startTime;
         private bool isVisible;
         private bool usingProxy = false;
+        private bool sendCodeWritten = false;
         private LoginServer openTibiaServer = null;
         private AutoResetEvent pipeIsReady;
         int defBarY, defRectX, defRectY, defRectW, defRectH;
@@ -61,6 +63,7 @@ namespace Tibia.Objects
         private Screen screen;
         private Util.PathFinder pathFinder;
         private ContextMenu contextMenu;
+       
 
         #endregion
 
@@ -790,6 +793,22 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's process handle
+        /// </summary>
+        public IntPtr ProcessHandle
+        {
+            get { return processHandle; }
+        }
+
+        /// <summary>
+        /// Get the base address of our send function
+        /// </summary>
+        public IntPtr SenderAddress
+        {
+            get { return pSender; }
+        }
+        
+        /// <summary>
         /// Get the client's screen (for displaying text)
         /// </summary>
         public Screen Screen
@@ -1459,6 +1478,54 @@ namespace Tibia.Objects
             get { return proxy; }
         }
 
+        #endregion
+
+        #region Socket.Send wrappers
+        /// <summary>
+        /// Checks if the code to call send functions has already been written to memory
+        /// </summary>
+        public bool IsSendCodeWritten
+        {
+            get
+            {
+                return sendCodeWritten;
+            }
+        }
+
+        public bool WriteSocketSendCode()
+        {
+            byte[] OpCodes = new byte[]{
+                		0x6A, 0x00,							//push	0						;_flag
+		                0xFF, 0x33,							//push	dword ptr [ebx]			;_length
+		                0x83, 0xC3, 0x04,					//add	ebx, 4					
+		                0x53,								//push	ebx						;_buffer
+		                0xA1, 0xFF, 0xFF, 0xFF, 0xFF,		//mov	eax, ds:SocketStruct	;_socketstruct
+		                0xFF, 0x70, 0x04,					//push	dword ptr [eax+4]		;_socket
+		                0xFF, 0x15, 0xFF, 0xFF, 0xFF, 0xFF,	//call	dword ptr ds:Send		;call send 
+		                0xC3								//retn
+	        };
+
+            Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SocketStruct), 0, OpCodes, 9, 4);
+            Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SendPointer), 0, OpCodes, 18, 4);
+
+            if(pSender==IntPtr.Zero)    
+                pSender = Tibia.Util.WinApi.VirtualAllocEx(processHandle, IntPtr.Zero, (uint)OpCodes.Length,
+                Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE, Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+            if (pSender != IntPtr.Zero)
+            {
+
+                if (WriteBytes(pSender.ToInt64(),OpCodes,(uint)OpCodes.Length))                    
+                {
+                    sendCodeWritten = true;
+                    return true;
+                }
+                Tibia.Util.WinApi.VirtualFreeEx(processHandle, pSender, 0, Tibia.Util.WinApi.MEM_RELEASE);
+                pSender = IntPtr.Zero;
+            }
+            sendCodeWritten = false;
+            return false;
+
+        }
         #endregion
 
         #region DLL Injection
