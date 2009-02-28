@@ -16,11 +16,9 @@ namespace Tibia.Objects
         protected string name;
         protected byte count;
         protected ItemLocation loc;
-        protected bool found;
 
         #region Constructors
 
-        //only for ItemsList
         /// <summary>
         /// Please use this constructor only for items list.
         /// </summary>
@@ -36,16 +34,15 @@ namespace Tibia.Objects
             : this(client, id, count, "") { }
 
         public Item(Client client, uint id, byte count, string name)
-            : this(client, id, count, "", null, false) { }
+            : this(client, id, count, "", null) { }
 
-        public Item(Client client, uint id, byte count, string name, ItemLocation location, bool found)
+        public Item(Client client, uint id, byte count, string name, ItemLocation location)
         {
             this.client = client;
             this.id = id;
             this.count = count;
             this.name = name;
             this.loc = location;
-            this.found = found;
         }
 
         #endregion
@@ -57,7 +54,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="container">Which container window to open in.</param>
         /// <returns></returns>
-        public bool OpenContainer(byte container)
+        public bool OpenAsContainer(byte container)
         {
             return Packets.Outgoing.ItemUsePacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, container);
         }
@@ -82,17 +79,6 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Use the item on a tile location.
-        /// Gets the tile id automatically.
-        /// </summary>
-        /// <param name="onLocation"></param>
-        /// <returns></returns>
-        public bool Use(Location onLocation)
-        {
-            return Use(client.Map.CreateMapTile(onLocation));
-        }
-
-        /// <summary>
         /// Use an item on another item.
         /// Not tested.
         /// </summary>
@@ -104,9 +90,7 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Use an item on a creature (eg. use a rune on someone, drink a manafluid).
-        /// If it is a player shoot on xyz coors, if it is a creature shoot through
-        /// the battlelist (more accurate).
+        /// Use an item on a creature.
         /// </summary>
         /// <param name="onCreature"></param>
         /// <returns></returns>
@@ -128,7 +112,7 @@ namespace Tibia.Objects
             if (id == Constants.Items.Bottle.Vial.Id) 
                 stack = count;
 
-            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, playerId);
+            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, playerId);
         }
 
         /// <summary>
@@ -138,20 +122,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.ItemLocation toLocation)
         {
-            if (client == null) 
-                return false;
-            
-            return Move(new Objects.Item(client, 0, 0, "", toLocation, false));
-        }
-
-        /// <summary>
-        /// Move an item into another item (eg. put an item into a backpack).
-        /// </summary>
-        /// <param name="toItem"></param>
-        /// <returns></returns>
-        public bool Move(Objects.Item toItem)
-        {
-            return Packets.Outgoing.ItemMovePacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toItem.Loc.ToLocation(), count);
+            return Packets.Outgoing.ItemMovePacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toLocation.ToLocation(), count);
         }
 
         /// <summary>
@@ -221,15 +192,6 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Gets or sets whether this item is found.
-        /// </summary>
-        public bool Found
-        {
-            get { return found; }
-            set { found = value; }
-        }
-
-        /// <summary>
         /// Gets the DatAddress of the item in the dat structure.
         /// </summary>
         public uint DatAddress
@@ -295,21 +257,6 @@ namespace Tibia.Objects
             set { client.WriteInt32(DatAddress + Addresses.DatItem.Phase, value); }
         }
 
-        /// <summary>
-        /// Gets the DatAddress of the sprite structure of the item.
-        /// </summary>
-        public byte[] Sprite
-        {
-            get
-            {
-                return client.ReadBytes(DatAddress + Addresses.DatItem.Sprite, 4);
-            }
-            set 
-            {
-                client.WriteBytes(DatAddress + Addresses.DatItem.Sprite, value, 4); 
-            }
-        }
-
         public int SpriteCount
         {
             get
@@ -332,7 +279,7 @@ namespace Tibia.Objects
                     {
                         sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
                     }
-                    catch (ArgumentOutOfRangeException e)
+                    catch (ArgumentOutOfRangeException)
                     {
                         sprites[i] = null;
                     }
@@ -592,59 +539,46 @@ namespace Tibia.Objects
         public byte stackOrder;
         public Constants.SlotNumber slot;
 
-        /// <summary>
-        /// Create a new item location at the specified slot (head, backpack, right, left, etc).
-        /// </summary>
-        /// <param name="s">slot</param>
-        public ItemLocation(Constants.SlotNumber s)
+        public ItemLocation() { }
+
+        public static ItemLocation FromSlot(Constants.SlotNumber s)
         {
-            type = Constants.ItemLocationType.Slot;
-            slot = s;
+            ItemLocation loc = new ItemLocation();
+            loc.type = Constants.ItemLocationType.Slot;
+            loc.slot = s;
+            return loc;
         }
 
-        /// <summary>
-        /// Create a new item loction at the specified inventory location.
-        /// </summary>
-        /// <param name="c">container</param>
-        /// <param name="p">position in container</param>
-        public ItemLocation(byte c, byte p)
+        public static ItemLocation FromContainer(byte container, byte position)
         {
-            type = Constants.ItemLocationType.Container;
-            container = c;
-            position = p;
-            stackOrder = p;
+            ItemLocation loc = new ItemLocation();
+            loc.container = container;
+            loc.position = position;
+            loc.stackOrder = position;
+            return loc;
         }
 
-        /// <summary>
-        /// Create a new item location from a general location and stack order.
-        /// </summary>
-        /// <param name="l"></param>
-        /// <param name="stack"></param>
-        public ItemLocation(Location l, byte stack)
+        public static ItemLocation FromLocation(Location location, byte stack)
         {
-            type = Constants.ItemLocationType.Ground;
-            groundLocation = l;
-            stackOrder = stack;
+            ItemLocation loc = new ItemLocation();
+            loc.type = Constants.ItemLocationType.Ground;
+            loc.groundLocation = location;
+            loc.stackOrder = stack;
+            return loc;
         }
 
-        /// <summary>
-        /// Create a new item location at the specified location.
-        /// </summary>
-        /// <param name="l"></param>
-        public ItemLocation(Location l)
+        public static ItemLocation FromLocation(Location location)
         {
-            type = Constants.ItemLocationType.Ground;
-            groundLocation = l;
-            stackOrder = 1;
+            return FromLocation(location, 1);
         }
 
         /// <summary>
         /// Return a blank item location for packets (FF FF 00 00 00)
         /// </summary>
         /// <returns></returns>
-        public static ItemLocation Hotkey()
+        public static ItemLocation FromHotkey()
         {
-            return new ItemLocation(Constants.SlotNumber.None);
+            return FromSlot(Constants.SlotNumber.None);
         }
 
         public byte[] ToBytes()

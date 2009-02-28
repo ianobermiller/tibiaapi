@@ -235,7 +235,7 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Item item = new Item(Client, thingId, 0, "", new ItemLocation(pos, (byte)n), true);
+                Item item = new Item(Client, thingId, 0, "", ItemLocation.FromLocation(pos, (byte)n));
 
                 if (item.HasExtraByte)
                 {

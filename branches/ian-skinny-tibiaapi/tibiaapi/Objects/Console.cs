@@ -25,26 +25,6 @@ namespace Tibia.Objects
         {
             return Say(new ChatMessage(text));
         }
-
-        /// <summary>
-        /// Say the spell words (wrapper for Say)
-        /// </summary>
-        /// <param name="words"></param>
-        /// <returns></returns>
-        public bool Spell(string words)
-        {
-           return Say(words);
-        }
-
-        /// <summary>
-        /// Say the words of a spell (wrapper for Say)
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public bool Spell(Objects.Spell spell)
-        {
-            return Say(spell.Words);
-        }
         
         /// <summary>
         /// Send a message (generic).
@@ -53,16 +33,6 @@ namespace Tibia.Objects
         public bool Say(ChatMessage message)
         {
             return Packets.Outgoing.PlayerSpeechPacket.Send(client, message.Type, message.Recipient, message.Text, message.Channel); 
-        }
-
-        /// <summary>
-        /// Send a private message.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="recipient"></param>
-        public bool Say(string message, string recipient)
-        {
-            return Say(new ChatMessage(message, recipient));
         }
     }
 
@@ -93,12 +63,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="recipient"></param>
-        public ChatMessage(string text, string recipient)
+        public static ChatMessage CreatePrivateMessage(string text, string recipient)
         {
-            this.Text = text;
-            this.Recipient = recipient;
-            this.Channel = Packets.ChatChannel.None;
-            this.Type = Packets.SpeechType.Private;
+            ChatMessage cm = new ChatMessage(text);
+            cm.Recipient = recipient;
+            cm.Channel = Packets.ChatChannel.None;
+            cm.Type = Packets.SpeechType.Private;
+            return cm;
         }
 
         /// <summary>
@@ -106,12 +77,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public ChatMessage(string text, Packets.ChatChannel channel)
+        public static ChatMessage CreateChannelMessage(string text, Packets.ChatChannel channel)
         {
-            this.Text = text;
-            this.Recipient = "";
-            this.Channel = channel;
-            this.Type = Packets.SpeechType.ChannelYellow;
+            ChatMessage cm = new ChatMessage(text);
+            cm.Recipient = "";
+            cm.Channel = channel;
+            cm.Type = Packets.SpeechType.ChannelYellow;
+            return cm;
         }
 
         /// <summary>
@@ -119,12 +91,13 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public ChatMessage(string text, Packets.SpeechType type)
+        public static ChatMessage CreateNormalMessage(string text, Packets.SpeechType type)
         {
-            this.Text = text;
-            this.Recipient = "";
-            this.Channel = Packets.ChatChannel.None;
-            this.Type = type;
+            ChatMessage cm = new ChatMessage(text);
+            cm.Recipient = "";
+            cm.Channel = Packets.ChatChannel.None;
+            cm.Type = type;
+            return cm;
         }
     }
 }

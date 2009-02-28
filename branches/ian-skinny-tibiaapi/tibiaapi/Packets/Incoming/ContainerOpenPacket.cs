@@ -10,7 +10,7 @@ namespace Tibia.Packets.Incoming
 
         public ushort ItemId { get; set; }
         public string Name { get; set; }
-        public byte Id { get; set; }
+        public byte id { get; set; }
         public byte Capacity { get; set; }
         public byte HasParent { get; set; }
         public byte ItemCount { get; set; }
@@ -35,7 +35,7 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                Id = msg.GetByte();
+                id = msg.GetByte();
                 ItemId = msg.GetUInt16();
                 Name = msg.GetString();
                 Capacity = msg.GetByte();
@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
                     if (item.HasExtraByte)
                         item.Count = msg.GetByte();
 
-                    item.Loc = new Tibia.Objects.ItemLocation(Id, (byte)i);
+                    item.Loc = Tibia.Objects.ItemLocation.FromContainer(id, (byte)i);
                     Items.Add(item);
                 }
             }
@@ -70,7 +70,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddByte((byte)Type);
 
-            msg.AddByte(Id);
+            msg.AddByte(id);
             msg.AddUInt16(ItemId);
             msg.AddString(Name);
             msg.AddByte(Capacity);
@@ -93,7 +93,7 @@ namespace Tibia.Packets.Incoming
         {
             ContainerOpenPacket p = new ContainerOpenPacket(client);
 
-            p.Id = id;
+            p.id = id;
             p.ItemId = itemId;
             p.Name = name;
             p.Capacity = capacity;

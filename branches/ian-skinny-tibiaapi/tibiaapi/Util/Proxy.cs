@@ -128,7 +128,7 @@ namespace Tibia.Util
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
             if (PlayerLogin != null)
-                Scheduler.addTask(PlayerLogin, new object[] {this, new EventArgs()}, 500);
+                Scheduler.AddTask(PlayerLogin, new object[] {this, new EventArgs()}, 500);
 
             isConnected = true;
             return true;

@@ -101,6 +101,7 @@
     <Compile Include="Objects\Outfit.cs" />
     <Compile Include="Objects\Screen.cs" />
     <Compile Include="Objects\Tile.cs" />
+    <Compile Include="Packets\AdlerChecksum.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\CancelTargetPacket.cs" />
@@ -209,19 +210,20 @@
     <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />
     <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
+    <Compile Include="Packets\Xtea.cs" />
     <Compile Include="Util\BigInteger.cs" />
-    <Compile Include="Util\ClientChooserBase.cs" />
-    <Compile Include="Util\ClientChooserOptions.cs" />
-    <Compile Include="Util\Extensions.cs" />
-    <Compile Include="Util\MapViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Util\Irc.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Util\ClientChooser.Designer.cs">
+    <Compile Include="Util\ClientChooser.designer.cs">
       <DependentUpon>ClientChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Util\ClientChooserBase.cs" />
+    <Compile Include="Util\ClientChooserOptions.cs" />
+    <Compile Include="Util\ClientChooserWPF.xaml.cs" />
+    <Compile Include="Util\Extensions.cs" />
+    <Compile Include="Util\MapViewer.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Objects\Hotkey.cs" />
     <Compile Include="Objects\Creature.cs" />
@@ -264,9 +266,6 @@
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Util\ClientChooserWPF.xaml.cs">
-      <DependentUpon>ClientChooserWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Util\Version.cs" />
     <Compile Include="Util\WinApi.cs" />
     <Compile Include="Website\Guild.cs" />
@@ -275,21 +274,20 @@
     <Compile Include="Website\WhoIsOnline.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Util\ClientChooser.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ClientChooser.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CurrentForumPost.txt" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Util\ClientChooser.resx">
+      <DependentUpon>ClientChooser.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Page Include="Util\ClientChooserWPF.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 </Project>

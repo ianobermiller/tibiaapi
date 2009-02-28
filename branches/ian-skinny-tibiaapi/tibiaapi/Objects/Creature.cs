@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Tibia.Packets;
 using System.Drawing;
 
@@ -41,15 +42,17 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsReachable()
         {
-            var tileList = client.Map.GetTiles(delegate(Tile tile) { return true; }, true, false, Addresses.Map.Max_Squares);
-            var playerTile = tileList.GetPlayerMapSquare(Client);
-            var creatureTile = tileList.GetCreatureMapSquare(Id);
+            var tileList = client.Map.GetTilesOnSameFloor();
+            var playerTile = tileList.GetTileWithPlayer(Client);
+            var creatureTile = tileList.GetTileWithCreature(Id);
 
             if (playerTile == null || creatureTile == null)
                 return false;
 
             int xDiff, yDiff, xNew, yNew;
-            var Creatures = client.BattleList.GetCreatures(client.ReadInt32(Addresses.Player.Z));
+            int playerZ = client.ReadInt32(Addresses.Player.Z);
+            var creatures = client.BattleList.GetCreatures().Where(c => c.Z == playerZ);
+
             int playerId = client.ReadInt32(Addresses.Player.Id);
 
             xDiff = (int)playerTile.MemoryLocation.X - 8;
@@ -75,20 +78,10 @@ namespace Tibia.Objects
 
                 if (tile.Ground.GetFlag(Addresses.DatItem.Flag.Blocking) ||
                     tile.Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
-                    tile.Items.Find(delegate(Item item)
-                    {
-                        return item.GetFlag(Addresses.DatItem.Flag.Blocking) ||
-                            item.GetFlag(Addresses.DatItem.Flag.BlocksPath);
-                    }) != null || tile.Objects.Find(delegate(TileObject obj)
-                    {
-                        foreach (Creature c in Creatures)
-                        {
-                            if (c.Id == obj.Data && obj.Data != playerId && obj.Data != Id)
-                                return true;
-                        }
-
-                        return false;
-                    }) != null)
+                    tile.Items.Any(i => 
+                        i.GetFlag(Addresses.DatItem.Flag.Blocking) || 
+                        i.GetFlag(Addresses.DatItem.Flag.BlocksPath)) ||
+                    creatures.Any(c => tile.Objects.Any(o => o.Data == c.Id && o.Data != playerId && o.Data != this.Id)))
                 {
                     client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 0;
                 }
@@ -101,8 +94,6 @@ namespace Tibia.Objects
             return client.PathFinder.FindPath(new Point(playerTile.MemoryLocation.X, playerTile.MemoryLocation.Y),
                 new Point(creatureTile.MemoryLocation.X, creatureTile.MemoryLocation.Y)) != null;
         }
-
-
 
         /// <summary>
         /// Check if the current creature is actually yourself.

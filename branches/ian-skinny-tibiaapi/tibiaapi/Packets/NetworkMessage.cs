@@ -24,7 +24,7 @@ namespace Tibia.Packets
         public Objects.Client Client { get; set; }
         #endregion
 
-        #region "Contructors"
+        #region Contructors
 
         public NetworkMessage()
         {
@@ -80,7 +80,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Properties"
+        #region Properties
 
         public int Length
         {
@@ -109,7 +109,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Xtea"
+        #region Xtea
 
         public bool XteaEncrypt()
         {
@@ -217,7 +217,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Adler32"
+        #region Adler32
 
         public bool CheckAdler32()
         {
@@ -268,7 +268,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Packer Header"
+        #region Packer Header
 
         public void InsertPacketHeader()
         {
@@ -277,7 +277,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Get"
+        #region Get
 
         public byte GetByte()
         {
@@ -345,7 +345,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Add"
+        #region Add
 
         public void AddByte(byte value)
         {
@@ -405,7 +405,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Peek"
+        #region Peek
 
         public byte PeekByte()
         {
@@ -435,7 +435,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Replace"
+        #region Replace
 
         public void ReplaceBytes(int index, byte[] value)
         {
@@ -445,7 +445,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Other Functions"
+        #region Other Functions
 
         public bool PrepareToSend()
         {
@@ -493,7 +493,7 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "RSA"
+        #region RSA
 
         public bool RsaCipEncrypt(int start)
         {

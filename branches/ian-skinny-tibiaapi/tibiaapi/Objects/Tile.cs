@@ -36,27 +36,27 @@ namespace Tibia.Objects
 
         public Tile(Client client, uint address, uint squareNumber)
         {
-            type = ObjectType.Memory;
+            this.type = ObjectType.Memory;
             this.client = client;
             this.squareNumber = squareNumber;
             this.address = address;
-            memoryLocation = squareNumber.ToMemoryLocation();
+            this.memoryLocation = squareNumber.ToMemoryLocation();
 
-            objectCount = client.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
-            ground = new Item(client, client.ReadUInt32(address + 
+            this.objectCount = client.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
+            this.ground = new Item(client, client.ReadUInt32(address + 
                 Tibia.Addresses.Map.Distance_Square_Objects + Tibia.Addresses.Map.Distance_Object_Id));
         }
 
         //packet tile constructors
         public Tile(Client client, uint groundId, Location location)
         {
-            type = ObjectType.Packet;
+            this.type = ObjectType.Packet;
             this.client = client;
             this.location = location;
-            items = new List<Item> { };
+            this.items = new List<Item> { };
 
             if (groundId > 0)
-                ground = new Item(client, groundId);
+                this.ground = new Item(client, groundId);
         }
         #endregion
 
@@ -148,7 +148,7 @@ namespace Tibia.Objects
 
                     foreach (TileObject tileObject in Objects)
                         items.Add(new Item(client, (uint)tileObject.Id, (byte)tileObject.Data, "",
-                            new ItemLocation(location, (byte)tileObject.StackOrder), true));
+                            ItemLocation.FromLocation(location, (byte)tileObject.StackOrder)));
 
                     return items;
                 }

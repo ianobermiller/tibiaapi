@@ -8,16 +8,16 @@ namespace Tibia.Util
 {
     public static class Scheduler
     {
-        public static void addTask(Delegate ev, object[] paramArray, int time)
+        public static void AddTask(Delegate ev, object[] paramArray, int time)
         {
             lock ("addEvent")
             {
-                Action<Delegate, object[], int> myDelegate = new Action<Delegate, object[], int>(addTaskDelay);
+                Action<Delegate, object[], int> myDelegate = new Action<Delegate, object[], int>(AddTaskDelay);
                 myDelegate.BeginInvoke(ev, paramArray, time, null, null);
             }
         }
 
-        private static void addTaskDelay(Delegate ev, object[] paramArray, int time)
+        private static void AddTaskDelay(Delegate ev, object[] paramArray, int time)
         {
             System.Threading.Thread.Sleep(time);
             bool bFired;

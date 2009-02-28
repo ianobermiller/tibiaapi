@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Tibia.Packets;
 using System.Text.RegularExpressions;
@@ -11,7 +12,6 @@ namespace Tibia.Objects
     public class Inventory
     {
         protected Client client;
-        protected Item lastFound = null;
 
         /// <summary>
         /// Create a new inventory object with the specified client.
@@ -36,174 +36,37 @@ namespace Tibia.Objects
         /// Return a list of all the containers open in the inventory. Use getContainers().Count to find how many are open.
         /// </summary>
         /// <returns></returns>
-        public List<Container> GetContainers()
+        public IEnumerable<Container> GetContainers()
         {
             byte containerNumber = 0;
-            List<Container> containers = new List<Container>();
             for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
             {
                 if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
                 {
-                    containers.Add(new Container(client, i, containerNumber));
+                    yield return new Container(client, i, containerNumber);
                 }
                 containerNumber++;
             }
-            // containers.Reverse();
-            return containers;
         }
 
-        /// <summary>
-        /// Used after calling FindItem, gets the next item (eg. for stacking)
-        /// </summary>
-        /// <returns>FindNext().Found == false if nothing found.</returns>
-        public Item FindNext()
+        public IEnumerable<Item> GetItems()
         {
-            if (lastFound != null)
-            {
-                Item item = null;
-                List<Container> containers = GetContainers();
-                foreach (Container c in containers)
-                {
-                    item = c.GetItems().Find(delegate(Item i)
-                    {
-                        return i.Id == lastFound.Id;
-                    });
-                    if (item != null)
-                    {
-                        if ((item.Loc.container == lastFound.Loc.container &&
-                            item.Loc.position > lastFound.Loc.position) ||
-                            (item.Loc.container > lastFound.Loc.container))
-                        {
-                            lastFound = item;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                lastFound.Found = false;
-            }
-            return lastFound;
+            return GetSlotItems().Union(GetContainerItems());
         }
 
-        /// <summary>
-        /// Find an item in the player's inventory.
-        /// </summary>
-        /// <param name="match">A delegate that returns true when a matched item is found.</param>
-        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
-        /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(Predicate<Item> match, bool checkSlot)
+        public IEnumerable<Item> GetContainerItems()
         {
-            Item item = null;
-
-            // Check slots first (if applicable)
-            if (checkSlot)
-            {
-                item = FindItemInSlot(match);
-                if (item.Found)
-                {
-                    lastFound = item;
-                    return lastFound;
-                }
-            }
-
-            // Then check containers
-            List<Container> containers = GetContainers();
-            foreach (Container c in containers)
+            foreach (Container c in GetContainers())
             {
                 foreach (Item i in c.GetItems())
                 {
-                    if (match(i))
-                    {
-                        item = i;
-                        lastFound = item;
-                    }
+                    yield return i;
                 }
             }
-            lastFound = (item == null ? new Item(client, 0) : item);
-
-            return item;
-        }
-
-        /// <summary>
-        /// Find an item in the player's inventory by its id.
-        /// </summary>
-        /// <param name="itemId"></param>
-        /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(uint itemId)
-        {
-            return FindItem(delegate(Item i)
-            {
-                return i.Id == itemId;
-            }, true);
-        }
-
-        /// <summary>
-        /// Find an item in the player's inventory by its id.
-        /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
-        /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(uint itemId, bool checkSlot)
-        {
-            return FindItem(delegate(Item i)
-            {
-                return i.Id == itemId;
-            }, checkSlot);
-        }
-
-        /// <summary>
-        /// Find an item in the player's inventory by its id.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(Item item)
-        {
-            return FindItem(item.Id);
-        }
-
-        /// <summary>
-        /// Find an item in the player's inventory by its id.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
-        /// <returns>Item object describing the item and its location.</returns>
-        public Item FindItem(Item item, bool checkSlot)
-        {
-            return FindItem(item.Id, checkSlot);
-        }
-
-        /// <summary>
-        /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        public Item FindItem<T>(ICollection<T> list) where T : Item
-        {
-            return FindItem(delegate(Item i)
-            {
-                return i.IsInList(list);
-            }, true);
-        }
-
-        /// <summary>
-        /// Find an item from a list in the player's inventory. Ex. findItem(new Tibia.Contstants.ItemList.Food()).
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="checkSlot">If true, also checks the player's slots for the item.</param>
-        public Item FindItem<T>(ICollection<T> list, bool checkSlot) where T : Item
-        {
-            return FindItem(delegate(Item i)
-            {
-                return i.IsInList(list);
-            }, checkSlot);
         }
 
         /// <summary>
         /// Get the item at the specified location.
-        /// TODO: Add functionality for ItemLocationType.Ground 
-		/// (would interface with map reading, which has yet to be completed)
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
@@ -211,7 +74,7 @@ namespace Tibia.Objects
         {
             if (location.type == Tibia.Constants.ItemLocationType.Slot)
             {
-                return GetSlot(location.slot);
+                return GetItemInSlot(location.slot);
             }
             else if (location.type == Tibia.Constants.ItemLocationType.Container)
             {
@@ -221,50 +84,45 @@ namespace Tibia.Objects
                 return new Item(client,
                     client.ReadUInt32(address + Addresses.Container.Distance_Item_Id),
                     client.ReadByte(address + Addresses.Container.Distance_Item_Count),
-                    "", location, true);
+                    "", location);
             }
             return null;
         }
 
         /// <summary>
-        /// Stacks the first two items that are found and are stackable.
+        /// Get the item in the specified slot.
         /// </summary>
-        /// <param name="itemId">Id of the items to be stacked.</param>
-        /// <returns>True if successful and if it stacked something.</returns>
-        public bool Stack(uint itemId)
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public Item GetItemInSlot(Constants.SlotNumber s)
         {
-            Item first = null;
-            Item second = null;
-            List<Container> containers = GetContainers();
-
-            foreach (Container c in containers)
+            uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
+            uint id = client.ReadUInt32(address);
+            if (id > 0)
             {
-                foreach (Item i in c.GetItems())
-                {
-                    if (i.Id == itemId)
-                    {
-                        if (first == null && i.Count < 100)
-                        {
-                            first = i;
-                        }
-                        else if (i.Count < 100)
-                        {
-                            second = i;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (first != null && second != null && first.Found && second.Found &&
-                first.Loc.container == second.Loc.container && !(second.Count == 100))
-            {
-                second.Move(first);
-                System.Threading.Thread.Sleep(100);
-                return true;
+                byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
+                return new Item(client, id, count, "", ItemLocation.FromSlot(s));
             }
             else
-                return false;
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<Item> GetSlotItems()
+        {
+            uint address = Addresses.Player.Slot_Head;
+            for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
+            {
+                uint id = client.ReadUInt32(address);
+                if (id > 0)
+                {
+                    yield return new Item(client,
+                        id,
+                        client.ReadByte(address + +Addresses.Player.Distance_Slot_Count), "",
+                        ItemLocation.FromSlot((Constants.SlotNumber)i));
+                }
+            }
         }
 
         /// <summary>
@@ -274,39 +132,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id)
         {
-            return Packets.Outgoing.ItemUsePacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, 0x0F);
-        }
-
-        /// <summary>
-        /// If you just want to use an item, like eat a food, or check gp etc
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item)
-        {
-            return Packets.Outgoing.ItemUsePacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, 0x0F); 
-        }
-
-        /// <summary>
-        /// Use a item on a creature, like sd'ing your enemy.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="onCreature"></param>
-        /// <returns></returns>
-        public bool UseItem(uint id, Creature onCreature)
-        {
-            return UseItem(id, onCreature.Id);
-        }
-
-        /// <summary>
-        /// Use a item on a creature, like sd'ing your enemy.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="onCreature"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item, Creature onCreature)
-        {
-            return UseItem(item.Id, onCreature.Id);
+            return Packets.Outgoing.ItemUsePacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, 0x0F);
         }
 
         /// <summary>
@@ -316,17 +142,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(uint id)
         {
-            return UseItem(id, client.ReadInt32(Addresses.Player.Id));
-        }
-
-        /// <summary>
-        /// Use an item on your self
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public bool UseItemOnSelf(Item item)
-        {
-            return UseItem(item, client.ReadInt32(Addresses.Player.Id));
+            return UseItemOnCreature(id, 0, client.ReadInt32(Addresses.Player.Id));
         }
 
         /// <summary>
@@ -335,50 +151,9 @@ namespace Tibia.Objects
         /// <param name="id"></param>
         /// <param name="creatureId"></param>
         /// <returns></returns>
-        public bool UseItem(uint id, int creatureId)
+        public bool UseItemOnCreature(uint id, byte stack, int creatureId)
         {
-            byte stack = 0;
-            byte count = 0;
-
-            if (id == Constants.Items.Bottle.Vial.Id)
-                stack = count;
-
-            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, stack, (uint)creatureId);
-        }
-
-        /// <summary>
-        /// Use an item on a creature of the given id
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="creatureId"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item, int creatureId)
-        {
-            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, (uint)creatureId);
-        }
-
-        /// <summary>
-        /// Use an item on a location (tile).
-        /// Automatically finds the tile information.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="onLocation"></param>
-        /// <returns></returns>
-        public bool UseItem(uint id, Location onLocation)
-        {
-            return UseItem(id, client.Map.CreateMapTile(onLocation));
-        }
-
-        /// <summary>
-        /// Use an item on a location (tile).
-        /// Automatically finds the tile information.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="onLocation"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item, Location onLocation)
-        {
-            return UseItem(item.Id, onLocation);
+            return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, (uint)creatureId);
         }
 
         /// <summary>
@@ -387,78 +162,9 @@ namespace Tibia.Objects
         /// <param name="id"></param>
         /// <param name="onTile"></param>
         /// <returns></returns>
-        public bool UseItem(uint id, Tile onTile)
+        public bool UseItemOnTile(uint id, Tile onTile)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
-        }
-
-        /// <summary>
-        /// Use an item on a tile (eg. fishing)
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="onTile"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item, Tile onTile)
-        {
-            return UseItem(item.Id, onTile);
-        }
-
-        /// <summary>
-        /// Use an item on another item
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="onTile"></param>
-        /// <returns></returns>
-        public bool UseItem(Item item, Item onItem)
-        {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, ItemLocation.Hotkey().ToLocation(), (ushort)item.Id, item.Count, onItem.Loc.ToLocation(), (ushort)onItem.Id, onItem.Loc.stackOrder);
-        }
-
-        /// <summary>
-        /// Get the item in the specified slot.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public Item GetSlot(Constants.SlotNumber s)
-        {
-            Item item;
-            uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
-            byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
-            uint id = client.ReadUInt32(address);
-            if (id > 0)
-            {
-                item = new Item(client, id, count, "", new ItemLocation(s), true);
-            }
-            else
-            {
-                item = new Item(client, 0);
-            }
-            return item;
-        }
-
-        /// <summary>
-        /// Search the equipment slots for an item with the specified id
-        /// </summary>
-        /// <param name="match"></param>
-        /// <returns></returns>
-        public Item FindItemInSlot(Predicate<Item> match)
-        {
-            Item item = null;
-            uint address = Addresses.Player.Slot_Head;
-            for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
-            {
-                item = new Item(client,
-                    client.ReadUInt32(address), 
-                    client.ReadByte(address +  + Addresses.Player.Distance_Slot_Count),"", 
-                    new ItemLocation((Constants.SlotNumber) i), false);
-
-                if (match(item))
-                {
-                    item.Found = true;
-                    return item;
-                }
-            }
-            return item;
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>

@@ -119,24 +119,6 @@ namespace Tibia.Objects
         {
             return (Flags & (int)flag) == (int)flag;
         }
-        /// <summary>
-        /// Get the experience still needed for the next level.
-        /// </summary>
-        /// <returns></returns>
-        public long ExpLeft()
-        {
-            return ExpLeft(Level + 1);
-        }
-
-        /// <summary>
-        /// Get experience still needed for a specified level.
-        /// </summary>
-        /// <param name="levelNeeded"></param>
-        /// <returns></returns>
-        public long ExpLeft(int levelNeeded)
-        {
-            return Calculate.ExpForLevel(levelNeeded) - Exp;
-        }
 
         #region Get/Set Properties
 

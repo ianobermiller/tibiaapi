@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Linq;
 using Tibia.Packets;
 using System.IO;
 using System.Drawing;
@@ -119,13 +120,7 @@ namespace Tibia.Objects
 
             pipeIsReady = new AutoResetEvent(false);
 
-            // The client get's it's own battle list to speed up getPlayer()
-            battleList = new BattleList(this);
-            map = new Map(this);
-            inventory = new Inventory(this);
-            console = new Console(this);
             random = new Random();
-            screen = new Screen(this);
 
             pathFinder = new Tibia.Util.PathFinder(this);
             contextMenu = new ContextMenu(this);
@@ -599,12 +594,6 @@ namespace Tibia.Objects
             return Memory.ReadUInt16(processHandle, address);
         }
 
-        [Obsolete("Please use ReadInt16")]
-        public short ReadShort(long address)
-        {
-            return Memory.ReadInt16(processHandle, address);
-        }
-
         public int ReadInt32(long address)
         {
             return Memory.ReadInt32(processHandle, address);
@@ -613,12 +602,6 @@ namespace Tibia.Objects
         public uint ReadUInt32(long address)
         {
             return Memory.ReadUInt32(processHandle, address);
-        }
-
-        [Obsolete("Please use ReadInt32")]
-        public int ReadInt(long address)
-        {
-            return Memory.ReadInt32(processHandle, address);
         }
 
         public double ReadDouble(long address)
@@ -659,12 +642,6 @@ namespace Tibia.Objects
         public bool WriteUInt32(long address, uint value)
         {
             return Memory.WriteUInt32(processHandle, address, value);
-        }
-
-        [Obsolete("Please use WriteInt32")]
-        public bool WriteInt(long address, int value)
-        {
-            return Memory.WriteInt32(processHandle, address, value);
         }
 
         public bool WriteDouble(long address, double value)
@@ -744,8 +721,11 @@ namespace Tibia.Objects
         {
             if (!LoggedIn) 
                 throw new Exceptions.NotLoggedInException();
+            
+            int playerId = ReadInt32(Addresses.Player.Id);
 
-            return new Player(this, battleList.GetCreature(ReadInt32(Addresses.Player.Id)).Address);
+            return new Player(this, BattleList.GetCreatures().
+                First(c => c.Id == playerId).Address);
         }
 
         /// <summary>
@@ -754,7 +734,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public BattleList BattleList
         {
-            get { return battleList; }
+            get
+            {
+                if (battleList == null) battleList = new BattleList(this);
+                return battleList; 
+            }
         }
 
         /// <summary>
@@ -763,7 +747,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Map Map
         {
-            get { return map; }
+            get
+            {
+                if (map == null) map = new Map(this);
+                return map;
+            }
         }
 
         /// <summary>
@@ -772,7 +760,24 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Inventory Inventory
         {
-            get { return inventory; }
+            get
+            {
+                if (inventory == null) inventory = new Inventory(this);
+                return inventory;
+            }
+        }
+
+        /// <summary>
+        /// Get the client's console.
+        /// </summary>
+        /// <returns></returns>
+        public Console Console
+        {
+            get
+            {
+                if (console == null) console = new Console(this);
+                return console;
+            }
         }
 
         /// <summary>
@@ -921,23 +926,6 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Eat food found in any container.
-        /// </summary>
-        /// <returns>True if eating succeeded, false if no food found or eating failed.</returns>
-        public bool EatFood()
-        {
-            if (!LoggedIn) 
-                throw new Exceptions.NotLoggedInException();
-
-            Item food = inventory.FindItem(Tibia.Constants.ItemLists.Foods.Values);
-
-            if (food.Found)
-                return food.Use();
-            else
-                return false;
-        }
-
-        /// <summary>
         /// Gets or sets world only view.
         /// </summary>
         /// <returns></returns>
@@ -1035,131 +1023,6 @@ namespace Tibia.Objects
         {
             get { return (Constants.ActionState)ReadByte(Addresses.Client.ActionState); }
             set { WriteByte(Addresses.Client.ActionState, (byte)value); }
-        }
-
-        #region Transform Items
-
-        /// <summary>
-        /// Transform the specified item with the default options.
-        /// </summary>
-        /// <param name="item">The item to make.</param>
-        /// <returns></returns>
-        public bool TransformItem(TransformingItem item)
-        {
-            return TransformItem(item, false);
-        }
-
-        /// <summary>
-        /// Transform an item. Drags an original item to a free hand, casts the words, and moved the new item back.
-        /// If no free hand is found, but the ammo is open, move the item in the right hand down to ammo.
-        /// </summary>
-        /// <param name="item">The item to make.</param>
-        /// <param name="checkSoulPoints">Whether or not to check for soul points.</param>
-        /// <returns>True if everything went well, false if no original item was found or part or all of the process failed</returns>
-        public bool TransformItem(TransformingItem item, bool checkSoulPoints)
-        {
-            if (!LoggedIn) 
-                throw new Exceptions.NotLoggedInException();
-
-            Player player = GetPlayer();
-            bool allClear = true; // Keeps a running total of success
-            Item itemMovedToAmmo = null; // If we move an item from the ammo slot, store it here.
-
-            // If wanted, check for soul points
-            if (checkSoulPoints)
-                if (player.Soul < item.SoulPoints) return false;
-
-            // Make sure the player has enough mana
-            if (player.Mana >= item.Spell.ManaPoints)
-            {
-                // Find the first original
-                Item original = inventory.FindItem(item.OriginalItem);
-
-                // Make sure an original was found
-                if (original.Found)
-                {
-                    // Save the current location of the original
-                    ItemLocation oldLocation = original.Loc;
-
-                    // The location where the item will be made
-                    ItemLocation newLocation = null;
-
-                    // Determine the location to make the item
-                    /*if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
-                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
-                    else*/
-                    if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Right).Found)
-                        newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                    else if (!inventory.GetSlot(Tibia.Constants.SlotNumber.Left).Found)
-                        newLocation = new ItemLocation(Constants.SlotNumber.Left);
-                    if (newLocation == null)
-                        if(!inventory.GetSlot(Tibia.Constants.SlotNumber.Ammo).Found)
-                        {
-                            // If no hands are free, but the ammo slot is, 
-                            // move the right hand item to clear the ammo slot
-                            newLocation = new ItemLocation(Constants.SlotNumber.Right);
-                            itemMovedToAmmo = inventory.GetSlot(Tibia.Constants.SlotNumber.Right);
-                            itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Ammo));
-                        }
-
-                    else
-                        return false; // No where to put the item!
-
-                    // Move the original and say the magic words, make sure everything went well
-                    Thread.Sleep(200);
-                    allClear = allClear & original.Move(newLocation);
-                    Thread.Sleep(200);
-                    allClear = allClear & console.Say(item.Spell.Words);
-                    Thread.Sleep(200);
-                    // Don't bother continuing if both the above actions didn't work
-                    if (!allClear) 
-                        return false;
-
-                    // Build an item object for the newly created item
-                    // We don't use getSlot because it could execute too fast, returning a blank
-                    // rune or nothing at all. If we just send a packet, the server will catch up.
-                    Item newItem = new Item(this, item.Id, 0, "", newLocation, true);
-
-                    // Move the rune back to it's original location
-                    Thread.Sleep(300);
-                    allClear = allClear & newItem.Move(oldLocation);
-                    // Check if we moved an item to the ammo slot
-                    // If we did, move it back
-                    Thread.Sleep(200);
-                    if (itemMovedToAmmo != null)
-                    {
-                        itemMovedToAmmo.Loc = new ItemLocation(Tibia.Constants.SlotNumber.Ammo);
-                        itemMovedToAmmo.Move(new ItemLocation(Tibia.Constants.SlotNumber.Right));
-                    }
-                    // Return true if everything worked well, false if it did not
-                    return allClear;
-                }
-                else
-                {
-                    // No blanks found, return false
-                    return false;
-                }
-            }
-            else
-            {
-                // Not enough mana, return false
-                return false;
-            }
-        }
-        #endregion
-
-        public bool Fish()
-        {
-            Player player = GetPlayer();
-            List<Tile> fishes = map.GetFishTiles();
-
-            if (fishes.Count > 0)
-            {
-                inventory.UseItem(Tibia.Constants.Items.Tool.FishingRod, fishes[random.Next(fishes.Count - 1)]);
-                return true;
-            }
-
-            return false;
         }
 
         #endregion
@@ -1426,7 +1289,7 @@ namespace Tibia.Objects
                 return true;
             }
             else
-                return Packets.OutgoingPacket.SendPacketWithDLL(this, packet);
+                return Packets.OutgoingPacket.SendPacketByMemory(this, packet);
         }
 
         public bool SendToClient(byte[] packet)
@@ -1495,26 +1358,39 @@ namespace Tibia.Objects
         public bool WriteSocketSendCode()
         {
             byte[] OpCodes = new byte[]{
-                		0x6A, 0x00,							//push	0						;_flag
-		                0xFF, 0x33,							//push	dword ptr [ebx]			;_length
-		                0x83, 0xC3, 0x04,					//add	ebx, 4					
-		                0x53,								//push	ebx						;_buffer
-		                0xA1, 0xFF, 0xFF, 0xFF, 0xFF,		//mov	eax, ds:SocketStruct	;_socketstruct
-		                0xFF, 0x70, 0x04,					//push	dword ptr [eax+4]		;_socket
-		                0xFF, 0x15, 0xFF, 0xFF, 0xFF, 0xFF,	//call	dword ptr ds:Send		;call send 
-		                0xC3								//retn
+                //push	0						;_flag
+        		0x6A, 0x00,
+                //push	dword ptr [ebx]			;_length
+                0xFF, 0x33,
+                //add	ebx, 4
+                0x83, 0xC3, 0x04,
+                //push	ebx						;_buffer
+                0x53,
+                //mov	eax, ds:SocketStruct	;_socketstruct
+                0xA1, 0xFF, 0xFF, 0xFF, 0xFF,
+                //push	dword ptr [eax+4]		;_socket
+                0xFF, 0x70, 0x04,
+                //call	dword ptr ds:Send		;call send
+                0xFF, 0x15, 0xFF, 0xFF, 0xFF, 0xFF,
+                //retn
+                0xC3
 	        };
 
             Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SocketStruct), 0, OpCodes, 9, 4);
             Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SendPointer), 0, OpCodes, 18, 4);
 
-            if(pSender==IntPtr.Zero)    
-                pSender = Tibia.Util.WinApi.VirtualAllocEx(processHandle, IntPtr.Zero, (uint)OpCodes.Length,
-                Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE, Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+            if (pSender == IntPtr.Zero)
+            {
+                pSender = Tibia.Util.WinApi.VirtualAllocEx(
+                    processHandle, IntPtr.Zero, (uint)OpCodes.Length,
+                    Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE, 
+                    Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+            }
+
             if (pSender != IntPtr.Zero)
             {
 
-                if (WriteBytes(pSender.ToInt64(),OpCodes,(uint)OpCodes.Length))                    
+                if (WriteBytes(pSender.ToInt64(),OpCodes,(uint)OpCodes.Length))
                 {
                     sendCodeWritten = true;
                     return true;
