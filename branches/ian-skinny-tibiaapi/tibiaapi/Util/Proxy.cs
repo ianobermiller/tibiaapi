@@ -93,34 +93,34 @@ namespace Tibia.Util
         {
             client = c;
 
-            loginServers = client.LoginServers;
+            loginServers = client.Login.Servers;
 
             if (loginServers[0].Server == "localhost")
-                loginServers = Client.DefaultLoginServers;
+                loginServers = client.Login.DefaultServers;
 
             if (portServer == 0)
                 portServer = GetFreePort();
 
-            client.SetServer("localhost", (short)portServer);
+            client.Login.SetServer("localhost", (short)portServer);
 
-            if (client.RSA == Constants.RSAKey.OpenTibia)
+            if (client.Login.RSA == Constants.RSAKey.OpenTibia)
                 IsOtServer = true;
             else
             {
-                client.RSA = Constants.RSAKey.OpenTibia;
+                client.Login.RSA = Constants.RSAKey.OpenTibia;
                 IsOtServer = false;
             }
 
-            if (client.CharListCount != 0)
+            if (client.Login.CharListCount != 0)
             {
-                charList = client.CharList;
-                client.SetCharListServer(localHostBytes, portServer);
+                charList = client.Login.CharacterList;
+                client.Login.SetCharListServer(localHostBytes, portServer);
             }
 
             //events
             ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
 
-            client.UsingProxy = true;
+            client.IO.UsingProxy = true;
             DebugOn = debug;
             Start();
         }
@@ -138,18 +138,18 @@ namespace Tibia.Util
         {
             if (!client.Process.HasExited)
             {
-                client.LoginServers = loginServers;
+                client.Login.Servers = loginServers;
 
                 if (!IsOtServer)
-                    client.RSA = Constants.RSAKey.RealTibia;
+                    client.Login.RSA = Constants.RSAKey.RealTibia;
 
-                if (client.CharListCount != 0 && client.CharListCount == charList.Length)
+                if (client.Login.CharListCount != 0 && client.Login.CharListCount == charList.Length)
                 {
-                    client.SetCharListServer(charList);
+                    client.Login.SetCharListServer(charList);
                 }
             }
 
-            client.UsingProxy = false;
+            client.IO.UsingProxy = false;
         }
 
         #endregion

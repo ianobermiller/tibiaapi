@@ -113,13 +113,13 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt()
         {
-            return XteaEncrypt(Client.XteaKey);
+            return XteaEncrypt(Client.IO.XteaKey);
         }
 
         public bool XteaEncrypt(uint[] XteaKey)
         {
             if (Client != null)
-                if (Client.XteaKey == null)
+                if (Client.IO.XteaKey == null)
                     return false;
 
             int msgSize = messageStream.Length - 6;
@@ -146,7 +146,7 @@ namespace Tibia.Packets
 
         public bool XteaDecrypt()
         {
-            return XteaDecrypt(Client.XteaKey);
+            return XteaDecrypt(Client.IO.XteaKey);
         }
 
         public bool XteaDecrypt(uint[] XteaKey)
@@ -449,7 +449,7 @@ namespace Tibia.Packets
 
         public bool PrepareToSend()
         {
-            return PrepareToSend(Client.XteaKey);
+            return PrepareToSend(Client.IO.XteaKey);
         }
 
         public bool PrepareToSend(uint[] XteaKey)
@@ -465,7 +465,7 @@ namespace Tibia.Packets
 
         public bool PrepareToRead()
         {
-            return PrepareToRead(Client.XteaKey);
+            return PrepareToRead(Client.IO.XteaKey);
         }
 
         public bool PrepareToRead(uint[] XteaKey)

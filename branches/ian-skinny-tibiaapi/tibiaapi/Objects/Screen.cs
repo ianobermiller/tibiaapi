@@ -24,10 +24,10 @@ namespace Tibia.Objects
 
         public bool DrawScreenText(string TextName, Location loc, Color color, ClientFont font, string text)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -39,10 +39,10 @@ namespace Tibia.Objects
 
         public bool RemoveScreenText(string textName)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -54,10 +54,10 @@ namespace Tibia.Objects
 
         public bool RemoveAllScreenText()
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             return Packets.Pipes.RemoveAllTextPacket.Send(client);
@@ -65,10 +65,10 @@ namespace Tibia.Objects
 
         public bool DrawCreatureText(string creatureName, Location loc, Color color, ClientFont font, string text)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -80,10 +80,10 @@ namespace Tibia.Objects
 
         public bool DrawCreatureText(int CreatureID, Location loc, Color color, ClientFont font, string Text)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -95,10 +95,10 @@ namespace Tibia.Objects
 
         public bool UpdateCreatureText(string CreatureName, Location loc, string NewText)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -110,10 +110,10 @@ namespace Tibia.Objects
 
         public bool UpdateCreatureText(int CreatureID, Location loc, string NewText)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -125,10 +125,10 @@ namespace Tibia.Objects
 
         public bool RemoveCreatureText(string CreatureName)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values
@@ -140,10 +140,10 @@ namespace Tibia.Objects
 
         public bool RemoveCreatureText(int CreatureID)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             //Testing that user has given valid values

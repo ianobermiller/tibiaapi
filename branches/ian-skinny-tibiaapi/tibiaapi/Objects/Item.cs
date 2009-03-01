@@ -105,7 +105,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseOnSelf()
         {
-            uint playerId = client.ReadUInt32(Addresses.Player.Id);
+            uint playerId = client.Memory.ReadUInt32(Addresses.Player.Id);
             
             byte stack = 0;
 
@@ -177,8 +177,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = client.ReadUInt32(Addresses.Client.DatPointer);
-                return client.ReadUInt32(baseAddr + 4);
+                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
+                return client.Memory.ReadUInt32(baseAddr + 4);
             }
         }
 
@@ -198,8 +198,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = client.ReadUInt32(Addresses.Client.DatPointer);
-                return client.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
+                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
+                return client.Memory.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
             }
         }
 
@@ -208,8 +208,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Width
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Width); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Width, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Width); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Width, value); }
         }
 
         /// <summary>
@@ -217,44 +217,44 @@ namespace Tibia.Objects
         /// </summary>
         public int Height
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Height); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Height, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Height); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Height, value); }
         }
 
         public int Unknown1
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Unknown1); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Unknown1, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Unknown1); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Unknown1, value); }
         }
 
         public int Layers
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Layers); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Layers, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Layers); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Layers, value); }
         }
 
         public int PatternX
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternX); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternX, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.PatternX); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.PatternX, value); }
         }
 
         public int PatternY
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternY); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternY, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.PatternY); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.PatternY, value); }
         }
 
         public int PatternDepth
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.PatternDepth); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.PatternDepth, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.PatternDepth); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.PatternDepth, value); }
         }
 
         public int Phase
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Phase); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Phase, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Phase); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Phase, value); }
         }
 
         public int SpriteCount
@@ -271,10 +271,10 @@ namespace Tibia.Objects
             {
                 int count = SpriteCount;
                 Image[] sprites = new Bitmap[count];
-                uint address = client.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
+                uint address = client.Memory.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
                 for (int i = 0; i < count; i++)
                 {
-                    int spriteId = client.ReadInt16(address + i * 2);
+                    int spriteId = client.Memory.ReadInt16(address + i * 2);
                     try
                     {
                         sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
@@ -293,8 +293,8 @@ namespace Tibia.Objects
         /// </summary>
         public uint Flags
         {
-            get { return client.ReadUInt32(DatAddress + Addresses.DatItem.Flags); }
-            set { client.WriteUInt32(DatAddress + Addresses.DatItem.Flags, value); }
+            get { return client.Memory.ReadUInt32(DatAddress + Addresses.DatItem.Flags); }
+            set { client.Memory.WriteUInt32(DatAddress + Addresses.DatItem.Flags, value); }
         }
 
         /// <summary>
@@ -302,8 +302,8 @@ namespace Tibia.Objects
         /// </summary>
         public int WalkSpeed
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.WalkSpeed); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.WalkSpeed, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.WalkSpeed); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.WalkSpeed, value); }
         }
 
         /// <summary>
@@ -311,8 +311,8 @@ namespace Tibia.Objects
         /// </summary>
         public int TextLimit
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.TextLimit); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.TextLimit, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.TextLimit); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.TextLimit, value); }
         }
 
         /// <summary>
@@ -320,8 +320,8 @@ namespace Tibia.Objects
         /// </summary>
         public int LightRadius
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.LightRadius); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.LightRadius, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.LightRadius); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.LightRadius, value); }
         }
 
         /// <summary>
@@ -329,8 +329,8 @@ namespace Tibia.Objects
         /// </summary>
         public int LightColor
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.LightColor); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.LightColor, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.LightColor); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.LightColor, value); }
         }
 
         /// <summary>
@@ -339,8 +339,8 @@ namespace Tibia.Objects
         /// </summary>
         public int ShiftX
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.ShiftX); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.ShiftX, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.ShiftX); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.ShiftX, value); }
         }
 
         /// <summary>
@@ -349,8 +349,8 @@ namespace Tibia.Objects
         /// </summary>
         public int ShiftY
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.ShiftY); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.ShiftY, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.ShiftY); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.ShiftY, value); }
         }
 
         /// <summary>
@@ -358,8 +358,8 @@ namespace Tibia.Objects
         /// </summary>
         public int WalkHeight
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.WalkHeight); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.WalkHeight, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.WalkHeight); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.WalkHeight, value); }
         }
 
         /// <summary>
@@ -367,8 +367,8 @@ namespace Tibia.Objects
         /// </summary>
         public int AutomapColor
         {
-            get { return client.ReadInt32(DatAddress + Addresses.DatItem.Automap); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.Automap, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Automap); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Automap, value); }
         }
 
         /// <summary>
@@ -376,8 +376,8 @@ namespace Tibia.Objects
         /// </summary>
         public Addresses.DatItem.Help LensHelp
         {
-            get { return (Addresses.DatItem.Help)client.ReadInt32(DatAddress + Addresses.DatItem.LensHelp); }
-            set { client.WriteInt32(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
+            get { return (Addresses.DatItem.Help)client.Memory.ReadInt32(DatAddress + Addresses.DatItem.LensHelp); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
         }
 
         #endregion

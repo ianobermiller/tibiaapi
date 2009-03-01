@@ -50,10 +50,10 @@ namespace Tibia.Objects
                 return false;
 
             int xDiff, yDiff, xNew, yNew;
-            int playerZ = client.ReadInt32(Addresses.Player.Z);
+            int playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
             var creatures = client.BattleList.GetCreatures().Where(c => c.Z == playerZ);
 
-            int playerId = client.ReadInt32(Addresses.Player.Id);
+            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
 
             xDiff = (int)playerTile.MemoryLocation.X - 8;
             yDiff = (int)playerTile.MemoryLocation.Y - 6;
@@ -101,7 +101,7 @@ namespace Tibia.Objects
         /// <returns>True if it's yourself, false otherwise</returns>
         public bool IsSelf()
         {
-            return (Id == client.ReadInt32(Addresses.Player.Id));
+            return (Id == client.Memory.ReadInt32(Addresses.Player.Id));
         }
 
         public void Approach()
@@ -126,7 +126,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Attack()
         {
-            client.WriteInt32(Addresses.Player.Target_ID, Id);
+            client.Memory.WriteInt32(Addresses.Player.Target_ID, Id);
             return Packets.Outgoing.AttackPacket.Send(client, (uint)Id);
         }
 
@@ -147,7 +147,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Follow()
         {
-            client.WriteInt32(Addresses.Player.GreenSquare, Id);
+            client.Memory.WriteInt32(Addresses.Player.GreenSquare, Id);
             return Packets.Outgoing.FollowPacket.Send(client, (uint)Id);
         }
 
@@ -175,38 +175,38 @@ namespace Tibia.Objects
 
         public int Id
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Id); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Id, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Id); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Id, value); }
         }
 
         public Constants.CreatureType Type
         {
-            get { return (Constants.CreatureType)client.ReadByte(address + Addresses.Creature.Distance_Type); }
-            set { client.WriteByte(address + Addresses.Creature.Distance_Type, (byte)value); }
+            get { return (Constants.CreatureType)client.Memory.ReadByte(address + Addresses.Creature.Distance_Type); }
+            set { client.Memory.WriteByte(address + Addresses.Creature.Distance_Type, (byte)value); }
         }
 
         public string Name
         {
-            get { return client.ReadString(address + Addresses.Creature.Distance_Name); }
-            set { client.WriteString(address + Addresses.Creature.Distance_Name, value); }
+            get { return client.Memory.ReadString(address + Addresses.Creature.Distance_Name); }
+            set { client.Memory.WriteString(address + Addresses.Creature.Distance_Name, value); }
         }
 
         public int X
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_X); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_X, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_X); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_X, value); }
         }
 
         public int Y
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Y); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Y, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Y); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Y, value); }
         }
 
         public int Z
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Z); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Z, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Z); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Z, value); }
         }
 
         public Location Location
@@ -216,108 +216,108 @@ namespace Tibia.Objects
 
         public int ScreenOffsetHoriz
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_ScreenOffsetHoriz, value); }
         }
 
         public int ScreenOffsetVert
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetVert); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_ScreenOffsetVert, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_ScreenOffsetVert); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_ScreenOffsetVert, value); }
         }
 
         public bool IsWalking
         {
-            get { return Convert.ToBoolean(client.ReadByte(address + Addresses.Creature.Distance_IsWalking)); }
-            set { client.WriteByte(address + Addresses.Creature.Distance_IsWalking, Convert.ToByte(value)); }
+            get { return Convert.ToBoolean(client.Memory.ReadByte(address + Addresses.Creature.Distance_IsWalking)); }
+            set { client.Memory.WriteByte(address + Addresses.Creature.Distance_IsWalking, Convert.ToByte(value)); }
         }
 
         public int WalkSpeed
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_WalkSpeed); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_WalkSpeed, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_WalkSpeed); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_WalkSpeed, value); }
         }
 
         public Constants.Direction Direction
         {
-            get { return (Constants.Direction)client.ReadInt32(address + Addresses.Creature.Distance_Direction); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Direction, (int)value); }
+            get { return (Constants.Direction)client.Memory.ReadInt32(address + Addresses.Creature.Distance_Direction); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Direction, (int)value); }
         }
 
         public bool IsVisible
         {
-            get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Creature.Distance_IsVisible)); }
-            set { client.WriteByte(address + Addresses.Creature.Distance_IsVisible, Convert.ToByte(value)); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Creature.Distance_IsVisible)); }
+            set { client.Memory.WriteByte(address + Addresses.Creature.Distance_IsVisible, Convert.ToByte(value)); }
         }
 
         public int Light
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Light); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Light, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Light); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Light, value); }
         }
 
         public int LightColor
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_LightColor); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_LightColor, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_LightColor); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_LightColor, value); }
         }
 
         public int HPBar
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_HPBar); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_HPBar, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_HPBar); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_HPBar, value); }
         }
 
         public int BlackSquare
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_BlackSquare); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_BlackSquare); }
         }
 
         public Constants.Skull Skull
         {
-            get { return (Constants.Skull)client.ReadInt32(address + Addresses.Creature.Distance_Skull); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Skull, (int)value); }
+            get { return (Constants.Skull)client.Memory.ReadInt32(address + Addresses.Creature.Distance_Skull); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Skull, (int)value); }
         }
         public Constants.Party Party
         {
-            get { return (Constants.Party)client.ReadInt32(address + Addresses.Creature.Distance_Party); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Party, (int)value); }
+            get { return (Constants.Party)client.Memory.ReadInt32(address + Addresses.Creature.Distance_Party); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Party, (int)value); }
         }
 
         public Constants.OutfitType OutfitType
         {
-            get { return (Constants.OutfitType)client.ReadInt32(address + Addresses.Creature.Distance_Outfit); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Outfit, (int)value); }
+            get { return (Constants.OutfitType)client.Memory.ReadInt32(address + Addresses.Creature.Distance_Outfit); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Outfit, (int)value); }
         }
 
         public int Color_Head
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Head); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Head, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Color_Head); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Color_Head, value); }
         }
 
         public int Color_Body
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Body); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Body, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Color_Body); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Color_Body, value); }
         }
 
         public int Color_Legs
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Legs); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Legs, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Color_Legs); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Color_Legs, value); }
         }
 
         public int Color_Feet
         {
-            get { return client.ReadInt32(address + Addresses.Creature.Distance_Color_Feet); }
-            set { client.WriteInt32(address + Addresses.Creature.Distance_Color_Feet, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Creature.Distance_Color_Feet); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Color_Feet, value); }
         }
 
         public Constants.OutfitAddon Addon
         {
-        	get { return (Constants.OutfitAddon)client.ReadInt32(address + Addresses.Creature.Distance_Addon); }
-        	set { client.WriteInt32(address + Addresses.Creature.Distance_Addon, (int)value); }
+        	get { return (Constants.OutfitAddon)client.Memory.ReadInt32(address + Addresses.Creature.Distance_Addon); }
+        	set { client.Memory.WriteInt32(address + Addresses.Creature.Distance_Addon, (int)value); }
         }
 
         public Outfit Outfit

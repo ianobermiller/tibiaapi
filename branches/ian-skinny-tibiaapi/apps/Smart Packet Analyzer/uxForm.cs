@@ -53,10 +53,10 @@ namespace SmartPacketAnalyzer
             }
             else
             {
-                client.StartProxy();
-                client.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                client.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
-                client.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
+                client.IO.StartProxy();
+                client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                client.IO.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
+                client.IO.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
@@ -75,7 +75,7 @@ namespace SmartPacketAnalyzer
             Tibia.Packets.Incoming.TextMessagePacket p = (Tibia.Packets.Incoming.TextMessagePacket)packet;
             
             if (p.Color == StatusMessage.DescriptionGreen && p.Message.StartsWith("You see "))
-                p.Message = p.Message + " [" + client.ReadInt32(Tibia.Addresses.Client.See_Id) + "]";
+                p.Message = p.Message + " [" + client.Memory.ReadInt32(Tibia.Addresses.Client.See_Id) + "]";
 
             return true;
         }

@@ -240,7 +240,7 @@ namespace Tibia
         /// <returns></returns>
         public static uint ToMapTileAddress(this uint tileNumber, Client client)
         {
-            return client.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.Step_Square * tileNumber);
+            return client.Memory.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.Step_Square * tileNumber);
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Tibia
 
         public static Objects.Tile GetTileWithPlayer(this IEnumerable<Objects.Tile> tiles, Objects.Client client)
         {
-            int playerId = client.ReadInt32(Addresses.Player.Id);
+            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
             return GetTileWithCreature(tiles, playerId);
         }
 

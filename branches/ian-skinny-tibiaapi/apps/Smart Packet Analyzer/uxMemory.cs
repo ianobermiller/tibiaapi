@@ -77,19 +77,19 @@ namespace SmartPacketAnalyzer
                     switch ((DataType)Enum.Parse(typeof(DataType), item.SubItems[3].Text))
                     {
                         case DataType.Byte:
-                            item.SubItems[2].Text = client.ReadByte(address).ToString();
+                            item.SubItems[2].Text = client.Memory.ReadByte(address).ToString();
                             break;
                         case DataType.Integer:
-                            item.SubItems[2].Text = client.ReadInt32(address).ToString();
+                            item.SubItems[2].Text = client.Memory.ReadInt32(address).ToString();
                             break;
                         case DataType.Double:
-                            item.SubItems[2].Text = client.ReadDouble(address).ToString();
+                            item.SubItems[2].Text = client.Memory.ReadDouble(address).ToString();
                             break;
                         case DataType.String:
-                            item.SubItems[2].Text = client.ReadString(address, 255).ToString();
+                            item.SubItems[2].Text = client.Memory.ReadString(address, 255).ToString();
                             break;
                         case DataType.Pointer:
-                            item.SubItems[2].Text = "0x" + Convert.ToString(client.ReadInt32(address), 16).ToUpper();
+                            item.SubItems[2].Text = "0x" + Convert.ToString(client.Memory.ReadInt32(address), 16).ToUpper();
                             break;
                     }
                 }

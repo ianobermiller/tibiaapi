@@ -27,7 +27,7 @@ namespace Tibia.Objects
         {
             for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
             {
-                if (client.ReadByte(i + Addresses.Creature.Distance_IsVisible) == 1)
+                if (client.Memory.ReadByte(i + Addresses.Creature.Distance_IsVisible) == 1)
                     yield return new Creature(client, i);
             }
         }
@@ -37,9 +37,9 @@ namespace Tibia.Objects
         /// </summary>
         public void ShowInvisible()
         {
-            client.WriteByte(Addresses.Map.RevealInvisible1,
+            client.Memory.WriteByte(Addresses.Map.RevealInvisible1,
                 Addresses.Map.RevealInvisible1Edited);
-            client.WriteByte(Addresses.Map.RevealInvisible2,
+            client.Memory.WriteByte(Addresses.Map.RevealInvisible2,
                 Addresses.Map.RevealInvisible2Edited);
         }
 
@@ -48,9 +48,9 @@ namespace Tibia.Objects
         /// </summary>
         public void HideInvisible()
         {
-            client.WriteByte(Addresses.Map.RevealInvisible1,
+            client.Memory.WriteByte(Addresses.Map.RevealInvisible1,
                 Addresses.Map.RevealInvisible1Default);
-            client.WriteByte(Addresses.Map.RevealInvisible2,
+            client.Memory.WriteByte(Addresses.Map.RevealInvisible2,
                 Addresses.Map.RevealInvisible2Default);
         }
     }

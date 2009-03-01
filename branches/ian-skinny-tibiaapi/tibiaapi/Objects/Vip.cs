@@ -22,26 +22,26 @@ namespace Tibia.Objects
 
         public int Id
         {
-            get { return client.ReadInt32(Address + Addresses.Vip.Distance_Id); }
-            set { client.WriteInt32(Address + Addresses.Vip.Distance_Icon, value); }
+            get { return client.Memory.ReadInt32(Address + Addresses.Vip.Distance_Id); }
+            set { client.Memory.WriteInt32(Address + Addresses.Vip.Distance_Icon, value); }
         }
 
         public string Name
         {
-            get { return client.ReadString(Address + Addresses.Vip.Distance_Name); }
-            set { client.WriteString(Address + Addresses.Vip.Distance_Name, value); }
+            get { return client.Memory.ReadString(Address + Addresses.Vip.Distance_Name); }
+            set { client.Memory.WriteString(Address + Addresses.Vip.Distance_Name, value); }
         }
 
         public Constants.VipStatus Status
         {
-            get { return (Constants.VipStatus)client.ReadByte(Address + Addresses.Vip.Distance_Status); }
-            set { client.WriteByte(Address + Addresses.Vip.Distance_Status, (byte)value); }
+            get { return (Constants.VipStatus)client.Memory.ReadByte(Address + Addresses.Vip.Distance_Status); }
+            set { client.Memory.WriteByte(Address + Addresses.Vip.Distance_Status, (byte)value); }
         }
 
         public Constants.VipIcon Icon
         {
-            get { return (Constants.VipIcon)client.ReadByte(Address + Addresses.Vip.Distance_Icon); }
-            set { client.WriteByte(Address + Addresses.Vip.Distance_Icon, (byte)value); }
+            get { return (Constants.VipIcon)client.Memory.ReadByte(Address + Addresses.Vip.Distance_Icon); }
+            set { client.Memory.WriteByte(Address + Addresses.Vip.Distance_Icon, (byte)value); }
         }
 
         #endregion

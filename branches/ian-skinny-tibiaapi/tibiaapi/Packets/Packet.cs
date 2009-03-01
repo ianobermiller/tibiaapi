@@ -26,7 +26,7 @@ namespace Tibia.Packets
 
         public bool Send() 
         {
-            if (Client.UsingProxy)
+            if (Client.IO.UsingProxy)
             {
                 NetworkMessage msg = new NetworkMessage(Client);
                 msg.AddBytes(ToByteArray());
@@ -34,9 +34,9 @@ namespace Tibia.Packets
                 msg.PrepareToSend();
 
                 if (Destination == PacketDestination.Client)
-                    Client.Proxy.SendToClient(msg);
+                    Client.IO.Proxy.SendToClient(msg);
                 else if (Destination == PacketDestination.Server)
-                    Client.Proxy.SendToServer(msg);
+                    Client.IO.Proxy.SendToServer(msg);
                 else
                     return false;
 
@@ -70,15 +70,15 @@ namespace Tibia.Packets
         {
             if (client.LoggedIn)
             {
-                if (!client.IsSendCodeWritten)
-                    if (!client.WriteSocketSendCode()) return false;
+                if (!client.IO.IsSendCodeWritten)
+                    if (!client.IO.WriteSocketSendCode()) return false;
 
 
                 byte[] packet_=new byte[packet.Length+2];
                 Array.Copy(BitConverter.GetBytes(packet.Length), packet_, 2);
                 Array.Copy(packet, 0, packet_, 2, packet.Length);
 
-                byte[] encPacket = Xtea.Encrypt(packet_, client.XteaKey.ToByteArray(), true);
+                byte[] encPacket = Xtea.Encrypt(packet_, client.IO.XteaKey.ToByteArray(), true);
                 uint pSize=(uint)(encPacket.Length + 4);
                 byte[] readyPacket = new byte[pSize];
                 Array.Copy(BitConverter.GetBytes(encPacket.Length), readyPacket, 4);
@@ -103,10 +103,10 @@ namespace Tibia.Packets
 
                 if (pRemote != IntPtr.Zero)
                 {
-                    if (client.WriteBytes(pRemote.ToInt64(), readyPacket, pSize))
+                    if (client.Memory.WriteBytes(pRemote.ToInt64(), readyPacket, pSize))
                     {
                         IntPtr threadHandle = Tibia.Util.WinApi.CreateRemoteThread(client.ProcessHandle, IntPtr.Zero, 0,
-                            client.SenderAddress, pRemote, 0, IntPtr.Zero);
+                            client.IO.SenderAddress, pRemote, 0, IntPtr.Zero);
                         Tibia.Util.WinApi.WaitForSingleObject(threadHandle, 0xFFFFFFFF);//INFINITE=0xFFFFFFFF
                         Tibia.Util.WinApi.CloseHandle(threadHandle);
                         return true;

@@ -43,7 +43,7 @@ namespace SmartIPChanger
                         client = Client.Open();
                     System.Threading.Thread.Sleep(1000);
                 }
-                client.SetOT(server, short.Parse(port));
+                client.Login.SetOT(server, short.Parse(port));
                 return;
             }
             else

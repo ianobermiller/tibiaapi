@@ -25,7 +25,7 @@ namespace Tibia.Objects
         #region Get Tiles
         public Tile GetTileWithPlayer()
         {
-            int playerId = client.ReadInt32(Addresses.Player.Id);
+            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
             return GetTiles(false, false).First(
                 t => t.Objects.Any(
                     o => o.Id == 0x63 && o.Data == playerId));
@@ -135,17 +135,17 @@ namespace Tibia.Objects
         public void ReplaceTrees()
         {
             uint smallFirTreeId = 3682;
-            byte[] smallFirTreeBytes = client.ReadBytes(
-                client.ReadUInt32(
-                    client.ReadUInt32(Addresses.Client.DatPointer) + 8)
+            byte[] smallFirTreeBytes = client.Memory.ReadBytes(
+                client.Memory.ReadUInt32(
+                    client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8)
                 + Addresses.DatItem.Sprite
                 + (uint)(0x4C * (smallFirTreeId - 100)), 3);
             foreach (int id in Tibia.Constants.Items.TreeArray)
             {
-                uint address = client.ReadUInt32(client.ReadUInt32(Addresses.Client.DatPointer) + 8) 
+                uint address = client.Memory.ReadUInt32(client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8) 
                     + Addresses.DatItem.Sprite 
                     + (uint)(0x4C * (id - 100));
-                client.WriteBytes(address, smallFirTreeBytes, 3); 
+                client.Memory.WriteBytes(address, smallFirTreeBytes, 3); 
             }
         }
         #endregion
@@ -157,8 +157,8 @@ namespace Tibia.Objects
         /// <param name="enable"></param>
         public void NameSpyOn()
         {
-            client.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
-            client.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
         }
         /// <summary>
         /// Disable name spying.
@@ -166,8 +166,8 @@ namespace Tibia.Objects
         /// <param name="enable"></param>
         public void NameSpyOff()
         {
-            client.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
-            client.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
         }
         #endregion
 
@@ -182,23 +182,23 @@ namespace Tibia.Objects
         {
             int playerZ, tempPtr;
 
-            client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
-            client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
-            client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
 
-            tempPtr = client.ReadInt32(Addresses.Map.LevelSpyPtr);
+            tempPtr = client.Memory.ReadInt32(Addresses.Map.LevelSpyPtr);
             tempPtr += Addresses.Map.LevelSpyAdd1;
-            tempPtr = client.ReadInt32(tempPtr);
+            tempPtr = client.Memory.ReadInt32(tempPtr);
             tempPtr += (int)Addresses.Map.LevelSpyAdd2;
 
-            playerZ = client.ReadInt32(Addresses.Player.Z);
+            playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
 
             if (playerZ <= 7)
             {
                 if (playerZ - floor >= 0 && playerZ - floor <= 7)
                 {
                     playerZ = 7 - playerZ;
-                    client.WriteInt32(tempPtr, playerZ + floor);
+                    client.Memory.WriteInt32(tempPtr, playerZ + floor);
                     return true;
                 }
             }
@@ -206,7 +206,7 @@ namespace Tibia.Objects
             {
                 if (floor >= -2 && floor <= 2 && playerZ - floor < 16)
                 {
-                    client.WriteInt32(tempPtr, 2 + floor);
+                    client.Memory.WriteInt32(tempPtr, 2 + floor);
                     return true;
                 }
             }
@@ -219,9 +219,9 @@ namespace Tibia.Objects
         /// </summary>
         public void LevelSpyOff()
         {
-            client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
-            client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
-            client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
         }
         #endregion
 
@@ -233,8 +233,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void FullLightOn()
         {
-            client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
-            client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
+            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
+            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
         }
 
         /// <summary>
@@ -244,8 +244,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void FullLightOff()
         {
-            client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
-            client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
+            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
+            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
         }
         #endregion
     }

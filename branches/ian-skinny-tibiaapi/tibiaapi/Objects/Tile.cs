@@ -42,8 +42,8 @@ namespace Tibia.Objects
             this.address = address;
             this.memoryLocation = squareNumber.ToMemoryLocation();
 
-            this.objectCount = client.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
-            this.ground = new Item(client, client.ReadUInt32(address + 
+            this.objectCount = client.Memory.ReadInt32(address + Tibia.Addresses.Map.Distance_Square_ObjectCount) - 1;
+            this.ground = new Item(client, client.Memory.ReadUInt32(address + 
                 Tibia.Addresses.Map.Distance_Square_Objects + Tibia.Addresses.Map.Distance_Object_Id));
         }
 
@@ -114,9 +114,9 @@ namespace Tibia.Objects
                     pointer += Addresses.Map.Step_Square_Object;
 
                     objects.Add(new TileObject(
-                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Id),
-                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data),
-                        client.ReadInt32(pointer + Addresses.Map.Distance_Object_Data_Ex),
+                        client.Memory.ReadInt32(pointer + Addresses.Map.Distance_Object_Id),
+                        client.Memory.ReadInt32(pointer + Addresses.Map.Distance_Object_Data),
+                        client.Memory.ReadInt32(pointer + Addresses.Map.Distance_Object_Data_Ex),
                         i + 1));
                 }
 
@@ -162,7 +162,7 @@ namespace Tibia.Objects
             if (type == ObjectType.Packet)
                 return false;
 
-            return client.WriteUInt32(address +
+            return client.Memory.WriteUInt32(address +
                 Addresses.Map.Distance_Square_Objects +
                 Addresses.Map.Distance_Object_Id, newId);
         }
@@ -176,9 +176,9 @@ namespace Tibia.Objects
                 (Addresses.Map.Distance_Square_Objects +
                 Addresses.Map.Step_Square_Object * oldObject.StackOrder));
 
-            return client.WriteInt32(pointer + Addresses.Map.Distance_Object_Id, newObject.Id) &&
-                client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data, newObject.Data) &&
-                client.WriteInt32(pointer + Addresses.Map.Distance_Object_Data_Ex, newObject.DataEx);
+            return client.Memory.WriteInt32(pointer + Addresses.Map.Distance_Object_Id, newObject.Id) &&
+                client.Memory.WriteInt32(pointer + Addresses.Map.Distance_Object_Data, newObject.Data) &&
+                client.Memory.WriteInt32(pointer + Addresses.Map.Distance_Object_Data_Ex, newObject.DataEx);
         }
         #endregion
     }

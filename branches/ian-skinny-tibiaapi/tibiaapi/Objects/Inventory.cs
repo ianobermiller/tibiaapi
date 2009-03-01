@@ -25,7 +25,7 @@ namespace Tibia.Objects
         public Container GetContainer(byte number)
         {
             uint i = Addresses.Container.Start + (number * Addresses.Container.Step_Container);
-            if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+            if (client.Memory.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
             {
                 return new Container(client, i, number);
             }
@@ -41,7 +41,7 @@ namespace Tibia.Objects
             byte containerNumber = 0;
             for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
             {
-                if (client.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+                if (client.Memory.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
                 {
                     yield return new Container(client, i, containerNumber);
                 }
@@ -82,8 +82,8 @@ namespace Tibia.Objects
                               Addresses.Container.Step_Container * (int)location.container +
                               Addresses.Container.Step_Slot * (int)location.slot;
                 return new Item(client,
-                    client.ReadUInt32(address + Addresses.Container.Distance_Item_Id),
-                    client.ReadByte(address + Addresses.Container.Distance_Item_Count),
+                    client.Memory.ReadUInt32(address + Addresses.Container.Distance_Item_Id),
+                    client.Memory.ReadByte(address + Addresses.Container.Distance_Item_Count),
                     "", location);
             }
             return null;
@@ -97,10 +97,10 @@ namespace Tibia.Objects
         public Item GetItemInSlot(Constants.SlotNumber s)
         {
             uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
-            uint id = client.ReadUInt32(address);
+            uint id = client.Memory.ReadUInt32(address);
             if (id > 0)
             {
-                byte count = client.ReadByte(address + Addresses.Player.Distance_Slot_Count);
+                byte count = client.Memory.ReadByte(address + Addresses.Player.Distance_Slot_Count);
                 return new Item(client, id, count, "", ItemLocation.FromSlot(s));
             }
             else
@@ -114,12 +114,12 @@ namespace Tibia.Objects
             uint address = Addresses.Player.Slot_Head;
             for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
             {
-                uint id = client.ReadUInt32(address);
+                uint id = client.Memory.ReadUInt32(address);
                 if (id > 0)
                 {
                     yield return new Item(client,
                         id,
-                        client.ReadByte(address + +Addresses.Player.Distance_Slot_Count), "",
+                        client.Memory.ReadByte(address + +Addresses.Player.Distance_Slot_Count), "",
                         ItemLocation.FromSlot((Constants.SlotNumber)i));
                 }
             }
@@ -142,7 +142,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(uint id)
         {
-            return UseItemOnCreature(id, 0, client.ReadInt32(Addresses.Player.Id));
+            return UseItemOnCreature(id, 0, client.Memory.ReadInt32(Addresses.Player.Id));
         }
 
         /// <summary>

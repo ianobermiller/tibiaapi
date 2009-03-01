@@ -96,6 +96,12 @@
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Misc.cs" />
     <Compile Include="Exceptions\Version.cs" />
+    <Compile Include="Objects\Client.DllHelper.cs" />
+    <Compile Include="Objects\Client.InputHelper.cs" />
+    <Compile Include="Objects\Client.IOHelper.cs" />
+    <Compile Include="Objects\Client.LoginHelper.cs" />
+    <Compile Include="Objects\Client.MemoryHelper.cs" />
+    <Compile Include="Objects\Client.WindowHelper.cs" />
     <Compile Include="Objects\ContextMenu.cs" />
     <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\Outfit.cs" />

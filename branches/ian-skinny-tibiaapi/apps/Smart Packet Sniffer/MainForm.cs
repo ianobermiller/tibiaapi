@@ -58,12 +58,12 @@ namespace SmartPacketSniffer
             if (btnLog.Text == "Stop Packet Logging")
             {
                 btnLog.Text = "Start Packet Logging";
-                client.StopRawSocket();
+                client.IO.StopRawSocket();
             }
             else if (btnLog.Text == "Start Packet Logging")
             {
                 btnLog.Text = "Stop Packet Logging";
-                client.StartRawSocket();
+                client.IO.StartRawSocket();
             }
         }
 
@@ -87,11 +87,11 @@ namespace SmartPacketSniffer
             if (comboBox1.Items.Count > 0)
             {
                 client = lc[comboBox1.SelectedIndex];
-                if (client.RawSocket == null)
+                if (client.IO.RawSocket == null)
                 {
-                    client.StartRawSocket();
-                    client.RawSocket.IncomingSplitPacket+=new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
-                    client.RawSocket.OutgoingSplitPacket+=new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
+                    client.IO.StartRawSocket();
+                    client.IO.RawSocket.IncomingSplitPacket += new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
+                    client.IO.RawSocket.OutgoingSplitPacket += new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
                     EventHandler e = new EventHandler(RadioChanged);
                     e.Invoke(new Object(), new EventArgs());
                 }
@@ -134,7 +134,7 @@ namespace SmartPacketSniffer
 
         private void LogPacket(byte[] packet, string from, string to)
         {
-            if (client.RawSocket.Enabled)
+            if (client.IO.RawSocket.Enabled)
             {
                 PacketList.Invoke(new EventHandler(delegate
                 {
@@ -246,12 +246,12 @@ namespace SmartPacketSniffer
 
         private void RadioChanged(object sender, EventArgs e)
         {
-            if (radioDefault.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
-            else if (radioSpecial.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
+            if (radioDefault.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
+            else if (radioSpecial.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
             else if (radioProxy.Checked)
             {
-                client.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
-                client.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
+                client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
+                client.IO.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
             }
         }
 
