@@ -74,7 +74,7 @@ namespace Tibia.Packets.Outgoing
                 }
             }
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, List<Constants.Direction> directions)

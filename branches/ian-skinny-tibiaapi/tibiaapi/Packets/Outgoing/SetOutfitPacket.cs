@@ -36,7 +36,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte((byte)Type);
             msg.AddOutfit(Outfit);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Outfit outfit)

@@ -37,7 +37,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte((byte)Type);
             msg.AddUInt16((ushort)ChannelId);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, ChatChannel channel)

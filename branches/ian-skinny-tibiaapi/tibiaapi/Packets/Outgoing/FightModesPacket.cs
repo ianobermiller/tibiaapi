@@ -42,7 +42,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(ChaseMode);
             msg.AddByte(SafeMode);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, byte fightMode, byte chaseMode, byte safeMode)

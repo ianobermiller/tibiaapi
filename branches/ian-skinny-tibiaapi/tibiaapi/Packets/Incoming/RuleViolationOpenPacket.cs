@@ -46,7 +46,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddUInt16(ChannelId);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

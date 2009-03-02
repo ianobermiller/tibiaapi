@@ -87,7 +87,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(Fish);
             msg.AddByte(FishPercent);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

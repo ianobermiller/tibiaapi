@@ -86,7 +86,7 @@ namespace Tibia.Packets.Incoming
                     msg.AddByte(i.Count);
             }
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, byte id, ushort itemId, string name, byte capacity, byte hasParent, List<Objects.Item> items)

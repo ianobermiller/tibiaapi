@@ -77,38 +77,6 @@ namespace Tibia.Objects
 
             #region Proxy wrappers
 
-            public bool SendToServer(byte[] packet)
-            {
-                if (UsingProxy)
-                {
-                    Packets.NetworkMessage msg = new NetworkMessage(client);
-                    msg.AddBytes(packet);
-                    msg.PrepareToSend();
-
-                    proxy.SendToServer(msg);
-
-                    return true;
-                }
-                else
-                    return Packets.OutgoingPacket.SendPacketByMemory(client, packet);
-            }
-
-            public bool SendToClient(byte[] packet)
-            {
-                if (UsingProxy)
-                {
-                    Packets.NetworkMessage msg = new NetworkMessage(client);
-                    msg.AddBytes(packet);
-                    msg.PrepareToSend();
-
-                    proxy.SendToClient(msg);
-
-                    return true;
-                }
-
-                return false;
-            }
-
             /// <summary>
             /// Whether or not the client is connected using a proxy.
             /// </summary>

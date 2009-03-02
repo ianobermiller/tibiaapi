@@ -43,7 +43,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddUInt16(ItemId);
             msg.AddByte(StackPosition);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location location, ushort itemId, byte stackPosition)

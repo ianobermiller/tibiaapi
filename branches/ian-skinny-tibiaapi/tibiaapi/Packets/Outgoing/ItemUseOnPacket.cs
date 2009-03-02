@@ -52,7 +52,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddUInt16(ToSpriteId);
             msg.AddByte(ToStackPosition);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort fromSpriteId, byte fromStackPostion, Objects.Location toPosition, ushort toSpriteId, byte toStackPosition)

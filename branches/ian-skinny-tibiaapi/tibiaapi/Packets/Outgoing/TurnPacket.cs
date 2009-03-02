@@ -46,7 +46,7 @@ namespace Tibia.Packets.Outgoing
         {
             NetworkMessage msg = new NetworkMessage(Client, 0);
             msg.AddByte((byte)Type);
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Constants.Direction direction)

@@ -44,7 +44,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddUInt16(SpriteId);
             msg.AddByte(StackPosition);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location position, ushort spriteId, byte stackPosition)

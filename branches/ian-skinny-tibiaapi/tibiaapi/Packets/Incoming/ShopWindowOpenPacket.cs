@@ -72,7 +72,7 @@ namespace Tibia.Packets.Incoming
                 msg.AddUInt32(i.SellPrice);
             }
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

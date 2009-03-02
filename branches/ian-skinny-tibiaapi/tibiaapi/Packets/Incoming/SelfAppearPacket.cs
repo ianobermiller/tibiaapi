@@ -56,7 +56,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(Unknow2);
             msg.AddByte(CanReportBug);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Tibia.Packets.Incoming
         {
             NetworkMessage msg = new NetworkMessage(Client, 0);
             msg.AddByte((byte)Type);
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

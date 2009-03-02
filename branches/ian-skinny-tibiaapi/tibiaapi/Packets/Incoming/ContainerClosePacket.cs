@@ -47,7 +47,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddByte(Id);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, byte id)

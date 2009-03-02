@@ -94,7 +94,7 @@ namespace Tibia.Packets
             set { this.messageStream.Position = value; }
         }
 
-        public byte[] Packet
+        public byte[] Data
         {
             get
             {
@@ -113,15 +113,15 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt()
         {
-            return XteaEncrypt(Client.IO.XteaKey);
-        }
-
-        public bool XteaEncrypt(uint[] XteaKey)
-        {
             if (Client != null)
                 if (Client.IO.XteaKey == null)
                     return false;
 
+            return XteaEncrypt(Client.IO.XteaKey);
+        }
+
+        public bool XteaEncrypt(uint[] xteaKey)
+        {
             int msgSize = messageStream.Length - 6;
             int pad = msgSize % 8;
 
@@ -134,7 +134,7 @@ namespace Tibia.Packets
             uint[] msgUInt = originalMsg.ToUInt32Array();
 
             for (int i = 0; i < msgUInt.Length; i += 2)
-                XteaEncode(ref msgUInt, i, XteaKey);
+                XteaEncode(ref msgUInt, i, xteaKey);
 
 
             byte[] encryptMsg = msgUInt.ToByteArray();
@@ -174,7 +174,7 @@ namespace Tibia.Packets
             return true;
         }
 
-        private static void XteaEncode(ref uint[] v, int index,uint[] XteaKey)
+        private static void XteaEncode(ref uint[] v, int index, uint[] XteaKey)
         {
             uint y = v[index];
             uint z = v[index + 1];

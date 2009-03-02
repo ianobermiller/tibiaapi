@@ -50,7 +50,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(CreatureId);
             msg.AddByte((byte)Color);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

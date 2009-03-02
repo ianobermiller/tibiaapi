@@ -49,7 +49,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt16((ushort)ChannelId);
             msg.AddString(ChannelName);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, ChatChannel channel, string name)

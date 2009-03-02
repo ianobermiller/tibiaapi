@@ -49,7 +49,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddLocation(ToPosition);
             msg.AddByte(Count);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStackPostion, Objects.Location toPosition, byte count)

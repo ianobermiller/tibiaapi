@@ -50,7 +50,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(CreatureId);
             msg.AddUInt16(Speed);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

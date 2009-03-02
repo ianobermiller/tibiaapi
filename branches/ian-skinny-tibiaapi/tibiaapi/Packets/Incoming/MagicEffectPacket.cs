@@ -50,7 +50,7 @@ namespace Tibia.Packets.Incoming
             msg.AddLocation(Position);
             msg.AddByte(Effect);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Tibia.Packets.Incoming
             if (Item.HasExtraByte)
                 msg.AddByte(Item.Count);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

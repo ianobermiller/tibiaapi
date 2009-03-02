@@ -48,7 +48,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddUInt16(Flag);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

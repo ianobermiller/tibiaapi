@@ -80,7 +80,7 @@ namespace Tibia.Clientless
                 gameSocket.EndConnect(ar);
                 xteaKey = new byte[16];
                 rand.NextBytes(xteaKey);
-                gameSocket.Send(GameServerRequestPacket.Create(os, version, xteaKey, accName, charName, password, ot).Packet);
+                gameSocket.Send(GameServerRequestPacket.Create(os, version, xteaKey, accName, charName, password, ot).Data);
                 gameSocket.BeginReceive(bufferServer, 0, 2, SocketFlags.None, (AsyncCallback)GameServerReceive, null);
             }
             catch (Exception)

@@ -181,7 +181,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddString(Message);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

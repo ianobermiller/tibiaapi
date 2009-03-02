@@ -7,24 +7,6 @@ namespace Tibia.Packets
 {
     public static class Xtea
     {
-        public static byte[] AddAdlerChecksum(byte[] packet)
-        {
-            byte[] packet_WithCRC = new byte[packet.Length + 4];
-            byte[] packet_WithoutHeader = new byte[packet.Length - 2];
-            AdlerChecksum acs = new AdlerChecksum();
-            Array.Copy(packet, 2, packet_WithoutHeader, 0, packet_WithoutHeader.Length);
-            packet_WithCRC[0] = BitConverter.GetBytes((ushort)(packet.Length + 2))[0];
-            packet_WithCRC[1] = BitConverter.GetBytes((ushort)(packet.Length + 2))[1];
-            if (acs.MakeForBuff(packet_WithoutHeader))
-            {
-                Array.Copy(BitConverter.GetBytes(acs.ChecksumValue), 0, packet_WithCRC, 2, 4);
-                Array.Copy(packet_WithoutHeader, 0, packet_WithCRC, 6, packet_WithoutHeader.Length);
-                return packet_WithCRC;
-            }
-            else
-                return null;
-        }
-
         /// <summary>
         /// Encrypt a packet using XTEA.
         /// </summary>
@@ -66,7 +48,7 @@ namespace Tibia.Packets
             {
 
                 byte[] encrypted_ready = new byte[encrypted.Length + 4];
-                Array.Copy(AddAdlerChecksum(encrypted), 0, encrypted_ready, 0, encrypted_ready.Length);
+                Array.Copy(AdlerChecksum.AddTo(encrypted), 0, encrypted_ready, 0, encrypted_ready.Length);
                 return encrypted_ready;
             }
             else

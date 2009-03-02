@@ -42,7 +42,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(Count);
             msg.AddByte(Amount);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, ushort itemId, byte count, byte amount)

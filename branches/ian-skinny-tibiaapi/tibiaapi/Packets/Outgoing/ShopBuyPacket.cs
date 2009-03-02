@@ -49,7 +49,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(Unknown);
             msg.AddByte(Convert.ToByte(WithBackpack));
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, ushort itemId, byte count, byte amount, bool withBackpack)

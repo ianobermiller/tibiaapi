@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(Container);
             msg.AddByte(Slot);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

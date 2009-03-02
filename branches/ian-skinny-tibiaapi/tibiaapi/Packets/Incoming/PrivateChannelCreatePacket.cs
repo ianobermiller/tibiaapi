@@ -52,7 +52,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt16(ChannelId);
             msg.AddString(Name);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Tibia.Packets.Incoming
                 msg.AddString(c.Name);
             }
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, List<Objects.Channel> channels)

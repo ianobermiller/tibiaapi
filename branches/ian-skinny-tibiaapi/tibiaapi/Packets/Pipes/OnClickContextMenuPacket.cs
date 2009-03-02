@@ -31,7 +31,7 @@ namespace Tibia.Packets.Pipes
 
             msg.AddUInt32((uint)EventId);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, int eventId)

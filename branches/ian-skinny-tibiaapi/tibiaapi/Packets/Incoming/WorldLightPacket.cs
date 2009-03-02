@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(LightLevel);
             msg.AddByte(LightColor);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

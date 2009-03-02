@@ -50,7 +50,7 @@ namespace Tibia.Packets.Incoming
             msg.AddString(Message);
             msg.AddByte(Time);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

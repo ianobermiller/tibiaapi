@@ -46,7 +46,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(StackPosition);
             msg.AddByte(Index);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location position, ushort spriteId, byte stackPostion, byte index)

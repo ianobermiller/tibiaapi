@@ -254,7 +254,7 @@ namespace Tibia.Packets.Incoming
 
         public override byte[] ToByteArray()
         {
-            return stream.Packet;
+            return stream.Data;
         }
     }
 }

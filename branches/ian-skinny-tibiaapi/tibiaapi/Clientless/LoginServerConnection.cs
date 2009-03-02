@@ -108,7 +108,7 @@ namespace Tibia.Clientless
                 if (Socket_Connected != null)
                     Socket_Connected("Login Server");
                 loginSocket.Send(LoginServerRequestPacket.Create(os, version, Signatures.Tibia840,
-                    xteaKey, accName, password).Packet);
+                    xteaKey, accName, password).Data);
                 loginSocket.BeginReceive(dataLoginServer, 0, dataLoginServer.Length, SocketFlags.None, (AsyncCallback)LoginServerReceived, null);
             }
             catch (Exception)
@@ -200,7 +200,7 @@ namespace Tibia.Clientless
                             default:
                                 //Notify about an unknown message
                                 if (LoginServer_UnknownMsg != null)
-                                    LoginServer_UnknownMsg(msg.Packet.ToHexString());
+                                    LoginServer_UnknownMsg(msg.Data.ToHexString());
 
                                 loginSocket.Disconnect(true);
                                 if (Socket_Disconnected != null)

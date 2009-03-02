@@ -48,7 +48,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddUInt32(PlayerId);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

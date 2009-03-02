@@ -57,7 +57,7 @@ namespace Tibia.Packets.Incoming
             if (Item.HasExtraByte)
                 msg.AddByte(Item.Count);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, byte slot, Objects.Item item)

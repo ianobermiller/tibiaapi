@@ -388,7 +388,7 @@ namespace Tibia.Packets
                     msg.InsertAdler32();
                     msg.InsertPacketHeader();
 
-                    networkStreamClient.BeginWrite(msg.Packet, 0, msg.Length, null, null);
+                    networkStreamClient.BeginWrite(msg.Data, 0, msg.Length, null, null);
                     networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)CharListReceived, null);
 
                     break;
@@ -443,7 +443,7 @@ namespace Tibia.Packets
                         msg.InsertAdler32();
                         msg.InsertPacketHeader();
 
-                        networkStreamClient.Write(msg.Packet, 0, msg.Length);
+                        networkStreamClient.Write(msg.Data, 0, msg.Length);
 
                         networkStreamClient.BeginRead(bufferClient, 0, 2, (AsyncCallback)ClientReadPacket, null);
                         networkStreamServer.BeginRead(bufferServer, 0, 2, (AsyncCallback)ServerReadPacket, null);
@@ -496,7 +496,7 @@ namespace Tibia.Packets
                 }
 
                 if (ReceivedMessageFromClient != null)
-                    ReceivedMessageFromClient.BeginInvoke(new NetworkMessage(Client, msg.Packet), null, null);
+                    ReceivedMessageFromClient.BeginInvoke(new NetworkMessage(Client, msg.Data), null, null);
 
                 if (msg.CheckAdler32())
                 {
@@ -551,7 +551,7 @@ namespace Tibia.Packets
                                 msg.PrepareToSend();
 
                                 if (networkStreamServer.CanWrite)
-                                    networkStreamServer.Write(msg.Packet, 0, msg.Length);
+                                    networkStreamServer.Write(msg.Data, 0, msg.Length);
 
                                 Restart();
                                 return;
@@ -561,7 +561,7 @@ namespace Tibia.Packets
                     }
 
                     msg.PrepareToSend();
-                    networkStreamServer.Write(msg.Packet, 0, msg.Length);
+                    networkStreamServer.Write(msg.Data, 0, msg.Length);
 
                     Restart();
                     return;
@@ -585,7 +585,7 @@ namespace Tibia.Packets
             msg.InsetLogicalPacketHeader();
             msg.PrepareToSend();
 
-            networkStreamServer.Write(msg.Packet, 0, msg.Length);
+            networkStreamServer.Write(msg.Data, 0, msg.Length);
             Restart();
         }
 
@@ -671,7 +671,7 @@ namespace Tibia.Packets
                     NetworkMessage msg = serverSendQueue.Dequeue();
 
                     if (msg != null)
-                        ServerWrite(msg.Packet);
+                        ServerWrite(msg.Data);
                 }
             }
         }
@@ -850,7 +850,7 @@ namespace Tibia.Packets
                     NetworkMessage msg = clientSendQueue.Dequeue();
 
                     if (msg != null)
-                        ClientWrite(msg.Packet);
+                        ClientWrite(msg.Data);
                 }
             }
         }

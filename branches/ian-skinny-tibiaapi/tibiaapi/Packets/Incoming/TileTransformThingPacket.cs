@@ -81,7 +81,7 @@ namespace Tibia.Packets.Incoming
                     msg.AddByte(Item.Count);
             }
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

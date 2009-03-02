@@ -62,7 +62,7 @@ namespace Tibia.Packets.Incoming
             msg.AddString(Author);
             msg.AddString(Date);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

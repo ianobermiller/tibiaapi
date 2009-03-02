@@ -79,7 +79,7 @@ namespace Tibia.Packets.Outgoing
 
             msg.AddString(Message);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, SpeechType type, string receiver, string message, ChatChannel channel)

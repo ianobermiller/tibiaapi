@@ -52,7 +52,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Color);
             msg.AddString(Message);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, string message, Objects.Location position, TextColor color)

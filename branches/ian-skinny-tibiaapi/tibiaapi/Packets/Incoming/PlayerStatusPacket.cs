@@ -92,7 +92,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddUInt16(Stamina);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

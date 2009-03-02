@@ -34,7 +34,7 @@ namespace Tibia.Packets.Incoming
 
             msg.AddByte((byte)Type);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

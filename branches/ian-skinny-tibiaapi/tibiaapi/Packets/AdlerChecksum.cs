@@ -139,5 +139,23 @@ namespace Tibia.Packets
                 return ChecksumValue.ToString();
             return "Unknown";
         }
+
+        public static byte[] AddTo(byte[] packet)
+        {
+            byte[] packetWithCRC = new byte[packet.Length + 4];
+            byte[] packetWithoutHeader = new byte[packet.Length - 2];
+            AdlerChecksum acs = new AdlerChecksum();
+            Array.Copy(packet, 2, packetWithoutHeader, 0, packetWithoutHeader.Length);
+            packetWithCRC[0] = BitConverter.GetBytes((ushort)(packet.Length + 2))[0];
+            packetWithCRC[1] = BitConverter.GetBytes((ushort)(packet.Length + 2))[1];
+            if (acs.MakeForBuff(packetWithoutHeader))
+            {
+                Array.Copy(BitConverter.GetBytes(acs.ChecksumValue), 0, packetWithCRC, 2, 4);
+                Array.Copy(packetWithoutHeader, 0, packetWithCRC, 6, packetWithoutHeader.Length);
+                return packetWithCRC;
+            }
+            else
+                return null;
+        }
     }
 }

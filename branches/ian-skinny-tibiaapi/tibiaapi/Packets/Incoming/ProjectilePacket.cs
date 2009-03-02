@@ -54,7 +54,7 @@ namespace Tibia.Packets.Incoming
             msg.AddLocation(ToPosition);
             msg.AddByte((byte)Effect);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location fromLocation, Objects.Location toLocation, ProjectileType effect)

@@ -52,7 +52,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(FromStackPosition);
             msg.AddLocation(ToPosition);
 
-            return msg.Packet;
+            return msg.Data;
         }
     }
 }

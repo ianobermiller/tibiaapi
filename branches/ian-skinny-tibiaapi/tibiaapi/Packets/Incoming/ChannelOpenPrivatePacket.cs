@@ -46,7 +46,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddString(Name);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, string name)
