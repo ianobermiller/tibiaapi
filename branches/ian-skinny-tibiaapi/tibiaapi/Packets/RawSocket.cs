@@ -305,7 +305,7 @@ namespace Tibia.Packets
 
             while (msg.Position < msg.Length)
             {
-                OutgoingPacket packet = ParseServerPacket(client, msg);
+                OutgoingPacket packet = ParseServerMessage(client, msg);
                 byte[] packetBytes;
 
                 if (packet == null)
@@ -474,7 +474,7 @@ namespace Tibia.Packets
 
                 while (msg.Position < msg.Length)
                 {
-                    IncomingPacket packet = ParseClientPacket(client, msg);
+                    IncomingPacket packet = ParseClientMessage(client, msg);
                     byte[] packetBytes;
 
                     if (packet == null)

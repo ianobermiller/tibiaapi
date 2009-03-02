@@ -135,8 +135,8 @@ namespace Tibia.Packets
         }
         #endregion
 
-        #region ClientPacket
-        protected IncomingPacket ParseClientPacket(Client client, NetworkMessage msg)
+        #region Client Message
+        protected IncomingPacket ParseClientMessage(Client client, NetworkMessage msg)
         {
             IncomingPacket packet;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
@@ -1019,8 +1019,8 @@ namespace Tibia.Packets
         }
         #endregion
 
-        #region ServerPacket
-        protected OutgoingPacket ParseServerPacket(Client client, NetworkMessage msg)
+        #region Server Message
+        protected OutgoingPacket ParseServerMessage(Client client, NetworkMessage msg)
         {
             OutgoingPacket packet;
             OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();

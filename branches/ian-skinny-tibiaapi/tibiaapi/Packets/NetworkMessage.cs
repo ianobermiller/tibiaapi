@@ -452,9 +452,9 @@ namespace Tibia.Packets
             return PrepareToSend(Client.IO.XteaKey);
         }
 
-        public bool PrepareToSend(uint[] XteaKey)
+        public bool PrepareToSend(uint[] xteaKey)
         {
-            if (!XteaEncrypt(XteaKey))
+            if (!XteaEncrypt(xteaKey))
                 return false;
 
             InsertAdler32();
@@ -468,9 +468,9 @@ namespace Tibia.Packets
             return PrepareToRead(Client.IO.XteaKey);
         }
 
-        public bool PrepareToRead(uint[] XteaKey)
+        public bool PrepareToRead(uint[] xteaKey)
         {
-            if (!XteaDecrypt(XteaKey))
+            if (!XteaDecrypt(xteaKey))
                 return false;
 
             messageStream.Position = 6;
