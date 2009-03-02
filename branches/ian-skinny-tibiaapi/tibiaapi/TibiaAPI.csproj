@@ -263,11 +263,11 @@
     <Compile Include="Util\MouseHook.cs" />
     <Compile Include="Packets\NetworkMessage.cs" />
     <Compile Include="Util\PathFinder.cs" />
-    <Compile Include="Util\Pipe.cs" />
-    <Compile Include="Util\Proxy.cs" />
-    <Compile Include="Util\RawSocket.cs" />
+    <Compile Include="Packets\Pipe.cs" />
+    <Compile Include="Packets\Proxy.cs" />
+    <Compile Include="Packets\RawSocket.cs" />
     <Compile Include="Util\Scheduler.cs" />
-    <Compile Include="Util\SocketBase.cs" />
+    <Compile Include="Packets\SocketBase.cs" />
     <Compile Include="Util\SpriteReader.cs" />
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>

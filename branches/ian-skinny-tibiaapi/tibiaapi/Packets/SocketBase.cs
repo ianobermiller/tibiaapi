@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Diagnostics;
-using Tibia.Packets;
 using Tibia.Objects;
 using System.Windows.Forms;
 using System.Net;
 
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public abstract class SocketBase
     {

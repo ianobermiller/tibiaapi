@@ -14,7 +14,7 @@ namespace Tibia.Objects
         {
             private Client client;
             private AutoResetEvent pipeIsReady;
-            private Util.Pipe pipe = null; //For Displaying Text
+            private Pipe pipe = null; //For Displaying Text
             public event EventHandler PipeInizialazed;
 
             public DllHelper(Client client)
@@ -50,7 +50,7 @@ namespace Tibia.Objects
             /// <summary>
             /// Get the pipe that connects client client to it's injected dll
             /// </summary>
-            public Util.Pipe Pipe
+            public Pipe Pipe
             {
                 get { return pipe; }
             }
@@ -59,8 +59,8 @@ namespace Tibia.Objects
                 if (pipe != null)
                     return;
 
-                pipe = new Tibia.Util.Pipe(client, "TibiaAPI" + client.Process.Id.ToString());
-                pipe.OnConnected += new Tibia.Util.Pipe.PipeNotification(OnPipeConnect);
+                pipe = new Pipe(client, "TibiaAPI" + client.Process.Id.ToString());
+                pipe.OnConnected += new Pipe.PipeNotification(OnPipeConnect);
                 client.ContextMenu.AddInternalEvents();
 
                 if (!Inject(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))

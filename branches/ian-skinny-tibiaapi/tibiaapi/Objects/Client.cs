@@ -88,9 +88,6 @@ namespace Tibia.Objects
                 System.Threading.Thread.Sleep(5);
             }
 
-            // Save the start time (it isn't changing)
-            startTime = Memory.ReadInt32(Addresses.Client.StartTime);
-
             // Save a copy of the handle so the process doesn't have to be opened
             // every read/write operation
             processHandle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
@@ -104,6 +101,9 @@ namespace Tibia.Objects
             login = new LoginHelper(this);
             dll = new DllHelper(this);
             input = new InputHelper(this);
+
+            // Save the start time (it isn't changing)
+            startTime = Memory.ReadInt32(Addresses.Client.StartTime);
         }
 
         /// <summary>

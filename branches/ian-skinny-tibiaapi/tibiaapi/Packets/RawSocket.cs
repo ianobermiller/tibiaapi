@@ -6,11 +6,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Tibia;
-using Tibia.Packets;
 using Tibia.Objects;
 using Tibia.Util;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class RawSocket : SocketBase
     {

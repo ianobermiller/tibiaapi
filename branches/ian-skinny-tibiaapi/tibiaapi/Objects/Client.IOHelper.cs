@@ -11,8 +11,8 @@ namespace Tibia.Objects
         public class IOHelper
         {
             private Client client;
-            private Util.RawSocket rawsocket;
-            private Util.Proxy proxy;
+            private RawSocket rawsocket;
+            private Proxy proxy;
             private bool usingProxy = false;
             private bool sendCodeWritten = false;
             private IntPtr pSender;
@@ -41,24 +41,24 @@ namespace Tibia.Objects
                 StartRawSocket(true);
             }
 
-            public void StartRawSocket(bool Adler)
+            public void StartRawSocket(bool adler)
             {
                 if (client.LoggedIn)
                     client.playerLocation = client.GetPlayer().Location;
 
                 if (rawsocket == null)
-                    rawsocket = new Tibia.Util.RawSocket(client, Adler);
+                    rawsocket = new RawSocket(client, adler);
 
                 rawsocket.Enabled = true;
             }
 
-            public void StartRawSocket(bool Adler, string localIp)
+            public void StartRawSocket(bool adler, string localIp)
             {
                 if (client.LoggedIn)
                     client.playerLocation = client.GetPlayer().Location;
 
                 if (rawsocket == null)
-                    rawsocket = new Tibia.Util.RawSocket(client, Adler, localIp);
+                    rawsocket = new RawSocket(client, adler, localIp);
 
                 rawsocket.Enabled = true;
             }
@@ -69,7 +69,7 @@ namespace Tibia.Objects
                     rawsocket.Enabled = false;
             }
 
-            public Util.RawSocket RawSocket
+            public RawSocket RawSocket
             {
                 get { return rawsocket; }
             }
@@ -129,7 +129,7 @@ namespace Tibia.Objects
 
             public bool StartProxy(bool debug)
             {
-                proxy = new Tibia.Util.Proxy(client, debug);
+                proxy = new Proxy(client, debug);
                 return UsingProxy;
             }
 
@@ -137,7 +137,7 @@ namespace Tibia.Objects
             /// Get the proxy object associated with this client. 
             /// Will ruturn null unless StartProxy() is called first
             /// </summary>
-            public Util.Proxy Proxy
+            public Proxy Proxy
             {
                 get { return proxy; }
             }

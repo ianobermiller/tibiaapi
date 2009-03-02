@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO.Pipes;
 using Tibia.Objects;
-using Tibia.Packets;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class Pipe
     {

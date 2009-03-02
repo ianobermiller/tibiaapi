@@ -324,7 +324,7 @@ namespace Tibia.Objects
         {
             get
             {
-                return new Outfit((ushort)OutfitType, (byte)Color_Head, (byte)Color_Body,
+                return new Outfit(this, (ushort)OutfitType, (byte)Color_Head, (byte)Color_Body,
                     (byte)Color_Legs, (byte)Color_Feet, (byte)Addon); 
             }
             set

@@ -9,7 +9,7 @@ using Tibia.Objects;
 using System.Windows.Forms;
 using System.Net;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class Proxy : SocketBase
     {
@@ -128,7 +128,7 @@ namespace Tibia.Util
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
             if (PlayerLogin != null)
-                Scheduler.AddTask(PlayerLogin, new object[] {this, new EventArgs()}, 500);
+                Util.Scheduler.AddTask(PlayerLogin, new object[] {this, new EventArgs()}, 500);
 
             isConnected = true;
             return true;

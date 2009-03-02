@@ -19,7 +19,7 @@ namespace Tibia.Objects
         /// </summary>
         public void AddInternalEvents()
         {
-            client.Dll.Pipe.OnReceive += new Tibia.Util.Pipe.PipeListener(Pipe_OnReceive);
+            client.Dll.Pipe.OnReceive += new Tibia.Packets.Pipe.PipeListener(Pipe_OnReceive);
         }
 
         private void Pipe_OnReceive(Tibia.Packets.NetworkMessage msg)
