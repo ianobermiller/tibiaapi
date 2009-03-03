@@ -37,3 +37,6 @@ After the initial connection, data needs to be forwarded from the client->proxy-
 SendToServer and SendToClient allow you to inject packets into the client->server and server->client streams, either to perform actions on behalf of the client or send fake data to the client.
  * SendToServer - send a packet directly to the server (you provide the unencrypted packet)
  * SendToClient - send a packet directly to the client (you provide the unencrypted packet)
+
+== Revised Proxy Flowchart (from the branch code) ==
+http://tibiaapi.googlecode.com/svn/branches/ian-skinny-tibiaapi/documentation/proxy-flow-chart.png
