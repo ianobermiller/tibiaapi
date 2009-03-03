@@ -33,17 +33,14 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
 
             msg.AddByte((byte)Type);
 
             msg.AddLocation(Location);
             msg.AddUInt16(ItemId);
             msg.AddByte(StackPosition);
-
-            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location location, ushort itemId, byte stackPosition)

@@ -20,7 +20,8 @@ namespace Tibia.Packets
         #endregion
 
         #region Instance Variables
-        protected MessageStream messageStream;
+        private byte[] _buffer;
+        private int _position, _length, _bufferSize = 16394;
         public Objects.Client Client { get; set; }
         #endregion
 
@@ -28,119 +29,124 @@ namespace Tibia.Packets
 
         public NetworkMessage()
         {
-            messageStream = new MessageStream();
-            messageStream.Position = 6;
+            _buffer = new byte[_bufferSize];
+            _position = 8;
         }
 
         public NetworkMessage(byte[] data)
         {
-            messageStream = new MessageStream(data);
-            messageStream.Position = 0;
+            _buffer = new byte[_bufferSize];
+            Array.Copy(data, _buffer, data.Length);
+            _length = data.Length;
+            _position = 0;
         }
 
-        public NetworkMessage( int length)
+        public NetworkMessage(int length)
         {
-            messageStream = new MessageStream(length);
-            messageStream.Position = 0;
+            _bufferSize = length;
+            _buffer = new byte[_bufferSize];
+            _position = 8;
         }
 
         public NetworkMessage(byte[] data, int length)
         {
-            messageStream = new MessageStream(data,0,length);
-            messageStream.Position = 0;
+            _buffer = new byte[_bufferSize];
+            Array.Copy(data, _buffer, length);
+            _length = length;
+            _position = 0;
         }
 
         public NetworkMessage(Objects.Client client)
         {
+            _buffer = new byte[_bufferSize];
             Client = client;
-            messageStream = new MessageStream();
-            messageStream.Position = 6;
+            _position = 8;
         }
 
         public NetworkMessage(Objects.Client client, int size)
         {
+            _bufferSize = size;
+            _buffer = new byte[_bufferSize];
             Client = client;
-            messageStream = new MessageStream(size);
-            messageStream.Position = 0;
+            _position = 8;
         }
 
         public NetworkMessage(Objects.Client client, byte[] data)
         {
+            _buffer = new byte[_bufferSize];
             Client = client;
-            messageStream = new MessageStream(data);
-            messageStream.Position = 0;
+            Array.Copy(data, _buffer, data.Length);
+            _length = data.Length;
+            _position = 0;
         }
 
-        public NetworkMessage(Objects.Client client,byte[] data, int length)
+        public NetworkMessage(Objects.Client client, byte[] data, int length)
         {
+            _buffer = new byte[_bufferSize];
             Client = client;
-            messageStream = new MessageStream(data, 0, length);
-            messageStream.Position = 0;
+            Array.Copy(data, _buffer, length);
+            _length = length;
+            _position = 0;
         }
 
         #endregion
 
-        #region Properties
+        #region "Properties"
 
         public int Length
         {
-            get { return this.messageStream.Length; }
-            set { messageStream.Length = value; }
+            get { return _length; }
+            set { _length = value; }
         }
 
         public int Position
         {
-            get { return this.messageStream.Position; }
-            set { this.messageStream.Position = value; }
+            get { return _position; }
+            set { _position = value; }
+        }
+
+        public byte[] GetBuffer()
+        {
+            return _buffer;
         }
 
         public byte[] Data
         {
             get
             {
-                return messageStream.ToArray();
+                byte[] _t = new byte[_length];
+                Array.Copy(_buffer, _t, _length);
+                return _t;
             }
-        }
-
-        public byte[] GetBuffer()
-        {
-            return messageStream.GetBuffer();
         }
 
         #endregion
 
-        #region Xtea
+        #region "Xtea"
 
         public bool XteaEncrypt()
         {
-            if (Client != null)
-                if (Client.IO.XteaKey == null)
-                    return false;
-
             return XteaEncrypt(Client.IO.XteaKey);
         }
 
-        public bool XteaEncrypt(uint[] xteaKey)
+        public bool XteaEncrypt(uint[] XteaKey)
         {
-            int msgSize = messageStream.Length - 6;
+            if (XteaKey == null)
+                return false;
+
+            int msgSize = _length - 6;
+
             int pad = msgSize % 8;
-
             if (pad > 0)
+            {
                 msgSize += (8 - pad);
+                _length = 6 + msgSize;
+            }
 
-            byte[] originalMsg = new byte[msgSize];
-            Array.Copy(messageStream.GetBuffer(), 6, originalMsg, 0, messageStream.Length - 6);
+            for (int i = 6; i < _length; i += 8)
+                XTEAEncrypt(_buffer, i, 8, XteaKey);
 
-            uint[] msgUInt = originalMsg.ToUInt32Array();
-
-            for (int i = 0; i < msgUInt.Length; i += 2)
-                XteaEncode(ref msgUInt, i, xteaKey);
-
-
-            byte[] encryptMsg = msgUInt.ToByteArray();
-            messageStream.Position = 6;
-            messageStream.Write(encryptMsg, 0, encryptMsg.Length);
-
+            _position = 6;
             return true;
         }
 
@@ -151,80 +157,94 @@ namespace Tibia.Packets
 
         public bool XteaDecrypt(uint[] XteaKey)
         {
-            if (messageStream.Length <= 6)
+            if (_length <= 6 || (_length - 6) % 8 > 0 || XteaKey == null)
                 return false;
 
-            if ((messageStream.Length - 6) % 8 > 0)
-                return false;
+            for (int i = 6; i < _length; i += 8)
+                XTEADecrypt(_buffer, i, 8, XteaKey);
 
-            byte[] encryptMsg = new byte[messageStream.Length - 6];
-            Array.Copy(messageStream.GetBuffer(), 6, encryptMsg, 0, messageStream.Length - 6);
-
-            uint[] encryptUInt = encryptMsg.ToUInt32Array();
-
-            for (int i = 0; i < encryptUInt.Length; i += 2)
-                XteaDecode(ref encryptUInt, i, XteaKey);
-
-            byte[] decrpytMsg = encryptUInt.ToByteArray();
-            int decrpytMsgLen = (int)BitConverter.ToUInt16(decrpytMsg, 0) + 2;
-
-            messageStream.Length = decrpytMsgLen + 6;
-            Array.Copy(decrpytMsg, 0, messageStream.GetBuffer(), 6, decrpytMsgLen);
+            int decrpytMsgLen = (int)BitConverter.ToUInt16(_buffer, 6) + 2;
+            _length = decrpytMsgLen + 6;
 
             return true;
         }
 
-        private static void XteaEncode(ref uint[] v, int index, uint[] XteaKey)
+        private void XTEAEncrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
-            uint y = v[index];
-            uint z = v[index + 1];
-            uint sum = 0;
-            uint delta = 0x9e3779b9;
-            uint n = 32;
-
-            while (n-- > 0)
+            // defintions that are used to create the cipher text
+            uint x_sum = 0, x_delta = 0x9e3779b9, x_count = 32;
+            // convert the plaintext data into 32 bit words
+            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
+            // main part of the XTEA Cipher
+            while (x_count-- > 0)
             {
-                y += (z << 4 ^ z >> 5) + z ^ sum + XteaKey[sum & 3];
-                sum += delta;
-                z += (y << 4 ^ y >> 5) + y ^ sum + XteaKey[sum >> 11 & 3];
+                x_words[0] += (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
+                    + o_key[x_sum & 3];
+                x_sum += x_delta;
+                x_words[1] += (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
+                    + o_key[x_sum >> 11 & 3];
             }
 
-            v[index] = y;
-            v[index + 1] = z;
+            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
         }
 
-        private static void XteaDecode(ref uint[] v, int index, uint[] XteaKey)
+        private void XTEADecrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
-            uint n = 32;
-            uint sum;
-            uint y = v[index];
-            uint z = v[index + 1];
-            uint delta = 0x9e3779b9;
+            // defintions that are used to restore the plaintext text
+            uint x_count = 32, x_sum = 0xC6EF3720, x_delta = 0x9E3779B9;
+            // convert the data into 32 bit words
+            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
 
-            sum = delta << 5;
-
-            while (n-- > 0)
+            // main part of the XTEA Cipher
+            while (x_count-- > 0)
             {
-                z -= (y << 4 ^ y >> 5) + y ^ sum + XteaKey[sum >> 11 & 3];
-                sum -= delta;
-                y -= (z << 4 ^ z >> 5) + z ^ sum + XteaKey[sum & 3];
+                x_words[1] -= (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
+                    + o_key[x_sum >> 11 & 3];
+                x_sum -= x_delta;
+                x_words[0] -= (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
+                    + o_key[x_sum & 3];
             }
 
-            v[index] = y;
-            v[index + 1] = z;
+            // convert the unit[] into a byte[]
+            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
+        }
 
+        private uint[] ConvertBytesToUints(byte[] p_data, int p_offset, int p_count)
+        {
+            // allocate an array - each uint requires 4 bytes
+            uint[] x_result = new uint[p_count / 4];
+            // run through the data and create the unsigned ints from
+            // the array of bytes
+            for (int i = p_offset, j = 0; i < p_offset + p_count; i += 4, j++)
+            {
+                x_result[j] = BitConverter.ToUInt32(p_data, i);
+            }
+            // return the array of 32-bit unsigned ints
+            return x_result;
+        }
+
+        private byte[] ConvertUintstoBytes(uint[] p_data)
+        {
+            // convert the unit[] into a byte[]
+            byte[] x_result = new byte[p_data.Length * 4];
+            // run through the data and create the bytes from
+            // the array of unsigned ints
+            for (int i = 0, j = 0; i < p_data.Length; i++, j += 4)
+            {
+                byte[] x_interim = BitConverter.GetBytes(p_data[i]);
+                Array.Copy(x_interim, 0, x_result, j, x_interim.Length);
+            }
+            // return the array of 8-bit bytes
+            return x_result;
         }
 
         #endregion
 
-        #region Adler32
+        #region "Adler32"
 
         public bool CheckAdler32()
         {
-            byte[] data = new byte[messageStream.Length - 6];
-            Array.Copy(messageStream.GetBuffer(), 6, data, 0, data.Length);
-
-            if (AdlerChecksum(data) != GetAdler32())
+            if (AdlerChecksum(_buffer, 6) != GetAdler32())
                 return false;
 
             return true;
@@ -232,67 +252,68 @@ namespace Tibia.Packets
 
         public void InsertAdler32()
         {
-            byte[] data = new byte[messageStream.Length - 6];
-            Array.Copy(messageStream.GetBuffer(), 6, data, 0, data.Length);
-            AddAdler32(AdlerChecksum(data));
+            Array.Copy(BitConverter.GetBytes(AdlerChecksum(_buffer, 6)), 0, _buffer, 2, 4);
         }
 
         public const uint AdlerBase = 0xFFF1;
         public const uint AdlerStart = 0x0001;
         public const uint AdlerBuff = 0x0400;
 
-        public static uint AdlerChecksum(byte[] data)
+        public uint AdlerChecksum(byte[] data, int offset)
         {
-            lock ("CalculateAdlerChecksum")
+            if (data == null || _length - 6 <= 0)
+                return 0;
+
+            uint unSum1 = AdlerStart & 0xFFFF;
+            uint unSum2 = (AdlerStart >> 16) & 0xFFFF;
+
+            for (int i = offset; i < _length; i++)
             {
-                if (Object.Equals(data, null))
-                    return 0;
-
-                int nSize = data.GetLength(0);
-
-                if (nSize == 0)
-                    return 0;
-
-                uint unSum1 = AdlerStart & 0xFFFF;
-                uint unSum2 = (AdlerStart >> 16) & 0xFFFF;
-
-                for (int i = 0; i < nSize; i++)
-                {
-                    unSum1 = (unSum1 + data[i]) % AdlerBase;
-                    unSum2 = (unSum1 + unSum2) % AdlerBase;
-                }
-
-                return (unSum2 << 16) + unSum1;
+                unSum1 = (unSum1 + data[i]) % AdlerBase;
+                unSum2 = (unSum1 + unSum2) % AdlerBase;
             }
+
+            return (unSum2 << 16) + unSum1;
         }
 
         #endregion
 
-        #region Packer Header
+        #region "Packer Header"
 
         public void InsertPacketHeader()
         {
-            AddPacketHeader((ushort)(messageStream.Length - 2));
+            AddPacketHeader((ushort)(_length - 2));
         }
 
         #endregion
 
-        #region Get
+        #region "Get"
 
         public byte GetByte()
         {
-            return messageStream.ReadByte();
+            if (_position + 1 > _length)
+                throw new Exception("NetworkMessage try to get more bytes from a smaller buffer");
+
+            return _buffer[_position++];
         }
 
         public byte[] GetBytes(int count)
         {
-            return messageStream.Read(count);
+            if (_position + count > _length)
+                throw new Exception("NetworkMessage try to get more bytes from a smaller buffer");
+
+            byte[] _t = new byte[count];
+            Array.Copy(_buffer, _position, _t, 0, count);
+            _position += count;
+            return _t;
         }
 
         public string GetString()
         {
             int len = (int)GetUInt16();
-            return System.Text.ASCIIEncoding.Default.GetString(GetBytes(len));
+            string t = System.Text.ASCIIEncoding.Default.GetString(_buffer, _position, len);
+            _position += len;
+            return t;
         }
 
         public ushort GetUInt16()
@@ -316,12 +337,12 @@ namespace Tibia.Packets
 
         private uint GetAdler32()
         {
-            return BitConverter.ToUInt32(messageStream.GetBuffer(), 2);
+            return BitConverter.ToUInt32(_buffer, 2);
         }
 
         private ushort GetPacketHeader()
         {
-            return BitConverter.ToUInt16(messageStream.GetBuffer(), 0);
+            return BitConverter.ToUInt16(_buffer, 0);
         }
 
         public Objects.Outfit GetOutfit()
@@ -345,16 +366,26 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region Add
+        #region "Add"
 
         public void AddByte(byte value)
         {
-            messageStream.WriteByte(value);
+            if (1 + _length > _bufferSize)
+                throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
+
+            AddBytes(new byte[] { value });
         }
 
         public void AddBytes(byte[] value)
         {
-            messageStream.Write(value, 0, value.Length);
+            if (value.Length + _length > _bufferSize)
+                throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
+
+            Array.Copy(value, 0, _buffer, _position, value.Length);
+            _position += value.Length;
+
+            if (_position > _length)
+                _length = _position;
         }
 
         public void AddString(string value)
@@ -385,36 +416,31 @@ namespace Tibia.Packets
 
         public void AddPaddingBytes(int count)
         {
-            int p = messageStream.Position;
+            _position += count;
 
-            for (int i = 0; i < count; i++)
-                messageStream.WriteByte(0xAC);
-
-            messageStream.Position = p;
-        }
-
-        private void AddAdler32(uint value)
-        {
-            Array.Copy(BitConverter.GetBytes(value), 0, messageStream.GetBuffer(), 2, 4);
+            if (_position > _length)
+                _length = _position;
         }
 
         private void AddPacketHeader(ushort value)
         {
-            Array.Copy(BitConverter.GetBytes(value), 0, messageStream.GetBuffer(), 0, 2);
+            Array.Copy(BitConverter.GetBytes(value), 0, _buffer, 0, 2);
         }
 
         #endregion
 
-        #region Peek
+        #region "Peek"
 
         public byte PeekByte()
         {
-            return messageStream.PeekByte();
+            return _buffer[_position];
         }
 
         public byte[] PeekBytes(int count)
         {
-            return messageStream.Peek(count);
+            byte[] _t = new byte[count];
+            Array.Copy(_buffer, _position, _t, 0, count);
+            return _t;
         }
 
         public ushort PeekUInt16()
@@ -435,26 +461,32 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region Replace
+        #region "Replace"
 
         public void ReplaceBytes(int index, byte[] value)
         {
-            if (messageStream.Length - index >= value.Length)
-                Array.Copy(value, 0, messageStream.GetBuffer(), index, value.Length);
+            if (_length - index >= value.Length)
+                Array.Copy(value, 0, _buffer, index, value.Length);
         }
 
         #endregion
 
-        #region Other Functions
+        #region "Other Functions"
+
+        public void Reset()
+        {
+            _position = 8;
+            _length = 8;
+        }
 
         public bool PrepareToSend()
         {
             return PrepareToSend(Client.IO.XteaKey);
         }
 
-        public bool PrepareToSend(uint[] xteaKey)
+        public bool PrepareToSend(uint[] XteaKey)
         {
-            if (!XteaEncrypt(xteaKey))
+            if (!XteaEncrypt(XteaKey))
                 return false;
 
             InsertAdler32();
@@ -468,45 +500,41 @@ namespace Tibia.Packets
             return PrepareToRead(Client.IO.XteaKey);
         }
 
-        public bool PrepareToRead(uint[] xteaKey)
+        public bool PrepareToRead(uint[] XteaKey)
         {
-            if (!XteaDecrypt(xteaKey))
+            if (!XteaDecrypt(XteaKey))
                 return false;
 
-            messageStream.Position = 6;
+            _position = 6;
             return true;
         }
 
         public void InsetLogicalPacketHeader()
         {
-            byte[] data = new byte[messageStream.Length - 4];
-            Array.Copy(messageStream.GetBuffer(), 6, data, 2, data.Length - 2);
-            Array.Copy(BitConverter.GetBytes((ushort)(data.Length - 2)), 0, data, 0, 2);
-            messageStream.Position = 6;
-            messageStream.Write(data, 0, data.Length);
+            Array.Copy(BitConverter.GetBytes((ushort)_length - 8), 0, _buffer, 6, 2);
         }
 
         public void UpdateLogicalPacketHeader()
         {
-            Array.Copy(BitConverter.GetBytes((ushort)(messageStream.Length - 8)), 0, messageStream.GetBuffer(), 6, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)(_length - 8)), 0, _buffer, 6, 2);
         }
 
         #endregion
 
-        #region RSA
+        #region "RSA"
 
         public bool RsaCipEncrypt(int start)
         {
             byte[] temp = new byte[128];
-            Array.Copy(messageStream.GetBuffer(), start, temp, 0, 128);
+            Array.Copy(_buffer, start, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(cipE, cipM);
             // it's sometimes possible for the results to be a byte short
             // and this can break some software so we 0x00 pad the result
 
-            messageStream.Position = start;
-            messageStream.Write(GetPaddedValue(output), 0, 128);
+            _position = start;
+            Array.Copy(GetPaddedValue(output), 0, _buffer, start, 128);
 
             return true;
         }
@@ -515,27 +543,26 @@ namespace Tibia.Packets
         {
             byte[] temp = new byte[128];
 
-            Array.Copy(messageStream.GetBuffer(), start, temp, 0, 128);
+            Array.Copy(_buffer, start, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(otServerE, otServerM);
             // it's sometimes possible for the results to be a byte short
             // and this can break some software so we 0x00 pad the result
 
-            messageStream.Position = start;
-            messageStream.Write(GetPaddedValue(output), 0, 128);
+            Array.Copy(GetPaddedValue(output), 0, _buffer, start, 128);
 
             return true;
         }
 
         public bool RsaOTDecrypt()
         {
-            if (messageStream.Length - messageStream.Position != 128)
+            if (_length - _position != 128)
                 return false;
 
             byte[] temp = new byte[128];
 
-            Array.Copy(messageStream.GetBuffer(), messageStream.Position, temp, 0, 128);
+            Array.Copy(_buffer, _position, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output;
@@ -559,7 +586,7 @@ namespace Tibia.Packets
                 output = m2 + otServerQ * h;
             }
 
-            Array.Copy(GetPaddedValue(output), 0, messageStream.GetBuffer(), messageStream.Position, 128);
+            Array.Copy(GetPaddedValue(output), 0, _buffer, _position, 128);
             return true;
         }
 
@@ -578,7 +605,6 @@ namespace Tibia.Packets
             Array.Clear(result, 0, result.Length);
             return padded;
         }
-
         #endregion
     }
 }

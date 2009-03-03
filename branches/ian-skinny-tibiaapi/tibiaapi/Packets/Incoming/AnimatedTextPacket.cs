@@ -43,16 +43,12 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
             msg.AddLocation(Position);
             msg.AddByte((byte)Color);
             msg.AddString(Message);
-
-            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, string message, Objects.Location position, TextColor color)

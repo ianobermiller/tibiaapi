@@ -13,44 +13,61 @@ namespace Tibia.Packets
         public PacketDestination Destination { get; set; }
         public Objects.Client Client { get; set; }
 
+        private static object _msgLock = new object();
+        private static NetworkMessage msg;
+
         public Packet(Objects.Client c)
         {
             Client = c;
             Forward = true;
         }
 
-        public virtual byte[] ToByteArray() 
+        public virtual void ToNetworkMessage(ref NetworkMessage msg)
         {
-            return null;
+            throw new Exception("ToNetworkMessage not implemented.");
         }
 
         public bool Send() 
         {
+            if (msg == null)
+                msg = new NetworkMessage(Client, 4048);
+
             if (Client.IO.UsingProxy)
             {
-                NetworkMessage msg = new NetworkMessage(Client);
-                msg.AddBytes(ToByteArray());
-                msg.InsetLogicalPacketHeader();
-                msg.PrepareToSend();
+                lock (_msgLock)
+                {
+                    msg.Reset();
+                    ToNetworkMessage(ref msg);
 
-                if (Destination == PacketDestination.Client)
-                    Client.IO.Proxy.SendToClient(msg);
-                else if (Destination == PacketDestination.Server)
-                    Client.IO.Proxy.SendToServer(msg);
-                else
-                    return false;
+                    if (msg.Length > 8)
+                    {
+                        msg.InsetLogicalPacketHeader();
+                        msg.PrepareToSend();
 
-                return true;
+                        if (Destination == PacketDestination.Client)
+                            Client.IO.Proxy.SendToClient(msg.Data);
+                        else if (Destination == PacketDestination.Server)
+                            Client.IO.Proxy.SendToServer(msg.Data);
 
+                        return true;
+                    }
+                }
             }
             else if (Destination == PacketDestination.Server)
             {
-                byte[] packet = ToByteArray();
-                byte[] sendPacket = new byte[packet.Length + 2];
-                Array.Copy(packet, 0, sendPacket, 2, packet.Length);
-                Array.Copy(BitConverter.GetBytes((ushort)packet.Length), sendPacket, 2);
+                lock (_msgLock)
+                {
+                    msg.Reset();
+                    ToNetworkMessage(ref msg);
 
-                return SendPacketByMemory(Client, sendPacket);
+                    if (msg.Length > 8)
+                    {
+                        msg.InsetLogicalPacketHeader();
+                        msg.PrepareToSend();
+
+                        return SendPacketByMemory(Client, msg.Data);
+                    }
+                }                
             }
 
             return false;
@@ -65,22 +82,17 @@ namespace Tibia.Packets
         /// <param name="client"></param>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public static bool SendPacketByMemory(Objects.Client client, Byte[] packet)
+        public static bool SendPacketByMemory(Objects.Client client, byte[] packet)
         {
             if (client.LoggedIn)
             {
                 if (!client.IO.IsSendCodeWritten)
                     if (!client.IO.WriteSocketSendCode()) return false;
 
-
-                NetworkMessage msg = new NetworkMessage(client);
-                msg.AddBytes(packet);
-                msg.PrepareToSend();
-
                 uint bufferSize = (uint)(4 + msg.Length);
                 byte[] readyPacket = new byte[bufferSize];
                 Array.Copy(BitConverter.GetBytes(msg.Length), readyPacket, 4);
-                Array.Copy(msg.GetBuffer(), 0, readyPacket, 4, msg.Length);
+                Array.Copy(packet, 0, readyPacket, 4, packet.Length);
 
                 IntPtr pRemote = Tibia.Util.WinApi.VirtualAllocEx(client.ProcessHandle, IntPtr.Zero, /*bufferSize*/
                                             bufferSize,
@@ -110,6 +122,11 @@ namespace Tibia.Packets
 
         public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         { 
+            return false;
+        }
+
+        public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
+        {
             return false;
         }
     }

@@ -10,7 +10,7 @@ namespace Tibia.Packets.Incoming
 
         public ushort ItemId { get; set; }
         public string Name { get; set; }
-        public byte id { get; set; }
+        public byte Id { get; set; }
         public byte Capacity { get; set; }
         public byte HasParent { get; set; }
         public byte ItemCount { get; set; }
@@ -35,7 +35,7 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                id = msg.GetByte();
+                Id = msg.GetByte();
                 ItemId = msg.GetUInt16();
                 Name = msg.GetString();
                 Capacity = msg.GetByte();
@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
                     if (item.HasExtraByte)
                         item.Count = msg.GetByte();
 
-                    item.Loc = Tibia.Objects.ItemLocation.FromContainer(id, (byte)i);
+                    item.Loc = Tibia.Objects.ItemLocation.FromContainer(Id, (byte)i);
                     Items.Add(item);
                 }
             }
@@ -64,13 +64,11 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
-            msg.AddByte(id);
+            msg.AddByte(Id);
             msg.AddUInt16(ItemId);
             msg.AddString(Name);
             msg.AddByte(Capacity);
@@ -85,15 +83,13 @@ namespace Tibia.Packets.Incoming
                 if (i.HasExtraByte)
                     msg.AddByte(i.Count);
             }
-
-            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, byte id, ushort itemId, string name, byte capacity, byte hasParent, List<Objects.Item> items)
         {
             ContainerOpenPacket p = new ContainerOpenPacket(client);
 
-            p.id = id;
+            p.Id = id;
             p.ItemId = itemId;
             p.Name = name;
             p.Capacity = capacity;

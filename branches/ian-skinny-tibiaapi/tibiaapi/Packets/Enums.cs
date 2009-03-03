@@ -132,11 +132,13 @@ namespace Tibia.Packets
         ItemMove = 0x78,
         ShopBuy = 0x7A,
         ShopSell = 0x7B,
+        ShopClose = 0x7C,
         ItemUse = 0x82,
         ItemUseOn = 0x83,
         ItemRotate = 0x85,
         LookAt = 0x8C,
         PlayerSpeech = 0x96,
+        ChannelList = 0x97,
         ChannelOpen = 0x98,
         ChannelClose = 0x99,
         Attack = 0xA1,
@@ -164,10 +166,10 @@ namespace Tibia.Packets
         SetOutfit = 0xD3,
         Ping = 0x1E,
         FightModes = 0xA0,
-
-        //TODO:
         ContainerUpdate = 0xCA,
         TileUpdate = 0xC9,
+        PrivateChannelOpen = 0x9A,
+        NpcChannelClose = 0x9E,
     }
 
     /// <summary>

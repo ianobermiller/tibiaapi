@@ -176,6 +176,7 @@
     <Compile Include="Packets\Outgoing\AttackPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkCancelPacket.cs" />
     <Compile Include="Packets\Outgoing\AutoWalkPacket.cs" />
+    <Compile Include="Packets\Outgoing\ChannelListPacket.cs" />
     <Compile Include="Packets\Outgoing\FightModesPacket.cs" />
     <Compile Include="Packets\Outgoing\ItemRotatePacket.cs" />
     <Compile Include="Packets\Outgoing\ItemUseBattlelistPacket.cs" />
@@ -183,8 +184,11 @@
     <Compile Include="Packets\Outgoing\ChannelClosePacket.cs" />
     <Compile Include="Packets\Outgoing\ContainerClosePacket.cs" />
     <Compile Include="Packets\Outgoing\FollowPacket.cs" />
+    <Compile Include="Packets\Outgoing\NpcChannelClosePacket.cs" />
+    <Compile Include="Packets\Outgoing\PrivateChannelOpenPacket.cs" />
+    <Compile Include="Packets\Outgoing\ShopClosePacket.cs" />
+    <Compile Include="Packets\Outgoing\TileUpdatePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
-    <Compile Include="Packets\Rsa.cs" />
     <Compile Include="Packets\RSA\GameServerRequestPacket.cs" />
     <Compile Include="Packets\RSA\LoginServerRequestPacket.cs" />
     <Compile Include="Packets\Outgoing\LogoutPacket.cs" />

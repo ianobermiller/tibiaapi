@@ -13,28 +13,27 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.TileUpdate;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
         {
-            int position = msg.Position;
+            int msgPosition = msg.Position, outMsgPosition = outMsg.Position;
 
             if (msg.GetByte() != (byte)IncomingPacketType.TileUpdate)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.TileUpdate;
-            stream = new NetworkMessage(Client, 0);
-            stream.AddByte((byte)Type);
+            outMsg.AddByte((byte)Type);
 
             try
             {
                 Objects.Location pos = msg.GetLocation();
-                stream.AddLocation(pos);
+                outMsg.AddLocation(pos);
 
                 ushort thingId = msg.PeekUInt16();
 
                 if (thingId == 0xFF01)
                 {
-                    stream.AddUInt16(msg.GetUInt16());
+                    outMsg.AddUInt16(msg.GetUInt16());
                     //if (!tile)
                     //{
                     //    RAISE_PROTOCOL_ERROR("Tile Update - !tile");
@@ -42,16 +41,17 @@ namespace Tibia.Packets.Incoming
                 }
                 else
                 {
-                    if (!setTileDescription(msg, pos))
+                    if (!setTileDescription(msg, pos, outMsg))
                     {
                         //RAISE_PROTOCOL_ERROR("Tile Update - SetTileDescription");
                     }
-                    stream.AddUInt16(msg.GetUInt16());
+                    outMsg.AddUInt16(msg.GetUInt16());
                 }
             }
             catch (Exception)
             {
-                msg.Position = position;
+                msg.Position = msgPosition;
+                outMsg.Position = outMsgPosition;
                 return false;
             }
 

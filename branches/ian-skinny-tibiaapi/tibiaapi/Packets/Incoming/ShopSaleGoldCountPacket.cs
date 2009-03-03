@@ -53,10 +53,8 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
             msg.AddUInt32(Cash);
 
@@ -67,8 +65,6 @@ namespace Tibia.Packets.Incoming
                 msg.AddUInt16(i.ItemId);
                 msg.AddByte(i.SubType);
             }
-
-            return msg.Data;
         }
     }
 }

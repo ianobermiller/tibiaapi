@@ -5,26 +5,26 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class FollowPacket : OutgoingPacket
+    public class TileUpdatePacket : OutgoingPacket
     {
-        public uint CreatureId { get; set; }
+        public Objects.Location Position { get; set; }
 
-        public FollowPacket(Objects.Client c)
+        public TileUpdatePacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.Follow;
+            Type = OutgoingPacketType.TileUpdate;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.Follow)
+            if (msg.GetByte() != (byte)OutgoingPacketType.TileUpdate)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.Follow;
+            Type = OutgoingPacketType.TileUpdate;
 
-            CreatureId = msg.GetUInt32();
+            Position = msg.GetLocation();
 
             return true;
         }
@@ -32,13 +32,13 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddUInt32(CreatureId);
+            msg.AddLocation(Position);
         }
 
-        public static bool Send(Objects.Client client,uint creatureId)
+        public static bool Send(Objects.Client client, Objects.Location position)
         {
-            FollowPacket p = new FollowPacket(client);
-            p.CreatureId = creatureId;
+            TileUpdatePacket p = new TileUpdatePacket(client);
+            p.Position = position;
             return p.Send();
         }
     }

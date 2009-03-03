@@ -37,10 +37,8 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
             msg.AddLocation(FromPosition);
@@ -48,8 +46,6 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(FromStackPosition);
             msg.AddLocation(ToPosition);
             msg.AddByte(Count);
-
-            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStackPostion, Objects.Location toPosition, byte count)

@@ -5,26 +5,22 @@ using System.Text;
 
 namespace Tibia.Packets.Outgoing
 {
-    public class FollowPacket : OutgoingPacket
+    public class ChannelListPacket : OutgoingPacket
     {
-        public uint CreatureId { get; set; }
-
-        public FollowPacket(Objects.Client c)
+        public ChannelListPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.Follow;
+            Type = OutgoingPacketType.ChannelList;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.Follow)
+            if (msg.GetByte() != (byte)OutgoingPacketType.ChannelList)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.Follow;
-
-            CreatureId = msg.GetUInt32();
+            Type = OutgoingPacketType.ChannelList;
 
             return true;
         }
@@ -32,13 +28,11 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddUInt32(CreatureId);
         }
 
-        public static bool Send(Objects.Client client,uint creatureId)
+        public static bool Send(Objects.Client client)
         {
-            FollowPacket p = new FollowPacket(client);
-            p.CreatureId = creatureId;
+            ChannelListPacket p = new ChannelListPacket(client);
             return p.Send();
         }
     }

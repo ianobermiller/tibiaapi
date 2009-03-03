@@ -13,32 +13,32 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.MapDescription;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
         {
-            int position = msg.Position;
+            int msgPosition = msg.Position, outMsgPosition = outMsg.Position;
 
             if (msg.GetByte() != (byte)IncomingPacketType.MapDescription)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.MapDescription;
-            stream = new NetworkMessage(Client, 0);
-            stream.AddByte((byte)Type);
+            outMsg.AddByte((byte)Type);
 
             try
             {
                 //the client send the player location here.
                 Client.playerLocation = msg.GetLocation();
-                stream.AddLocation(Client.playerLocation);
-                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14);
+                outMsg.AddLocation(Client.playerLocation);
+                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
             }
             catch (Exception)
             {
-                msg.Position = position;
+                msg.Position = msgPosition;
+                outMsg.Position = outMsgPosition;
                 return false;
             }
 
-            return true;
+            return true;   
         }
     }
 }

@@ -50,11 +50,9 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client ,0);
             msg.AddByte((byte)Type);
-            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, Constants.Direction direction)
