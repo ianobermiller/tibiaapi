@@ -302,7 +302,7 @@ namespace Tibia.Packets
                             {
                                 serverSendMsg.InsetLogicalPacketHeader();
                                 serverSendMsg.XteaEncrypt(xteaKey);
-                                serverSendMsg.InsertAdler32();
+                                serverSendMsg.AddAdler32();
                                 serverSendMsg.InsertPacketHeader();
 
                                 lock (serverSendQueueLock)
@@ -383,7 +383,7 @@ namespace Tibia.Packets
                         else
                             clientRecvMsg.RsaCipEncrypt(position);
 
-                        clientRecvMsg.InsertAdler32();
+                        clientRecvMsg.AddAdler32();
                         clientRecvMsg.InsertPacketHeader();
 
                         serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
@@ -425,7 +425,7 @@ namespace Tibia.Packets
                             else
                                 clientRecvMsg.RsaCipEncrypt(position);
 
-                            clientRecvMsg.InsertAdler32();
+                            clientRecvMsg.AddAdler32();
                             clientRecvMsg.InsertPacketHeader();
 
                             serverTcp = new TcpClient(BitConverter.GetBytes(charList[selectedChar].WorldIP).ToIPString(), charList[selectedChar].WorldPort);
@@ -506,7 +506,7 @@ namespace Tibia.Packets
                             {
                                 clientSendMsg.InsetLogicalPacketHeader();
                                 clientSendMsg.XteaEncrypt(xteaKey);
-                                clientSendMsg.InsertAdler32();
+                                clientSendMsg.AddAdler32();
                                 clientSendMsg.InsertPacketHeader();
 
                                 lock (clientSendQueueLock)

@@ -45,7 +45,7 @@ namespace Tibia.Packets.RSA
             msg.AddString(Password);
             if (OpenTibia) msg.RsaOTEncrypt(23);
             else msg.RsaCipEncrypt(23);
-            msg.InsertAdler32();
+            msg.AddAdler32();
             return msg;
         }
         

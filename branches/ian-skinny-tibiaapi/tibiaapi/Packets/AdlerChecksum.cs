@@ -157,5 +157,25 @@ namespace Tibia.Packets
             else
                 return null;
         }
+
+        public uint Generate(byte[] buffer, int index, int length)
+        {
+            if (buffer == null || length - index <= 0)
+                return 0;
+
+            uint unSum1 = AdlerStart & 0xFFFF;
+            uint unSum2 = (AdlerStart >> 16) & 0xFFFF;
+
+            for (int i = index; i < length; i++)
+            {
+                unSum1 = (unSum1 + buffer[i]) % AdlerBase;
+                unSum2 = (unSum1 + unSum2) % AdlerBase;
+            }
+
+            return (unSum2 << 16) + unSum1;
+        }
+
+
+
     }
 }

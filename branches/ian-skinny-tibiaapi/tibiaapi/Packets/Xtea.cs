@@ -5,97 +5,111 @@ using System.Text;
 
 namespace Tibia.Packets
 {
-    public static class Xtea
+    public class Xtea
     {
-        /// <summary>
-        /// Encrypt a packet using XTEA.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <param name="key"></param>
-        public static byte[] Encrypt(byte[] packet, byte[] key, bool addAdler)
+        public Xtea() { }
+
+        public bool XteaEncrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
         {
-            if (packet.Length == 0)
-                return packet;
+            if (xteaKey == null)
+                return false;
 
-            uint[] keyprep = key.ToUintArray();
+            int msgSize = length - index;
 
-            // Pad the packet with extra bytes for encryption
-            int pad = packet.Length % 8;
-
-            byte[] packetprep;
-
-            if (pad == 0)
-                packetprep = new byte[packet.Length];
-            else
-                packetprep = new byte[packet.Length + (8 - pad)];
-
-            Array.Copy(packet, packetprep, packet.Length);
-
-            uint[] payloadprep = packetprep.ToUintArray();
-
-            for (int i = 0; i < payloadprep.Length; i += 2)
+            int pad = msgSize % 8;
+            if (pad > 0)
             {
-                Encode(payloadprep, i, keyprep);
+                msgSize += (8 - pad);
+                length = index + msgSize;
             }
 
-            byte[] encrypted = new byte[packetprep.Length + 2];
+            for (int i = index; i < length; i += 8)
+                XTEAEncrypt(buffer, i, 8, xteaKey);
 
-            Array.Copy(payloadprep.ToByteArray(), 0, encrypted, 2, packetprep.Length);
-
-            Array.Copy(BitConverter.GetBytes((short)packetprep.Length), 0, encrypted, 0, 2);
-
-            if (addAdler)
-            {
-
-                byte[] encrypted_ready = new byte[encrypted.Length + 4];
-                Array.Copy(AdlerChecksum.AddTo(encrypted), 0, encrypted_ready, 0, encrypted_ready.Length);
-                return encrypted_ready;
-            }
-            else
-                return encrypted;
+            return true;
         }
 
-        private static void Encode(uint[] v, int index, uint[] k)
+        public bool XteaDecrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
         {
-            uint y = v[index];
-            uint z = v[index + 1];
-            uint sum = 0;
-            uint delta = 0x9e3779b9;
-            uint n = 32;
+            if (length <= index || (length - index) % 8 > 0 || xteaKey == null)
+                return false;
 
-            while (n-- > 0)
-            {
-                y += (z << 4 ^ z >> 5) + z ^ sum + k[sum & 3];
-                sum += delta;
-                z += (y << 4 ^ y >> 5) + y ^ sum + k[sum >> 11 & 3];
-            }
+            for (int i = index; i < length; i += 8)
+                XTEADecrypt(buffer, i, 8, xteaKey);
 
-            v[index] = y;
-            v[index + 1] = z;
+            int decrpytMsgLen = (int)BitConverter.ToUInt16(buffer, index) + 2;
+            length = decrpytMsgLen + index;
+
+            return true;
         }
 
-        private static uint[] ToUintArray(this byte[] bytes)
+        private void XTEAEncrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
-            uint[] uints = new uint[bytes.Length / 4];
-
-            for (int i = 0; i < uints.Length; i++)
+            // defintions that are used to create the cipher text
+            uint x_sum = 0, x_delta = 0x9e3779b9, x_count = 32;
+            // convert the plaintext data into 32 bit words
+            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
+            // main part of the XTEA Cipher
+            while (x_count-- > 0)
             {
-                uints[i] = BitConverter.ToUInt32(bytes, i * 4);
+                x_words[0] += (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
+                    + o_key[x_sum & 3];
+                x_sum += x_delta;
+                x_words[1] += (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
+                    + o_key[x_sum >> 11 & 3];
             }
 
-            return uints;
+            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
         }
 
-        private static byte[] ToByteArray(this uint[] uints)
+        private void XTEADecrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
-            byte[] bytes = new byte[uints.Length * 4];
+            // defintions that are used to restore the plaintext text
+            uint x_count = 32, x_sum = 0xC6EF3720, x_delta = 0x9E3779B9;
+            // convert the data into 32 bit words
+            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
 
-            for (int i = 0; i < uints.Length; i++)
+            // main part of the XTEA Cipher
+            while (x_count-- > 0)
             {
-                Array.Copy(BitConverter.GetBytes(uints[i]), 0, bytes, i * 4, 4);
+                x_words[1] -= (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
+                    + o_key[x_sum >> 11 & 3];
+                x_sum -= x_delta;
+                x_words[0] -= (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
+                    + o_key[x_sum & 3];
             }
 
-            return bytes;
+            // convert the unit[] into a byte[]
+            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
+        }
+
+        private uint[] ConvertBytesToUints(byte[] p_data, int p_offset, int p_count)
+        {
+            // allocate an array - each uint requires 4 bytes
+            uint[] x_result = new uint[p_count / 4];
+            // run through the data and create the unsigned ints from
+            // the array of bytes
+            for (int i = p_offset, j = 0; i < p_offset + p_count; i += 4, j++)
+            {
+                x_result[j] = BitConverter.ToUInt32(p_data, i);
+            }
+            // return the array of 32-bit unsigned ints
+            return x_result;
+        }
+
+        private byte[] ConvertUintstoBytes(uint[] p_data)
+        {
+            // convert the unit[] into a byte[]
+            byte[] x_result = new byte[p_data.Length * 4];
+            // run through the data and create the bytes from
+            // the array of unsigned ints
+            for (int i = 0, j = 0; i < p_data.Length; i++, j += 4)
+            {
+                byte[] x_interim = BitConverter.GetBytes(p_data[i]);
+                Array.Copy(x_interim, 0, x_result, j, x_interim.Length);
+            }
+            // return the array of 8-bit bytes
+            return x_result;
         }
     }
 }
