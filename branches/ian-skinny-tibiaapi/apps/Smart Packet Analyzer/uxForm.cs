@@ -55,8 +55,8 @@ namespace SmartPacketAnalyzer
             {
                 client.IO.StartProxy();
                 client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                client.IO.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
-                client.IO.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
+                //client.IO.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
+                //client.IO.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))

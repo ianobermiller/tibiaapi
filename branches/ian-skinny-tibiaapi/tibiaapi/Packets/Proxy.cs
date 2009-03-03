@@ -16,50 +16,50 @@ namespace Tibia.Packets
     {
         #region Vars
 
-        static byte[] localHostBytes = new byte[] { 127, 0, 0, 1 };
-        static Random randon = new Random();
+        private static byte[] localHostBytes = new byte[] { 127, 0, 0, 1 };
+        private static Random random = new Random();
 
-        private Client _client;
+        private Client client;
 
-        private NetworkMessage _clientRecvMsg, _serverRecvMsg;
-        private NetworkMessage _clientSendMsg, _serverSendMsg;
+        private NetworkMessage clientRecvMsg, serverRecvMsg;
+        private NetworkMessage clientSendMsg, serverSendMsg;
 
-        private bool _isOtServer;
+        private bool isOtServer;
 
-        private LoginServer[] _loginServers;
-        private CharacterLoginInfo[] _charList;
-        private ushort _serverPort;
+        private LoginServer[] loginServers;
+        private CharacterLoginInfo[] charList;
+        private ushort serverPort;
 
-        private uint[] _xteaKey;
+        private uint[] xteaKey;
 
-        private Protocol _protocol = Protocol.NONE;
+        private Protocol protocol = Protocol.NONE;
 
-        private int _selectedLoginServer = 0;
+        private int selectedLoginServer = 0;
 
-        private TcpListener _clientTcp;
-        private Socket _clientSocket;
-        private NetworkStream _clientStream;
-        private Queue<byte[]> _clientSendQueue;
-        private object _clientSendQueueLock;
-        private bool _clientWritting;
-        private Thread _clientSendThread;
-        private object _clientSendThreadLock;
+        private TcpListener clientTcp;
+        private Socket clientSocket;
+        private NetworkStream clientStream;
+        private Queue<byte[]> clientSendQueue;
+        private object clientSendQueueLock;
+        private bool clientWritting;
+        private Thread clientSendThread;
+        private object clientSendThreadLock;
 
-        private bool _accepting = false;
-        private object _restartLock;
+        private bool accepting = false;
+        private object restartLock;
 
-        private TcpClient _serverTcp;
-        private NetworkStream _serverStream;
-        private Queue<byte[]> _serverSendQueue;
-        private object _serverSendQueueLock;
-        private bool _serverWritting;
-        private Thread _serverSendThread;
-        private object _serverSendThreadLock;
+        private TcpClient serverTcp;
+        private NetworkStream serverStream;
+        private Queue<byte[]> serverSendQueue;
+        private object serverSendQueueLock;
+        private bool serverWritting;
+        private Thread serverSendThread;
+        private object serverSendThreadLock;
 
-        private object _debugLock;
-        private bool _connected;
+        private object debugLock;
+        private bool connected;
 
-        private DateTime _lastInteraction;
+        private DateTime lastInteraction;
 
         #endregion
 
@@ -69,60 +69,65 @@ namespace Tibia.Packets
         {
             try
             {
-                _client = client;
-                _serverRecvMsg = new NetworkMessage(_client);
-                _clientRecvMsg = new NetworkMessage(_client);
-                _clientSendMsg = new NetworkMessage(_client);
-                _serverSendMsg = new NetworkMessage(_client);
-
-                _clientSendQueue = new Queue<byte[]> { };
-                _serverSendQueue = new Queue<byte[]> { };
-
-                _clientSendQueueLock = new object();
-                _serverSendQueueLock = new object();
-                _restartLock = new object();
-
-                _clientSendThreadLock = new object();
-                _serverSendThreadLock = new object();
-
-                _debugLock = new object();
-
-                _xteaKey = new uint[4];
-
-                _loginServers = _client.Login.Servers;
-
-                if (_loginServers[0].Server == "localhost")
-                    _loginServers = _client.Login.DefaultServers;
-
-                if (_serverPort == 0)
-                    _serverPort = GetFreePort();
-
-                _client.Login.SetServer("localhost", (short)_serverPort);
-
-                if (_client.Login.RSA == Constants.RSAKey.OpenTibia)
-                    _isOtServer = true;
-                else
-                {
-                    _client.Login.RSA = Constants.RSAKey.OpenTibia;
-                    _isOtServer = false;
-                }
-
-                if (_client.Login.CharListCount != 0)
-                {
-                    _charList = _client.Login.CharacterList;
-                    _client.Login.SetCharListServer(localHostBytes, _serverPort);
-                }
-
-                //login event
-                ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
-
-                startListen();
-                _client.IO.UsingProxy = true;
+                this.client = client;
+                Initialize();
             }
             catch (Exception ex)
             {
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
+        }
+
+        private void Initialize()
+        {
+            serverRecvMsg = new NetworkMessage(client);
+            clientRecvMsg = new NetworkMessage(client);
+            clientSendMsg = new NetworkMessage(client);
+            serverSendMsg = new NetworkMessage(client);
+
+            clientSendQueue = new Queue<byte[]>();
+            serverSendQueue = new Queue<byte[]>();
+
+            clientSendQueueLock = new object();
+            serverSendQueueLock = new object();
+            restartLock = new object();
+
+            clientSendThreadLock = new object();
+            serverSendThreadLock = new object();
+
+            debugLock = new object();
+
+            xteaKey = new uint[4];
+
+            loginServers = client.Login.Servers;
+
+            if (loginServers[0].Server == "localhost")
+                loginServers = client.Login.DefaultServers;
+
+            if (serverPort == 0)
+                serverPort = GetFreePort();
+
+            client.Login.SetServer("localhost", (short)serverPort);
+
+            if (client.Login.RSA == Constants.RSAKey.OpenTibia)
+                isOtServer = true;
+            else
+            {
+                client.Login.RSA = Constants.RSAKey.OpenTibia;
+                isOtServer = false;
+            }
+
+            if (client.Login.CharListCount != 0)
+            {
+                charList = client.Login.CharacterList;
+                client.Login.SetCharListServer(localHostBytes, serverPort);
+            }
+
+            //login event
+            ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
+
+            StartListen();
+            client.IO.UsingProxy = true;
         }
 
         #endregion
@@ -131,7 +136,7 @@ namespace Tibia.Packets
 
         private bool Proxy_ReceivedSelfAppearIncomingPacket(IncomingPacket packet)
         {
-            _connected = true;
+            connected = true;
 
             if (PlayerLogin != null)
                 Util.Scheduler.AddTask(PlayerLogin, new object[] { this, new EventArgs() }, 1000);
@@ -148,11 +153,11 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region Propriedades
+        #region Properties
 
         public uint[] XteaKey
         {
-            get { return _xteaKey; }
+            get { return xteaKey; }
         }
 
         #endregion
@@ -161,44 +166,44 @@ namespace Tibia.Packets
 
         public void CheckState()
         {
-            if ((DateTime.Now - _lastInteraction).TotalSeconds >= 30)
+            if ((DateTime.Now - lastInteraction).TotalSeconds >= 30)
             {
-                restart();
+                Restart();
             }
         }
 
         public void SendToServer(byte[] data)
         {
-            lock (_serverSendQueueLock)
+            lock (serverSendQueueLock)
             {
-                _serverSendQueue.Enqueue(data);
+                serverSendQueue.Enqueue(data);
             }
 
-            lock (_serverSendThreadLock)
+            lock (serverSendThreadLock)
             {
-                if (!_serverWritting)
+                if (!serverWritting)
                 {
-                    _serverWritting = true;
-                    _serverSendThread = new Thread(new ThreadStart(serverSend));
-                    _serverSendThread.Start();
+                    serverWritting = true;
+                    serverSendThread = new Thread(new ThreadStart(ServerSend));
+                    serverSendThread.Start();
                 }
             }
         }
 
         public void SendToClient(byte[] data)
         {
-            lock (_clientSendQueueLock)
+            lock (clientSendQueueLock)
             {
-                _clientSendQueue.Enqueue(data);
+                clientSendQueue.Enqueue(data);
             }
 
-            lock (_clientSendThreadLock)
+            lock (clientSendThreadLock)
             {
-                if (!_clientWritting)
+                if (!clientWritting)
                 {
-                    _clientWritting = true;
-                    _clientSendThread = new Thread(new ThreadStart(clientSend));
-                    _clientSendThread.Start();
+                    clientWritting = true;
+                    clientSendThread = new Thread(new ThreadStart(ClientSend));
+                    clientSendThread.Start();
                 }
             }
         }
@@ -207,153 +212,153 @@ namespace Tibia.Packets
 
         #region Private Functions
 
-        private void startListen()
+        private void StartListen()
         {
             try
             {
-                _accepting = true;
-                _protocol = Protocol.NONE;
-                _clientSendQueue.Clear();
-                _serverSendQueue.Clear();
+                accepting = true;
+                protocol = Protocol.NONE;
+                clientSendQueue.Clear();
+                serverSendQueue.Clear();
 
-                _clientTcp = new TcpListener(IPAddress.Any, _serverPort);
-                _clientTcp.Start();
-                _clientTcp.BeginAcceptSocket(new AsyncCallback(listenCallBack), null);
+                clientTcp = new TcpListener(IPAddress.Any, serverPort);
+                clientTcp.Start();
+                clientTcp.BeginAcceptSocket(new AsyncCallback(ListenCallBack), null);
             }
             catch (Exception ex)
             {
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void restart()
+        private void Restart()
         {
-            lock (_restartLock)
+            lock (restartLock)
             {
-                if (_accepting)
+                if (accepting)
                     return;
 
-                stop();
-                startListen();
+                Stop();
+                StartListen();
             }
         }
 
-        private void stop()
+        private void Stop()
         {
             try
             {
-                if (_connected)
+                if (connected)
                 {
-                    _connected = false;
+                    connected = false;
 
                     if (PlayerLogout != null)
                         PlayerLogout.Invoke(this, new EventArgs());
                 }
 
-                if (_clientTcp != null)
-                    _clientTcp.Stop();
+                if (clientTcp != null)
+                    clientTcp.Stop();
 
-                if (_clientSocket != null)
-                    _clientSocket.Close();
+                if (clientSocket != null)
+                    clientSocket.Close();
 
-                if (_clientStream != null)
-                    _clientStream.Close();
+                if (clientStream != null)
+                    clientStream.Close();
 
-                if (_serverTcp != null)
-                    _serverTcp.Close();
+                if (serverTcp != null)
+                    serverTcp.Close();
             }
             catch (Exception ex)
             {
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void serverSend()
+        private void ServerSend()
         {
             try
             {
                 byte[] packet = null;
 
-                lock (_serverSendQueueLock)
+                lock (serverSendQueueLock)
                 {
-                    if (_serverSendQueue.Count > 0)
-                        packet = _serverSendQueue.Dequeue();
+                    if (serverSendQueue.Count > 0)
+                        packet = serverSendQueue.Dequeue();
                     else
                     {
-                        _serverWritting = false;
+                        serverWritting = false;
                         return;
                     }
                 }
 
                 if (packet == null)
                 {
-                    _serverWritting = false;
+                    serverWritting = false;
                     throw new Exception("Null Packet.");
                 }
 
-                _serverStream.BeginWrite(packet, 0, packet.Length, new AsyncCallback(serverSendCallBack), null);
+                serverStream.BeginWrite(packet, 0, packet.Length, new AsyncCallback(ServerSendCallBack), null);
             }
             catch (Exception ex)
             {
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void clientSend()
+        private void ClientSend()
         {
             try
             {
                 byte[] packet = null;
 
-                lock (_clientSendQueueLock)
+                lock (clientSendQueueLock)
                 {
-                    if (_clientSendQueue.Count > 0)
-                        packet = _clientSendQueue.Dequeue();
+                    if (clientSendQueue.Count > 0)
+                        packet = clientSendQueue.Dequeue();
                     else
                     {
-                        _clientWritting = false;
+                        clientWritting = false;
                         return;
                     }
                 }
 
                 if (packet == null)
                 {
-                    _clientWritting = false;
+                    clientWritting = false;
                     throw new Exception("Null Packet.");
                 }
 
-                _clientStream.BeginWrite(packet, 0, packet.Length, new AsyncCallback(clientSendCallBack), null);
+                clientStream.BeginWrite(packet, 0, packet.Length, new AsyncCallback(ClientSendCallBack), null);
             }
             catch (System.IO.IOException) { }
             catch (ObjectDisposedException) { }
             catch (Exception ex)
             {
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void parseCharacterList()
+        private void ParseCharacterList()
         {
             try
             {
-                if (_serverRecvMsg.CheckAdler32() && _serverRecvMsg.PrepareToRead())
+                if (serverRecvMsg.CheckAdler32() && serverRecvMsg.PrepareToRead())
                 {
-                    _serverRecvMsg.GetUInt16();
+                    serverRecvMsg.GetUInt16();
 
-                    while (_serverRecvMsg.Position < _serverRecvMsg.Length)
+                    while (serverRecvMsg.Position < serverRecvMsg.Length)
                     {
-                        byte cmd = _serverRecvMsg.GetByte();
+                        byte cmd = serverRecvMsg.GetByte();
 
                         switch (cmd)
                         {
                             case 0x0A: //Error message
-                                _serverRecvMsg.GetString();
+                                serverRecvMsg.GetString();
                                 break;
                             case 0x0B: //For your information
-                                _serverRecvMsg.GetString();
+                                serverRecvMsg.GetString();
                                 break;
                             case 0x14: //MOTD
-                                _serverRecvMsg.GetString();
+                                serverRecvMsg.GetString();
                                 break;
                             case 0x1E: //Patching exe/dat/spr messages
                             case 0x1F:
@@ -361,146 +366,146 @@ namespace Tibia.Packets
                                 //DisconnectClient(0x0A, "A new client is avalible, please download it first!");
                                 return;
                             case 0x28: //Select other login server
-                                _selectedLoginServer = randon.Next(0, _loginServers.Length - 1);
+                                selectedLoginServer = random.Next(0, loginServers.Length - 1);
                                 break;
                             case 0x64: //character list
-                                int nChar = (int)_serverRecvMsg.GetByte();
-                                _charList = new CharacterLoginInfo[nChar];
+                                int nChar = (int)serverRecvMsg.GetByte();
+                                charList = new CharacterLoginInfo[nChar];
 
                                 for (int i = 0; i < nChar; i++)
                                 {
-                                    _charList[i].CharName = _serverRecvMsg.GetString();
-                                    _charList[i].WorldName = _serverRecvMsg.GetString();
-                                    _charList[i].WorldIP = _serverRecvMsg.PeekUInt32();
-                                    _serverRecvMsg.AddBytes(localHostBytes);
-                                    _charList[i].WorldPort = _serverRecvMsg.PeekUInt16();
-                                    _serverRecvMsg.AddUInt16(_serverPort);
+                                    charList[i].CharName = serverRecvMsg.GetString();
+                                    charList[i].WorldName = serverRecvMsg.GetString();
+                                    charList[i].WorldIP = serverRecvMsg.PeekUInt32();
+                                    serverRecvMsg.AddBytes(localHostBytes);
+                                    charList[i].WorldPort = serverRecvMsg.PeekUInt16();
+                                    serverRecvMsg.AddUInt16(serverPort);
                                 }
 
                                 //send this data to client
-                                _serverRecvMsg.PrepareToSend();
-                                _clientStream.Write(_serverRecvMsg.GetBuffer(), 0, _serverRecvMsg.Length);
-                                restart();
+                                serverRecvMsg.PrepareToSend();
+                                clientStream.Write(serverRecvMsg.GetBuffer(), 0, serverRecvMsg.Length);
+                                Restart();
                                 return;
                             default:
                                 break;
                         }
                     }
 
-                    _serverRecvMsg.PrepareToSend();
-                    _clientStream.Write(_serverRecvMsg.GetBuffer(), 0, _serverRecvMsg.Length);
-                    restart();
+                    serverRecvMsg.PrepareToSend();
+                    clientStream.Write(serverRecvMsg.GetBuffer(), 0, serverRecvMsg.Length);
+                    Restart();
                     return;
                 }
                 else
-                    restart();
+                    Restart();
             }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void parseFirstClientMsg()
+        private void ParseFirstClientMsg()
         {
             try
             {
-                _clientRecvMsg.Position = 6;
-                byte protocolId = _clientRecvMsg.GetByte();
+                clientRecvMsg.Position = 6;
+                byte protocolId = clientRecvMsg.GetByte();
                 int position;
 
                 switch (protocolId)
                 {
                     case 0x01:
 
-                        _protocol = Protocol.LOGIN;
-                        _clientRecvMsg.GetUInt16();
-                        ushort clientVersion = _clientRecvMsg.GetUInt16();
+                        protocol = Protocol.LOGIN;
+                        clientRecvMsg.GetUInt16();
+                        ushort clientVersion = clientRecvMsg.GetUInt16();
 
-                        _clientRecvMsg.GetUInt32();
-                        _clientRecvMsg.GetUInt32();
-                        _clientRecvMsg.GetUInt32();
+                        clientRecvMsg.GetUInt32();
+                        clientRecvMsg.GetUInt32();
+                        clientRecvMsg.GetUInt32();
 
-                        position = _clientRecvMsg.Position;
+                        position = clientRecvMsg.Position;
 
-                        _clientRecvMsg.RsaOTDecrypt();
+                        clientRecvMsg.RsaOTDecrypt();
 
-                        if (_clientRecvMsg.GetByte() != 0)
+                        if (clientRecvMsg.GetByte() != 0)
                         {
-                            restart();
+                            Restart();
                             return;
                         }
 
-                        _xteaKey[0] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[1] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[2] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[3] = _clientRecvMsg.GetUInt32();
+                        xteaKey[0] = clientRecvMsg.GetUInt32();
+                        xteaKey[1] = clientRecvMsg.GetUInt32();
+                        xteaKey[2] = clientRecvMsg.GetUInt32();
+                        xteaKey[3] = clientRecvMsg.GetUInt32();
 
                         if (clientVersion != 840)
                         {
                         }
 
-                        _serverTcp = new TcpClient(_loginServers[_selectedLoginServer].Server, _loginServers[_selectedLoginServer].Port);
-                        _serverStream = _serverTcp.GetStream();
+                        serverTcp = new TcpClient(loginServers[selectedLoginServer].Server, loginServers[selectedLoginServer].Port);
+                        serverStream = serverTcp.GetStream();
 
-                        if (_isOtServer)
-                            _clientRecvMsg.RsaOTEncrypt(position);
+                        if (isOtServer)
+                            clientRecvMsg.RsaOTEncrypt(position);
                         else
-                            _clientRecvMsg.RsaCipEncrypt(position);
+                            clientRecvMsg.RsaCipEncrypt(position);
 
-                        _clientRecvMsg.InsertAdler32();
-                        _clientRecvMsg.InsertPacketHeader();
+                        clientRecvMsg.InsertAdler32();
+                        clientRecvMsg.InsertPacketHeader();
 
-                        _serverStream.Write(_clientRecvMsg.GetBuffer(), 0, _clientRecvMsg.Length);
-                        _serverStream.BeginRead(_serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(serverReadCallBack), null);
+                        serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
+                        serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                         break;
 
                     case 0x0A:
 
-                        _protocol = Protocol.WORLD;
-                        _clientRecvMsg.GetUInt16();
-                        _clientRecvMsg.GetUInt16();
+                        protocol = Protocol.WORLD;
+                        clientRecvMsg.GetUInt16();
+                        clientRecvMsg.GetUInt16();
 
 
-                        position = _clientRecvMsg.Position;
+                        position = clientRecvMsg.Position;
 
-                        _clientRecvMsg.RsaOTDecrypt();
+                        clientRecvMsg.RsaOTDecrypt();
 
-                        if (_clientRecvMsg.GetByte() != 0)
+                        if (clientRecvMsg.GetByte() != 0)
                         {
-                            restart();
+                            Restart();
                             return;
                         }
 
-                        _xteaKey[0] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[1] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[2] = _clientRecvMsg.GetUInt32();
-                        _xteaKey[3] = _clientRecvMsg.GetUInt32();
+                        xteaKey[0] = clientRecvMsg.GetUInt32();
+                        xteaKey[1] = clientRecvMsg.GetUInt32();
+                        xteaKey[2] = clientRecvMsg.GetUInt32();
+                        xteaKey[3] = clientRecvMsg.GetUInt32();
 
 
-                        _clientRecvMsg.GetByte(); //unknow..
-                        _clientRecvMsg.GetString();
-                        string name = _clientRecvMsg.GetString();
-                        int selectedChar = getSelectedChar(name);
+                        clientRecvMsg.GetByte(); //unknow..
+                        clientRecvMsg.GetString();
+                        string name = clientRecvMsg.GetString();
+                        int selectedChar = GetSelectedChar(name);
 
                         if (selectedChar >= 0)
                         {
-                            if (_isOtServer)
-                                _clientRecvMsg.RsaOTEncrypt(position);
+                            if (isOtServer)
+                                clientRecvMsg.RsaOTEncrypt(position);
                             else
-                                _clientRecvMsg.RsaCipEncrypt(position);
+                                clientRecvMsg.RsaCipEncrypt(position);
 
-                            _clientRecvMsg.InsertAdler32();
-                            _clientRecvMsg.InsertPacketHeader();
+                            clientRecvMsg.InsertAdler32();
+                            clientRecvMsg.InsertPacketHeader();
 
-                            _serverTcp = new TcpClient(BitConverter.GetBytes(_charList[selectedChar].WorldIP).ToIPString(), _charList[selectedChar].WorldPort);
-                            _serverStream = _serverTcp.GetStream();
+                            serverTcp = new TcpClient(BitConverter.GetBytes(charList[selectedChar].WorldIP).ToIPString(), charList[selectedChar].WorldPort);
+                            serverStream = serverTcp.GetStream();
 
-                            _serverStream.Write(_clientRecvMsg.GetBuffer(), 0, _clientRecvMsg.Length);
+                            serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
 
-                            _serverStream.BeginRead(_serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(serverReadCallBack), null);
-                            _clientStream.BeginRead(_clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(clientReadCallBack), null);
+                            serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
+                            clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
                         }
 
                         break;
@@ -511,8 +516,8 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
@@ -520,159 +525,159 @@ namespace Tibia.Packets
 
         #region Callbacks
 
-        private void serverSendCallBack(IAsyncResult ar)
+        private void ServerSendCallBack(IAsyncResult ar)
         {
             try
             {
-                _serverStream.EndWrite(ar);
+                serverStream.EndWrite(ar);
 
                 bool runAgain = false;
 
-                lock (_serverSendQueueLock)
+                lock (serverSendQueueLock)
                 {
-                    if (_serverSendQueue.Count > 0)
+                    if (serverSendQueue.Count > 0)
                         runAgain = true;
                 }
 
                 if (runAgain)
-                    serverSend();
+                    ServerSend();
                 else
-                    _serverWritting = false;
+                    serverWritting = false;
             }
-            catch (ObjectDisposedException) { restart(); }
-            catch (System.IO.IOException) { restart(); }
+            catch (ObjectDisposedException) { Restart(); }
+            catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void clientSendCallBack(IAsyncResult ar)
+        private void ClientSendCallBack(IAsyncResult ar)
         {
             try
             {
-                _clientStream.EndWrite(ar);
+                clientStream.EndWrite(ar);
 
                 bool runAgain = false;
 
-                lock (_clientSendQueueLock)
+                lock (clientSendQueueLock)
                 {
-                    if (_clientSendQueue.Count > 0)
+                    if (clientSendQueue.Count > 0)
                         runAgain = true;
                 }
 
                 if (runAgain)
-                    clientSend();
+                    ClientSend();
                 else
-                    _clientWritting = false;
+                    clientWritting = false;
             }
-            catch (ObjectDisposedException) { restart(); }
-            catch (System.IO.IOException) { restart(); }
+            catch (ObjectDisposedException) { Restart(); }
+            catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void listenCallBack(IAsyncResult ar)
+        private void ListenCallBack(IAsyncResult ar)
         {
             try
             {
-                _accepting = false;
-                _clientSocket = _clientTcp.EndAcceptSocket(ar);
-                _clientTcp.Stop();
+                accepting = false;
+                clientSocket = clientTcp.EndAcceptSocket(ar);
+                clientTcp.Stop();
 
-                _clientStream = new NetworkStream(_clientSocket);
-                _clientStream.BeginRead(_clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(clientReadCallBack), null);
+                clientStream = new NetworkStream(clientSocket);
+                clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
-            catch (ObjectDisposedException) { restart(); }
-            catch (System.IO.IOException) { restart(); }
+            catch (ObjectDisposedException) { Restart(); }
+            catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void serverReadCallBack(IAsyncResult ar)
+        private void ServerReadCallBack(IAsyncResult ar)
         {
             try
             {
-                int read = _serverStream.EndRead(ar);
+                int read = serverStream.EndRead(ar);
 
                 if (read < 2)
                 {
-                    restart();
+                    Restart();
                     return;
                 }
 
-                _lastInteraction = DateTime.Now;
-                int pSize = (int)BitConverter.ToUInt16(_serverRecvMsg.GetBuffer(), 0) + 2;
+                lastInteraction = DateTime.Now;
+                int pSize = (int)BitConverter.ToUInt16(serverRecvMsg.GetBuffer(), 0) + 2;
 
                 while (read < pSize)
                 {
-                    if (_serverStream.CanRead)
-                        read += _serverStream.Read(_serverRecvMsg.GetBuffer(), read, pSize - read);
+                    if (serverStream.CanRead)
+                        read += serverStream.Read(serverRecvMsg.GetBuffer(), read, pSize - read);
                     else
                     {
                         throw new Exception("Connection broken.");
                     }
                 }
 
-                _serverRecvMsg.Length = pSize;
+                serverRecvMsg.Length = pSize;
 
-                switch (_protocol)
+                switch (protocol)
                 {
                     case Protocol.LOGIN:
-                        parseCharacterList();
+                        ParseCharacterList();
                         break;
                     case Protocol.WORLD:
 
-                        if (_serverRecvMsg.CheckAdler32() && _serverRecvMsg.XteaDecrypt(_xteaKey))
+                        if (serverRecvMsg.CheckAdler32() && serverRecvMsg.XteaDecrypt(xteaKey))
                         {
 
-                            _serverRecvMsg.Position = 6;
-                            int msgSize = (int)_serverRecvMsg.GetUInt16() + 8;
-                            _clientSendMsg.Reset();
+                            serverRecvMsg.Position = 6;
+                            int msgSize = (int)serverRecvMsg.GetUInt16() + 8;
+                            clientSendMsg.Reset();
 
-                            while (_serverRecvMsg.Position < msgSize)
+                            while (serverRecvMsg.Position < msgSize)
                             {
-                                if (!ParseServerPacket(_client, _serverRecvMsg, _clientSendMsg))
+                                if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                                 {
-                                    byte[] unknown = _serverRecvMsg.GetBytes(_serverRecvMsg.Length - _serverRecvMsg.Position);
-                                    writeDebug("Unknown incoming packet: " + unknown.ToHexString());
-                                    _clientSendMsg.AddBytes(unknown);
+                                    byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
+                                    WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
+                                    clientSendMsg.AddBytes(unknown);
                                     break;
                                 }
                             }
 
-                            if (_clientSendMsg.Length > 8)
+                            if (clientSendMsg.Length > 8)
                             {
-                                _clientSendMsg.InsetLogicalPacketHeader();
-                                _clientSendMsg.XteaEncrypt(_xteaKey);
-                                _clientSendMsg.InsertAdler32();
-                                _clientSendMsg.InsertPacketHeader();
+                                clientSendMsg.InsetLogicalPacketHeader();
+                                clientSendMsg.XteaEncrypt(xteaKey);
+                                clientSendMsg.InsertAdler32();
+                                clientSendMsg.InsertPacketHeader();
 
-                                lock (_clientSendQueueLock)
+                                lock (clientSendQueueLock)
                                 {
-                                    _clientSendQueue.Enqueue(_clientSendMsg.Data);
+                                    clientSendQueue.Enqueue(clientSendMsg.Data);
                                 }
 
-                                lock (_clientSendThreadLock)
+                                lock (clientSendThreadLock)
                                 {
-                                    if (!_clientWritting)
+                                    if (!clientWritting)
                                     {
-                                        _clientWritting = true;
-                                        _clientSendThread = new Thread(new ThreadStart(clientSend));
-                                        _clientSendThread.Start();
+                                        clientWritting = true;
+                                        clientSendThread = new Thread(new ThreadStart(ClientSend));
+                                        clientSendThread.Start();
                                     }
                                 }
                             }
                         }
 
-                        _serverStream.BeginRead(_serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(serverReadCallBack), null);
+                        serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                         break;
                     case Protocol.NONE:
                         break;
@@ -682,83 +687,83 @@ namespace Tibia.Packets
             catch (ObjectDisposedException) { }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
-        private void clientReadCallBack(IAsyncResult ar)
+        private void ClientReadCallBack(IAsyncResult ar)
         {
             try
             {
-                int read = _clientStream.EndRead(ar);
+                int read = clientStream.EndRead(ar);
 
                 if (read < 2)
                 {
-                    restart();
+                    Restart();
                     return;
                 }
 
-                int pSize = (int)BitConverter.ToUInt16(_clientRecvMsg.GetBuffer(), 0) + 2;
+                int pSize = (int)BitConverter.ToUInt16(clientRecvMsg.GetBuffer(), 0) + 2;
 
                 while (read < pSize)
                 {
-                    if (_clientStream.CanRead)
-                        read += _clientStream.Read(_clientRecvMsg.GetBuffer(), read, pSize - read);
+                    if (clientStream.CanRead)
+                        read += clientStream.Read(clientRecvMsg.GetBuffer(), read, pSize - read);
                     else
                     {
                         throw new Exception("Connection broken.");
                     }
                 }
 
-                _clientRecvMsg.Length = pSize;
+                clientRecvMsg.Length = pSize;
 
-                switch (_protocol)
+                switch (protocol)
                 {
                     case Protocol.NONE:
-                        parseFirstClientMsg();
+                        ParseFirstClientMsg();
                         break;
                     case Protocol.WORLD:
 
-                        if (_clientRecvMsg.CheckAdler32() && _clientRecvMsg.XteaDecrypt(_xteaKey))
+                        if (clientRecvMsg.CheckAdler32() && clientRecvMsg.XteaDecrypt(xteaKey))
                         {
 
-                            _clientRecvMsg.Position = 6;
-                            int msgLength = (int)_clientRecvMsg.GetUInt16() + 8;
-                            _serverSendMsg.Reset();
+                            clientRecvMsg.Position = 6;
+                            int msgLength = (int)clientRecvMsg.GetUInt16() + 8;
+                            serverSendMsg.Reset();
 
-                            if (!ParseClientPacket(_client, _clientRecvMsg, _serverSendMsg))
+                            if (!ParsePacketFromClient(client, clientRecvMsg, serverSendMsg))
                             {
                                 //unknown packet
-                                byte[] unknown = _clientRecvMsg.GetBytes(_clientRecvMsg.Length - _clientRecvMsg.Position);
-                                writeDebug("Unknown outgoing packet: " + unknown.ToHexString());
-                                _serverSendMsg.AddBytes(unknown);
+                                byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
+                                WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
+                                serverSendMsg.AddBytes(unknown);
                             }
 
-                            if (_serverSendMsg.Length > 8)
+                            if (serverSendMsg.Length > 8)
                             {
-                                _serverSendMsg.InsetLogicalPacketHeader();
-                                _serverSendMsg.XteaEncrypt(_xteaKey);
-                                _serverSendMsg.InsertAdler32();
-                                _serverSendMsg.InsertPacketHeader();
+                                serverSendMsg.InsetLogicalPacketHeader();
+                                serverSendMsg.XteaEncrypt(xteaKey);
+                                serverSendMsg.InsertAdler32();
+                                serverSendMsg.InsertPacketHeader();
 
-                                lock (_serverSendQueueLock)
+                                lock (serverSendQueueLock)
                                 {
-                                    _serverSendQueue.Enqueue(_serverSendMsg.Data);
+                                    serverSendQueue.Enqueue(serverSendMsg.Data);
                                 }
 
-                                lock (_serverSendThreadLock)
+                                lock (serverSendThreadLock)
                                 {
-                                    if (!_serverWritting)
+                                    if (!serverWritting)
                                     {
-                                        _serverWritting = true;
-                                        _serverSendThread = new Thread(new ThreadStart(serverSend));
-                                        _serverSendThread.Start();
+                                        serverWritting = true;
+                                        serverSendThread = new Thread(new ThreadStart(ServerSend));
+                                        serverSendThread.Start();
                                     }
                                 }
                             }
                         }
-                        _clientStream.BeginRead(_clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(clientReadCallBack), null);
+                        clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
                         break;
                     case Protocol.LOGIN:
                         break;
@@ -768,8 +773,8 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { }
             catch (Exception ex)
             {
-                restart();
-                writeDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
         }
 
@@ -788,11 +793,11 @@ namespace Tibia.Packets
 
         #region Other Functions
 
-        private void writeDebug(string msg)
+        private void WriteDebug(string msg)
         {
             try
             {
-                lock (_debugLock)
+                lock (debugLock)
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "proxy_log.txt"), true);
                     sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg);
@@ -804,11 +809,11 @@ namespace Tibia.Packets
             }
         }
 
-        private int getSelectedChar(string name)
+        private int GetSelectedChar(string name)
         {
-            for (int i = 0; i < _charList.Length; i++)
+            for (int i = 0; i < charList.Length; i++)
             {
-                if (_charList[i].CharName == name)
+                if (charList[i].CharName == name)
                     return i;
             }
 

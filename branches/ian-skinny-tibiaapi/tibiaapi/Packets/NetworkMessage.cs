@@ -20,8 +20,8 @@ namespace Tibia.Packets
         #endregion
 
         #region Instance Variables
-        private byte[] _buffer;
-        private int _position, _length, _bufferSize = 16394;
+        private byte[] buffer;
+        private int position, length, bufferSize = 16394;
         public Objects.Client Client { get; set; }
         #endregion
 
@@ -29,100 +29,100 @@ namespace Tibia.Packets
 
         public NetworkMessage()
         {
-            _buffer = new byte[_bufferSize];
-            _position = 8;
+            buffer = new byte[bufferSize];
+            position = 8;
         }
 
         public NetworkMessage(byte[] data)
         {
-            _buffer = new byte[_bufferSize];
-            Array.Copy(data, _buffer, data.Length);
-            _length = data.Length;
-            _position = 0;
+            buffer = new byte[bufferSize];
+            Array.Copy(data, buffer, data.Length);
+            length = data.Length;
+            position = 0;
         }
 
         public NetworkMessage(int length)
         {
-            _bufferSize = length;
-            _buffer = new byte[_bufferSize];
-            _position = 8;
+            bufferSize = length;
+            buffer = new byte[bufferSize];
+            position = 8;
         }
 
         public NetworkMessage(byte[] data, int length)
         {
-            _buffer = new byte[_bufferSize];
-            Array.Copy(data, _buffer, length);
-            _length = length;
-            _position = 0;
+            buffer = new byte[bufferSize];
+            Array.Copy(data, buffer, length);
+            this.length = length;
+            position = 0;
         }
 
         public NetworkMessage(Objects.Client client)
         {
-            _buffer = new byte[_bufferSize];
+            buffer = new byte[bufferSize];
             Client = client;
-            _position = 8;
+            position = 8;
         }
 
         public NetworkMessage(Objects.Client client, int size)
         {
-            _bufferSize = size;
-            _buffer = new byte[_bufferSize];
+            bufferSize = size;
+            buffer = new byte[bufferSize];
             Client = client;
-            _position = 8;
+            position = 8;
         }
 
         public NetworkMessage(Objects.Client client, byte[] data)
         {
-            _buffer = new byte[_bufferSize];
+            buffer = new byte[bufferSize];
             Client = client;
-            Array.Copy(data, _buffer, data.Length);
-            _length = data.Length;
-            _position = 0;
+            Array.Copy(data, buffer, data.Length);
+            length = data.Length;
+            position = 0;
         }
 
         public NetworkMessage(Objects.Client client, byte[] data, int length)
         {
-            _buffer = new byte[_bufferSize];
+            buffer = new byte[bufferSize];
             Client = client;
-            Array.Copy(data, _buffer, length);
-            _length = length;
-            _position = 0;
+            Array.Copy(data, buffer, length);
+            this.length = length;
+            position = 0;
         }
 
         #endregion
 
-        #region "Properties"
+        #region Properties
 
         public int Length
         {
-            get { return _length; }
-            set { _length = value; }
+            get { return length; }
+            set { length = value; }
         }
 
         public int Position
         {
-            get { return _position; }
-            set { _position = value; }
+            get { return position; }
+            set { position = value; }
         }
 
         public byte[] GetBuffer()
         {
-            return _buffer;
+            return buffer;
         }
 
         public byte[] Data
         {
             get
             {
-                byte[] _t = new byte[_length];
-                Array.Copy(_buffer, _t, _length);
-                return _t;
+                byte[] t = new byte[length];
+                Array.Copy(buffer, t, length);
+                return t;
             }
         }
 
         #endregion
 
-        #region "Xtea"
+        #region Xtea
 
         public bool XteaEncrypt()
         {
@@ -134,19 +134,19 @@ namespace Tibia.Packets
             if (XteaKey == null)
                 return false;
 
-            int msgSize = _length - 6;
+            int msgSize = length - 6;
 
             int pad = msgSize % 8;
             if (pad > 0)
             {
                 msgSize += (8 - pad);
-                _length = 6 + msgSize;
+                length = 6 + msgSize;
             }
 
-            for (int i = 6; i < _length; i += 8)
-                XTEAEncrypt(_buffer, i, 8, XteaKey);
+            for (int i = 6; i < length; i += 8)
+                XTEAEncrypt(buffer, i, 8, XteaKey);
 
-            _position = 6;
+            position = 6;
             return true;
         }
 
@@ -157,14 +157,14 @@ namespace Tibia.Packets
 
         public bool XteaDecrypt(uint[] XteaKey)
         {
-            if (_length <= 6 || (_length - 6) % 8 > 0 || XteaKey == null)
+            if (length <= 6 || (length - 6) % 8 > 0 || XteaKey == null)
                 return false;
 
-            for (int i = 6; i < _length; i += 8)
-                XTEADecrypt(_buffer, i, 8, XteaKey);
+            for (int i = 6; i < length; i += 8)
+                XTEADecrypt(buffer, i, 8, XteaKey);
 
-            int decrpytMsgLen = (int)BitConverter.ToUInt16(_buffer, 6) + 2;
-            _length = decrpytMsgLen + 6;
+            int decrpytMsgLen = (int)BitConverter.ToUInt16(buffer, 6) + 2;
+            length = decrpytMsgLen + 6;
 
             return true;
         }
@@ -240,11 +240,11 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Adler32"
+        #region Adler32
 
         public bool CheckAdler32()
         {
-            if (AdlerChecksum(_buffer, 6) != GetAdler32())
+            if (AdlerChecksum(buffer, 6) != GetAdler32())
                 return false;
 
             return true;
@@ -252,7 +252,7 @@ namespace Tibia.Packets
 
         public void InsertAdler32()
         {
-            Array.Copy(BitConverter.GetBytes(AdlerChecksum(_buffer, 6)), 0, _buffer, 2, 4);
+            Array.Copy(BitConverter.GetBytes(AdlerChecksum(buffer, 6)), 0, buffer, 2, 4);
         }
 
         public const uint AdlerBase = 0xFFF1;
@@ -261,13 +261,13 @@ namespace Tibia.Packets
 
         public uint AdlerChecksum(byte[] data, int offset)
         {
-            if (data == null || _length - 6 <= 0)
+            if (data == null || length - 6 <= 0)
                 return 0;
 
             uint unSum1 = AdlerStart & 0xFFFF;
             uint unSum2 = (AdlerStart >> 16) & 0xFFFF;
 
-            for (int i = offset; i < _length; i++)
+            for (int i = offset; i < length; i++)
             {
                 unSum1 = (unSum1 + data[i]) % AdlerBase;
                 unSum2 = (unSum1 + unSum2) % AdlerBase;
@@ -278,41 +278,41 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Packer Header"
+        #region Packer Header
 
         public void InsertPacketHeader()
         {
-            AddPacketHeader((ushort)(_length - 2));
+            AddPacketHeader((ushort)(length - 2));
         }
 
         #endregion
 
-        #region "Get"
+        #region Get
 
         public byte GetByte()
         {
-            if (_position + 1 > _length)
+            if (position + 1 > length)
                 throw new Exception("NetworkMessage try to get more bytes from a smaller buffer");
 
-            return _buffer[_position++];
+            return buffer[position++];
         }
 
         public byte[] GetBytes(int count)
         {
-            if (_position + count > _length)
+            if (position + count > length)
                 throw new Exception("NetworkMessage try to get more bytes from a smaller buffer");
 
-            byte[] _t = new byte[count];
-            Array.Copy(_buffer, _position, _t, 0, count);
-            _position += count;
-            return _t;
+            byte[] t = new byte[count];
+            Array.Copy(buffer, position, t, 0, count);
+            position += count;
+            return t;
         }
 
         public string GetString()
         {
             int len = (int)GetUInt16();
-            string t = System.Text.ASCIIEncoding.Default.GetString(_buffer, _position, len);
-            _position += len;
+            string t = System.Text.ASCIIEncoding.Default.GetString(buffer, position, len);
+            position += len;
             return t;
         }
 
@@ -337,12 +337,12 @@ namespace Tibia.Packets
 
         private uint GetAdler32()
         {
-            return BitConverter.ToUInt32(_buffer, 2);
+            return BitConverter.ToUInt32(buffer, 2);
         }
 
         private ushort GetPacketHeader()
         {
-            return BitConverter.ToUInt16(_buffer, 0);
+            return BitConverter.ToUInt16(buffer, 0);
         }
 
         public Objects.Outfit GetOutfit()
@@ -366,11 +366,11 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Add"
+        #region Add
 
         public void AddByte(byte value)
         {
-            if (1 + _length > _bufferSize)
+            if (1 + length > bufferSize)
                 throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
 
             AddBytes(new byte[] { value });
@@ -378,14 +378,14 @@ namespace Tibia.Packets
 
         public void AddBytes(byte[] value)
         {
-            if (value.Length + _length > _bufferSize)
+            if (value.Length + length > bufferSize)
                 throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
 
-            Array.Copy(value, 0, _buffer, _position, value.Length);
-            _position += value.Length;
+            Array.Copy(value, 0, buffer, position, value.Length);
+            position += value.Length;
 
-            if (_position > _length)
-                _length = _position;
+            if (position > length)
+                length = position;
         }
 
         public void AddString(string value)
@@ -416,31 +416,31 @@ namespace Tibia.Packets
 
         public void AddPaddingBytes(int count)
         {
-            _position += count;
+            position += count;
 
-            if (_position > _length)
-                _length = _position;
+            if (position > length)
+                length = position;
         }
 
         private void AddPacketHeader(ushort value)
         {
-            Array.Copy(BitConverter.GetBytes(value), 0, _buffer, 0, 2);
+            Array.Copy(BitConverter.GetBytes(value), 0, buffer, 0, 2);
         }
 
         #endregion
 
-        #region "Peek"
+        #region Peek
 
         public byte PeekByte()
         {
-            return _buffer[_position];
+            return buffer[position];
         }
 
         public byte[] PeekBytes(int count)
         {
-            byte[] _t = new byte[count];
-            Array.Copy(_buffer, _position, _t, 0, count);
-            return _t;
+            byte[] t = new byte[count];
+            Array.Copy(buffer, position, t, 0, count);
+            return t;
         }
 
         public ushort PeekUInt16()
@@ -461,22 +461,22 @@ namespace Tibia.Packets
 
         #endregion
 
-        #region "Replace"
+        #region Replace
 
         public void ReplaceBytes(int index, byte[] value)
         {
-            if (_length - index >= value.Length)
-                Array.Copy(value, 0, _buffer, index, value.Length);
+            if (length - index >= value.Length)
+                Array.Copy(value, 0, buffer, index, value.Length);
         }
 
         #endregion
 
-        #region "Other Functions"
+        #region Other Functions
 
         public void Reset()
         {
-            _position = 8;
-            _length = 8;
+            position = 8;
+            length = 8;
         }
 
         public bool PrepareToSend()
@@ -505,36 +505,36 @@ namespace Tibia.Packets
             if (!XteaDecrypt(XteaKey))
                 return false;
 
-            _position = 6;
+            position = 6;
             return true;
         }
 
         public void InsetLogicalPacketHeader()
         {
-            Array.Copy(BitConverter.GetBytes((ushort)_length - 8), 0, _buffer, 6, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)length - 8), 0, buffer, 6, 2);
         }
 
         public void UpdateLogicalPacketHeader()
         {
-            Array.Copy(BitConverter.GetBytes((ushort)(_length - 8)), 0, _buffer, 6, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)(length - 8)), 0, buffer, 6, 2);
         }
 
         #endregion
 
-        #region "RSA"
+        #region RSA
 
         public bool RsaCipEncrypt(int start)
         {
             byte[] temp = new byte[128];
-            Array.Copy(_buffer, start, temp, 0, 128);
+            Array.Copy(buffer, start, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(cipE, cipM);
             // it's sometimes possible for the results to be a byte short
             // and this can break some software so we 0x00 pad the result
 
-            _position = start;
-            Array.Copy(GetPaddedValue(output), 0, _buffer, start, 128);
+            position = start;
+            Array.Copy(GetPaddedValue(output), 0, buffer, start, 128);
 
             return true;
         }
@@ -543,26 +543,26 @@ namespace Tibia.Packets
         {
             byte[] temp = new byte[128];
 
-            Array.Copy(_buffer, start, temp, 0, 128);
+            Array.Copy(buffer, start, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output = input.modPow(otServerE, otServerM);
             // it's sometimes possible for the results to be a byte short
             // and this can break some software so we 0x00 pad the result
 
-            Array.Copy(GetPaddedValue(output), 0, _buffer, start, 128);
+            Array.Copy(GetPaddedValue(output), 0, buffer, start, 128);
 
             return true;
         }
 
         public bool RsaOTDecrypt()
         {
-            if (_length - _position != 128)
+            if (length - position != 128)
                 return false;
 
             byte[] temp = new byte[128];
 
-            Array.Copy(_buffer, _position, temp, 0, 128);
+            Array.Copy(buffer, position, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
             BigInteger output;
@@ -586,7 +586,7 @@ namespace Tibia.Packets
                 output = m2 + otServerQ * h;
             }
 
-            Array.Copy(GetPaddedValue(output), 0, _buffer, _position, 128);
+            Array.Copy(GetPaddedValue(output), 0, buffer, position, 128);
             return true;
         }
 

@@ -414,13 +414,12 @@ namespace Tibia.Packets
 
         public ShopInfo() { }
 
-        public ShopInfo(ushort _itemId, byte _subType,
-            uint _buyPrice, uint _sellPrice)
+        public ShopInfo(ushort itemId, byte subType, uint buyPrice, uint sellPrice)
         {
-            ItemId = _itemId;
-            SubType = _subType;
-            BuyPrice = _buyPrice;
-            SellPrice = _sellPrice;
+            ItemId = itemId;
+            SubType = subType;
+            BuyPrice = buyPrice;
+            SellPrice = sellPrice;
         }
     }
 

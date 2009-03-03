@@ -13,7 +13,7 @@ namespace Tibia.Packets
         public PacketDestination Destination { get; set; }
         public Objects.Client Client { get; set; }
 
-        private static object _msgLock = new object();
+        private static object msgLock = new object();
         private static NetworkMessage msg;
 
         public Packet(Objects.Client c)
@@ -34,7 +34,7 @@ namespace Tibia.Packets
 
             if (Client.IO.UsingProxy)
             {
-                lock (_msgLock)
+                lock (msgLock)
                 {
                     msg.Reset();
                     ToNetworkMessage(ref msg);
@@ -55,7 +55,7 @@ namespace Tibia.Packets
             }
             else if (Destination == PacketDestination.Server)
             {
-                lock (_msgLock)
+                lock (msgLock)
                 {
                     msg.Reset();
                     ToNetworkMessage(ref msg);

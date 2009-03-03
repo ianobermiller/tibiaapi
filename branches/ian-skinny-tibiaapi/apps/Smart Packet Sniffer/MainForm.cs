@@ -58,12 +58,12 @@ namespace SmartPacketSniffer
             if (btnLog.Text == "Stop Packet Logging")
             {
                 btnLog.Text = "Start Packet Logging";
-                client.IO.StopRawSocket();
+                //client.IO.StopRawSocket();
             }
             else if (btnLog.Text == "Start Packet Logging")
             {
                 btnLog.Text = "Stop Packet Logging";
-                client.IO.StartRawSocket();
+                //client.IO.StartRawSocket();
             }
         }
 
@@ -87,14 +87,14 @@ namespace SmartPacketSniffer
             if (comboBox1.Items.Count > 0)
             {
                 client = lc[comboBox1.SelectedIndex];
-                if (client.IO.RawSocket == null)
-                {
-                    client.IO.StartRawSocket();
-                    client.IO.RawSocket.IncomingSplitPacket += new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
-                    client.IO.RawSocket.OutgoingSplitPacket += new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
-                    EventHandler e = new EventHandler(RadioChanged);
-                    e.Invoke(new Object(), new EventArgs());
-                }
+                //if (client.IO.RawSocket == null)
+                //{
+                //    client.IO.StartRawSocket();
+                //    client.IO.RawSocket.IncomingSplitPacket += new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
+                //    client.IO.RawSocket.OutgoingSplitPacket += new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
+                //    EventHandler e = new EventHandler(RadioChanged);
+                //    e.Invoke(new Object(), new EventArgs());
+                //}
             }
         }
 
@@ -134,30 +134,30 @@ namespace SmartPacketSniffer
 
         private void LogPacket(byte[] packet, string from, string to)
         {
-            if (client.IO.RawSocket.Enabled)
-            {
-                PacketList.Invoke(new EventHandler(delegate
-                {
-                    CapturedPacket cp = new CapturedPacket(packet, from, packet.Length, to);
-                    captPackets.Add(cp);
-                    string name = "";
+            //if (client.IO.RawSocket.Enabled)
+            //{
+            //    PacketList.Invoke(new EventHandler(delegate
+            //    {
+            //        CapturedPacket cp = new CapturedPacket(packet, from, packet.Length, to);
+            //        captPackets.Add(cp);
+            //        string name = "";
 
-                    if (cp.Source == "SERVER" && incomingPacketTypeNames.ContainsKey(cp.Type))
-                        name = incomingPacketTypeNames[cp.Type];
-                    if (cp.Source == "CLIENT" && outgoingPacketTypeNames.ContainsKey(cp.Type))
-                        name = outgoingPacketTypeNames[cp.Type];
+            //        if (cp.Source == "SERVER" && incomingPacketTypeNames.ContainsKey(cp.Type))
+            //            name = incomingPacketTypeNames[cp.Type];
+            //        if (cp.Source == "CLIENT" && outgoingPacketTypeNames.ContainsKey(cp.Type))
+            //            name = outgoingPacketTypeNames[cp.Type];
 
-                    PacketList.Items.Add(new ListViewItem(new string[]{
-                        cp.Time,
-                        cp.Source,
-                        cp.Destination,
-                        cp.Length.ToString(),
-                        Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper(),
-                        name
-                    }));
-                    PacketList.EnsureVisible(PacketList.Items.Count - 1);
-                }));
-            }
+            //        PacketList.Items.Add(new ListViewItem(new string[]{
+            //            cp.Time,
+            //            cp.Source,
+            //            cp.Destination,
+            //            cp.Length.ToString(),
+            //            Convert.ToString(cp.Type, 16).PadLeft(2, '0').ToUpper(),
+            //            name
+            //        }));
+            //        PacketList.EnsureVisible(PacketList.Items.Count - 1);
+            //    }));
+            //}
         }
 
 
@@ -246,13 +246,13 @@ namespace SmartPacketSniffer
 
         private void RadioChanged(object sender, EventArgs e)
         {
-            if (radioDefault.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
-            else if (radioSpecial.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
-            else if (radioProxy.Checked)
-            {
-                client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
-                client.IO.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
-            }
+            //if (radioDefault.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
+            //else if (radioSpecial.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
+            //else if (radioProxy.Checked)
+            //{
+            //    client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
+            //    client.IO.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
+            //}
         }
 
 
