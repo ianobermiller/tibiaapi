@@ -11,7 +11,7 @@ namespace Tibia.Objects
         public class IOHelper
         {
             private Client client;
-            //private RawSocket rawsocket;
+            private RawSocket rawsocket;
             private Proxy proxy;
             private bool usingProxy = false;
             private bool sendCodeWritten = false;
@@ -34,46 +34,46 @@ namespace Tibia.Objects
             }
             #endregion
 
-            //#region RawSocket wrappers
+            #region RawSocket wrappers
 
-            //public void StartRawSocket()
-            //{
-            //    StartRawSocket(true);
-            //}
+            public void StartRawSocket()
+            {
+                StartRawSocket(true);
+            }
 
-            //public void StartRawSocket(bool adler)
-            //{
-            //    if (client.LoggedIn)
-            //        client.playerLocation = client.GetPlayer().Location;
+            public void StartRawSocket(bool adler)
+            {
+                if (client.LoggedIn)
+                    client.playerLocation = client.GetPlayer().Location;
 
-            //    if (rawsocket == null)
-            //        rawsocket = new RawSocket(client, adler);
+                if (rawsocket == null)
+                    rawsocket = new RawSocket(client, adler);
 
-            //    rawsocket.Enabled = true;
-            //}
+                rawsocket.Enabled = true;
+            }
 
-            //public void StartRawSocket(bool adler, string localIp)
-            //{
-            //    if (client.LoggedIn)
-            //        client.playerLocation = client.GetPlayer().Location;
+            public void StartRawSocket(bool adler, string localIp)
+            {
+                if (client.LoggedIn)
+                    client.playerLocation = client.GetPlayer().Location;
 
-            //    if (rawsocket == null)
-            //        rawsocket = new RawSocket(client, adler, localIp);
+                if (rawsocket == null)
+                    rawsocket = new RawSocket(client, adler, localIp);
 
-            //    rawsocket.Enabled = true;
-            //}
+                rawsocket.Enabled = true;
+            }
 
-            //public void StopRawSocket()
-            //{
-            //    if (rawsocket != null)
-            //        rawsocket.Enabled = false;
-            //}
+            public void StopRawSocket()
+            {
+                if (rawsocket != null)
+                    rawsocket.Enabled = false;
+            }
 
-            ////public RawSocket RawSocket
-            ////{
-            ////    get { return rawsocket; }
-            ////}
-            //#endregion
+            public RawSocket RawSocket
+            {
+                get { return rawsocket; }
+            }
+            #endregion
 
             #region Proxy wrappers
 

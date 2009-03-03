@@ -60,7 +60,6 @@ namespace Tibia.Packets
         private bool connected;
 
         private DateTime lastInteraction;
-
         #endregion
 
         #region Event Handlers

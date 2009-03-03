@@ -58,12 +58,12 @@ namespace SmartPacketSniffer
             if (btnLog.Text == "Stop Packet Logging")
             {
                 btnLog.Text = "Start Packet Logging";
-                //client.IO.StopRawSocket();
+                client.IO.StopRawSocket();
             }
             else if (btnLog.Text == "Start Packet Logging")
             {
                 btnLog.Text = "Stop Packet Logging";
-                //client.IO.StartRawSocket();
+                client.IO.StartRawSocket();
             }
         }
 
