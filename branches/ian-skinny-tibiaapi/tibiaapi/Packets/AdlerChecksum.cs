@@ -30,10 +30,7 @@ namespace Tibia.Packets
         /// </value>
         public uint ChecksumValue
         {
-            get
-            {
-                return m_unChecksumValue;
-            }
+            get { return m_unChecksumValue; }
         }
 
         /// <summary>
@@ -44,25 +41,7 @@ namespace Tibia.Packets
         /// <returns>Returns true if the checksum values is successflly calculated</returns>
         public bool MakeForBuff(byte[] bytesBuff, uint unAdlerCheckSum)
         {
-            if (Object.Equals(bytesBuff, null))
-            {
-                m_unChecksumValue = 0;
-                return false;
-            }
-            int nSize = bytesBuff.GetLength(0);
-            if (nSize == 0)
-            {
-                m_unChecksumValue = 0;
-                return false;
-            }
-            uint unSum1 = unAdlerCheckSum & 0xFFFF;
-            uint unSum2 = (unAdlerCheckSum >> 16) & 0xFFFF;
-            for (int i = 0; i < nSize; i++)
-            {
-                unSum1 = (unSum1 + bytesBuff[i]) % AdlerBase;
-                unSum2 = (unSum1 + unSum2) % AdlerBase;
-            }
-            m_unChecksumValue = (unSum2 << 16) + unSum1;
+            m_unChecksumValue = Generate(ref bytesBuff, 0, bytesBuff.Length);
             return true;
         }
 
@@ -85,10 +64,9 @@ namespace Tibia.Packets
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj == null || this.GetType() != obj.GetType())
                 return false;
-            if (this.GetType() != obj.GetType())
-                return false;
+
             AdlerChecksum other = (AdlerChecksum)obj;
             return (this.ChecksumValue == other.ChecksumValue);
         }
@@ -101,8 +79,9 @@ namespace Tibia.Packets
         /// <returns>Returns true if the values of its operands are equal</returns>
         public static bool operator ==(AdlerChecksum objA, AdlerChecksum objB)
         {
-            if (Object.Equals(objA, null) && Object.Equals(objB, null)) return true;
-            if (Object.Equals(objA, null) || Object.Equals(objB, null)) return false;
+            if (Object.Equals(objA, null) || Object.Equals(objB, null)) 
+                return true;
+
             return objA.Equals(objB);
         }
 
@@ -137,28 +116,21 @@ namespace Tibia.Packets
         {
             if (ChecksumValue != 0)
                 return ChecksumValue.ToString();
+
             return "Unknown";
         }
 
         public static byte[] AddTo(byte[] packet)
         {
-            byte[] packetWithCRC = new byte[packet.Length + 4];
-            byte[] packetWithoutHeader = new byte[packet.Length - 2];
-            AdlerChecksum acs = new AdlerChecksum();
-            Array.Copy(packet, 2, packetWithoutHeader, 0, packetWithoutHeader.Length);
-            packetWithCRC[0] = BitConverter.GetBytes((ushort)(packet.Length + 2))[0];
-            packetWithCRC[1] = BitConverter.GetBytes((ushort)(packet.Length + 2))[1];
-            if (acs.MakeForBuff(packetWithoutHeader))
-            {
-                Array.Copy(BitConverter.GetBytes(acs.ChecksumValue), 0, packetWithCRC, 2, 4);
-                Array.Copy(packetWithoutHeader, 0, packetWithCRC, 6, packetWithoutHeader.Length);
-                return packetWithCRC;
-            }
-            else
-                return null;
+            byte[] fullPacket = new byte[packet.Length + 4];
+            Array.Copy(packet, 2, fullPacket, 6, packet.Length - 2);
+            Array.Copy(BitConverter.GetBytes((ushort)fullPacket.Length - 2), fullPacket, 2);
+            Array.Copy(BitConverter.GetBytes(Generate(ref fullPacket, 6, fullPacket.Length)), 0, fullPacket, 2, 4);
+
+            return fullPacket;
         }
 
-        public uint Generate(byte[] buffer, int index, int length)
+        public static uint Generate(ref byte[] buffer, int index, int length)
         {
             if (buffer == null || length - index <= 0)
                 return 0;
@@ -174,8 +146,5 @@ namespace Tibia.Packets
 
             return (unSum2 << 16) + unSum1;
         }
-
-
-
     }
 }

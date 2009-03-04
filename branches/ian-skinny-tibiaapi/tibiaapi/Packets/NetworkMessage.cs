@@ -10,9 +10,6 @@ namespace Tibia.Packets
         private byte[] buffer;
         private int position, length, bufferSize = 16394;
         public Objects.Client Client { get; set; }
-        
-        private AdlerChecksum adlerCheckSum = new AdlerChecksum();
-        private Xtea xtea = new Xtea();
         #endregion
 
         #region Contructors
@@ -373,7 +370,7 @@ namespace Tibia.Packets
 
         public bool CheckAdler32()
         {
-            if (adlerCheckSum.Generate(buffer, 6, length) != GetAdler32())
+            if (AdlerChecksum.Generate(ref buffer, 6, length) != GetAdler32())
                 return false;
 
             return true;
@@ -381,7 +378,7 @@ namespace Tibia.Packets
 
         public void AddAdler32()
         {
-            Array.Copy(BitConverter.GetBytes(adlerCheckSum.Generate(buffer, 6, length)), 0, buffer, 2, 4);
+            Array.Copy(BitConverter.GetBytes(AdlerChecksum.Generate(ref buffer, 6, length)), 0, buffer, 2, 4);
         }
 
         private uint GetAdler32()
@@ -400,7 +397,7 @@ namespace Tibia.Packets
 
         public bool XteaDecrypt(uint[] key)
         {
-            return xtea.XteaDecrypt(ref buffer, ref length, 6, key);
+            return Xtea.XteaDecrypt(ref buffer, ref length, 6, key);
         }
 
         public bool XteaEncrypt()
@@ -410,7 +407,7 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt(uint[] key)
         {
-            return xtea.XteaEncrypt(ref buffer, ref length, 6, key);
+            return Xtea.XteaEncrypt(ref buffer, ref length, 6, key);
         }
 
         #endregion

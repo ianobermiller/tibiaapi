@@ -5,11 +5,9 @@ using System.Text;
 
 namespace Tibia.Packets
 {
-    public class Xtea
+    public static class Xtea
     {
-        public Xtea() { }
-
-        public bool XteaEncrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
+        public static bool XteaEncrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
         {
             if (xteaKey == null)
                 return false;
@@ -29,7 +27,7 @@ namespace Tibia.Packets
             return true;
         }
 
-        public bool XteaDecrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
+        public static bool XteaDecrypt(ref byte[] buffer, ref int length, int index, uint[] xteaKey)
         {
             if (length <= index || (length - index) % 8 > 0 || xteaKey == null)
                 return false;
@@ -43,7 +41,7 @@ namespace Tibia.Packets
             return true;
         }
 
-        private void XTEAEncrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
+        private static void XTEAEncrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
             // defintions that are used to create the cipher text
             uint x_sum = 0, x_delta = 0x9e3779b9, x_count = 32;
@@ -62,7 +60,7 @@ namespace Tibia.Packets
             Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
         }
 
-        private void XTEADecrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
+        private static void XTEADecrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
         {
             // defintions that are used to restore the plaintext text
             uint x_count = 32, x_sum = 0xC6EF3720, x_delta = 0x9E3779B9;
@@ -83,7 +81,7 @@ namespace Tibia.Packets
             Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
         }
 
-        private uint[] ConvertBytesToUints(byte[] p_data, int p_offset, int p_count)
+        private static uint[] ConvertBytesToUints(byte[] p_data, int p_offset, int p_count)
         {
             // allocate an array - each uint requires 4 bytes
             uint[] x_result = new uint[p_count / 4];
@@ -97,7 +95,7 @@ namespace Tibia.Packets
             return x_result;
         }
 
-        private byte[] ConvertUintstoBytes(uint[] p_data)
+        private static byte[] ConvertUintstoBytes(uint[] p_data)
         {
             // convert the unit[] into a byte[]
             byte[] x_result = new byte[p_data.Length * 4];
