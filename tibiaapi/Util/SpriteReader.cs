@@ -51,14 +51,7 @@ namespace Tibia.Util
                     ushort coloredPixels = BitConverter.ToUInt16(array, 0);
 
                     read += 4;
-
-                    for (int i = 0; i < transparentPixels; i++)
-                    {
-                        bitmap.SetPixel(counter % size,
-                            counter / size,
-                            Color.Transparent);
-                        counter++;
-                    }
+                    counter += transparentPixels;
 
                     for (int i = 0; i < coloredPixels; i++)
                     {
@@ -70,14 +63,6 @@ namespace Tibia.Util
                     }
 
                     read += 3 * coloredPixels;
-                }
-
-                while (counter < 1024)
-                {
-                    bitmap.SetPixel(counter % 32,
-                        counter / 32,
-                        Color.Transparent);
-                    counter++;
                 }
             }
             return bitmap;
