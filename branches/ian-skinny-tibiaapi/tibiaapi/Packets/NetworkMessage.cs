@@ -28,6 +28,12 @@ namespace Tibia.Packets
             position = 0;
         }
 
+        public NetworkMessage(NetworkMessage msg)
+            : this(msg.Data)
+        {
+            this.position = msg.position;
+        }
+
         public NetworkMessage(int length)
         {
             bufferSize = length;
