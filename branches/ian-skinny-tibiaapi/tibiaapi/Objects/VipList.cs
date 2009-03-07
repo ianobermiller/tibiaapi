@@ -16,7 +16,7 @@ namespace Tibia.Objects
         public List<Vip> GetPlayers()
         {
             List<Vip> players = new List<Vip>();
-            for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.Step_Players)
+            for (uint i = Addresses.Vip.Start; i < Addresses.Vip.End; i += Addresses.Vip.StepPlayers)
             {
                 players.Add(new Vip(client,i));
             }

@@ -7,21 +7,21 @@ namespace Tibia.Addresses
     {
         public static uint Exp = 0x62BD24; // 8.40
 
-        public static uint GoTo_X = Exp + 80;
-        public static uint GoTo_Y = Exp + 76;
-        public static uint GoTo_Z = Exp + 72;
+        public static uint GoToX = Exp + 80;
+        public static uint GoToY = Exp + 76;
+        public static uint GoToZ = Exp + 72;
 
         public static uint Id = Exp + 12;
         public static uint HP = Exp + 8;
-        public static uint HP_Max = Exp + 4;
+        public static uint HPMax = Exp + 4;
 
         public static uint Level = Exp - 4;
         public static uint MagicLevel = Exp - 8;
-        public static uint Level_Percent = Exp - 12;
-        public static uint MagicLevel_Percent = Exp - 16;
+        public static uint LevelPercent = Exp - 12;
+        public static uint MagicLevelPercent = Exp - 16;
 
         public static uint Mana = Exp - 20;
-        public static uint Mana_Max = Exp - 24;
+        public static uint ManaMax = Exp - 24;
 
         public static uint Soul = Exp - 28;
         public static uint Stamina = Exp - 32;
@@ -35,35 +35,31 @@ namespace Tibia.Addresses
         public static uint Club = Exp - 72;
         public static uint Fist = Exp - 76;
 
-        public static uint Fishing_Percent = Exp - 80;
-        public static uint Shielding_Percent = Exp - 84;
-        public static uint Distance_Percent = Exp - 88;
-        public static uint Axe_Percent = Exp - 92;
-        public static uint Sword_Percent = Exp - 96;
-        public static uint Club_Percent = Exp - 100;
-        public static uint Fist_Percent = Exp - 104;
+        public static uint FishingPercent = Exp - 80;
+        public static uint ShieldingPercent = Exp - 84;
+        public static uint DistancePercent = Exp - 88;
+        public static uint AxePercent = Exp - 92;
+        public static uint SwordPercent = Exp - 96;
+        public static uint ClubPercent = Exp - 100;
+        public static uint FistPercent = Exp - 104;
         public static uint Flags = Exp - 108;
 
         /// <summary>
         /// Total number of equipment slots (accessed 0-10)
         /// </summary>
-        public static int Max_Slots = 11;
-        public static uint Slot_Head = 0x6380E8; // 8.40
-        public static uint Slot_Neck = Slot_Head + 12;
-        public static uint Slot_Backpack = Slot_Head + 24;
-        public static uint Slot_Armor = Slot_Head + 36;
-        public static uint Slot_Right = Slot_Head + 48;
-        public static uint Slot_Left = Slot_Head + 60;
-        public static uint Slot_Legs = Slot_Head + 72;
-        public static uint Slot_Feet = Slot_Head + 84;
-        public static uint Slot_Ring = Slot_Head + 96;
-        public static uint Slot_Ammo = Slot_Head + 108;
+        public static int MaxSlots = 11;
+        public static uint SlotHead = 0x6380E8; // 8.40
+        public static uint SlotNeck = SlotHead + 12;
+        public static uint SlotBackpack = SlotHead + 24;
+        public static uint SlotArmor = SlotHead + 36;
+        public static uint SlotRight = SlotHead + 48;
+        public static uint SlotLeft = SlotHead + 60;
+        public static uint SlotLegs = SlotHead + 72;
+        public static uint SlotFeet = SlotHead + 84;
+        public static uint SlotRing = SlotHead + 96;
+        public static uint SlotAmmo = SlotHead + 108;
 
         public static uint Distance_Slot_Count = 4;
-        public static uint Slot_Right_Count = Slot_Right + Distance_Slot_Count;
-        public static uint Slot_Left_Count = Slot_Left + Distance_Slot_Count;
-        public static uint Slot_Ammo_Count = Slot_Ammo + Distance_Slot_Count;
-
 
 
         public static uint CurrentTileToGo = 0x62BD38; // 8.40
@@ -77,10 +73,10 @@ namespace Tibia.Addresses
         public static uint AccessN = 0x766DF4; // 8.0
         public static uint AccessS = 0x766DC4; // 8.0
 
-        public static uint Target_ID = RedSquare;    
-        public static uint Target_BList_ID = Target_ID - 8; 
-        public static uint Target_BList_Type = Target_ID - 5;
-        public static uint Target_Type = Target_ID + 3;     
+        public static uint TargetID = RedSquare;    
+        public static uint TargetBListID = TargetID - 8; 
+        public static uint TargetBListType = TargetID - 5;
+        public static uint TargetType = TargetID + 3;     
 
         /// <summary>
         /// Static address for player Z, used for level spy

@@ -25,9 +25,9 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Creature> GetCreatures()
         {
-            for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.Step_Creatures)
+            for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.StepCreatures)
             {
-                if (client.Memory.ReadByte(i + Addresses.Creature.Distance_IsVisible) == 1)
+                if (client.Memory.ReadByte(i + Addresses.Creature.DistanceIsVisible) == 1)
                     yield return new Creature(client, i);
             }
         }

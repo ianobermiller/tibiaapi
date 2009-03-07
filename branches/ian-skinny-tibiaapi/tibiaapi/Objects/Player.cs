@@ -57,17 +57,17 @@ namespace Tibia.Objects
         {
             set
             {
-                client.Memory.WriteInt32(Addresses.Player.GoTo_X, value.X);
-                client.Memory.WriteInt32(Addresses.Player.GoTo_Y, value.Y);
-                client.Memory.WriteInt32(Addresses.Player.GoTo_Z, value.Z);
+                client.Memory.WriteInt32(Addresses.Player.GoToX, value.X);
+                client.Memory.WriteInt32(Addresses.Player.GoToY, value.Y);
+                client.Memory.WriteInt32(Addresses.Player.GoToZ, value.Z);
                 IsWalking = true;
             }
             get
             {
                 return new Location(
-                    client.Memory.ReadInt32(Addresses.Player.GoTo_X),
-                    client.Memory.ReadInt32(Addresses.Player.GoTo_Y),
-                    client.Memory.ReadInt32(Addresses.Player.GoTo_Z)
+                    client.Memory.ReadInt32(Addresses.Player.GoToX),
+                    client.Memory.ReadInt32(Addresses.Player.GoToY),
+                    client.Memory.ReadInt32(Addresses.Player.GoToZ)
                 );
             }
         }
@@ -144,8 +144,8 @@ namespace Tibia.Objects
         }
         public int Level_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Level_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Level_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.LevelPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.LevelPercent, value); }
         }
         public int MagicLevel
         {
@@ -154,8 +154,8 @@ namespace Tibia.Objects
         }
         public int MagicLevel_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.MagicLevel_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.MagicLevel_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.MagicLevelPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.MagicLevelPercent, value); }
         }
 
         public int Mana
@@ -165,8 +165,8 @@ namespace Tibia.Objects
         }
         public int Mana_Max
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Mana_Max); }
-            set { client.Memory.WriteInt32(Addresses.Player.Mana_Max, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.ManaMax); }
+            set { client.Memory.WriteInt32(Addresses.Player.ManaMax, value); }
         }
         public int HP
         {
@@ -175,8 +175,8 @@ namespace Tibia.Objects
         }
         public int HP_Max
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.HP_Max); }
-            set { client.Memory.WriteInt32(Addresses.Player.HP_Max, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.HPMax); }
+            set { client.Memory.WriteInt32(Addresses.Player.HPMax, value); }
         }
 
         public int Soul
@@ -202,8 +202,8 @@ namespace Tibia.Objects
         }
         public int Fist_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Fist_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Fist_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.FistPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.FistPercent, value); }
         }
         public int Club
         {
@@ -212,8 +212,8 @@ namespace Tibia.Objects
         }
         public int Club_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Club_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Club_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.ClubPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.ClubPercent, value); }
         }
         public int Sword
         {
@@ -222,8 +222,8 @@ namespace Tibia.Objects
         }
         public int Sword_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Sword_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Sword_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.SwordPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.SwordPercent, value); }
         }
         public int Axe
         {
@@ -232,8 +232,8 @@ namespace Tibia.Objects
         }
         public int Axe_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Axe_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Axe_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.AxePercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.AxePercent, value); }
         }
         public int Distance
         {
@@ -242,8 +242,8 @@ namespace Tibia.Objects
         }
         public int Distance_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Distance_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Distance_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.DistancePercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.DistancePercent, value); }
         }
         public int Shielding
         {
@@ -252,8 +252,8 @@ namespace Tibia.Objects
         }
         public int Shielding_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Shielding_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Shielding_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.ShieldingPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.ShieldingPercent, value); }
         }
         public int Fishing
         {
@@ -262,24 +262,24 @@ namespace Tibia.Objects
         }
         public int Fishing_Percent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Fishing_Percent); }
-            set { client.Memory.WriteInt32(Addresses.Player.Fishing_Percent, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.FishingPercent); }
+            set { client.Memory.WriteInt32(Addresses.Player.FishingPercent, value); }
         }
 
         public int GoTo_X
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoTo_X); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoTo_X, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.GoToX); }
+            set { client.Memory.WriteInt32(Addresses.Player.GoToX, value); }
         }
         public int GoTo_Y
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoTo_Y); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoTo_Y, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.GoToY); }
+            set { client.Memory.WriteInt32(Addresses.Player.GoToY, value); }
         }
         public int GoTo_Z
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoTo_Z); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoTo_Z, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.GoToZ); }
+            set { client.Memory.WriteInt32(Addresses.Player.GoToZ, value); }
         }
 
         public int RedSquare
@@ -311,23 +311,23 @@ namespace Tibia.Objects
 
         public int Target_ID
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Target_ID); }
-            set { client.Memory.WriteInt32(Addresses.Player.Target_ID, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.TargetID); }
+            set { client.Memory.WriteInt32(Addresses.Player.TargetID, value); }
         }
         public int Target_Type
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Target_Type); }
-            set { client.Memory.WriteInt32(Addresses.Player.Target_Type, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.TargetType); }
+            set { client.Memory.WriteInt32(Addresses.Player.TargetType, value); }
         }
         public int Target_BList_ID
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Target_BList_ID); }
-            set { client.Memory.WriteInt32(Addresses.Player.Target_BList_ID, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.TargetBListID); }
+            set { client.Memory.WriteInt32(Addresses.Player.TargetBListID, value); }
         }
         public int Target_BList_Type
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Target_BList_Type); }
-            set { client.Memory.WriteInt32(Addresses.Player.Target_BList_Type, value); }
+            get { return client.Memory.ReadInt32(Addresses.Player.TargetBListType); }
+            set { client.Memory.WriteInt32(Addresses.Player.TargetBListType, value); }
         }
         public new int Z
         {

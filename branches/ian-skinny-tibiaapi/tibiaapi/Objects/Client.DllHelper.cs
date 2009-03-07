@@ -17,7 +17,7 @@ namespace Tibia.Objects
             private Pipe pipe = null; //For Displaying Text
             public event EventHandler PipeInizialazed;
 
-            public DllHelper(Client client)
+            internal DllHelper(Client client)
             {
                 this.client = client;
                 pipeIsReady = new AutoResetEvent(false);

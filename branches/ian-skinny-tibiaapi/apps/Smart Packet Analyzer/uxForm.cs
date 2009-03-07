@@ -75,7 +75,7 @@ namespace SmartPacketAnalyzer
             Tibia.Packets.Incoming.TextMessagePacket p = (Tibia.Packets.Incoming.TextMessagePacket)packet;
             
             if (p.Color == StatusMessage.DescriptionGreen && p.Message.StartsWith("You see "))
-                p.Message = p.Message + " [" + client.Memory.ReadInt32(Tibia.Addresses.Client.See_Id) + "]";
+                p.Message = p.Message + " [" + client.Memory.ReadInt32(Tibia.Addresses.Client.SeeId) + "]";
 
             return true;
         }

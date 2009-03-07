@@ -17,7 +17,7 @@ namespace Tibia.Objects
             private bool sendCodeWritten = false;
             private IntPtr pSender;
 
-            public IOHelper(Client client) { this.client = client; }
+            internal IOHelper(Client client) { this.client = client; }
 
             #region Encryption
             public uint[] XteaKey

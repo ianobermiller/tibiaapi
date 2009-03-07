@@ -9,17 +9,14 @@ namespace Tibia.Objects
     {
         Client client;
 
-        public ContextMenu(Client client)
+        internal ContextMenu(Client client)
         {
             this.client = client;
         }
 
-        /// <summary>
-        /// Call this function only if you know what you are doing
-        /// </summary>
-        public void AddInternalEvents()
+        internal void AddInternalEvents()
         {
-            client.Dll.Pipe.OnReceive += new Tibia.Packets.Pipe.PipeListener(Pipe_OnReceive);
+            client.Dll.Pipe.OnReceive += Pipe_OnReceive;
         }
 
         private void Pipe_OnReceive(Tibia.Packets.NetworkMessage msg)

@@ -13,7 +13,7 @@ namespace Tibia.Objects
             private int defBarY, defRectX, defRectY, defRectW, defRectH;
             private bool isVisible;
 
-            public WindowHelper(Client client) { this.client = client; }
+            internal WindowHelper(Client client) { this.client = client; }
 
             /// <summary>
             /// This will set the FPSLimit with the value you give

@@ -11,7 +11,7 @@ namespace Tibia.Objects
     /// </summary>
     public class Inventory
     {
-        protected Client client;
+        private Client client;
 
         /// <summary>
         /// Create a new inventory object with the specified client.
@@ -24,8 +24,10 @@ namespace Tibia.Objects
 
         public Container GetContainer(byte number)
         {
-            uint i = Addresses.Container.Start + (number * Addresses.Container.Step_Container);
-            if (client.Memory.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+            if (number < 0 || number > Addresses.Container.MaxContainers)
+                throw new ArgumentOutOfRangeException("number", "number must be between 0 and Addresses.Container.MaxContainers");
+            uint i = Addresses.Container.Start + (number * Addresses.Container.StepContainer);
+            if (client.Memory.ReadByte(i + Addresses.Container.DistanceIsOpen) == 1)
             {
                 return new Container(client, i, number);
             }
@@ -39,9 +41,9 @@ namespace Tibia.Objects
         public IEnumerable<Container> GetContainers()
         {
             byte containerNumber = 0;
-            for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.Step_Container)
+            for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.StepContainer)
             {
-                if (client.Memory.ReadByte(i + Addresses.Container.Distance_IsOpen) == 1)
+                if (client.Memory.ReadByte(i + Addresses.Container.DistanceIsOpen) == 1)
                 {
                     yield return new Container(client, i, containerNumber);
                 }
@@ -79,11 +81,11 @@ namespace Tibia.Objects
             else if (location.type == Tibia.Constants.ItemLocationType.Container)
             {
                 long address = Addresses.Container.Start +
-                              Addresses.Container.Step_Container * (int)location.container +
-                              Addresses.Container.Step_Slot * (int)location.slot;
+                              Addresses.Container.StepContainer * (int)location.container +
+                              Addresses.Container.StepSlot * (int)location.slot;
                 return new Item(client,
-                    client.Memory.ReadUInt32(address + Addresses.Container.Distance_Item_Id),
-                    client.Memory.ReadByte(address + Addresses.Container.Distance_Item_Count),
+                    client.Memory.ReadUInt32(address + Addresses.Container.DistanceItemId),
+                    client.Memory.ReadByte(address + Addresses.Container.DistanceItemCount),
                     "", location);
             }
             return null;
@@ -96,7 +98,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Item GetItemInSlot(Constants.SlotNumber s)
         {
-            uint address = Addresses.Player.Slot_Head + 12 * ((uint)s - 1);
+            uint address = Addresses.Player.SlotHead + 12 * ((uint)s - 1);
             uint id = client.Memory.ReadUInt32(address);
             if (id > 0)
             {
@@ -111,8 +113,8 @@ namespace Tibia.Objects
 
         public IEnumerable<Item> GetSlotItems()
         {
-            uint address = Addresses.Player.Slot_Head;
-            for (int i = 0; i < Addresses.Player.Max_Slots; i++, address += 12)
+            uint address = Addresses.Player.SlotHead;
+            for (int i = 0; i < Addresses.Player.MaxSlots; i++, address += 12)
             {
                 uint id = client.Memory.ReadUInt32(address);
                 if (id > 0)

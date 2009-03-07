@@ -162,12 +162,12 @@ namespace Tibia.Objects
         /// </summary>
         public string Statusbar
         {
-            get { return Memory.ReadString(Addresses.Client.Statusbar_Text); }
+            get { return Memory.ReadString(Addresses.Client.StatusbarText); }
             set 
             { 
-                Memory.WriteByte(Addresses.Client.Statusbar_Time, 50);
-                Memory.WriteString(Addresses.Client.Statusbar_Text, value);
-                Memory.WriteByte(Addresses.Client.Statusbar_Text + value.Length, 0x00); 
+                Memory.WriteByte(Addresses.Client.StatusbarTime, 50);
+                Memory.WriteString(Addresses.Client.StatusbarText, value);
+                Memory.WriteByte(Addresses.Client.StatusbarText + value.Length, 0x00); 
             }
         }
 
@@ -176,7 +176,7 @@ namespace Tibia.Objects
         /// </summary>
         public ushort LastSeenId
         {
-            get { return BitConverter.ToUInt16(Memory.ReadBytes(Addresses.Client.See_Id, 2), 0); }
+            get { return BitConverter.ToUInt16(Memory.ReadBytes(Addresses.Client.SeeId, 2), 0); }
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Tibia.Objects
         /// </summary>
         public ushort LastSeenCount
         {
-            get { return BitConverter.ToUInt16(Memory.ReadBytes(Addresses.Client.See_Count, 2), 0); }
+            get { return BitConverter.ToUInt16(Memory.ReadBytes(Addresses.Client.SeeCount, 2), 0); }
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Tibia.Objects
         /// </summary>
         public string LastSeenText
         {
-            get { return Memory.ReadString(Addresses.Client.See_Text); }
+            get { return Memory.ReadString(Addresses.Client.SeeText); }
         }
 
         /// <summary>
@@ -226,6 +226,26 @@ namespace Tibia.Objects
 
                 return new System.Drawing.Point(Memory.ReadInt32(DialogB + Addresses.Client.DialogLeft), Memory.ReadInt32(DialogB + Addresses.Client.DialogTop));
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the follow mode.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.Follow FollowMode
+        {
+            get { return (Constants.Follow)Memory.ReadByte(Addresses.Client.FollowMode); }
+            set { Memory.WriteByte(Addresses.Client.FollowMode, (byte)value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the action state.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.ActionState ActionState
+        {
+            get { return (Constants.ActionState)Memory.ReadByte(Addresses.Client.ActionState); }
+            set { Memory.WriteByte(Addresses.Client.ActionState, (byte)value); }
         }
 
         #endregion
@@ -375,6 +395,14 @@ namespace Tibia.Objects
                 First(c => c.Id == playerId).Address);
         }
 
+        public Hotkey GetHotkey(byte number)
+        {
+            if (number < 0 || number > Addresses.Hotkey.MaxHotkeys)
+                return null;
+            else
+                return new Hotkey(this, number);
+        }
+
         public MemoryHelper Memory
         {
             get { return memory; }
@@ -502,26 +530,7 @@ namespace Tibia.Objects
 
         #endregion
 
-        #region Client Functions
-        /// <summary>
-        /// Gets or sets the follow mode.
-        /// </summary>
-        /// <returns></returns>
-        public Constants.Follow FollowMode
-        {
-            get { return (Constants.Follow)Memory.ReadByte(Addresses.Client.FollowMode); }
-            set { Memory.WriteByte(Addresses.Client.FollowMode, (byte)value); }
-        }
-
-        /// <summary>
-        /// Gets or sets the action state.
-        /// </summary>
-        /// <returns></returns>
-        public Constants.ActionState ActionState
-        {
-            get { return (Constants.ActionState)Memory.ReadByte(Addresses.Client.ActionState); }
-            set { Memory.WriteByte(Addresses.Client.ActionState, (byte)value); }
-        }
+        #region Client Actions
 
         /// <summary>
         /// Logout.
@@ -532,9 +541,6 @@ namespace Tibia.Objects
             return Packets.Outgoing.LogoutPacket.Send(this);
         }
 
-        #endregion
-
-        #region DLL Injection
         #endregion
     }
 }

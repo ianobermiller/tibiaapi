@@ -45,7 +45,7 @@ namespace Tibia.Objects
         {
             Tile playerTile = null;
             uint startNumber = 0;
-            uint endNumber = Addresses.Map.Max_Squares + 1;
+            uint endNumber = Addresses.Map.MaxSquares + 1;
 
             if (sameFloor)
             {

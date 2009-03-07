@@ -11,74 +11,74 @@ namespace Tibia.Addresses
         public static uint MapPointer = 0x63F568; // 8.40
 
         /// <summary>
-        /// Step between squares on the map.
+        /// Step between tiles on the map.
         /// </summary>
-        public static uint Step_Square = 172;
+        public static uint StepTile = 172;
 
         /// <summary>
-        /// Step between objects on a square.
-        /// The first object is the tile, subsequent objects are any nonmoveable items (trees),
+        /// Step between objects on a tile.
+        /// The first object is the gound, subsequent objects are any nonmoveable items (trees),
         /// creatures (players), or items in that tile.
         /// </summary>
-        public static uint Step_Square_Object = 12;
+        public static uint StepTileObject = 12;
 
         /// <summary>
-        /// Distance from the square to the number of objects on the square.
+        /// Distance from the tile to the number of objects on the square.
         /// </summary>
-        public static uint Distance_Square_ObjectCount = 0;
+        public static uint DistanceTileObjectCount = 0;
 
         /// <summary>
-        /// Distance to the first object on a square.
+        /// Distance to the first object on a tile.
         /// </summary>
-        public static uint Distance_Square_Objects = 4;
+        public static uint DistanceTileObjects = 4;
 
         /// <summary>
-        /// Distance to the id of the object that is on a square.
+        /// Distance to the id of the object that is on a tile.
         /// </summary>
-        public static uint Distance_Object_Id = 0;
+        public static uint DistanceObjectId = 0;
         /// <summary>
-        /// Distance to the data of the object that is on a square.
+        /// Distance to the data of the object that is on a tile.
         /// </summary>
-        public static uint Distance_Object_Data = 4;
+        public static uint DistanceObjectData = 4;
         /// <summary>
-        /// Distance to the ExData (extra data) of the object that is on a square.
+        /// Distance to the ExData (extra data) of the object that is on a tile.
         /// </summary>
-        public static uint Distance_Object_Data_Ex = 8;
+        public static uint DistanceObjectDataEx = 8;
 
         /// <summary>
         /// Maximum number of objects per tile.
         /// </summary>
-        public static uint Max_Square_Objects = 13;
+        public static uint MaxSquareObjects = 13;
 
         /// <summary>
         /// Maximum number of tiles in the X direction
         /// </summary>
-        public static uint Max_X = 18;
+        public static uint MaxX = 18;
 
         /// <summary>
         /// Maximum number of tiles in the Y direction
         /// </summary>
-        public static uint Max_Y = 14;
+        public static uint MaxY = 14;
 
         /// <summary>
         /// Maximum number of tiles in the Z direction
         /// </summary>
-        public static uint Max_Z = 8;
+        public static uint MaxZ = 8;
 
         /// <summary>
         /// Maximum number of tiles.
         /// </summary>
-        public static uint Max_Squares = 2016; // Max_X * Max_Y * Max_Z
+        public static uint MaxSquares = 2016; // Max_X * Max_Y * Max_Z
 
         /// <summary>
         /// The default (starting) Z axis value
         /// </summary>
-        public static uint Z_Axis_Default = 7; // default ground level
+        public static uint ZAxisDefault = 7; // default ground level
 
         /// <summary>
         /// Memory address for player tile
         /// </summary>
-        public static uint Player_Tile = 0x3E3A08; // 8.1, Doesn't appear to exist in 8.21
+        public static uint PlayerTile = 0x3E3A08; // 8.1, Doesn't appear to exist in 8.21
 
         /// <summary>
         /// Nop Value, to use with namespy and levelspy

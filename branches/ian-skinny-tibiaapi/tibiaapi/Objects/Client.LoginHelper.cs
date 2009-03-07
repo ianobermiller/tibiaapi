@@ -28,7 +28,7 @@ namespace Tibia.Objects
             private Client client;
             private LoginServer openTibiaServer = null;
 
-            public LoginHelper(Client client) { this.client = client; }
+            internal LoginHelper(Client client) { this.client = client; }
 
             #region Account Info
 
@@ -161,16 +161,16 @@ namespace Tibia.Objects
             {
                 get
                 {
-                    LoginServer[] servers = new LoginServer[Addresses.Client.Max_LoginServers];
+                    LoginServer[] servers = new LoginServer[Addresses.Client.MaxLoginServers];
                     long address = Addresses.Client.LoginServerStart;
 
-                    for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+                    for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
                     {
                         servers[i] = new LoginServer(
                             client.Memory.ReadString(address),
-                            (short)client.Memory.ReadInt32(address + Addresses.Client.Distance_Port)
+                            (short)client.Memory.ReadInt32(address + Addresses.Client.DistancePort)
                         );
-                        address += Addresses.Client.Step_LoginServer;
+                        address += Addresses.Client.StepLoginServer;
                     }
                     return servers;
                 }
@@ -180,22 +180,22 @@ namespace Tibia.Objects
                     if (value.Length == 1)
                     {
                         string server = value[0].Server + (char)0;
-                        for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+                        for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
                         {
                             client.Memory.WriteString(address, value[0].Server);
-                            client.Memory.WriteInt32(address + Addresses.Client.Distance_Port, value[0].Port);
-                            address += Addresses.Client.Step_LoginServer;
+                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[0].Port);
+                            address += Addresses.Client.StepLoginServer;
                         }
                     }
-                    else if (value.Length > 1 && value.Length <= Addresses.Client.Max_LoginServers)
+                    else if (value.Length > 1 && value.Length <= Addresses.Client.MaxLoginServers)
                     {
                         string server = string.Empty;
                         for (int i = 0; i < value.Length; i++)
                         {
                             server = value[i].Server + (char)0;
                             client.Memory.WriteString(address, server);
-                            client.Memory.WriteInt32(address + Addresses.Client.Distance_Port, value[0].Port);
-                            address += Addresses.Client.Step_LoginServer;
+                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[0].Port);
+                            address += Addresses.Client.StepLoginServer;
                         }
                     }
                 }
@@ -214,11 +214,11 @@ namespace Tibia.Objects
 
                 ip += (char)0;
 
-                for (int i = 0; i < Addresses.Client.Max_LoginServers; i++)
+                for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
                 {
                     result &= client.Memory.WriteString(pointer, ip);
-                    result &= client.Memory.WriteInt32(pointer + Addresses.Client.Distance_Port, port);
-                    pointer += Addresses.Client.Step_LoginServer;
+                    result &= client.Memory.WriteInt32(pointer + Addresses.Client.DistancePort, port);
+                    pointer += Addresses.Client.StepLoginServer;
                 }
                 return result;
             }

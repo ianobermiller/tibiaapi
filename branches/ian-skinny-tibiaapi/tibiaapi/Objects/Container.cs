@@ -9,9 +9,9 @@ namespace Tibia.Objects
     /// </summary>
     public class Container
     {
-        protected Client client;
-        protected uint address;
-        protected byte number;
+        private Client client;
+        private uint address;
+        private byte number;
 
         /// <summary>
         /// Create a new container object with the specified client, address, and number.
@@ -34,14 +34,14 @@ namespace Tibia.Objects
         {
             byte slot = 0;
             int amount = Amount;
-            for (uint i = address; i <= address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
+            for (uint i = address; i <= address + Addresses.Container.StepSlot * amount - 1; i += Addresses.Container.StepSlot)
             {
-                uint itemId = client.Memory.ReadUInt32(i + Addresses.Container.Distance_Item_Id);
+                uint itemId = client.Memory.ReadUInt32(i + Addresses.Container.DistanceItemId);
                 if (itemId > 0)
                     yield return new Item(
                         client, 
                         itemId,
-                        client.Memory.ReadByte(i + Addresses.Container.Distance_Item_Count),
+                        client.Memory.ReadByte(i + Addresses.Container.DistanceItemCount),
                         "", 
                         ItemLocation.FromContainer(number, slot));
                 
@@ -129,8 +129,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Id
         {
-            get { return client.Memory.ReadInt32(address + Addresses.Container.Distance_Id); }
-            set { client.Memory.WriteInt32(address + Addresses.Container.Distance_Id, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceId); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceId, value); }
         }
 
         /// <summary>
@@ -139,8 +139,8 @@ namespace Tibia.Objects
         /// </summary>
         public bool IsOpen
         {
-            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.Distance_IsOpen)); }
-            set { client.Memory.WriteInt32(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.DistanceIsOpen)); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceIsOpen, Convert.ToByte(value)); }
         }
 
         /// <summary>
@@ -148,8 +148,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Amount
         {
-            get { return client.Memory.ReadInt32(address + Addresses.Container.Distance_Amount); }
-            set { client.Memory.WriteInt32(address + Addresses.Container.Distance_Amount, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceAmount); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceAmount, value); }
         }
 
         /// <summary>
@@ -158,8 +158,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Name
         {
-            get { return client.Memory.ReadString(address + Addresses.Container.Distance_Name); }
-            set { client.Memory.WriteString(address + Addresses.Container.Distance_Name, value); }
+            get { return client.Memory.ReadString(address + Addresses.Container.DistanceName); }
+            set { client.Memory.WriteString(address + Addresses.Container.DistanceName, value); }
         }
 
         /// <summary>
@@ -167,13 +167,13 @@ namespace Tibia.Objects
         /// </summary>
         public int Volume
         {
-            get { return client.Memory.ReadInt32(address + Addresses.Container.Distance_Volume); }
-            set { client.Memory.WriteInt32(address + Addresses.Container.Distance_Volume, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceVolume); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceVolume, value); }
         }
 
         public bool HasParent
         {
-            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.Distance_HasParent)); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.DistanceHasParent)); }
         }
 
         #endregion

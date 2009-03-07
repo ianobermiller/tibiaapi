@@ -11,7 +11,7 @@ namespace Tibia.Objects
         {
             private Client client;
 
-            public MemoryHelper(Client client) { this.client = client; }
+            internal MemoryHelper(Client client) { this.client = client; }
 
             public byte[] ReadBytes(long address, uint bytesToRead)
             {

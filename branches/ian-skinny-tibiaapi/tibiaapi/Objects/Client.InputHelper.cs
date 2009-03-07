@@ -12,7 +12,7 @@ namespace Tibia.Objects
         {
             private Client client;
 
-            public InputHelper(Client client) { this.client = client; }
+            internal InputHelper(Client client) { this.client = client; }
 
             /// <summary>
             /// Sends a string to the client

@@ -240,7 +240,7 @@ namespace Tibia
         /// <returns></returns>
         public static uint ToMapTileAddress(this uint tileNumber, Client client)
         {
-            return client.Memory.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.Step_Square * tileNumber);
+            return client.Memory.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.StepTile * tileNumber);
         }
 
         /// <summary>
