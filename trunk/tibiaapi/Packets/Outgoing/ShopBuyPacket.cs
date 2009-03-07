@@ -38,9 +38,8 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
             msg.AddByte((byte)Type);
 
             msg.AddUInt16(ItemId);
@@ -48,8 +47,6 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte(Amount);
             msg.AddByte(Unknown);
             msg.AddByte(Convert.ToByte(WithBackpack));
-
-            return msg.Packet;
         }
 
         public static bool Send(Objects.Client client, ushort itemId, byte count, byte amount, bool withBackpack)

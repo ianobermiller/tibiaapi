@@ -10,12 +10,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Distance between creatures.
         /// </summary>
-        public static uint Step_Creatures = 0xA0;
+        public static uint StepCreatures = 0xA0;
 
         /// <summary>
         /// Maximum number of creatures.
         /// </summary>
-        public static uint Max_Creatures = 250;
+        public static uint MaxCreatures = 250;
 
         /// <summary>
         /// Start of the battle list.
@@ -25,6 +25,6 @@ namespace Tibia.Addresses
         /// <summary>
         /// End of the battle list.
         /// </summary>
-        public static uint End = Start + (Step_Creatures * Max_Creatures);
+        public static uint End = Start + (StepCreatures * MaxCreatures);
     }
 }

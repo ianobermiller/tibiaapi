@@ -6,11 +6,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Tibia;
-using Tibia.Packets;
 using Tibia.Objects;
 using Tibia.Util;
+using System.Windows.Forms;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class RawSocket : SocketBase
     {
@@ -36,9 +36,14 @@ namespace Tibia.Util
         private Queue<byte[]> OutgoingGamePacketQueue = new Queue<byte[]>();
         private Queue<byte[]> packetServerToClientQueue = new Queue<byte[]>();
         private Queue<string> flagServerToClientQueue = new Queue<string>();
+        private object debugLock = new object();
+
+        private NetworkMessage clientRecvMsg, serverRecvMsg;
+        private NetworkMessage clientSendMsg, serverSendMsg;
         #endregion
 
         #region Properties
+
         public bool Enabled
         {
             get { return enabled; }
@@ -64,9 +69,9 @@ namespace Tibia.Util
         public delegate void Notification(string where, string messsage);
         public Notification OnError;
 
-        public delegate void MessageListener(NetworkMessage message);
-        public event MessageListener ReceivedMessageFromClient;
-        public event MessageListener ReceivedMessageFromServer;
+        public delegate void DataListener(byte[] data);
+        public event DataListener ReceivedDataFromClient;
+        public event DataListener ReceivedDataFromServer;
 
         public delegate void RawPacketListener(byte[] packet, string flags);
         public RawPacketListener ReceivedIPPacketFromClient;
@@ -181,6 +186,11 @@ namespace Tibia.Util
             : this(client, adler, GetDefaultLocalIp()) { }
         public RawSocket(Client client, bool adler, string localIp)
         {
+            serverRecvMsg = new NetworkMessage(client);
+            clientRecvMsg = new NetworkMessage(client);
+            clientSendMsg = new NetworkMessage(client);
+            serverSendMsg = new NetworkMessage(client);
+
             this.Adler = adler;
             this.client = client;
             pid = client.Process.Id;
@@ -296,35 +306,25 @@ namespace Tibia.Util
 
         private void RaiseOutgoingEvents(byte[] data)
         {
-            if (ReceivedMessageFromClient != null)
-                ReceivedMessageFromClient(new NetworkMessage(client, data));
+            if (ReceivedDataFromClient != null)
+                ReceivedDataFromClient.Invoke(data);
 
-            NetworkMessage msg = new NetworkMessage(client, data);
+            Array.Copy(data, clientRecvMsg.GetBuffer(), data.Length);
+            clientRecvMsg.Length = (int)(BitConverter.ToUInt16(clientRecvMsg.GetBuffer(), 0) + 2);
 
-            msg.PrepareToRead();
-            msg.GetUInt16();
-
-            while (msg.Position < msg.Length)
+            if (clientRecvMsg.CheckAdler32() && clientRecvMsg.XteaDecrypt())
             {
-                OutgoingPacket packet = ParseServerPacket(client, msg);
-                byte[] packetBytes;
 
-                if (packet == null)
+                clientRecvMsg.Position = 6;
+                int msgLength = (int)clientRecvMsg.GetUInt16() + 8;
+                serverSendMsg.Reset();
+
+                if (!ParsePacketFromClient(client, clientRecvMsg, serverSendMsg))
                 {
-                    packetBytes = msg.GetBytes(msg.Length - msg.Position);
-
-                    if (packetBytes.Length > 0)
-                    {
-                        OnOutgoingSplitPacket(packetBytes[0], packetBytes);
-                    }
-                    break;
-                }
-                else
-                {
-
-                    packetBytes = packet.ToByteArray();
-
-                    OnOutgoingSplitPacket((byte)packet.Type, packetBytes);
+                    //unknown packet
+                    byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
+                    WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
+                    serverSendMsg.AddBytes(unknown);
                 }
             }
         }
@@ -466,32 +466,29 @@ namespace Tibia.Util
             while (IncomingGamePacketQueue.Count > 0)
             {
 
-                NetworkMessage msg = new NetworkMessage(client, IncomingGamePacketQueue.Dequeue());
-                if (ReceivedMessageFromServer != null)
-                    ReceivedMessageFromServer.Invoke(msg);
+                byte[] packet = IncomingGamePacketQueue.Dequeue();
 
-                msg.PrepareToRead();
-                msg.GetUInt16(); //logical packet size
+                if (ReceivedDataFromServer != null)
+                    ReceivedDataFromServer.Invoke(packet);
 
-                while (msg.Position < msg.Length)
+                Array.Copy(packet, serverRecvMsg.GetBuffer(), packet.Length);
+                serverRecvMsg.Length = (int)(BitConverter.ToUInt16(serverRecvMsg.GetBuffer(), 0) + 2);
+
+                if (serverRecvMsg.CheckAdler32() && serverRecvMsg.XteaDecrypt())
                 {
-                    IncomingPacket packet = ParseClientPacket(client, msg);
-                    byte[] packetBytes;
+                    serverRecvMsg.Position = 6;
+                    int msgSize = (int)serverRecvMsg.GetUInt16() + 8;
+                    clientSendMsg.Reset();
 
-                    if (packet == null)
+                    while (serverRecvMsg.Position < msgSize)
                     {
-                        packetBytes = msg.GetBytes(msg.Length - msg.Position);
-
-                        if (packetBytes.Length > 0)
+                        if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                         {
-                            OnIncomingSplitPacket(packetBytes[0], packetBytes);
+                            byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
+                            WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
+                            clientSendMsg.AddBytes(unknown);
+                            break;
                         }
-                        break;
-                    }
-                    else
-                    {
-                        packetBytes = packet.ToByteArray();
-                        OnIncomingSplitPacket((byte)packet.Type, packetBytes);
                     }
                 }
             }
@@ -601,6 +598,26 @@ namespace Tibia.Util
 
             return pos;
         }
+        #endregion
+
+        #region Debug
+
+        private void WriteDebug(string msg)
+        {
+            try
+            {
+                lock (debugLock)
+                {
+                    System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "rawsocket_log.txt"), true);
+                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg);
+                    sw.Close();
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         #endregion
     }
 }

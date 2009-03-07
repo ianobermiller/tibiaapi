@@ -49,7 +49,7 @@ namespace Tibia.Packets.Pipes
             msg.AddUInt16((ushort)Font);
             msg.AddString(Text);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, string textId, Location location, Color color, ClientFont font, string text)

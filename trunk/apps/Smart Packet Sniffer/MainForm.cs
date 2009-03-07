@@ -58,12 +58,12 @@ namespace SmartPacketSniffer
             if (btnLog.Text == "Stop Packet Logging")
             {
                 btnLog.Text = "Start Packet Logging";
-                client.StopRawSocket();
+                client.IO.StopRawSocket();
             }
             else if (btnLog.Text == "Start Packet Logging")
             {
                 btnLog.Text = "Stop Packet Logging";
-                client.StartRawSocket();
+                client.IO.StartRawSocket();
             }
         }
 
@@ -87,11 +87,11 @@ namespace SmartPacketSniffer
             if (comboBox1.Items.Count > 0)
             {
                 client = lc[comboBox1.SelectedIndex];
-                if (client.RawSocket == null)
+                if (client.IO.RawSocket == null)
                 {
-                    client.StartRawSocket();
-                    client.RawSocket.IncomingSplitPacket+=new RawSocket.SplitPacket(RawSocket_IncomingSplitPacket);
-                    client.RawSocket.OutgoingSplitPacket+=new RawSocket.SplitPacket(RawSocket_OutgoingSplitPacket);
+                    client.IO.StartRawSocket();
+                    client.IO.RawSocket.ReceivedDataFromClient += ReceivedMessageFromClient;
+                    client.IO.RawSocket.ReceivedDataFromServer += ReceivedMessageFromServer;
                     EventHandler e = new EventHandler(RadioChanged);
                     e.Invoke(new Object(), new EventArgs());
                 }
@@ -100,12 +100,13 @@ namespace SmartPacketSniffer
 
 
 
-        private void RawSocket_OutgoingSplitPacket(byte type, byte[] packet)
+        private void ReceivedMessageFromClient(byte[] packet)
         {
             if (chkClient.Checked)
             {
                 if (chkType.Checked)
                 {
+                    byte type = packet[2];
                     if (txtType.Text.Length == 2 &&
                         type == txtType.Text.ToBytesAsHex()[0])
                     {
@@ -116,12 +117,13 @@ namespace SmartPacketSniffer
             }
         }
 
-        private void RawSocket_IncomingSplitPacket(byte type, byte[] packet)
+        private void ReceivedMessageFromServer(byte[] packet)
         {
             if (chkServer.Checked)
             {
                 if (chkType.Checked)
                 {
+                    byte type = packet[2];
                     if (txtType.Text.Length == 2 &&
                         type== txtType.Text.ToBytesAsHex()[0])
                     {
@@ -134,7 +136,7 @@ namespace SmartPacketSniffer
 
         private void LogPacket(byte[] packet, string from, string to)
         {
-            if (client.RawSocket.Enabled)
+            if (client.IO.RawSocket.Enabled)
             {
                 PacketList.Invoke(new EventHandler(delegate
                 {
@@ -246,12 +248,12 @@ namespace SmartPacketSniffer
 
         private void RadioChanged(object sender, EventArgs e)
         {
-            if (radioDefault.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
-            else if (radioSpecial.Checked) client.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
+            if (radioDefault.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingDefaultRemotePort;
+            else if (radioSpecial.Checked) client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingSpecialRemotePort;
             else if (radioProxy.Checked)
             {
-                client.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
-                client.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
+                client.IO.RawSocket.Mode = RawSocket.SocketMode.UsingProxy;
+                client.IO.RawSocket.ProxyPort = Convert.ToUInt16(numProxyPort.Value);
             }
         }
 

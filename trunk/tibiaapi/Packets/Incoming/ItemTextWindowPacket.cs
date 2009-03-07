@@ -49,10 +49,8 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(WindowId);
@@ -61,8 +59,6 @@ namespace Tibia.Packets.Incoming
             msg.AddString(Text);
             msg.AddString(Author);
             msg.AddString(Date);
-
-            return msg.Packet;
         }
     }
 }

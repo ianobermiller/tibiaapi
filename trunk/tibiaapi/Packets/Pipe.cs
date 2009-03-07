@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO.Pipes;
 using Tibia.Objects;
-using Tibia.Packets;
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public class Pipe
     {
@@ -101,7 +100,7 @@ namespace Tibia.Util
             if (OnSend != null)
                 OnSend.BeginInvoke(msg, null, null);
 
-            pipe.Write(msg.Packet, 0, msg.Length);
+            pipe.Write(msg.Data, 0, msg.Length);
         }
 
         /// <summary>

@@ -100,7 +100,7 @@ namespace SmartRunemaker
                     mouse_pos.Y = e.Y;
                     break;
                 case MouseButtons.Middle:
-                    client.IsActive = true;
+                    client.Window.IsActive = true;
                     break;
             }
         }

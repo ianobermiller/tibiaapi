@@ -34,7 +34,7 @@ namespace Tibia.Packets.Pipes
             msg.AddByte((byte)ConstantType);
             msg.AddUInt32((uint)Value);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, PipeConstantType constantType, uint value)

@@ -39,20 +39,15 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
-
             msg.AddLocation(FromPosition);
             msg.AddUInt16(FromSpriteId);
             msg.AddByte(FromStackPosition);
             msg.AddLocation(ToPosition);
             msg.AddUInt16(ToSpriteId);
             msg.AddByte(ToStackPosition);
-
-            return msg.Packet;
         }
 
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort fromSpriteId, byte fromStackPostion, Objects.Location toPosition, ushort toSpriteId, byte toStackPosition)

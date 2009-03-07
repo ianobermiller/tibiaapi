@@ -31,7 +31,7 @@ namespace Tibia.Packets.Pipes
 
             msg.AddString(TextName);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, string textName)

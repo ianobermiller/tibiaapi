@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tibia.Objects
 {
@@ -21,91 +22,30 @@ namespace Tibia.Objects
         }
         #endregion
 
-        #region Get Squares
-
-        /// <summary>
-        /// Get all the adjacent squares to a world location, including the square at that location
-        /// </summary>
-        /// <param name="loc"></param>
-        /// <returns></returns>
-        public List<Tile> GetTilesAdjacentTo(Location worldLocation)
-        {
-            Tile playerTile = GetTileWithPlayer();
-            List<Tile> tiles = new List<Tile>(9);
-            for (int x = -1; x <= 1; x++)
-            {
-                for (int y = -1; y <= 1; y++)
-                {
-                    Location offset = new Location(worldLocation.X + x,
-                        worldLocation.Y + y, worldLocation.Z);
-                    tiles.Add(createMapTile(offset, playerTile));
-                }
-            }
-            return tiles;
-        }
-
+        #region Get Tiles
         public Tile GetTileWithPlayer()
         {
-            int playerId = client.ReadInt32(Addresses.Player.Id);
-            return getSingleTile(GetTilesWithObject(new TileObject(
-                0x63, playerId, 0), false, false));
+            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+            return GetTiles(false, false).First(
+                t => t.Objects.Any(
+                    o => o.Id == 0x63 && o.Data == playerId));
         }
 
-        public List<Tile> GetTilesWithGround(uint groundId, bool sameFloor)
+        public IEnumerable<Tile> GetTiles()
         {
-            return GetTiles(delegate(Tile tile)
-            {
-                if (tile.Ground.Id == groundId)
-                    return true;
-
-                return false;
-            }, sameFloor);
+            return GetTiles(false, true);
         }
 
-        public List<Tile> GetTilesWithObject(TileObject testObject, bool sameFloor)
+        public IEnumerable<Tile> GetTilesOnSameFloor()
         {
-            return GetTilesWithObject(testObject, sameFloor, true);
+            return GetTiles(true, true);
         }
 
-        public List<Tile> GetTilesWithObject(TileObject testObject, bool sameFloor, bool getWorldLocation)
+        private IEnumerable<Tile> GetTiles(bool sameFloor, bool getWorldLocation)
         {
-            return GetTiles(delegate(Tile tile)
-            {
-                foreach (var oldObject in tile.Objects)
-                {
-                    if ((testObject.Id == 0 || oldObject.Id == testObject.Id) &&
-                        (testObject.Data == 0 || oldObject.Data == testObject.Data) &&
-                        (testObject.DataEx == 0 || oldObject.DataEx == testObject.DataEx))
-                        return true;
-                }
-                return false;
-            }, sameFloor, getWorldLocation, Addresses.Map.Max_Squares);
-        }
-
-        public Tile GetTile(Predicate<Tile> match, bool sameFloor)
-        {
-            return getSingleTile(GetTiles(match, sameFloor, true, 1));
-        }
-
-        private Tile getSingleTile(List<Tile> tiles)
-        {
-            if (tiles.Count > 0)
-                return tiles[0];
-            else
-                return null;
-        }
-
-        public List<Tile> GetTiles(Predicate<Tile> match, bool sameFloor)
-        {
-            return GetTiles(match, sameFloor, true, Addresses.Map.Max_Squares);
-        }
-
-        public List<Tile> GetTiles(Predicate<Tile> match, bool sameFloor, bool getWorldLocation, uint maxTiles)
-        {
-            List<Tile> tiles = new List<Tile>();
             Tile playerTile = null;
             uint startNumber = 0;
-            uint endNumber = Addresses.Map.Max_Squares + 1;
+            uint endNumber = Addresses.Map.MaxSquares + 1;
 
             if (sameFloor)
             {
@@ -124,26 +64,17 @@ namespace Tibia.Objects
 
             for (uint i = startNumber; i < endNumber; i++)
             {
-                Tile mapTile;
-
                 if (getWorldLocation)
-                    mapTile = createMapTile(i, playerTile);
+                    yield return GetTile(i, playerTile);
                 else
-                    mapTile = createMapTile(i);
-
-                 if (match(mapTile))
-                    tiles.Add(mapTile);
-
-                if (tiles.Count >= maxTiles) 
-                    break;
+                    yield return GetTile(i);
             }
 
-            return tiles;
         }
         #endregion
 
         #region Conversions
-        public Location OffsetMemoryLocation(Location loc, int offsetX, int offsetY)
+        private Location OffsetMemoryLocation(Location loc, int offsetX, int offsetY)
         {
             Location newLoc = new Location();
 
@@ -166,30 +97,30 @@ namespace Tibia.Objects
         }
         #endregion
 
-        #region Create MapSquare
+        #region Get Tile
         /// <summary>
         /// Get the map square at the specified world location.
         /// </summary>
         /// <param name="loc"></param>
         /// <returns></returns>
-        public Tile CreateMapTile(Location worldLocation)
+        public Tile GetTile(Location worldLocation)
         {
-            return createMapTile(worldLocation, GetTileWithPlayer());
+            return GetTile(worldLocation, GetTileWithPlayer());
         }
 
-        private Tile createMapTile(Location worldLocation, Tile playerTile)
+        private Tile GetTile(Location worldLocation, Tile playerTile)
         {
             Location memoryLocation = worldLocation.ToMemoryLocation(playerTile, client);
             uint tileNumber = memoryLocation.ToTileNumber();
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
         }
 
-        private Tile createMapTile(uint tileNumber)
+        private Tile GetTile(uint tileNumber)
         {
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber);
         }
 
-        private Tile createMapTile(uint tileNumber, Tile playerTile)
+        private Tile GetTile(uint tileNumber, Tile playerTile)
         {
             Location worldLocation = tileNumber.ToMemoryLocation().ToWorldLocation(playerTile, client);
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
@@ -197,192 +128,125 @@ namespace Tibia.Objects
         #endregion
 
         #region Replace
-
-        /// <summary>
-        /// Replace all tiles in a list with a new id.
-        /// </summary>
-        public int ReplaceGround(List<uint> idList, uint newTileId, bool sameFloor)
-        {
-            return GetTiles(delegate(Tile mapTile)
-            {
-                if (idList.Contains(mapTile.Ground.Id))
-                {
-                    mapTile.ReplaceGround(newTileId);
-                    return true;
-                }
-                return false;
-            }, sameFloor).Count;
-        }
-
-        /// <summary>
-        /// Replace all tiles matching the old id with the new id.
-        /// </summary>
-        public int ReplaceGround(uint oldTileId, uint newTileId, bool sameFloor)
-        {
-            return ReplaceGround(new List<uint>() { oldTileId }, newTileId, sameFloor);
-        }
-
-        public int ReplaceObjects(List<TileObject> objectList, TileObject newObject, bool sameFloor)
-        {
-            return GetTiles(delegate(Tile mapTile)
-            {
-                foreach (TileObject oldObject in mapTile.Objects)
-                {
-                    foreach (TileObject testObject in objectList)
-                    {
-                        if ((testObject.Id == 0 || oldObject.Id == testObject.Id) &&
-                            (testObject.Data == 0 || oldObject.Data == testObject.Data) &&
-                            (testObject.DataEx == 0 || oldObject.DataEx == testObject.DataEx))
-                        {
-                            mapTile.ReplaceObject(oldObject, newObject);
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }, sameFloor).Count;
-        }
-
-        public int ReplaceObject(TileObject testObject, TileObject newObject, bool sameFloor)
-        {
-            return ReplaceObjects(new List<TileObject>() { testObject },
-                newObject, sameFloor);
-        }
-
         /// <summary>
         /// Replace all the trees on the map with small fir trees.
+        /// Only needs to be called ONCE.
         /// </summary>
         /// <returns></returns>
         public void ReplaceTrees()
         {
             uint smallFirTreeId = 3682;
-            byte[] smallFirTreeBytes = client.ReadBytes(
-                client.ReadUInt32(
-                    client.ReadUInt32(Addresses.Client.DatPointer) + 8)
+            byte[] smallFirTreeBytes = client.Memory.ReadBytes(
+                client.Memory.ReadUInt32(
+                    client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8)
                 + Addresses.DatItem.Sprite
                 + (uint)(0x4C * (smallFirTreeId - 100)), 3);
             foreach (int id in Tibia.Constants.Items.TreeArray)
             {
-                uint address = client.ReadUInt32(client.ReadUInt32(Addresses.Client.DatPointer) + 8) 
+                uint address = client.Memory.ReadUInt32(client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8) 
                     + Addresses.DatItem.Sprite 
                     + (uint)(0x4C * (id - 100));
-                client.WriteBytes(address, smallFirTreeBytes, 3); 
+                client.Memory.WriteBytes(address, smallFirTreeBytes, 3); 
             }
-        }
-        #endregion
-
-        #region Special Purpose
-        public List<Tile> GetFishTiles()
-        {
-            Player player = client.GetPlayer();
-            List<Tile> tiles = new List<Tile>();
-            List<uint> fishIds = Constants.Tiles.Water.GetFishIds();
-            GetTiles(delegate(Tile tile)
-            {
-                if (fishIds.Contains(tile.Ground.Id))
-                    if (tile.Location.Z == player.Location.Z && tile.Location.X - player.Location.X < 7 && tile.Location.Y - player.Location.Y < 6)
-                    {
-                        tiles.Add(tile);
-                        return true;
-                    }
-                return false;
-            }, true);
-            return tiles;
         }
         #endregion
 
         #region Name Spy
         /// <summary>
-        /// Enable or disable name spying
+        /// Enable name spying.
         /// </summary>
         /// <param name="enable"></param>
-        public void ShowNames(bool enable)
+        public void NameSpyOn()
         {
-            if (enable)
-            {
-                client.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
-                client.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
-            }
-            else
-            {
-                client.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
-                client.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
-            }
+            client.Memory.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
+        }
+        /// <summary>
+        /// Disable name spying.
+        /// </summary>
+        /// <param name="enable"></param>
+        public void NameSpyOff()
+        {
+            client.Memory.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
+            client.Memory.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
         }
         #endregion
 
         #region Level Spy
         /// <summary>
-        /// Enable or disable level spy for the given floor. The floor parameter
+        /// Enable level spy for the given floor. The floor parameter
         /// is relative to the floor the player is currently on.
         /// </summary>
         /// <param name="floor"></param>
-        /// <param name="enable"></param>
         /// <returns></returns>
-        public bool ShowFloor(int floor, bool enable)
+        public bool LevelSpyOn(int floor)
         {
-            if (enable)
+            int playerZ, tempPtr;
+
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
+
+            tempPtr = client.Memory.ReadInt32(Addresses.Map.LevelSpyPtr);
+            tempPtr += Addresses.Map.LevelSpyAdd1;
+            tempPtr = client.Memory.ReadInt32(tempPtr);
+            tempPtr += (int)Addresses.Map.LevelSpyAdd2;
+
+            playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
+
+            if (playerZ <= 7)
             {
-                int playerZ, tempPtr;
-
-                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
-
-                tempPtr = client.ReadInt32(Addresses.Map.LevelSpyPtr);
-                tempPtr += Addresses.Map.LevelSpyAdd1;
-                tempPtr = client.ReadInt32(tempPtr);
-                tempPtr += (int)Addresses.Map.LevelSpyAdd2;
-
-                playerZ = client.ReadInt32(Addresses.Player.Z);
-
-                if (playerZ <= 7)
+                if (playerZ - floor >= 0 && playerZ - floor <= 7)
                 {
-                    if (playerZ - floor >= 0 && playerZ - floor <= 7)
-                    {
-                        playerZ = 7 - playerZ;
-                        client.WriteInt32(tempPtr, playerZ + floor);
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (floor >= -2 && floor <= 2 && playerZ - floor < 16)
-                    {
-                        client.WriteInt32(tempPtr, 2 + floor);
-                        return true;
-                    }
+                    playerZ = 7 - playerZ;
+                    client.Memory.WriteInt32(tempPtr, playerZ + floor);
+                    return true;
                 }
             }
             else
             {
-                client.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
-                client.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
-                return true;
+                if (floor >= -2 && floor <= 2 && playerZ - floor < 16)
+                {
+                    client.Memory.WriteInt32(tempPtr, 2 + floor);
+                    return true;
+                }
             }
+            
             return false;
+        }
+
+        /// <summary>
+        /// Disable level spy.
+        /// </summary>
+        public void LevelSpyOff()
+        {
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
         }
         #endregion
 
         #region Full Light
         /// <summary>
-        /// Enable or disable full light.
+        /// Enable full light.
         /// </summary>
         /// <param name="enable"></param>
         /// <returns></returns>
-        public void FullLight(bool enable)
+        public void FullLightOn()
         {
-            if (enable)
-            {
-                client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
-                client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
-            }
-            else
-            {
-                client.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
-                client.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
-            }
+            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
+            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
+        }
+
+        /// <summary>
+        /// Disable full light.
+        /// </summary>
+        /// <param name="enable"></param>
+        /// <returns></returns>
+        public void FullLightOff()
+        {
+            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
+            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
         }
         #endregion
     }

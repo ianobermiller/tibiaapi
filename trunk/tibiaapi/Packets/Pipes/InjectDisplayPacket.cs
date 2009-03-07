@@ -30,7 +30,7 @@ namespace Tibia.Packets.Pipes
             msg.AddByte((byte)Type);
 
             msg.AddByte(Convert.ToByte(Injected));
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, bool injected)
