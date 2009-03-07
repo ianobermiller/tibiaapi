@@ -74,7 +74,7 @@ namespace Tibia.Constants
         PopupMenu = 12
     }
 
-    public enum Window
+    public enum CurrentDialog
     {
         MoveObjects = 88
     }

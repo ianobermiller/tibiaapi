@@ -7,7 +7,6 @@ namespace Tibia.Packets.Incoming
 {
     public abstract class MapPacket : IncomingPacket
     {
-        protected NetworkMessage stream;
         protected short m_skipTiles;
 
         protected List<Tile> tiles = new List<Tile>();
@@ -29,9 +28,9 @@ namespace Tibia.Packets.Incoming
             Destination = PacketDestination.Client;
         }
 
-        public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination);
+        public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg);
 
-        protected bool setMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height)
+        protected bool setMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height, NetworkMessage outMsg)
         {
             int startz, endz, zstep;
             //calculate map limits
@@ -51,14 +50,14 @@ namespace Tibia.Packets.Incoming
             for (int nz = startz; nz != endz + zstep; nz += zstep)
             {
                 //pare each floor
-                if (!setFloorDescription(msg, x, y, nz, width, height, z - nz))
+                if (!setFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
                     return false;
             }
 
             return true;
         }
 
-        protected bool setFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset)
+        protected bool setFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset, NetworkMessage outMsg)
         {
             ushort skipTiles;
 
@@ -74,7 +73,7 @@ namespace Tibia.Packets.Incoming
                         if (tileOpt >= 0xFF00)
                         {
                             skipTiles = msg.GetUInt16();
-                            stream.AddUInt16(skipTiles);
+                            outMsg.AddUInt16(skipTiles);
 
                             m_skipTiles = (short)(skipTiles & 0xFF);
                         }
@@ -83,13 +82,13 @@ namespace Tibia.Packets.Incoming
                             //real tile so read tile
                             Objects.Location pos = new Tibia.Objects.Location(x + nx + offset, y + ny + offset, z);
 
-                            if (!setTileDescription(msg, pos))
+                            if (!setTileDescription(msg, pos, outMsg))
                             {
                                 return false;
                             }
                             //read skip tiles info
                             skipTiles = msg.GetUInt16();
-                            stream.AddUInt16(skipTiles);
+                            outMsg.AddUInt16(skipTiles);
 
                             m_skipTiles = (short)(skipTiles & 0xFF);
                         }
@@ -104,7 +103,7 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        protected bool setTileDescription(NetworkMessage msg, Objects.Location pos)
+        protected bool setTileDescription(NetworkMessage msg, Objects.Location pos, NetworkMessage outMsg)
         {
             int n = 0;
             bool ret = true;
@@ -130,7 +129,7 @@ namespace Tibia.Packets.Incoming
                         break;
                     }
                     //read tile things: items and creatures
-                    internalGetThing(msg, pos, tile, n);
+                    internalGetThing(msg, pos, tile, n, outMsg);
                 }
             }
 
@@ -138,11 +137,11 @@ namespace Tibia.Packets.Incoming
             return ret;
         }
 
-        protected bool internalGetThing(NetworkMessage msg, Location pos, Tile tile, int n)
+        protected bool internalGetThing(NetworkMessage msg, Location pos, Tile tile, int n, NetworkMessage outMsg)
         {
             //get thing type
             ushort thingId = msg.GetUInt16();
-            stream.AddUInt16(thingId);
+            outMsg.AddUInt16(thingId);
 
             PacketCreature c;
 
@@ -157,58 +156,58 @@ namespace Tibia.Packets.Incoming
                 {
                     c.Type = PacketCreatureType.Known;
                     c.Id = msg.GetUInt32();
-                    stream.AddUInt32(c.Id); //creatureid
+                    outMsg.AddUInt32(c.Id); //creatureid
                 }
                 else if (thingId == 0x0061)
                 { //creature is not known
                     //perhaps we have to remove a known creature
                     //uint32_t removeID = msg.getU32();
                     c.RemoveId = msg.GetUInt32();
-                    stream.AddUInt32(c.RemoveId);
+                    outMsg.AddUInt32(c.RemoveId);
                     //add a new creature
                     //uint32_t creatureID = msg.getU32();
 
                     c.Type = PacketCreatureType.Unknown;
                     c.Id = msg.GetUInt32();
-                    stream.AddUInt32(c.Id);
+                    outMsg.AddUInt32(c.Id);
 
                     //creature->setName(msg.getString());
 
                     c.Name = msg.GetString();
-                    stream.AddString(c.Name);
+                    outMsg.AddString(c.Name);
                 }
 
                 //read creature properties
                 //creature->setHealth(msg.getU8());
                 c.Health = msg.GetByte();
-                stream.AddByte(c.Health);
+                outMsg.AddByte(c.Health);
 
                 //uint8_t direction;
                 c.Direction = msg.GetByte();
-                stream.AddByte(c.Direction);
+                outMsg.AddByte(c.Direction);
 
                 c.Outfit = msg.GetOutfit();
-                stream.AddOutfit(c.Outfit);
+                outMsg.AddOutfit(c.Outfit);
 
                 //creature->setLightLevel(msg.getU8());
                 //creature->setLightColor(msg.getU8());
                 c.LightLevel = msg.GetByte();
-                stream.AddByte(c.LightLevel);
+                outMsg.AddByte(c.LightLevel);
 
                 c.LightColor = msg.GetByte();
-                stream.AddByte(c.LightColor);
+                outMsg.AddByte(c.LightColor);
 
                 //creature->setSpeed(msg.getU16());
                 c.Speed = msg.GetUInt16();
-                stream.AddUInt16(c.Speed);
+                outMsg.AddUInt16(c.Speed);
 
                 //creature->setSkull(msg.getU8());
                 //creature->setShield(msg.getU8());
                 c.Skull = (Constants.Skull)msg.GetByte();
-                stream.AddByte((byte)c.Skull);
+                outMsg.AddByte((byte)c.Skull);
 
                 c.PartyShield = (PartyShield)msg.GetByte();
-                stream.AddByte((byte)c.PartyShield);
+                outMsg.AddByte((byte)c.PartyShield);
 
                 creatures.Add(c);
 
@@ -223,10 +222,10 @@ namespace Tibia.Packets.Incoming
                 c.Location = pos;
                 c.Type = PacketCreatureType.Turn;
                 c.Id = msg.GetUInt32();
-                stream.AddUInt32(c.Id);
+                outMsg.AddUInt32(c.Id);
                 //uint8_t direction;
                 c.Direction = msg.GetByte();
-                stream.AddByte(c.Direction);
+                outMsg.AddByte(c.Direction);
 
                 creatures.Add(c);
 
@@ -235,12 +234,12 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Item item = new Item(Client, thingId, 0, "", new ItemLocation(pos, (byte)n), true);
+                Item item = new Item(Client, thingId, 0, "", ItemLocation.FromLocation(pos, (byte)n));
 
                 if (item.HasExtraByte)
                 {
                     item.Count = msg.GetByte();
-                    stream.AddByte(item.Count);
+                    outMsg.AddByte(item.Count);
                 }
 
                 if (n == 0) // first item is ground
@@ -250,11 +249,6 @@ namespace Tibia.Packets.Incoming
 
                 return true;
             }
-        }
-
-        public override byte[] ToByteArray()
-        {
-            return stream.Packet;
         }
     }
 }

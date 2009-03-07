@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Tibia.Objects
@@ -8,21 +9,9 @@ namespace Tibia.Objects
     /// </summary>
     public class Container
     {
-        protected Client client;
-        protected uint address;
-        protected byte number;
-
-        /// <summary>
-        /// Create a new container object with the specified number.
-        /// </summary>
-        /// <param name="client">The client.</param>
-        /// <param name="number">The number of the container (0 based).</param>
-        public Container(Client client, byte number)
-        {
-            this.client = client;
-            this.number = number;
-            address = Addresses.Container.Start + (number * Addresses.Container.Step_Container);
-        }
+        private Client client;
+        private uint address;
+        private byte number;
 
         /// <summary>
         /// Create a new container object with the specified client, address, and number.
@@ -37,74 +26,47 @@ namespace Tibia.Objects
             this.number = number;
         }
 
-        public Item GetItem(Predicate<Item> match)
-        {
-            byte slot = 0;
-            int amount = (int)Amount;
-
-            for (uint i = Address; i <= Address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
-            {
-                uint itemId = (uint)Client.ReadUInt32(i + Addresses.Container.Distance_Item_Id);
-                if (itemId > 0)
-                {
-                    Item item = new Item(client, itemId);
-                    item.Loc = new ItemLocation(number, slot);
-                    item.Count = Client.ReadByte(i + Addresses.Container.Distance_Item_Count);
-
-                    if (match(item))
-                        return item;
-                }
-
-                slot++;
-            }
-
-            return null;
-        }
-
         /// <summary>
         /// Return a list of all the items in the container.
         /// </summary>
         /// <returns></returns>
-        public List<Item> GetItems()
+        public IEnumerable<Item> GetItems()
         {
             byte slot = 0;
             int amount = Amount;
-            List<Item> items = new List<Item>(amount);
-            for (uint i = address; i <= address + Addresses.Container.Step_Slot * amount - 1; i += Addresses.Container.Step_Slot)
+            for (uint i = address; i <= address + Addresses.Container.StepSlot * amount - 1; i += Addresses.Container.StepSlot)
             {
-
-                uint itemId = client.ReadUInt32(i + Addresses.Container.Distance_Item_Id);
+                uint itemId = client.Memory.ReadUInt32(i + Addresses.Container.DistanceItemId);
                 if (itemId > 0)
-                    items.Add(new Item(client, itemId,
-                        client.ReadByte(i + Addresses.Container.Distance_Item_Count)
-                        , "", new ItemLocation(number, slot), true));
+                    yield return new Item(
+                        client, 
+                        itemId,
+                        client.Memory.ReadByte(i + Addresses.Container.DistanceItemCount),
+                        "", 
+                        ItemLocation.FromContainer(number, slot));
                 
                 slot++;
             }
-
-            return items;
         }
 
         /// <summary>
         /// Open this containers parent container
         /// </summary>
         /// <returns></returns>
-        public bool OpenParent()
+        public void OpenParent()
         {
-            return Packets.Outgoing.ContainerOpenParentPacket.Send(client, number);
+            if (HasParent)
+                Packets.Outgoing.ContainerOpenParentPacket.Send(client, number);
         }
 
         /// <summary>
         /// Closes the container.
         /// </summary>
         /// <returns>True if it succeeded or if the container is aleady closed</returns>
-        public bool Close()
+        public void Close()
         {
-            //Return true if it is not open because there was no error
-            if (!IsOpen)
-                return true;
-
-            return Packets.Outgoing.ContainerClosePacket.Send(client, number);
+            if (IsOpen)
+                Packets.Outgoing.ContainerClosePacket.Send(client, number);
         }
 
         /// <summary>
@@ -113,12 +75,10 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="newName"></param>
         /// <returns></returns>
-        public bool Rename(string newName)
+        public void Rename(string newName)
         {
-            if (client.UsingProxy)
-                return Packets.Incoming.ContainerOpenPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, Convert.ToByte(HasParent), GetItems());
-            else
-                return false;
+            if (client.IO.UsingProxy)
+                Packets.Incoming.ContainerOpenPacket.Send(client, number, (ushort)Id, newName, (byte)Volume, Convert.ToByte(HasParent), GetItems().ToList());
         }
 
         public override string ToString()
@@ -169,8 +129,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Id
         {
-            get { return client.ReadInt32(address + Addresses.Container.Distance_Id); }
-            set { client.WriteInt32(address + Addresses.Container.Distance_Id, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceId); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceId, value); }
         }
 
         /// <summary>
@@ -179,8 +139,8 @@ namespace Tibia.Objects
         /// </summary>
         public bool IsOpen
         {
-            get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Container.Distance_IsOpen)); }
-            set { client.WriteInt32(address + Addresses.Container.Distance_IsOpen, Convert.ToByte(value)); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.DistanceIsOpen)); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceIsOpen, Convert.ToByte(value)); }
         }
 
         /// <summary>
@@ -188,8 +148,8 @@ namespace Tibia.Objects
         /// </summary>
         public int Amount
         {
-            get { return client.ReadInt32(address + Addresses.Container.Distance_Amount); }
-            set { client.WriteInt32(address + Addresses.Container.Distance_Amount, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceAmount); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceAmount, value); }
         }
 
         /// <summary>
@@ -198,8 +158,8 @@ namespace Tibia.Objects
         /// </summary>
         public string Name
         {
-            get { return client.ReadString(address + Addresses.Container.Distance_Name); }
-            set { client.WriteString(address + Addresses.Container.Distance_Name, value); }
+            get { return client.Memory.ReadString(address + Addresses.Container.DistanceName); }
+            set { client.Memory.WriteString(address + Addresses.Container.DistanceName, value); }
         }
 
         /// <summary>
@@ -207,13 +167,13 @@ namespace Tibia.Objects
         /// </summary>
         public int Volume
         {
-            get { return client.ReadInt32(address + Addresses.Container.Distance_Volume); }
-            set { client.WriteInt32(address + Addresses.Container.Distance_Volume, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Container.DistanceVolume); }
+            set { client.Memory.WriteInt32(address + Addresses.Container.DistanceVolume, value); }
         }
 
         public bool HasParent
         {
-            get { return Convert.ToBoolean(client.ReadInt32(address + Addresses.Container.Distance_HasParent)); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Container.DistanceHasParent)); }
         }
 
         #endregion

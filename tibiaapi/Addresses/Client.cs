@@ -106,58 +106,58 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint Statusbar_Text = 0x78A1E8; //8.40
+        public static uint StatusbarText = 0x78A1E8; //8.40
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint Statusbar_Time = Statusbar_Text - 4;
+        public static uint StatusbarTime = StatusbarText - 4;
 
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint Click_Id = 0x78840C; // 8.40
+        public static uint ClickId = 0x78840C; // 8.40
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
-        public static uint Click_Count = Click_Id + 4;
+        public static uint ClickCount = ClickId + 4;
         /// <summary>
         /// The floor that was clicked.
         /// </summary>
-        public static uint Click_Z = Click_Id - 0x68;
+        public static uint ClickZ = ClickId - 0x68;
 
         /// <summary>
         /// Used for show item id functions
         /// </summary>
-        public static uint ClickContextMenuItem_Id = 0x788418;
+        public static uint ClickContextMenuItemId = 0x788418;
 
         /// <summary>
         /// Used for show item id functions
         /// </summary>
-        public static uint ClickContextMenuItem_Ground_Id = 0x788424;
+        public static uint ClickContextMenuItemGroundId = 0x788424;
 
         /// <summary>
         /// The id of the last item seen (looked at).
         /// </summary>
-        public static uint See_Id = Click_Id + 12;
+        public static uint SeeId = ClickId + 12;
         /// <summary>
         /// The amount of the last item seen (eg. 42 fish).
         /// </summary>
-        public static uint See_Count = See_Id + 4;
+        public static uint SeeCount = SeeId + 4;
         /// <summary>
         /// The floor that the last seen item is on.
         /// </summary>
-        public static uint See_Z = See_Id - 0x68;
+        public static uint SeeZ = SeeId - 0x68;
         
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint See_Text = 0x78A410; //8.40
+        public static uint SeeText = 0x78A410; //8.40
         
         // Login Server addresses
         public static uint LoginServerStart = 0x77FC48; //8.40
-        public static uint Step_LoginServer = 112;
-        public static uint Distance_Port = 100;
-        public static uint Max_LoginServers = 10;
+        public static uint StepLoginServer = 112;
+        public static uint DistancePort = 100;
+        public static uint MaxLoginServers = 10;
 
         /// <summary>
         /// RSA Key Adress

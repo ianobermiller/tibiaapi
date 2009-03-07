@@ -7,28 +7,76 @@ namespace Tibia.Objects
 {
     public class Outfit
     {
-        public ushort LookType { get; set; }
-        public ushort LookItem { get; set; }
-        public byte Head { get; set; }
-        public byte Body { get; set; }
-        public byte Legs { get; set; }
-        public byte Feet { get; set; }
-        public byte Addons { get; set; }
+        private Creature creature = null;
+        private ushort lookType;
+        private ushort lookItem;
+        private byte head;
+        private byte body;
+        private byte legs;
+        private byte feet;
+        private byte addons;
+
+        public ushort LookType 
+        { 
+            get { return lookType; } 
+            set { lookType = value; TrySetOutfit(); } 
+        }
+        public ushort LookItem
+        {
+            get { return lookItem; }
+            set { lookItem = value; TrySetOutfit(); }
+        }
+        public byte Head
+        {
+            get { return head; }
+            set { head = value; TrySetOutfit(); }
+        }
+        public byte Body
+        {
+            get { return body; }
+            set { body = value; TrySetOutfit(); }
+        }
+        public byte Legs
+        {
+            get { return legs; }
+            set { legs = value; TrySetOutfit(); }
+        }
+        public byte Feet
+        {
+            get { return feet; }
+            set { feet = value; TrySetOutfit(); }
+        }
+        public byte Addons
+        {
+            get { return addons; }
+            set { addons = value; TrySetOutfit(); }
+        }
 
         public Outfit(ushort looktype, ushort lookitem)
         {
-            LookItem = lookitem;
-            LookType = looktype;
+            this.lookItem = lookitem;
+            this.lookType = looktype;
         }
 
-        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons)
+        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons) : this(null, looktype, head, body, legs, feet, addons) { }
+
+        public Outfit(Creature creature, ushort looktype, byte head, byte body, byte legs, byte feet, byte addons)
         {
-            LookType = looktype;
-            Head = head;
-            Body = body;
-            Legs = legs;
-            Feet = feet;
-            Addons = addons;
+            this.creature = creature;
+            this.lookType = looktype;
+            this.head = head;
+            this.body = body;
+            this.legs = legs;
+            this.feet = feet;
+            this.addons = addons;
+        }
+
+        private void TrySetOutfit()
+        {
+            if (creature != null)
+            {
+                creature.Outfit = this;
+            }
         }
 
         public byte[] ToByteArray()

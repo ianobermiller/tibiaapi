@@ -34,7 +34,7 @@ namespace Tibia.Packets.Pipes
             msg.AddUInt32((uint)CreatureId);
             msg.AddString(CreatureName);
 
-            return msg.Packet;
+            return msg.Data;
         }
 
         public static bool Send(Objects.Client client, int creatureId, string creatureName)

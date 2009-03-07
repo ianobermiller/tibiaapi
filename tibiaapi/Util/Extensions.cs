@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Linq;
 using Tibia.Objects;
 
 namespace Tibia
@@ -239,7 +240,7 @@ namespace Tibia
         /// <returns></returns>
         public static uint ToMapTileAddress(this uint tileNumber, Client client)
         {
-            return client.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.Step_Square * tileNumber);
+            return client.Memory.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.StepTile * tileNumber);
         }
 
         /// <summary>
@@ -267,28 +268,18 @@ namespace Tibia
             return l;
         }
 
-        public static Objects.Tile GetPlayerMapSquare(this List<Objects.Tile> tiles, Objects.Client client)
+        public static Objects.Tile GetTileWithPlayer(this IEnumerable<Objects.Tile> tiles, Objects.Client client)
         {
-            int playerId = client.ReadInt32(Addresses.Player.Id);
-
-            return tiles.Find(delegate(Objects.Tile tile)
-            {
-                return tile.Objects.Find(delegate(Objects.TileObject obj)
-                {
-                    return obj.Id == 0x63 && obj.Data == playerId;
-                }) != null;
-            });
+            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+            return GetTileWithCreature(tiles, playerId);
         }
 
-        public static Objects.Tile GetCreatureMapSquare(this List<Objects.Tile> tiles, int creatureId)
+        public static Objects.Tile GetTileWithCreature(this IEnumerable<Objects.Tile> tiles, int creatureId)
         {
-            return tiles.Find(delegate(Objects.Tile tile)
-            {
-                return tile.Objects.Find(delegate(Objects.TileObject obj)
-                {
-                    return obj.Data == creatureId;
-                }) != null;
-            });
+            var result = tiles.Where(
+                t => t.Objects.Any(
+                    o => o.Id == 0x63 && o.Data == creatureId));
+            return result.First();
         }
 
         #endregion

@@ -14,17 +14,16 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.FloorChangeUp ;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
         {
-            int position = msg.Position;
+            int msgPosition = msg.Position, outMsgPosition = outMsg.Position;
 
             if (msg.GetByte() != (byte)IncomingPacketType.FloorChangeUp)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.FloorChangeUp;
-            stream = new NetworkMessage(Client, 0);
-            stream.AddByte((byte)Type);
+            outMsg.AddByte((byte)Type);
 
             Client.playerLocation.Z--;
 
@@ -35,22 +34,27 @@ namespace Tibia.Packets.Incoming
                 {
                     //floor 7 and 6 already set
                     for (int i = 5; i >= 0; i--)
-                        setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, 8 - i);
+                        setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, 8 - i, outMsg);
                 }
                 //underground, going one floor up (still underground)
                 else if (Client.playerLocation.Z > 7)
-                    setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z - 2, 18, 14, 3);
+                    setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z - 2, 18, 14, 3, outMsg);
+
+                return true;
             }
             catch (Exception)
             {
-                msg.Position = position;
+                msg.Position = msgPosition;
+                outMsg.Position = outMsgPosition;
+
                 return false;
             }
-
-            Client.playerLocation.X++;
-            Client.playerLocation.Y++;
-
-            return true;
+            finally
+            {
+                Client.playerLocation.X++;
+                Client.playerLocation.Y++;
+            }
         }
+
     }
 }

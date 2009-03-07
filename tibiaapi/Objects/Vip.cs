@@ -8,40 +8,39 @@ namespace Tibia.Objects
     /// </summary>
     public class Vip
     {
-        protected Client client;
-        public uint Address { get; set; }
+        private Client client;
+        private uint address;
 
-        public Vip(Client client, uint address)
+        internal Vip(Client client, uint address)
         {
             this.client = client;
-            Address = address;
+            this.address = address;
         }
-
 
         #region Get/Set Methods
 
         public int Id
         {
-            get { return client.ReadInt32(Address + Addresses.Vip.Distance_Id); }
-            set { client.WriteInt32(Address + Addresses.Vip.Distance_Icon, value); }
+            get { return client.Memory.ReadInt32(address + Addresses.Vip.DistanceId); }
+            set { client.Memory.WriteInt32(address + Addresses.Vip.DistanceIcon, value); }
         }
 
         public string Name
         {
-            get { return client.ReadString(Address + Addresses.Vip.Distance_Name); }
-            set { client.WriteString(Address + Addresses.Vip.Distance_Name, value); }
+            get { return client.Memory.ReadString(address + Addresses.Vip.DistanceName); }
+            set { client.Memory.WriteString(address + Addresses.Vip.DistanceName, value); }
         }
 
         public Constants.VipStatus Status
         {
-            get { return (Constants.VipStatus)client.ReadByte(Address + Addresses.Vip.Distance_Status); }
-            set { client.WriteByte(Address + Addresses.Vip.Distance_Status, (byte)value); }
+            get { return (Constants.VipStatus)client.Memory.ReadByte(address + Addresses.Vip.DistanceStatus); }
+            set { client.Memory.WriteByte(address + Addresses.Vip.DistanceStatus, (byte)value); }
         }
 
         public Constants.VipIcon Icon
         {
-            get { return (Constants.VipIcon)client.ReadByte(Address + Addresses.Vip.Distance_Icon); }
-            set { client.WriteByte(Address + Addresses.Vip.Distance_Icon, (byte)value); }
+            get { return (Constants.VipIcon)client.Memory.ReadByte(address + Addresses.Vip.DistanceIcon); }
+            set { client.Memory.WriteByte(address + Addresses.Vip.DistanceIcon, (byte)value); }
         }
 
         #endregion

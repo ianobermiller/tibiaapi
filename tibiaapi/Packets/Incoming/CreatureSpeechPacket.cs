@@ -142,11 +142,8 @@ namespace Tibia.Packets.Incoming
             return p.Send();
         }
 
-        
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(UnknowSpeak);
@@ -180,8 +177,6 @@ namespace Tibia.Packets.Incoming
             }
 
             msg.AddString(Message);
-
-            return msg.Packet;
         }
     }
 }

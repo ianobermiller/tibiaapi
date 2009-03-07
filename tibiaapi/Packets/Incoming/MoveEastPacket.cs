@@ -14,27 +14,27 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.MoveEast;
         }
 
-        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
+        public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
         {
-            int position = msg.Position;
+            int msgPosition = msg.Position, outMsgPosition = outMsg.Position;
 
             if (msg.GetByte() != (byte)IncomingPacketType.MoveEast)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.MoveEast;
-            stream = new NetworkMessage(Client, 0);
-            stream.AddByte((byte)Type);
+            outMsg.AddByte((byte)Type);
 
             Client.playerLocation.X++;
 
             try
             {
-                setMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14);
+                setMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14, outMsg);
             }
             catch (Exception)
             {
-                msg.Position = position;
+                msg.Position = msgPosition;
+                outMsg.Position = outMsgPosition;
                 return false;
             }
 

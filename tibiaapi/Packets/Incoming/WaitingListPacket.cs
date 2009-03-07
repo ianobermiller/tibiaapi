@@ -41,16 +41,11 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
-
             msg.AddString(Message);
             msg.AddByte(Time);
-
-            return msg.Packet;
         }
     }
 }

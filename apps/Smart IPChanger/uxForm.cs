@@ -40,7 +40,7 @@ namespace SmartIPChanger
                 System.Threading.Thread.Sleep(1000);
             }
             string[] split = uxServer.Text.Split(":".ToCharArray());
-            client.SetOT(split[0], short.Parse(split[1]));
+            client.Login.SetOT(split[0], short.Parse(split[1]));
             SaveServer(split[0], split[1], client.Version);
         }
 

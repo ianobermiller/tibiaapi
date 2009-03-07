@@ -367,8 +367,8 @@ namespace Tibia.Util
     public class PriorityQueueB<T> : IPriorityQueue<T>
     {
         #region Variables Declaration
-        protected List<T> InnerList = new List<T>();
-        protected IComparer<T> mComparer;
+        private List<T> InnerList = new List<T>();
+        private IComparer<T> mComparer;
         #endregion
 
         #region Contructors
@@ -390,7 +390,7 @@ namespace Tibia.Util
         #endregion
 
         #region Methods
-        protected void SwitchElements(int i, int j)
+        private void SwitchElements(int i, int j)
         {
             T h = InnerList[i];
             InnerList[i] = InnerList[j];

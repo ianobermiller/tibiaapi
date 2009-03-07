@@ -41,15 +41,11 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
             msg.AddUInt16((ushort)ChannelId);
             msg.AddString(ChannelName);
-
-            return msg.Packet;
         }
 
         public static bool Send(Objects.Client client, ChatChannel channel, string name)

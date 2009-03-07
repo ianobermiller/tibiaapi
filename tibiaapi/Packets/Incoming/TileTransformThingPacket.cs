@@ -45,7 +45,7 @@ namespace Tibia.Packets.Incoming
                 else
                 {
                     Item = new Tibia.Objects.Item(Client, ThingId, 0);
-                    Item.Loc = new Tibia.Objects.ItemLocation(Position);
+                    Item.Loc = Tibia.Objects.ItemLocation.FromLocation(Position);
 
                     if (Item.HasExtraByte)
                         Item.Count = msg.GetByte();
@@ -60,10 +60,8 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
             msg.AddLocation(Position);
@@ -80,8 +78,6 @@ namespace Tibia.Packets.Incoming
                 if (Item.HasExtraByte)
                     msg.AddByte(Item.Count);
             }
-
-            return msg.Packet;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Tibia
         /// <returns></returns>
         public static long ExpForLevel(int level)
         {
-            return (long) (((50.0 / 3.0) * Math.Pow(level, 3)) - (100.0 * Math.Pow(level, 2)) + ((850.0 / 3.0) * level) - 200);
+            return (long)(50.0 * ((level / 3.0) * (level * (level - 6.0) + 17.0) - 4.0));
         }
 
         /// <summary>

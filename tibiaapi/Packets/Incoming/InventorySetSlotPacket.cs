@@ -45,10 +45,8 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
             msg.AddByte(Slot);
 
@@ -56,8 +54,6 @@ namespace Tibia.Packets.Incoming
 
             if (Item.HasExtraByte)
                 msg.AddByte(Item.Count);
-
-            return msg.Packet;
         }
 
         public static bool Send(Objects.Client client, byte slot, Objects.Item item)

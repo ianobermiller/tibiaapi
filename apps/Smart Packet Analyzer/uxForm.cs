@@ -53,10 +53,10 @@ namespace SmartPacketAnalyzer
             }
             else
             {
-                client.StartProxy();
-                client.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                client.Proxy.IncomingSplitPacket += new Proxy.SplitPacket(Proxy_IncomingSplitPacket);
-                client.Proxy.OutgoingSplitPacket += new Proxy.SplitPacket(Proxy_OutgoingSplitPacket);
+                client.IO.StartProxy();
+                client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                client.IO.Proxy.ReceivedMessageFromServer += ReceivedMessageFromServer;
+                client.IO.Proxy.ReceivedMessageFromClient += ReceivedMessageFromClient;
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
@@ -75,47 +75,50 @@ namespace SmartPacketAnalyzer
             Tibia.Packets.Incoming.TextMessagePacket p = (Tibia.Packets.Incoming.TextMessagePacket)packet;
             
             if (p.Color == StatusMessage.DescriptionGreen && p.Message.StartsWith("You see "))
-                p.Message = p.Message + " [" + client.ReadInt32(Tibia.Addresses.Client.See_Id) + "]";
+                p.Message = p.Message + " [" + client.Memory.ReadInt32(Tibia.Addresses.Client.SeeId) + "]";
 
             return true;
         }
 
-        void Proxy_OutgoingSplitPacket(byte type, byte[] packet)
+        bool ReceivedMessageFromClient(NetworkMessage msg)
         {
             if (uxLogClient.Checked)
             {
                 if (uxLogHeader.Checked)
                 {
+                    
                     if (uxHeaderByte.Text.Length == 2 &&
-                        type == uxHeaderByte.Text.ToBytesAsHex()[0])
+                        msg.PeekByte() == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
-                        LogPacket(packet, "CLIENT", "SERVER");
+                        LogPacket(msg.PeekBytes(msg.Length - msg.Position), "CLIENT", "SERVER");
                     }
                 }
                 else
                 {
-                    LogPacket(packet, "CLIENT", "SERVER");
+                    LogPacket(msg.PeekBytes(msg.Length - msg.Position), "CLIENT", "SERVER");
                 }
             }
+            return true;
         }
 
-        void Proxy_IncomingSplitPacket(byte type, byte[] packet)
+        bool ReceivedMessageFromServer(NetworkMessage msg)
         {
             if (uxLogServer.Checked)
             {
                 if (uxLogHeader.Checked)
                 {
                     if (uxHeaderByte.Text.Length == 2 &&
-                        type == uxHeaderByte.Text.ToBytesAsHex()[0])
+                        msg.PeekByte() == uxHeaderByte.Text.ToBytesAsHex()[0])
                     {
-                        LogPacket(packet, "SERVER", "CLIENT");
+                        LogPacket(msg.PeekBytes(msg.Length - msg.Position), "SERVER", "CLIENT");
                     }
                 }
                 else
                 {
-                    LogPacket(packet, "SERVER", "CLIENT");
+                    LogPacket(msg.PeekBytes(msg.Length - msg.Position), "SERVER", "CLIENT");
                 }
             }
+            return true;
         }
 
         private void LogPacket(byte[] packet, string from, string to)

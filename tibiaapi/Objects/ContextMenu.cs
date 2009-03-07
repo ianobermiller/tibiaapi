@@ -9,17 +9,14 @@ namespace Tibia.Objects
     {
         Client client;
 
-        public ContextMenu(Client client)
+        internal ContextMenu(Client client)
         {
             this.client = client;
         }
 
-        /// <summary>
-        /// Call this function only if you know what you are doing
-        /// </summary>
-        public void AddInternalEvents()
+        internal void AddInternalEvents()
         {
-            client.Pipe.OnReceive += new Tibia.Util.Pipe.PipeListener(Pipe_OnReceive);
+            client.Dll.Pipe.OnReceive += Pipe_OnReceive;
         }
 
         private void Pipe_OnReceive(Tibia.Packets.NetworkMessage msg)
@@ -34,10 +31,10 @@ namespace Tibia.Objects
 
         public bool AddContextMenu(int eventId, string text, Constants.ContextMenuType type, bool hasSeparator)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             if (eventId < 0 || eventId > 2000 || text == string.Empty)
@@ -48,10 +45,10 @@ namespace Tibia.Objects
 
         public bool RemoveContextMenu(int eventId, string text, Constants.ContextMenuType type, bool hasSeparator)
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             if (eventId < 0 || eventId > 2000 || text == string.Empty)
@@ -62,10 +59,10 @@ namespace Tibia.Objects
 
         public void RemoveAll()
         {
-            if (client.Pipe == null)
+            if (client.Dll.Pipe == null)
             {
-                client.InitializePipe();
-                client.PipeIsReady.WaitOne();
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
             }
 
             Packets.Pipes.RemoveAllContextMenusPacket.Send(client);

@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
                     if (item.HasExtraByte)
                         item.Count = msg.GetByte();
 
-                    item.Loc = new Tibia.Objects.ItemLocation(Id, (byte)i);
+                    item.Loc = Tibia.Objects.ItemLocation.FromContainer(Id, (byte)i);
                     Items.Add(item);
                 }
             }
@@ -64,10 +64,8 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override byte[] ToByteArray()
+        public override void ToNetworkMessage(ref NetworkMessage msg)
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
-
             msg.AddByte((byte)Type);
 
             msg.AddByte(Id);
@@ -85,8 +83,6 @@ namespace Tibia.Packets.Incoming
                 if (i.HasExtraByte)
                     msg.AddByte(i.Count);
             }
-
-            return msg.Packet;
         }
 
         public static bool Send(Objects.Client client, byte id, ushort itemId, string name, byte capacity, byte hasParent, List<Objects.Item> items)

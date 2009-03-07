@@ -27,7 +27,7 @@ namespace Tibia.Packets
             msg.AddBytes(ToByteArray());
             msg.InsertPacketHeader();
 
-            Client.Pipe.Send(msg);
+            Client.Dll.Pipe.Send(msg);
 
             return true;
         }
