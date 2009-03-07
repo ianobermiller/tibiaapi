@@ -28,13 +28,13 @@ namespace Tibia.Objects
 
         #region Constructors
         //memory tile contructors
-        public Tile(Client client, uint address, uint squareNumber, Location location)
+        internal Tile(Client client, uint address, uint squareNumber, Location location)
             : this(client, address, squareNumber)
         {
             this.location = location;
         }
 
-        public Tile(Client client, uint address, uint squareNumber)
+        internal Tile(Client client, uint address, uint squareNumber)
         {
             this.type = ObjectType.Memory;
             this.client = client;
@@ -48,7 +48,7 @@ namespace Tibia.Objects
         }
 
         //packet tile constructors
-        public Tile(Client client, uint groundId, Location location)
+        internal Tile(Client client, uint groundId, Location location)
         {
             this.type = ObjectType.Packet;
             this.client = client;

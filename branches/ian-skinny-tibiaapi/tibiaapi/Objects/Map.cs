@@ -65,9 +65,9 @@ namespace Tibia.Objects
             for (uint i = startNumber; i < endNumber; i++)
             {
                 if (getWorldLocation)
-                    yield return CreateMapTile(i, playerTile);
+                    yield return GetTile(i, playerTile);
                 else
-                    yield return CreateMapTile(i);
+                    yield return GetTile(i);
             }
 
         }
@@ -103,24 +103,24 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="loc"></param>
         /// <returns></returns>
-        public Tile CreateMapTile(Location worldLocation)
+        public Tile GetTile(Location worldLocation)
         {
-            return CreateMapTile(worldLocation, GetTileWithPlayer());
+            return GetTile(worldLocation, GetTileWithPlayer());
         }
 
-        private Tile CreateMapTile(Location worldLocation, Tile playerTile)
+        private Tile GetTile(Location worldLocation, Tile playerTile)
         {
             Location memoryLocation = worldLocation.ToMemoryLocation(playerTile, client);
             uint tileNumber = memoryLocation.ToTileNumber();
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
         }
 
-        private Tile CreateMapTile(uint tileNumber)
+        private Tile GetTile(uint tileNumber)
         {
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber);
         }
 
-        private Tile CreateMapTile(uint tileNumber, Tile playerTile)
+        private Tile GetTile(uint tileNumber, Tile playerTile)
         {
             Location worldLocation = tileNumber.ToMemoryLocation().ToWorldLocation(playerTile, client);
             return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
@@ -130,6 +130,7 @@ namespace Tibia.Objects
         #region Replace
         /// <summary>
         /// Replace all the trees on the map with small fir trees.
+        /// Only needs to be called ONCE.
         /// </summary>
         /// <returns></returns>
         public void ReplaceTrees()
