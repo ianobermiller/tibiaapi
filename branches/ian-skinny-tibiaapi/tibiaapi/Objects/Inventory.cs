@@ -102,7 +102,7 @@ namespace Tibia.Objects
             uint id = client.Memory.ReadUInt32(address);
             if (id > 0)
             {
-                byte count = client.Memory.ReadByte(address + Addresses.Player.Distance_Slot_Count);
+                byte count = client.Memory.ReadByte(address + Addresses.Player.DistanceSlotCount);
                 return new Item(client, id, count, "", ItemLocation.FromSlot(s));
             }
             else
@@ -121,7 +121,7 @@ namespace Tibia.Objects
                 {
                     yield return new Item(client,
                         id,
-                        client.Memory.ReadByte(address + +Addresses.Player.Distance_Slot_Count), "",
+                        client.Memory.ReadByte(address + +Addresses.Player.DistanceSlotCount), "",
                         ItemLocation.FromSlot((Constants.SlotNumber)i));
                 }
             }

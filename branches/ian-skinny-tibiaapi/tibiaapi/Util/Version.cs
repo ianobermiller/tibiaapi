@@ -221,7 +221,7 @@ namespace Tibia
                 Player.SlotFeet = Player.SlotHead + 84;
                 Player.SlotRing = Player.SlotHead + 96;
                 Player.SlotAmmo = Player.SlotHead + 108;
-                Player.Distance_Slot_Count = 4;
+                Player.DistanceSlotCount = 4;
                 Player.CurrentTileToGo = 0x62ACF8;
                 Player.TilesToGo = 0x62ACFC;
                 Player.RedSquare = 0x62ACBC;
@@ -438,7 +438,7 @@ namespace Tibia
                 Player.SlotFeet = Player.SlotHead + 84;
                 Player.SlotRing = Player.SlotHead + 96;
                 Player.SlotAmmo = Player.SlotHead + 108;
-                Player.Distance_Slot_Count = 4;
+                Player.DistanceSlotCount = 4;
                 Player.CurrentTileToGo = 0x626C78;
                 Player.TilesToGo = 0x626C7C;
                 Player.RedSquare = 0x626C3C;
@@ -627,7 +627,7 @@ namespace Tibia
                 Player.SlotFeet = Player.SlotHead + 84;
                 Player.SlotRing = Player.SlotHead + 96;
                 Player.SlotAmmo = Player.SlotHead + 108;
-                Player.Distance_Slot_Count = 4;
+                Player.DistanceSlotCount = 4;
                 Player.CurrentTileToGo = 0x624C78;
                 Player.TilesToGo = 0x624C7C;
                 Player.RedSquare = 0x624C3C;
@@ -814,7 +814,7 @@ namespace Tibia
                 Player.SlotFeet = Player.SlotHead + 84;
                 Player.SlotRing = Player.SlotHead + 96;
                 Player.SlotAmmo = Player.SlotHead + 108;
-                Player.Distance_Slot_Count = 4;
+                Player.DistanceSlotCount = 4;
                 Player.CurrentTileToGo = 0x621C78;
                 Player.TilesToGo = 0x621C7C;
                 Player.RedSquare = 0x621C3C;
@@ -1033,7 +1033,7 @@ namespace Tibia
                 Player.SlotRing = Addresses.Player.SlotHead + 96;
                 Player.SlotAmmo = Addresses.Player.SlotHead + 108;
                 Player.MaxSlots = 11;
-                Player.Distance_Slot_Count = 4;
+                Player.DistanceSlotCount = 4;
                 Player.CurrentTileToGo = 0x613B78;
                 Player.TilesToGo = 0x613B7C;
                 Player.GoToX = 0x613BB4;
@@ -1192,7 +1192,7 @@ namespace Tibia
                 Addresses.Player.SlotFeet = Addresses.Player.SlotHead + 84;
                 Addresses.Player.SlotRing = Addresses.Player.SlotHead + 96;
                 Addresses.Player.SlotAmmo = Addresses.Player.SlotHead + 108;
-                Addresses.Player.Distance_Slot_Count = 4;
+                Addresses.Player.DistanceSlotCount = 4;
                 Addresses.Player.GoToX = 0x60EB10;
                 Addresses.Player.GoToY = Addresses.Player.GoToX - 4;
                 Addresses.Player.GoToZ = Addresses.Player.GoToX - 8;

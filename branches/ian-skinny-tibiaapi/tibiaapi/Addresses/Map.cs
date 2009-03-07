@@ -68,7 +68,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum number of tiles.
         /// </summary>
-        public static uint MaxSquares = 2016; // Max_X * Max_Y * Max_Z
+        public static uint MaxSquares = 2016; // MaxX * MaxY * MaxZ
 
         /// <summary>
         /// The default (starting) Z axis value

@@ -59,7 +59,7 @@ namespace Tibia.Addresses
         public static uint SlotRing = SlotHead + 96;
         public static uint SlotAmmo = SlotHead + 108;
 
-        public static uint Distance_Slot_Count = 4;
+        public static uint DistanceSlotCount = 4;
 
 
         public static uint CurrentTileToGo = 0x62BD38; // 8.40
