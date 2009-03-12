@@ -81,6 +81,14 @@ namespace Tibia.Packets
         public event EventHandler PlayerLogin;
         public event EventHandler PlayerLogout;
 
+        public delegate void DataListener(byte[] data);
+        public event DataListener ReceivedDataFromClient;
+        public event DataListener ReceivedDataFromServer;
+
+        public delegate void SplitPacket(byte type, byte[] data);
+        public event SplitPacket SplitPacketFromServer;
+        public event SplitPacket SplitPacketFromClient;
+
         #endregion
 
         #region Properties
@@ -276,6 +284,9 @@ namespace Tibia.Packets
 
                 clientRecvMsg.Length = pSize;
 
+                if (ReceivedDataFromClient != null)
+                    ReceivedDataFromClient.BeginInvoke(clientRecvMsg.Data, null, null);
+
                 switch (protocol)
                 {
                     case Protocol.None:
@@ -290,12 +301,24 @@ namespace Tibia.Packets
                             int msgLength = (int)clientRecvMsg.GetUInt16() + 8;
                             serverSendMsg.Reset();
 
+
+                            int position = clientRecvMsg.Position;
+
                             if (!ParsePacketFromClient(client, clientRecvMsg, serverSendMsg))
                             {
                                 //unknown packet
                                 byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
                                 WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
                                 serverSendMsg.AddBytes(unknown);
+                            }
+                            else
+                            {
+                                if (SplitPacketFromClient != null)
+                                {
+                                    byte[] data = new byte[clientRecvMsg.Position - position];
+                                    Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                                    SplitPacketFromClient.BeginInvoke(data[0], data, null, null);
+                                }
                             }
 
                             if (serverSendMsg.Length > 8)
@@ -477,6 +500,9 @@ namespace Tibia.Packets
 
                 serverRecvMsg.Length = pSize;
 
+                if (ReceivedDataFromServer != null)
+                    ReceivedDataFromServer.BeginInvoke(serverRecvMsg.Data, null, null);
+
                 switch (protocol)
                 {
                     case Protocol.Login:
@@ -493,12 +519,24 @@ namespace Tibia.Packets
 
                             while (serverRecvMsg.Position < msgSize)
                             {
+                                int position = serverRecvMsg.Position;
+
                                 if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                                 {
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
                                     WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
                                     clientSendMsg.AddBytes(unknown);
                                     break;
+                                }
+                                else
+                                {
+                                    if (SplitPacketFromServer != null)
+                                    {
+                                        byte[] data = new byte[serverRecvMsg.Position - position];
+                                        Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
+
+                                        SplitPacketFromServer.BeginInvoke(data[0], data, null, null);
+                                    }
                                 }
                             }
 

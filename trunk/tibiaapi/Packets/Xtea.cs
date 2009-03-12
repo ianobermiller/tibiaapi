@@ -41,69 +41,69 @@ namespace Tibia.Packets
             return true;
         }
 
-        private static void XTEAEncrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
+        private static void XTEAEncrypt(byte[] buffer, int offset, int count, uint[] key)
         {
             // defintions that are used to create the cipher text
             uint x_sum = 0, x_delta = 0x9e3779b9, x_count = 32;
             // convert the plaintext data into 32 bit words
-            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
+            uint[] x_words = ConvertBytesToUints(buffer, offset, count);
             // main part of the XTEA Cipher
             while (x_count-- > 0)
             {
                 x_words[0] += (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
-                    + o_key[x_sum & 3];
+                    + key[x_sum & 3];
                 x_sum += x_delta;
                 x_words[1] += (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
-                    + o_key[x_sum >> 11 & 3];
+                    + key[x_sum >> 11 & 3];
             }
 
-            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
+            Array.Copy(ConvertUintstoBytes(x_words), 0, buffer, offset, count);
         }
 
-        private static void XTEADecrypt(byte[] p_data, int p_offset, int p_count, uint[] o_key)
+        private static void XTEADecrypt(byte[] buffer, int offset, int count, uint[] key)
         {
             // defintions that are used to restore the plaintext text
             uint x_count = 32, x_sum = 0xC6EF3720, x_delta = 0x9E3779B9;
             // convert the data into 32 bit words
-            uint[] x_words = ConvertBytesToUints(p_data, p_offset, p_count);
+            uint[] x_words = ConvertBytesToUints(buffer, offset, count);
 
             // main part of the XTEA Cipher
             while (x_count-- > 0)
             {
                 x_words[1] -= (x_words[0] << 4 ^ x_words[0] >> 5) + x_words[0] ^ x_sum
-                    + o_key[x_sum >> 11 & 3];
+                    + key[x_sum >> 11 & 3];
                 x_sum -= x_delta;
                 x_words[0] -= (x_words[1] << 4 ^ x_words[1] >> 5) + x_words[1] ^ x_sum
-                    + o_key[x_sum & 3];
+                    + key[x_sum & 3];
             }
 
             // convert the unit[] into a byte[]
-            Array.Copy(ConvertUintstoBytes(x_words), 0, p_data, p_offset, p_count);
+            Array.Copy(ConvertUintstoBytes(x_words), 0, buffer, offset, count);
         }
 
-        private static uint[] ConvertBytesToUints(byte[] p_data, int p_offset, int p_count)
+        private static uint[] ConvertBytesToUints(byte[] buffer, int offset, int count)
         {
             // allocate an array - each uint requires 4 bytes
-            uint[] x_result = new uint[p_count / 4];
+            uint[] x_result = new uint[count / 4];
             // run through the data and create the unsigned ints from
             // the array of bytes
-            for (int i = p_offset, j = 0; i < p_offset + p_count; i += 4, j++)
+            for (int i = offset, j = 0; i < offset + count; i += 4, j++)
             {
-                x_result[j] = BitConverter.ToUInt32(p_data, i);
+                x_result[j] = BitConverter.ToUInt32(buffer, i);
             }
             // return the array of 32-bit unsigned ints
             return x_result;
         }
 
-        private static byte[] ConvertUintstoBytes(uint[] p_data)
+        private static byte[] ConvertUintstoBytes(uint[] buffer)
         {
             // convert the unit[] into a byte[]
-            byte[] x_result = new byte[p_data.Length * 4];
+            byte[] x_result = new byte[buffer.Length * 4];
             // run through the data and create the bytes from
             // the array of unsigned ints
-            for (int i = 0, j = 0; i < p_data.Length; i++, j += 4)
+            for (int i = 0, j = 0; i < buffer.Length; i++, j += 4)
             {
-                byte[] x_interim = BitConverter.GetBytes(p_data[i]);
+                byte[] x_interim = BitConverter.GetBytes(buffer[i]);
                 Array.Copy(x_interim, 0, x_result, j, x_interim.Length);
             }
             // return the array of 8-bit bytes
