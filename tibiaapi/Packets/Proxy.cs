@@ -308,17 +308,19 @@ namespace Tibia.Packets
                             {
                                 //unknown packet
                                 byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
+                                
+                                if (SplitPacketFromClient != null)
+                                    SplitPacketFromClient.BeginInvoke(unknown[0], unknown, null, null);
+
                                 WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
                                 serverSendMsg.AddBytes(unknown);
                             }
-                            else
+
+                            if (SplitPacketFromClient != null)
                             {
-                                if (SplitPacketFromClient != null)
-                                {
-                                    byte[] data = new byte[clientRecvMsg.Position - position];
-                                    Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
-                                    SplitPacketFromClient.BeginInvoke(data[0], data, null, null);
-                                }
+                                byte[] data = new byte[clientRecvMsg.Position - position];
+                                Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                                SplitPacketFromClient.BeginInvoke(data[0], data, null, null);
                             }
 
                             if (serverSendMsg.Length > 8)
@@ -524,19 +526,21 @@ namespace Tibia.Packets
                                 if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                                 {
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
+
+                                    if (SplitPacketFromServer != null)
+                                        SplitPacketFromServer.BeginInvoke(unknown[0], unknown, null, null);
+
                                     WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
                                     clientSendMsg.AddBytes(unknown);
                                     break;
                                 }
-                                else
-                                {
-                                    if (SplitPacketFromServer != null)
-                                    {
-                                        byte[] data = new byte[serverRecvMsg.Position - position];
-                                        Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
 
-                                        SplitPacketFromServer.BeginInvoke(data[0], data, null, null);
-                                    }
+                                if (SplitPacketFromServer != null)
+                                {
+                                    byte[] data = new byte[serverRecvMsg.Position - position];
+                                    Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
+
+                                    SplitPacketFromServer.BeginInvoke(data[0], data, null, null);
                                 }
                             }
 
