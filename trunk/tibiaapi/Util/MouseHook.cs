@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Tibia
 {
@@ -23,12 +24,16 @@ namespace Tibia
         /// <returns>True if you want the key to pass through
         /// (be recognized for the app), False if you want it
         /// to be trapped (app never sees it).</returns>
-        public delegate bool MouseHookHandler(MouseButtons button);
+        public delegate bool MouseButtonHandler(MouseButtons button);
 
-        /// <summary>
-        /// Add a MouseHook delegate here.
-        /// </summary>
-        public static MouseHookHandler MouseDown;
+        public delegate bool MouseMoveHandler(Point point);
+
+        public delegate bool MouseScrollHandler(int delta);
+
+        public static MouseButtonHandler ButtonDown;
+        public static MouseButtonHandler ButtonUp;
+        public static MouseMoveHandler Moved;
+        public static MouseScrollHandler Scrolled;
 
         /// <summary>
         /// Keep track of the hook state.
@@ -91,26 +96,45 @@ namespace Tibia
 
             if (nCode >= 0)
             {
-                if (wParam == (IntPtr)Hooks.WM_LBUTTONDOWN)
+                Hooks.MouseHookStruct info = (Hooks.MouseHookStruct)Marshal.PtrToStructure(lParam, typeof(Hooks.MouseHookStruct));
+                switch ((int)wParam)
                 {
-                    result = OnMouseDown(MouseButtons.Left);
-                }
-                else if (wParam == (IntPtr)Hooks.WM_RBUTTONDOWN)
-                {
-                    result = OnMouseDown(MouseButtons.Right);
-                }
-                else if (wParam == (IntPtr)Hooks.WM_MBUTTONDOWN)
-                {
-                    result = OnMouseDown(MouseButtons.Middle);
-                }
-                else if (wParam == (IntPtr)Hooks.WM_XBUTTONDOWN)
-                {
-                    Hooks.MouseHookStruct stru = (Hooks.MouseHookStruct)Marshal.PtrToStructure(lParam, typeof(Hooks.MouseHookStruct));
-
-                    if (stru.Data >> 16 == Hooks.XBUTTON1)
-                        result = OnMouseDown(MouseButtons.XButton1);
-                    else if (stru.Data >> 16 == Hooks.XBUTTON2)
-                        result = OnMouseDown(MouseButtons.XButton2);
+                    case Hooks.WM_LBUTTONDOWN:
+                        result = OnMouseDown(MouseButtons.Left);
+                        break;
+                    case Hooks.WM_LBUTTONUP:
+                        result = OnMouseUp(MouseButtons.Left);
+                        break;
+                    case Hooks.WM_RBUTTONDOWN:
+                        result = OnMouseDown(MouseButtons.Right);
+                        break;
+                    case Hooks.WM_RBUTTONUP:
+                        result = OnMouseUp(MouseButtons.Right);
+                        break;
+                    case Hooks.WM_MBUTTONDOWN:
+                        result = OnMouseDown(MouseButtons.Middle);
+                        break;
+                    case Hooks.WM_MBUTTONUP:
+                        result = OnMouseUp(MouseButtons.Middle);
+                        break;
+                    case Hooks.WM_XBUTTONDOWN:
+                        if (info.Data >> 16 == Hooks.XBUTTON1)
+                            result = OnMouseDown(MouseButtons.XButton1);
+                        else if (info.Data >> 16 == Hooks.XBUTTON2)
+                            result = OnMouseDown(MouseButtons.XButton2);
+                        break;
+                    case Hooks.WM_XBUTTONUP:
+                        if (info.Data >> 16 == Hooks.XBUTTON1)
+                            result = OnMouseUp(MouseButtons.XButton1);
+                        else if (info.Data >> 16 == Hooks.XBUTTON2)
+                            result = OnMouseUp(MouseButtons.XButton2);
+                        break;
+                    case Hooks.WM_MOUSEMOVE:
+                        result = OnMouseMove(new Point(info.Point.X, info.Point.Y));
+                        break;
+                    case Hooks.WM_MOUSEWHEEL:
+                        result = OnMouseWheel((info.Data >> 16) & 0xffff);
+                        break;
                 }
             }
 
@@ -119,8 +143,32 @@ namespace Tibia
 
         private static bool OnMouseDown(MouseButtons button)
         {
-            if (MouseDown != null)
-                return MouseDown(button);
+            if (ButtonDown != null)
+                return ButtonDown(button);
+            else
+                return true;
+        }
+
+        private static bool OnMouseUp(MouseButtons button)
+        {
+            if (ButtonUp != null)
+                return ButtonUp(button);
+            else
+                return true;
+        }
+
+        private static bool OnMouseMove(Point point)
+        {
+            if (Moved != null)
+                return Moved(point);
+            else
+                return true;
+        }
+
+        private static bool OnMouseWheel(int delta)
+        {
+            if (Scrolled != null)
+                return Scrolled(delta);
             else
                 return true;
         }

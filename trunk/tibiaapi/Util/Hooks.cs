@@ -61,10 +61,16 @@ namespace Tibia
         }
 
         //Mouse stuff
+        internal const int WM_MOUSEMOVE = 0x200;
+        internal const int WM_MOUSEWHEEL = 0x020A;
         internal const int WM_LBUTTONDOWN = 0x201;
         internal const int WM_RBUTTONDOWN = 0x204;
         internal const int WM_MBUTTONDOWN = 0x207;
         internal const int WM_XBUTTONDOWN = 0x20B;
+        internal const int WM_LBUTTONUP = 0x202;
+        internal const int WM_RBUTTONUP = 0x205;
+        internal const int WM_MBUTTONUP = 0x208;
+        internal const int WM_XBUTTONUP = 0x20C;
 
         internal const int XBUTTON1 = 0x1;
         internal const int XBUTTON2 = 0x2;
