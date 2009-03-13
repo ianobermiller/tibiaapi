@@ -81,10 +81,6 @@ namespace Tibia.Packets
         public event EventHandler PlayerLogin;
         public event EventHandler PlayerLogout;
 
-        public delegate void DataListener(byte[] data);
-        public event DataListener ReceivedDataFromClient;
-        public event DataListener ReceivedDataFromServer;
-
         public delegate void SplitPacket(byte type, byte[] data);
         public event SplitPacket SplitPacketFromServer;
         public event SplitPacket SplitPacketFromClient;
@@ -284,8 +280,7 @@ namespace Tibia.Packets
 
                 clientRecvMsg.Length = pSize;
 
-                if (ReceivedDataFromClient != null)
-                    ReceivedDataFromClient.BeginInvoke(clientRecvMsg.Data, null, null);
+                OnReceivedDataFromClient(clientRecvMsg.Data);
 
                 switch (protocol)
                 {
@@ -502,8 +497,7 @@ namespace Tibia.Packets
 
                 serverRecvMsg.Length = pSize;
 
-                if (ReceivedDataFromServer != null)
-                    ReceivedDataFromServer.BeginInvoke(serverRecvMsg.Data, null, null);
+                OnReceivedDataFromServer(serverRecvMsg.Data);
 
                 switch (protocol)
                 {

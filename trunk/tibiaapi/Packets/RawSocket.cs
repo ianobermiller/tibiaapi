@@ -69,10 +69,6 @@ namespace Tibia.Packets
         public delegate void Notification(string where, string messsage);
         public Notification OnError;
 
-        public delegate void DataListener(byte[] data);
-        public event DataListener ReceivedDataFromClient;
-        public event DataListener ReceivedDataFromServer;
-
         public delegate void RawPacketListener(byte[] packet, string flags);
         public RawPacketListener ReceivedIPPacketFromClient;
         public RawPacketListener ReceivedIPPacketFromServer;
@@ -306,8 +302,7 @@ namespace Tibia.Packets
 
         private void RaiseOutgoingEvents(byte[] data)
         {
-            if (ReceivedDataFromClient != null)
-                ReceivedDataFromClient.Invoke(data);
+            OnReceivedDataFromClient(data);
 
             Array.Copy(data, clientRecvMsg.GetBuffer(), data.Length);
             clientRecvMsg.Length = (int)(BitConverter.ToUInt16(clientRecvMsg.GetBuffer(), 0) + 2);
@@ -445,6 +440,8 @@ namespace Tibia.Packets
                         byte[] packet = new byte[packetlength];
                         Array.Copy(gamePacket, offset, packet, 0, packetlength);
 
+                        OnReceivedDataFromServer(packet);
+
                         IncomingGamePacketQueue.Enqueue(packet);
                     }
                     else
@@ -467,9 +464,6 @@ namespace Tibia.Packets
             {
 
                 byte[] packet = IncomingGamePacketQueue.Dequeue();
-
-                if (ReceivedDataFromServer != null)
-                    ReceivedDataFromServer.Invoke(packet);
 
                 Array.Copy(packet, serverRecvMsg.GetBuffer(), packet.Length);
                 serverRecvMsg.Length = (int)(BitConverter.ToUInt16(serverRecvMsg.GetBuffer(), 0) + 2);
