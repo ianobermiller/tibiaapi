@@ -16,6 +16,22 @@ namespace Tibia.Util
     {
         #region Events
 
+        public delegate void DataListener(byte[] data);
+        public event DataListener ReceivedDataFromClient;
+        public event DataListener ReceivedDataFromServer;
+
+        protected void OnReceivedDataFromClient(byte[] data)
+        {
+            if (ReceivedDataFromClient != null)
+                ReceivedDataFromClient.BeginInvoke(data, null, null);
+        }
+
+        protected void OnReceivedDataFromServer(byte[] data)
+        {
+            if (ReceivedDataFromServer != null)
+                ReceivedDataFromServer.BeginInvoke(data, null, null);
+        }
+
         public delegate bool MessageListener(NetworkMessage message);
 
         public event MessageListener ReceivedMessageFromServer;
