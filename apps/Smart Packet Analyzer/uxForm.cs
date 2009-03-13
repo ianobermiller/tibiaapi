@@ -20,6 +20,7 @@ namespace SmartPacketAnalyzer
         Dictionary<byte, string> outgoingPacketTypeNames = new Dictionary<byte, string>();
         byte[] displayedPacket = null;
         uxMemory memoryForm;
+        PacketType filterType = null;
 
         Client client;
 
@@ -55,8 +56,8 @@ namespace SmartPacketAnalyzer
             {
                 client.IO.StartProxy();
                 client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                client.IO.Proxy.ReceivedMessageFromServer += ReceivedMessageFromServer;
-                client.IO.Proxy.ReceivedMessageFromClient += ReceivedMessageFromClient;
+                client.IO.Proxy.SplitPacketFromServer += SplitMessageFromServer;
+                client.IO.Proxy.SplitPacketFromClient += SplitMessageFromClient;
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
@@ -67,6 +68,17 @@ namespace SmartPacketAnalyzer
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.OutgoingPacketType)))
             {
                 outgoingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.OutgoingPacketType), t));
+            }
+
+            uxTypes.Items.Add("(Any)");
+            uxTypes.SelectedIndex = 0;
+            foreach (KeyValuePair<byte, string> kvp in incomingPacketTypeNames)
+            {
+                uxTypes.Items.Add(new PacketType(kvp.Key, kvp.Value, true));
+            }
+            foreach (KeyValuePair<byte, string> kvp in outgoingPacketTypeNames)
+            {
+                uxTypes.Items.Add(new PacketType(kvp.Key, kvp.Value, false));
             }
         }
 
@@ -80,45 +92,26 @@ namespace SmartPacketAnalyzer
             return true;
         }
 
-        bool ReceivedMessageFromClient(NetworkMessage msg)
+        void SplitMessageFromClient(byte type, byte[] data)
         {
             if (uxLogClient.Checked)
             {
-                if (uxLogHeader.Checked)
+                if (FilterPacket(type, false))
                 {
-                    
-                    if (uxHeaderByte.Text.Length == 2 &&
-                        msg.PeekByte() == uxHeaderByte.Text.ToBytesAsHex()[0])
-                    {
-                        LogPacket(msg.PeekBytes(msg.Length - msg.Position), "CLIENT", "SERVER");
-                    }
-                }
-                else
-                {
-                    LogPacket(msg.PeekBytes(msg.Length - msg.Position), "CLIENT", "SERVER");
+                    LogPacket(data, "CLIENT", "SERVER");
                 }
             }
-            return true;
         }
 
-        bool ReceivedMessageFromServer(NetworkMessage msg)
+        void SplitMessageFromServer(byte type, byte[] data)
         {
             if (uxLogServer.Checked)
             {
-                if (uxLogHeader.Checked)
+                if (FilterPacket(type, true))
                 {
-                    if (uxHeaderByte.Text.Length == 2 &&
-                        msg.PeekByte() == uxHeaderByte.Text.ToBytesAsHex()[0])
-                    {
-                        LogPacket(msg.PeekBytes(msg.Length - msg.Position), "SERVER", "CLIENT");
-                    }
-                }
-                else
-                {
-                    LogPacket(msg.PeekBytes(msg.Length - msg.Position), "SERVER", "CLIENT");
+                    LogPacket(data, "SERVER", "CLIENT");
                 }
             }
-            return true;
         }
 
         private void LogPacket(byte[] packet, string from, string to)
@@ -238,6 +231,26 @@ namespace SmartPacketAnalyzer
             memoryForm.Show();
         }
 
+        private bool FilterPacket(byte type, bool isIncoming)
+        {
+            if (filterType == null)
+                return true;
+            else
+            {
+                return isIncoming == filterType.IsIncoming && type == filterType.Type;
+            }
+        }
+
+        private void uxTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (uxTypes.SelectedIndex == 0)
+                filterType = null;
+            else
+            {
+                filterType = (PacketType)uxTypes.Items[uxTypes.SelectedIndex];
+            }
+        }
+
     }
 
     public struct CapturedPacket
@@ -262,6 +275,25 @@ namespace SmartPacketAnalyzer
         public override string ToString()
         {
             return Time + "\t from " + Source;
+        }
+    }
+
+    public class PacketType
+    {
+        public byte Type;
+        public string Name;
+        public bool IsIncoming;
+
+        public PacketType(byte type, string name, bool isIncoming)
+        {
+            Type = type;
+            Name = name;
+            IsIncoming = isIncoming;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0}{1} - \t{2:X2}", Name, IsIncoming ? "Incoming" : "Outgoing", Type);
         }
     }
 }

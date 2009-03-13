@@ -23,16 +23,16 @@ namespace Tibia.Util
         protected void OnReceivedDataFromClient(byte[] data)
         {
             if (ReceivedDataFromClient != null)
-                ReceivedDataFromClient.BeginInvoke(data, null, null);
+                ReceivedDataFromClient.Invoke(data);
         }
 
         protected void OnReceivedDataFromServer(byte[] data)
         {
             if (ReceivedDataFromServer != null)
-                ReceivedDataFromServer.BeginInvoke(data, null, null);
+                ReceivedDataFromServer.Invoke(data);
         }
 
-        public delegate bool MessageListener(NetworkMessage message);
+        public delegate void MessageListener(NetworkMessage message);
 
         public event MessageListener ReceivedMessageFromServer;
         public event MessageListener ReceivedMessageFromClient;
@@ -146,7 +146,7 @@ namespace Tibia.Util
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
 
             if (ReceivedMessageFromServer != null)
-                ReceivedMessageFromServer.BeginInvoke(new NetworkMessage(msg), null, null);
+                ReceivedMessageFromServer.Invoke(new NetworkMessage(msg));
 
             switch (type)
             {
@@ -829,7 +829,7 @@ namespace Tibia.Util
             OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();
 
             if (ReceivedMessageFromClient != null)
-                ReceivedMessageFromClient.BeginInvoke(new NetworkMessage(msg), null, null);
+                ReceivedMessageFromClient.Invoke(new NetworkMessage(msg));
 
             switch (type)
             {
