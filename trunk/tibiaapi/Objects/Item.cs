@@ -552,6 +552,7 @@ namespace Tibia.Objects
         public static ItemLocation FromContainer(byte container, byte position)
         {
             ItemLocation loc = new ItemLocation();
+            loc.type = Constants.ItemLocationType.Container;
             loc.container = container;
             loc.position = position;
             loc.stackOrder = position;
