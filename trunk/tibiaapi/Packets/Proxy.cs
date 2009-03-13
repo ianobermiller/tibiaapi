@@ -305,7 +305,7 @@ namespace Tibia.Packets
                                 byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
                                 
                                 if (SplitPacketFromClient != null)
-                                    SplitPacketFromClient.BeginInvoke(unknown[0], unknown, null, null);
+                                    SplitPacketFromClient.Invoke(unknown[0], unknown);
 
                                 WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
                                 serverSendMsg.AddBytes(unknown);
@@ -315,7 +315,7 @@ namespace Tibia.Packets
                             {
                                 byte[] data = new byte[clientRecvMsg.Position - position];
                                 Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
-                                SplitPacketFromClient.BeginInvoke(data[0], data, null, null);
+                                SplitPacketFromClient.Invoke(data[0], data);
                             }
 
                             if (serverSendMsg.Length > 8)
@@ -522,7 +522,7 @@ namespace Tibia.Packets
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
 
                                     if (SplitPacketFromServer != null)
-                                        SplitPacketFromServer.BeginInvoke(unknown[0], unknown, null, null);
+                                        SplitPacketFromServer.Invoke(unknown[0], unknown);
 
                                     WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
                                     clientSendMsg.AddBytes(unknown);
@@ -534,7 +534,7 @@ namespace Tibia.Packets
                                     byte[] data = new byte[serverRecvMsg.Position - position];
                                     Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
 
-                                    SplitPacketFromServer.BeginInvoke(data[0], data, null, null);
+                                    SplitPacketFromServer.Invoke(data[0], data);
                                 }
                             }
 

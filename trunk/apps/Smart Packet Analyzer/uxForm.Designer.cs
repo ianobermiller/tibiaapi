@@ -33,10 +33,10 @@ namespace SmartPacketAnalyzer
             this.ConvertToInt = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyAllBytes = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.uxTypes = new System.Windows.Forms.ComboBox();
             this.uxLogClient = new System.Windows.Forms.CheckBox();
             this.uxLogServer = new System.Windows.Forms.CheckBox();
-            this.uxHeaderByte = new System.Windows.Forms.TextBox();
-            this.uxLogHeader = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.uxClearPackets = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -82,16 +82,36 @@ namespace SmartPacketAnalyzer
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.uxTypes);
             this.groupBox1.Controls.Add(this.uxLogClient);
             this.groupBox1.Controls.Add(this.uxLogServer);
-            this.groupBox1.Controls.Add(this.uxHeaderByte);
-            this.groupBox1.Controls.Add(this.uxLogHeader);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(354, 47);
+            this.groupBox1.Size = new System.Drawing.Size(469, 47);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Packet Options";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(190, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 33;
+            this.label1.Text = "Only of Type:";
+            // 
+            // uxTypes
+            // 
+            this.uxTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uxTypes.FormattingEnabled = true;
+            this.uxTypes.Location = new System.Drawing.Point(260, 15);
+            this.uxTypes.Name = "uxTypes";
+            this.uxTypes.Size = new System.Drawing.Size(200, 21);
+            this.uxTypes.Sorted = true;
+            this.uxTypes.TabIndex = 32;
+            this.uxTypes.SelectedIndexChanged += new System.EventHandler(this.uxTypes_SelectedIndexChanged);
             // 
             // uxLogClient
             // 
@@ -116,24 +136,6 @@ namespace SmartPacketAnalyzer
             this.uxLogServer.TabIndex = 30;
             this.uxLogServer.Text = "From Server";
             this.uxLogServer.UseVisualStyleBackColor = true;
-            // 
-            // uxHeaderByte
-            // 
-            this.uxHeaderByte.Location = new System.Drawing.Point(299, 17);
-            this.uxHeaderByte.MaxLength = 2;
-            this.uxHeaderByte.Name = "uxHeaderByte";
-            this.uxHeaderByte.Size = new System.Drawing.Size(41, 20);
-            this.uxHeaderByte.TabIndex = 25;
-            // 
-            // uxLogHeader
-            // 
-            this.uxLogHeader.AutoSize = true;
-            this.uxLogHeader.Location = new System.Drawing.Point(186, 19);
-            this.uxLogHeader.Name = "uxLogHeader";
-            this.uxLogHeader.Size = new System.Drawing.Size(110, 17);
-            this.uxLogHeader.TabIndex = 24;
-            this.uxLogHeader.Text = "Only With Header";
-            this.uxLogHeader.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -300,8 +302,6 @@ namespace SmartPacketAnalyzer
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox uxLogClient;
         private System.Windows.Forms.CheckBox uxLogServer;
-        private System.Windows.Forms.TextBox uxHeaderByte;
-        private System.Windows.Forms.CheckBox uxLogHeader;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button uxClearPackets;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -315,6 +315,8 @@ namespace SmartPacketAnalyzer
         private System.Windows.Forms.TextBox uxPacketDisplay;
         private System.Windows.Forms.Button uxShowMemoryWatcher;
         private System.Windows.Forms.ColumnHeader NameCol;
+        private System.Windows.Forms.ComboBox uxTypes;
+        private System.Windows.Forms.Label label1;
     }
 }
 

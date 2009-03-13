@@ -56,7 +56,7 @@ namespace Tibia.Objects
         private void process_Exited(object sender, EventArgs e)
         {
             if (Exited != null)
-                Exited.BeginInvoke(this, e, null, null);
+                Exited.Invoke(this, e);
         }
 
         #endregion

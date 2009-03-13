@@ -285,6 +285,7 @@ namespace Tibia
         #endregion
 
         #region General
+
         public static string ToStringDeep(this object obj)
         {
             StringBuilder s = new StringBuilder();
