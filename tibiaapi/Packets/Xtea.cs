@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TibiaEzBot.Packets
+namespace Tibia.Packets
 {
     public static class Xtea
     {
