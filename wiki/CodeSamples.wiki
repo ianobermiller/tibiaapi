@@ -277,8 +277,7 @@ player.LightColor = Tibia.Constants.LightColor.White;
 == Draw players hitpoints in percents above his name ==
 *C#*
 {{{
-Player player=client.GetPlayer();
-Screen screen = new Screen(client);
-screen.DrawCreatureText(player.Id, new Location(0, -10, 0), Color.Green, 
+Player player = client.GetPlayer();
+client.Screen.DrawCreatureText(player.Id, new Location(0, -10, 0), Color.Green, 
 Tibia.Constants.ClientFont.NormalBorder, player.HPBar.ToString() + "%");
 }}}
