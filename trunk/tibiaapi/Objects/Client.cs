@@ -486,6 +486,18 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's screen (for displaying text)
+        /// </summary>
+        public Screen Screen
+        {
+            get
+            {
+                if (screen == null) screen = new Screen(this);
+                return screen;
+            }
+        }
+
+        /// <summary>
         /// Get the time the client was started.
         /// </summary>
         /// <returns></returns>
@@ -508,14 +520,6 @@ namespace Tibia.Objects
         public IntPtr ProcessHandle
         {
             get { return processHandle; }
-        }
-        
-        /// <summary>
-        /// Get the client's screen (for displaying text)
-        /// </summary>
-        public Screen Screen
-        {
-            get { return screen; }
         }
 
         public ContextMenu ContextMenu
