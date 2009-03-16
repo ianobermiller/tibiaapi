@@ -15,7 +15,7 @@ namespace Tibia.Objects
             private Client client;
             private AutoResetEvent pipeIsReady;
             private Pipe pipe = null; //For Displaying Text
-            public event EventHandler PipeInizialazed;
+            public event EventHandler PipeInitialized;
 
             internal DllHelper(Client client)
             {
@@ -54,6 +54,7 @@ namespace Tibia.Objects
             {
                 get { return pipe; }
             }
+
             public void InitializePipe()
             {
                 if (pipe != null)
@@ -88,8 +89,8 @@ namespace Tibia.Objects
                 Packets.Pipes.InjectDisplayPacket.Send(client, true);
                 pipeIsReady.Set();
 
-                if (PipeInizialazed != null)
-                    PipeInizialazed.BeginInvoke(client, new EventArgs(), null, null);
+                if (PipeInitialized != null)
+                    PipeInitialized.BeginInvoke(client, new EventArgs(), null, null);
 
             }
         }
