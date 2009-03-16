@@ -82,6 +82,20 @@ namespace Tibia.Packets
             position = 0;
         }
 
+        public static NetworkMessage CreateUnencrypted(Objects.Client client)
+        {
+            NetworkMessage nm = new NetworkMessage(client);
+            nm.Position = 0;
+            return nm;
+        }
+
+        public static NetworkMessage CreateUnencrypted(Objects.Client client, int size)
+        {
+            NetworkMessage nm = new NetworkMessage(client, size);
+            nm.Position = 0;
+            return nm;
+        }
+
         #endregion
 
         #region Properties
@@ -203,7 +217,7 @@ namespace Tibia.Packets
         public void AddByte(byte value)
         {
             if (1 + length > bufferSize)
-                throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
+                throw new Exception("NetworkMessage buffer is full.");
 
             AddBytes(new byte[] { value });
         }
@@ -211,7 +225,7 @@ namespace Tibia.Packets
         public void AddBytes(byte[] value)
         {
             if (value.Length + length > bufferSize)
-                throw new Exception("NetworkMessage try to add more bytes to a smaller buffer");
+                throw new Exception("NetworkMessage buffer is full.");
 
             Array.Copy(value, 0, buffer, position, value.Length);
             position += value.Length;

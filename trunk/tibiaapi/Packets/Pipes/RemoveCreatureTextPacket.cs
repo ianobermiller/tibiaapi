@@ -28,7 +28,7 @@ namespace Tibia.Packets.Pipes
 
         public override byte[] ToByteArray()
         {
-            NetworkMessage msg = new NetworkMessage(Client, 0);
+            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 7 + CreatureName.Length);
             msg.AddByte((byte)Type);
 
             msg.AddUInt32((uint)CreatureId);
