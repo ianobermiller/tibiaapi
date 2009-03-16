@@ -10,7 +10,8 @@ namespace Tibia.Objects
     public class Map
     {
         private Client client;
-        
+        public Tile playerTile;
+
         #region Constructor
         /// <summary>
         /// Create a map object.
@@ -26,9 +27,14 @@ namespace Tibia.Objects
         public Tile GetTileWithPlayer()
         {
             int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
-            return GetTiles(false, false).First(
-                t => t.Objects.Any(
-                    o => o.Id == 0x63 && o.Data == playerId));
+            if (playerTile == null || !playerTile.Location.Equals(client.PlayerLocation))
+            {
+                playerTile = GetTiles(false, false).First(
+                    t => t.Objects.Any(
+                        o => o.Id == 0x63 && o.Data == playerId));
+                playerTile.Location = client.PlayerLocation;
+            }
+            return playerTile;
         }
 
         public IEnumerable<Tile> GetTiles()
@@ -45,7 +51,7 @@ namespace Tibia.Objects
         {
             Tile playerTile = null;
             uint startNumber = 0;
-            uint endNumber = Addresses.Map.MaxSquares + 1;
+            uint endNumber = Addresses.Map.MaxTiles + 1;
 
             if (sameFloor)
             {

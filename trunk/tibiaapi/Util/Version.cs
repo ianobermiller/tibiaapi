@@ -152,11 +152,11 @@ namespace Tibia
                 Map.DistanceObjectId = 0;
                 Map.DistanceObjectData = 4;
                 Map.DistanceObjectDataEx = 8;
-                Map.MaxSquareObjects = 13;
+                Map.MaxTileObjects = 13;
                 Map.MaxX = 18;
                 Map.MaxY = 14;
                 Map.MaxZ = 8;
-                Map.MaxSquares = 2016;
+                Map.MaxTiles = 2016;
                 Map.ZAxisDefault = 7;
                 Map.NameSpy1 = 0x4EC109;
                 Map.NameSpy2 = 0x4EC113;
@@ -377,11 +377,11 @@ namespace Tibia
                 Map.DistanceObjectId = 0;
                 Map.DistanceObjectData = 4;
                 Map.DistanceObjectDataEx = 8;
-                Map.MaxSquareObjects = 13;
+                Map.MaxTileObjects = 13;
                 Map.MaxX = 18;
                 Map.MaxY = 14;
                 Map.MaxZ = 8;
-                Map.MaxSquares = 2016;
+                Map.MaxTiles = 2016;
                 Map.ZAxisDefault = 7;
                 Map.PlayerTile = 0x3E3A08;
                 Map.NameSpy1 = 0x4E95F9;
@@ -975,11 +975,11 @@ namespace Tibia
                 Map.DistanceObjectId = 0;
                 Map.DistanceObjectData = 4;
                 Map.DistanceObjectDataEx = 8;
-                Map.MaxSquareObjects = 13;
+                Map.MaxTileObjects = 13;
                 Map.MaxX = 18;
                 Map.MaxY = 14;
                 Map.MaxZ = 8;
-                Map.MaxSquares = 2016;
+                Map.MaxTiles = 2016;
                 Map.ZAxisDefault = 7;
                 Map.PlayerTile = 0x3E3A08;
                 Map.NameSpy1 = 0x4DF469;
@@ -1150,8 +1150,8 @@ namespace Tibia
                 Addresses.Map.DistanceObjectId = 0;
                 Addresses.Map.DistanceObjectData = 4;
                 Addresses.Map.DistanceObjectDataEx = 8;
-                Addresses.Map.MaxSquares = 2016;
-                Addresses.Map.MaxSquareObjects = 13;
+                Addresses.Map.MaxTiles = 2016;
+                Addresses.Map.MaxTileObjects = 13;
                 Addresses.Map.ZAxisDefault = 7;
 
                 Addresses.Player.Flags = 0x60EA58;

@@ -123,7 +123,7 @@ namespace Tibia.Objects
         {
             get
             {
-                if (IO.UsingProxy /*||(IO.RawSocket != null && IO.RawSocket.Enabled)*/)
+                if (IO.UsingProxy ||(IO.RawSocket != null && IO.RawSocket.Enabled))
                     return playerLocation;
                 else if (LoggedIn)
                     return new Location(
