@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum number of objects per tile.
         /// </summary>
-        public static uint MaxSquareObjects = 13;
+        public static uint MaxTileObjects = 13;
 
         /// <summary>
         /// Maximum number of tiles in the X direction
@@ -68,7 +68,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum number of tiles.
         /// </summary>
-        public static uint MaxSquares = 2016; // MaxX * MaxY * MaxZ
+        public static uint MaxTiles = 2016; // MaxX * MaxY * MaxZ
 
         /// <summary>
         /// The default (starting) Z axis value

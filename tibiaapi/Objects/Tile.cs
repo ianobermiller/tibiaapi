@@ -69,6 +69,7 @@ namespace Tibia.Objects
         public Location Location
         {
             get { return location; }
+            internal set { location = value; }
         }
 
         public Client Client
