@@ -108,20 +108,20 @@ private bool Proxy_ReceivedPlayerSpeechOutgoingPacket(Tibia.Packets.OutgoingPack
 // Start the proxy and attach event handlers
 // Put this in Form_Load
 client.StartProxy();
-client.Proxy.ServerMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_ServerMessageArrived);
-client.Proxy.ClientMessageArrived += new Tibia.Util.Proxy.MessageListener(Proxy_ClientMessageArrived);
+client.Proxy.SplitPacketFromServer += Proxy_SplitPacketFromServer;
+client.Proxy.SplitPacketFromClient += Proxy_SplitPacketFromClient;
 
 
 // These sample event handlers are other methods, outside Form_Load
 // LogPacket assumes you have a textbox called uxLog
-void Proxy_ClientMessageArrived(Tibia.Packets.NetworkMessage message)
+void Proxy_SplitPacketFromClient(byte type, byte[] data)
 {
-	LogPacket(message.Packet, "CLIENT");
+	LogPacket(data, "CLIENT");
 }
 
-void Proxy_ServerMessageArrived(Tibia.Packets.NetworkMessage message)
+void Proxy_SplitPacketFromServer(byte type, byte[] data)
 {
-	LogPacket(message.Packet, "SERVER");
+	LogPacket(data, "SERVER");
 }
 
 private void LogPacket(byte[] packet, string from)
@@ -138,26 +138,20 @@ private void LogPacket(byte[] packet, string from)
 == Perform name spy or level spy ==
 *C#*
 {{{
-// Create a new map object
-Map map = new Map(client);
-
 // Show names on other floors
-map.ShowNames(true);
+client.Map.ShowNames(true);
 
 // Move the screen to the floor below
-map.ShowFloor(-1, true);
+client.Map.ShowFloor(-1, true);
 }}}
 
 *VB.Net*
 {{{
-' Create a new map object
-Dim map As New Map(client)
-
 ' Show names on other floors
-map.ShowNames(true)
+client.Map.ShowNames(true)
 
 ' Move the screen to the floor below
-map.ShowFloor(-1, true)
+client.Map.ShowFloor(-1, true)
 }}}
 
 == Setup a global keyboard hook ==
@@ -192,51 +186,35 @@ else
 == Connect to an OT Server ==
 *C#*
 {{{
-client.SetOT("radonia.net", 7171);
+client.Login.SetOT("radonia.net", 7171);
 }}}
 
 *VB.Net*
 {{{
-client.SetOT("radonia.net", 7171)
+client.Login.SetOT("radonia.net", 7171)
 }}}
 
 == Eat a mushroom in your inventory ==
 *C#*
 {{{
-Inventory inventory = new Inventory(client);
-inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use();
+client.Inventory.UseItem(Tibia.Constants.Items.Food.WhiteMushroom.Id);
 }}}
 
 *VB.Net*
 {{{
-Dim inventory As New Inventory(client)
-inventory.findItem(Tibia.Constants.Items.Food.WhiteMushroom).use()
-}}}
-Or, more efficiently (using the hotkey packets)
-
-*C#*
-{{{
-Inventory inventory = new Inventory(client);
-inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom);
-}}}
-
-*VB.Net*
-{{{
-Dim inventory As New Inventory(client)
-inventory.useItem(Tibia.Constants.Items.Food.WhiteMushroom)
+client.Inventory.UseItem(Tibia.Constants.Items.Food.WhiteMushroom.Id)
 }}}
 
 == Attack the first rat found in the battelist ==
 *C#*
 {{{
-BattleList blist = client.getBattleList();
-blist.getCreature("rat").attack();
+client.BattleList.GetCreatures().Where(
+	creature => creature.Name.Equals("rat", StringComparison.CurrentCultureIgnoreCase).Attack();
 }}}
 
 *VB.Net*
 {{{
-Dim blist As BattleList = client.getBattleList()
-blist.getCreature("rat").attack()
+client.BattleList.GetCreatures().Where(Function(creature) creature.Name.Equals("rat", StringComparison.CurrentCultureIgnoreCase).Attack()
 }}}
 
 == Change your players outfit type and addon ==
@@ -257,13 +235,11 @@ player.Addon = Tibia.Constants.OutfitAddon.Both
 == Replace all the trees with small fir trees ==
 *C#*
 {{{
-Map map = new Map(client);
-map.replaceTrees();
+client.Map.replaceTrees();
 }}}
 *VB.Net*
 {{{
-Dim map As New Map(client)
-map.replaceTrees()
+client.Map.replaceTrees()
 }}}
 
 == Make a simple lighthack ==
