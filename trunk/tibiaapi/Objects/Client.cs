@@ -210,7 +210,7 @@ namespace Tibia.Objects
         /// </summary>
         public bool DialogIsOpened
         {
-            get { return (Memory.ReadInt32(Addresses.Client.DialogBegin) != 0); }
+            get { return (Memory.ReadInt32(Addresses.Client.DialogPointer) != 0); }
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Tibia.Objects
         {
             get
             {
-                int DialogB = Memory.ReadInt32(Addresses.Client.DialogBegin);
+                int DialogB = Memory.ReadInt32(Addresses.Client.DialogPointer);
                 if (DialogB == 0)
                     return new System.Drawing.Point(0, 0);
 
