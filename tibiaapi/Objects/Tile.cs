@@ -141,7 +141,7 @@ namespace Tibia.Objects
         {
             get
             {
-                if (type == ObjectType.Packet)
+                if (items != null)
                     return items;
                 else
                 {

@@ -56,7 +56,7 @@ namespace Tibia
                 Client.GameWindowRectPointer = 0x6327E8;
                 Client.GameWindowBar = 0x635B58;
                 Client.DatPointer = 0x77FE6C;
-                Client.DialogBegin = 0x635B54;
+                Client.DialogPointer = 0x635B54;
                 Client.DialogLeft = 0x14;
                 Client.DialogTop = 0x18;
                 Client.DialogWidth = 0x1C;
@@ -287,7 +287,7 @@ namespace Tibia
                 Client.GameWindowRectPointer = 0x62E754;
                 Client.GameWindowBar = 0x631AC0;
                 Client.DatPointer = 0x77BDD4;
-                Client.DialogBegin = 0x631ABC;
+                Client.DialogPointer = 0x631ABC;
                 Client.DialogLeft = 0x14;
                 Client.DialogTop = 0x18;
                 Client.DialogWidth = 0x1C;
@@ -503,7 +503,7 @@ namespace Tibia
                 Client.LoginCharList = 0x77D3BC;
                 Client.LoginSelectedChar = 0x77D3B8;
                 Client.DatPointer = 0x779DD4;
-                Client.DialogBegin = 0x62FABC;
+                Client.DialogPointer = 0x62FABC;
                 Client.DialogLeft = 0x14;
                 Client.DialogTop = 0x18;
                 Client.DialogWidth = 0x1C;
@@ -690,7 +690,7 @@ namespace Tibia
                 Client.LoginCharList = 0x77A3BC;
                 Client.LoginSelectedChar = 0x77A3B8;
                 Client.DatPointer = 0x776DD4;
-                Client.DialogBegin = 0x62CABC;
+                Client.DialogPointer = 0x62CABC;
                 Client.DialogLeft = 0x14;
                 Client.DialogTop = 0x18;
                 Client.DialogWidth = 0x1C;
@@ -884,7 +884,7 @@ namespace Tibia
                 Client.LoginCharList = 0x76C288;
                 Client.GameWindowRectPointer = 0x12D624;
                 Client.DatPointer = 0x768C9C;
-                Client.DialogBegin = 0x61E984;
+                Client.DialogPointer = 0x61E984;
                 Client.DialogLeft = 0x14;
                 Client.DialogTop = 0x18;
                 Client.DialogWidth = 0x1C;
@@ -1101,7 +1101,7 @@ namespace Tibia
                 Addresses.Client.RSA = 0x593610;
                 Addresses.Client.LoginCharList = 0x766DBC;
                 Addresses.Client.LoginSelectedChar = 0x766DB8;
-                Addresses.Client.DialogBegin = 0x6198B4;
+                Addresses.Client.DialogPointer = 0x6198B4;
 
                 Addresses.Container.Start = 0x617000;
                 Addresses.Container.End = 0x618EC0;

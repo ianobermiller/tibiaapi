@@ -2,7 +2,7 @@ using System;
 
 namespace Tibia
 {
-    class Calculate
+    public class Calculate
     {
         /// <summary>
         /// Calculate the experience needed for any level.

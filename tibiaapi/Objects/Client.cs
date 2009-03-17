@@ -228,7 +228,7 @@ namespace Tibia.Objects
         {
             get
             {
-                if (IsDialogOpen == 0)
+                if (IsDialogOpen)
                     return new System.Drawing.Point(0, 0);
 
                 return new System.Drawing.Point(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogLeft), Memory.ReadInt32(DialogPointer + Addresses.Client.DialogTop));
@@ -242,7 +242,7 @@ namespace Tibia.Objects
         {
             get
             {
-                if (IsDialogOpen == 0)
+                if (IsDialogOpen)
                     return null;
 
                 return Memory.ReadString(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogCaption));
