@@ -101,14 +101,14 @@ namespace Tibia.Objects
 
                 //wait the dialog open
                 int waitTime = 4000;
-                while (!client.DialogIsOpened && waitTime > 0)
+                while (!client.IsDialogOpen && waitTime > 0)
                 {
                     Thread.Sleep(10);
                     waitTime -= 10;
                 }
 
                 //4 sec and the dialog did not open..
-                if (waitTime <= 0 && !client.DialogIsOpened)
+                if (waitTime <= 0 && !client.IsDialogOpen)
                     return false;
 
                 //now we have to send the login and the password
@@ -131,6 +131,13 @@ namespace Tibia.Objects
                 //timeout
                 if (waitTime <= 0 && CharListCount == 0)
                     return false;
+
+                //mtdo
+                if (client.DialogCaption != "Select Character")
+                {
+                    client.Input.SendKey(Keys.Enter);
+                    Thread.Sleep(100);
+                }
 
                 //now we loop at the charlist to find the selected char..
                 foreach (var ch in CharacterList)

@@ -122,6 +122,16 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.ItemLocation toLocation)
         {
+            return Move(toLocation, this.count);
+        }
+
+        /// <summary>
+        /// Move an item to a location (eg. move a blank rune to the right hand).
+        /// </summary>
+        /// <param name="toLocation"></param>
+        /// <returns></returns>
+        public bool Move(Objects.ItemLocation toLocation, byte count)
+        {
             return Packets.Outgoing.ItemMovePacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toLocation.ToLocation(), count);
         }
 
