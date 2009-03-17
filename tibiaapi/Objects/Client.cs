@@ -206,11 +206,19 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets the dialog pointer
+        /// </summary>
+        public int DialogPointer
+        {
+            get { return Memory.ReadInt32(Addresses.Client.DialogPointer); }
+        }
+
+        /// <summary>
         /// Gets a value indicating if a dialog is opened.
         /// </summary>
-        public bool DialogIsOpened
+        public bool IsDialogOpen
         {
-            get { return (Memory.ReadInt32(Addresses.Client.DialogPointer) != 0); }
+            get { return DialogPointer != 0; }
         }
 
         /// <summary>
@@ -220,11 +228,24 @@ namespace Tibia.Objects
         {
             get
             {
-                int DialogB = Memory.ReadInt32(Addresses.Client.DialogPointer);
-                if (DialogB == 0)
+                if (IsDialogOpen == 0)
                     return new System.Drawing.Point(0, 0);
 
-                return new System.Drawing.Point(Memory.ReadInt32(DialogB + Addresses.Client.DialogLeft), Memory.ReadInt32(DialogB + Addresses.Client.DialogTop));
+                return new System.Drawing.Point(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogLeft), Memory.ReadInt32(DialogPointer + Addresses.Client.DialogTop));
+            }
+        }
+
+        /// <summary>
+        /// Gets the caption text of the current opened dialog. Returns null if dialog is not opened.
+        /// </summary>
+        public string DialogCaption
+        {
+            get
+            {
+                if (IsDialogOpen == 0)
+                    return null;
+
+                return Memory.ReadString(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogCaption));
             }
         }
 
