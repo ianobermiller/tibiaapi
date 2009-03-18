@@ -161,48 +161,37 @@ namespace Tibia.Packets.Incoming
                 else if (thingId == 0x0061)
                 { //creature is not known
                     //perhaps we have to remove a known creature
-                    //uint32_t removeID = msg.getU32();
                     c.RemoveId = msg.GetUInt32();
                     outMsg.AddUInt32(c.RemoveId);
-                    //add a new creature
-                    //uint32_t creatureID = msg.getU32();
 
+                    //add a new creature
                     c.Type = PacketCreatureType.Unknown;
                     c.Id = msg.GetUInt32();
                     outMsg.AddUInt32(c.Id);
-
-                    //creature->setName(msg.getString());
 
                     c.Name = msg.GetString();
                     outMsg.AddString(c.Name);
                 }
 
                 //read creature properties
-                //creature->setHealth(msg.getU8());
                 c.Health = msg.GetByte();
                 outMsg.AddByte(c.Health);
 
-                //uint8_t direction;
                 c.Direction = msg.GetByte();
                 outMsg.AddByte(c.Direction);
 
                 c.Outfit = msg.GetOutfit();
                 outMsg.AddOutfit(c.Outfit);
 
-                //creature->setLightLevel(msg.getU8());
-                //creature->setLightColor(msg.getU8());
                 c.LightLevel = msg.GetByte();
                 outMsg.AddByte(c.LightLevel);
 
                 c.LightColor = msg.GetByte();
                 outMsg.AddByte(c.LightColor);
 
-                //creature->setSpeed(msg.getU16());
                 c.Speed = msg.GetUInt16();
                 outMsg.AddUInt16(c.Speed);
 
-                //creature->setSkull(msg.getU8());
-                //creature->setShield(msg.getU8());
                 c.Skull = (Constants.Skull)msg.GetByte();
                 outMsg.AddByte((byte)c.Skull);
 
@@ -216,14 +205,12 @@ namespace Tibia.Packets.Incoming
             else if (thingId == 0x0063)
             {
                 //creature turn
-                //uint32_t creatureID = msg.getU32();
-
                 c = new PacketCreature(Client);
                 c.Location = pos;
                 c.Type = PacketCreatureType.Turn;
                 c.Id = msg.GetUInt32();
                 outMsg.AddUInt32(c.Id);
-                //uint8_t direction;
+
                 c.Direction = msg.GetByte();
                 outMsg.AddByte(c.Direction);
 
