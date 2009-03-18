@@ -9,7 +9,7 @@ namespace Tibia.Packets.Outgoing
     {
         public Objects.Location FromPosition { get; set; }
         public ushort SpriteId { get; set; }
-        public byte StackPosition { get; set; }
+        public byte FromStackPosition { get; set; }
         public uint CreatureId { get; set; }
 
         public ItemUseBattlelistPacket(Objects.Client c)
@@ -29,7 +29,7 @@ namespace Tibia.Packets.Outgoing
 
             FromPosition = msg.GetLocation();
             SpriteId = msg.GetUInt16();
-            StackPosition = msg.GetByte();
+            FromStackPosition = msg.GetByte();
             CreatureId = msg.GetUInt32();
 
             return true;
@@ -40,17 +40,17 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte((byte)Type);
             msg.AddLocation(FromPosition);
             msg.AddUInt16(SpriteId);
-            msg.AddByte(StackPosition);
+            msg.AddByte(FromStackPosition);
             msg.AddUInt32(CreatureId);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte stackPostion,uint creatureId)
+        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStack,uint creatureId)
         {
             ItemUseBattlelistPacket p = new ItemUseBattlelistPacket(client);
 
             p.FromPosition = fromPosition;
             p.SpriteId = spriteId;
-            p.StackPosition = stackPostion;
+            p.FromStackPosition = fromStack;
             p.CreatureId = creatureId;
 
             return p.Send();

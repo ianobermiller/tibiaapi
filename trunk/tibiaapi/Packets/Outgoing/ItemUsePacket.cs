@@ -7,9 +7,9 @@ namespace Tibia.Packets.Outgoing
 {
     public class ItemUsePacket : OutgoingPacket
     {
-        public Objects.Location Position { get; set; }
+        public Objects.Location FromPosition { get; set; }
         public ushort SpriteId { get; set; }
-        public byte StackPosition { get; set; }
+        public byte FromStackPosition { get; set; }
         public byte Index { get; set; }
 
         public ItemUsePacket(Objects.Client c)
@@ -27,9 +27,9 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.ItemUse;
 
-            Position = msg.GetLocation();
+            FromPosition = msg.GetLocation();
             SpriteId = msg.GetUInt16();
-            StackPosition = msg.GetByte();
+            FromStackPosition = msg.GetByte();
             Index = msg.GetByte();
 
             return true;
@@ -39,18 +39,18 @@ namespace Tibia.Packets.Outgoing
         {
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(Position);
+            msg.AddLocation(FromPosition);
             msg.AddUInt16(SpriteId);
-            msg.AddByte(StackPosition);
+            msg.AddByte(FromStackPosition);
             msg.AddByte(Index);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location position, ushort spriteId, byte stackPostion, byte index)
+        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStack, byte index)
         {
             ItemUsePacket p = new ItemUsePacket(client);
-            p.Position = position;
+            p.FromPosition = fromPosition;
             p.SpriteId = spriteId;
-            p.StackPosition = stackPostion;
+            p.FromStackPosition = fromStack;
             p.Index = index;
 
             return p.Send();
