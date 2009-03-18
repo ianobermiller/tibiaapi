@@ -72,7 +72,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x788370; //8.40
+        public static uint Status = 0x7893F8; //8.41
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -96,7 +96,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel.
         /// </summary>
-        public static uint LastMSGText = 0x78A438; //8.40
+        public static uint LastMSGText = 0x78B4C0; //8.41
 
         /// <summary>
         /// The last player to send a message to the default channel.
@@ -106,7 +106,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint StatusbarText = 0x78A1E8; //8.40
+        public static uint StatusbarText = 0x78B270; //8.41
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
@@ -115,7 +115,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint ClickId = 0x78840C; // 8.40
+        public static uint ClickId = 0x789494; // 8.41
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
