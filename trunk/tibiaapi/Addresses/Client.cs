@@ -9,7 +9,7 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x78A1D0; //8.40
+        public static uint StartTime = 0x78B258; //8.41
 
         /// <summary>
         /// Address to the XTea encryption key.
@@ -56,7 +56,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint DMultiClient = 0x505924; //8.40
+        public static uint DMultiClient = 0x5061C4; //8.41
 
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5AB610; //8.40
+        public static uint RSA = 0x5AB610; //8.41
 
 		  
         /// <summary>
