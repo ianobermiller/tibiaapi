@@ -146,11 +146,11 @@ namespace Tibia.Addresses
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x45E2F3;  // 8.40
+        public static uint RevealInvisible1 = 0x45EB63;  // 8.41
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
 
-        public static uint RevealInvisible2 = 0x4EB445;  // 8.40
+        public static uint RevealInvisible2 = 0x4EBCD5;  // 8.41
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
 
