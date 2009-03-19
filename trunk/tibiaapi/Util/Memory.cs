@@ -112,7 +112,7 @@ namespace Tibia
         /// <returns></returns>
         public static string ReadString(IntPtr handle, long address)
         {
-            return ReadString(handle, address, 255);
+            return ReadString(handle, address, 0);
         }
 
         /// <summary>
@@ -124,7 +124,23 @@ namespace Tibia
         /// <returns></returns>
         public static string ReadString(IntPtr handle, long address, uint length)
         {
-            return System.Text.ASCIIEncoding.Default.GetString(ReadBytes(handle, address, length)).Split(new Char())[0];
+            if (length > 0)
+            {
+                byte[] buffer;
+                buffer = ReadBytes(handle, address, length);
+                return System.Text.ASCIIEncoding.Default.GetString(buffer).Split(new Char())[0];
+            }
+            else
+            {
+                string s = "";
+                byte temp = ReadByte(handle, address++);
+                while (temp != 0)
+                {
+                    s += (char)temp;
+                    temp = ReadByte(handle, address++);
+                }
+                return s;
+            }
         }
 
         /// <summary>

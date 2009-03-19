@@ -208,9 +208,9 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets the dialog pointer
         /// </summary>
-        public int DialogPointer
+        public uint DialogPointer
         {
-            get { return Memory.ReadInt32(Addresses.Client.DialogPointer); }
+            get { return Memory.ReadUInt32(Addresses.Client.DialogPointer); }
         }
 
         /// <summary>
@@ -224,14 +224,17 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets the position of the current opened dialog. Returns null if dialog is not opened.
         /// </summary>
-        public System.Drawing.Point DialogPosition
+        public Rectangle DialogPosition
         {
             get
             {
-                if (IsDialogOpen)
-                    return new System.Drawing.Point(0, 0);
+                if (!IsDialogOpen)
+                    return new Rectangle();
 
-                return new System.Drawing.Point(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogLeft), Memory.ReadInt32(DialogPointer + Addresses.Client.DialogTop));
+                return new Rectangle(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogLeft),
+                    Memory.ReadInt32(DialogPointer + Addresses.Client.DialogTop),
+                    Memory.ReadInt32(DialogPointer + Addresses.Client.DialogWidth),
+                    Memory.ReadInt32(DialogPointer + Addresses.Client.DialogHeight));
             }
         }
 
@@ -242,10 +245,10 @@ namespace Tibia.Objects
         {
             get
             {
-                if (IsDialogOpen)
-                    return null;
+                if (!IsDialogOpen)
+                    return "";
 
-                return Memory.ReadString(Memory.ReadInt32(DialogPointer + Addresses.Client.DialogCaption));
+                return Memory.ReadString(DialogPointer + Addresses.Client.DialogCaption);
             }
         }
 
