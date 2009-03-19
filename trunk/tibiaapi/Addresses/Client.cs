@@ -231,7 +231,7 @@ namespace Tibia.Addresses
 
         public static uint DatPointer = 0x784D2C; //8.40
 
-        public static uint DialogPointer = 0x63AA14; //8.40
+        public static uint DialogPointer = 0x63BA9C; //8.41
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
