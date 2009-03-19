@@ -168,7 +168,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x781633; // 8.41
+        public static uint LoginCharList = 0x7893AC; // 8.41
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to
@@ -191,7 +191,7 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint LoginSelectedChar = 0x7893A8; // 8.41
 
-        //This format is for the character list that is stored at 0x76450D.
+        //This format is for the character list that is stored at 0x76450D (8.40).
         //This format is also how it comes in the packet.
         //This list gets overwritten with different data when connected to the game world.
         

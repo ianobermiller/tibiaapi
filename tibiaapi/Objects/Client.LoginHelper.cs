@@ -100,16 +100,14 @@ namespace Tibia.Objects
                 client.Input.Click(120, client.Window.Size.Height - 250);
 
                 //wait the dialog open
-                int waitTime = 4000;
-                while (!client.IsDialogOpen && waitTime > 0)
+                int waitTime = 2000;
+                while (!client.IsDialogOpen && client.DialogCaption != "Enter Game")
                 {
-                    Thread.Sleep(10);
-                    waitTime -= 10;
+                    Thread.Sleep(100);
+                    waitTime -= 100;
+                    if (waitTime <= 0)
+                        return false;
                 }
-
-                //4 sec and the dialog did not open..
-                if (waitTime <= 0 && !client.IsDialogOpen)
-                    return false;
 
                 //now we have to send the login and the password
                 client.Input.SendString(login);
@@ -120,19 +118,22 @@ namespace Tibia.Objects
                 //press entrer..
                 client.Input.SendKey(Keys.Enter);
 
+                Thread.Sleep(100);
+
                 //wait for the charlist dialog
-                waitTime = 4000; // 2 sec
-                while (CharListCount == 0 && waitTime > 0)
+                waitTime = 4000;
+                while (!client.IsDialogOpen && client.DialogCaption != "Connecting" && CharListCount == 0)
                 {
-                    Thread.Sleep(10);
-                    waitTime -= 10;
+                    Thread.Sleep(100);
+                    waitTime -= 100;
+                    if (waitTime <= 0)
+                        return false;
                 }
 
-                //timeout
-                if (waitTime <= 0 && CharListCount == 0)
-                    return false;
+                Thread.Sleep(100);
 
-                //mtdo
+                // Check if there is a message of the day
+                System.Console.WriteLine(client.DialogCaption);
                 if (client.DialogCaption != "Select Character")
                 {
                     client.Input.SendKey(Keys.Enter);
@@ -300,7 +301,7 @@ namespace Tibia.Objects
                 {
                     CharacterLoginInfo[] charList = new CharacterLoginInfo[CharListCount];
 
-                    uint pointer = /*client.Memory.ReadUInt32(*/Addresses.Client.LoginCharList/*)*/;
+                    uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharList);
 
                     for (int i = 0; i < charList.Length; i++)
                     {
