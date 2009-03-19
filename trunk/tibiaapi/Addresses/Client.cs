@@ -19,17 +19,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address of the socket struct
         /// </summary>
-        public static uint SocketStruct = 0x784CE0;
+        public static uint SocketStruct = 0x785D68; //8.41
 
         /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
-        public static uint SendPointer = 0x5AB600;
+        public static uint SendPointer = 0x571A0B; //8.41
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x788EB4; //8.40
+        public static uint FrameRatePointer = 0x789F3C; //8.41
 
         /// <summary>
         /// FPS limit offset
@@ -77,7 +77,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x785134; //8.40
+        public static uint SafeMode = 0x7861BC; //8.41
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
@@ -91,7 +91,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x7883D0; //8.40
+        public static uint ActionState = 0x789458; //8.41
 
         /// <summary>
         /// The text of the last message sent to the default channel.
@@ -128,12 +128,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Used for show item id functions
         /// </summary>
-        public static uint ClickContextMenuItemId = 0x788418;
+        public static uint ClickContextMenuItemId = 0x7894A0; //8.41
 
         /// <summary>
         /// Used for show item id functions
         /// </summary>
-        public static uint ClickContextMenuItemGroundId = 0x788424;
+        public static uint ClickContextMenuItemGroundId = 0x7894AC; //8.41
 
         /// <summary>
         /// The id of the last item seen (looked at).
@@ -151,7 +151,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// </summary>
-        public static uint SeeText = 0x78A410; //8.40
+        public static uint SeeText = 0x78B498; //8.41
         
         // Login Server addresses
         public static uint LoginServerStart = 0x780CD0; //8.41
@@ -214,8 +214,8 @@ namespace Tibia.Addresses
         /// it, it points to the game window rect 
         /// struct.
         /// </summary>
-        public static uint GameWindowRectPointer = 0x6376A8; //8.40
-        public static uint GameWindowBar = 0x63AA18; //8.40
+        public static uint GameWindowRectPointer = 0x638734; //8.41
+        public static uint GameWindowBar = 0x63BAA0; //8.41
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
@@ -229,7 +229,7 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x784D2C; //8.40
+        public static uint DatPointer = 0x785DB4; //8.41
 
         public static uint DialogPointer = 0x63BA9C; //8.41
         public static uint DialogLeft = 0x14;
@@ -241,12 +241,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        public static uint LastRcvPacket = 0x7804C0;
+        public static uint LastRcvPacket = 0x781548; //8.41
 
         /// <summary>
         /// Call to decrypt packet
         /// </summary>
-        public static uint DecryptCall = 0x45A745;
+        public static uint DecryptCall = 0x45ACD0; //8.41
 
         /// <summary>
         /// Auto login stuff
