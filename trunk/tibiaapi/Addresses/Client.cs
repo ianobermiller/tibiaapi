@@ -189,7 +189,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x788320; // 8.40
+        public static uint LoginSelectedChar = 0x7893A8; // 8.41
 
         //This format is for the character list that is stored at 0x76450D.
         //This format is also how it comes in the packet.
