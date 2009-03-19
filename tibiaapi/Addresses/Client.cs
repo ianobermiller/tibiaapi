@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x784D0C; //8.40
+        public static uint XTeaKey = 0x785D94; //8.41
 
         /// <summary>
         /// Address of the socket struct
@@ -154,7 +154,7 @@ namespace Tibia.Addresses
         public static uint SeeText = 0x78A410; //8.40
         
         // Login Server addresses
-        public static uint LoginServerStart = 0x77FC48; //8.40
+        public static uint LoginServerStart = 0x780CD0; //8.41
         public static uint StepLoginServer = 112;
         public static uint DistancePort = 100;
         public static uint MaxLoginServers = 10;
@@ -168,12 +168,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x788324; // 8.40
+        public static uint LoginCharList = 0x781633; // 8.41
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to
         /// </summary>
-        public static uint LoginCharListLength = 0x788328; // 8.40
+        public static uint LoginCharListLength = 0x7893B0; // 8.41
 
         /* Character List Format
         
@@ -251,7 +251,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x78832C; //8.40
+        public static uint LoginPassword = 0x7893B4; //8.41
         public static uint LoginAccount = LoginPassword + 32;
         public static uint LoginAccountNum = 0; // only for old clients
 

@@ -28,7 +28,7 @@ namespace Tibia.Packets
 
         private LoginServer[] loginServers;
         private CharacterLoginInfo[] charList;
-        private ushort serverPort;
+        private ushort loginServerPort, worldServerPort;
 
         private uint[] xteaKey;
 
@@ -36,7 +36,7 @@ namespace Tibia.Packets
 
         private int selectedLoginServer = 0;
 
-        private TcpListener clientTcp;
+        private TcpListener loginClientTcp, worldClientTcp;
         private Socket clientSocket;
         private NetworkStream clientStream;
         private Queue<byte[]> clientSendQueue;
@@ -185,10 +185,12 @@ namespace Tibia.Packets
             if (loginServers[0].Server == "localhost")
                 loginServers = client.Login.DefaultServers;
 
-            if (serverPort == 0)
-                serverPort = GetFreePort();
+            if (loginServerPort == 0)
+                loginServerPort = GetFreePort();
 
-            client.Login.SetServer("localhost", (short)serverPort);
+            worldServerPort = (ushort)(loginServerPort + 1);
+
+            client.Login.SetServer("localhost", (short)loginServerPort);
 
             if (client.Login.RSA == Constants.RSAKey.OpenTibia)
                 isOtServer = true;
@@ -201,7 +203,7 @@ namespace Tibia.Packets
             if (client.Login.CharListCount != 0)
             {
                 charList = client.Login.CharacterList;
-                client.Login.SetCharListServer(localHostBytes, serverPort);
+                client.Login.SetCharListServer(localHostBytes, loginServerPort);
             }
 
             //login event
@@ -224,9 +226,13 @@ namespace Tibia.Packets
                 clientSendQueue.Clear();
                 serverSendQueue.Clear();
 
-                clientTcp = new TcpListener(IPAddress.Any, serverPort);
-                clientTcp.Start();
-                clientTcp.BeginAcceptSocket(new AsyncCallback(ListenClientCallBack), null);
+                loginClientTcp = new TcpListener(IPAddress.Any, loginServerPort);
+                loginClientTcp.Start();
+                loginClientTcp.BeginAcceptSocket(new AsyncCallback(ListenClientCallBack), 0);
+
+                worldClientTcp = new TcpListener(IPAddress.Any, worldServerPort);
+                worldClientTcp.Start();
+                worldClientTcp.BeginAcceptSocket(new AsyncCallback(ListenClientCallBack), 1);
             }
             catch (Exception ex)
             {
@@ -239,11 +245,20 @@ namespace Tibia.Packets
             try
             {
                 accepting = false;
-                clientSocket = clientTcp.EndAcceptSocket(ar);
-                clientTcp.Stop();
+                clientSocket = loginClientTcp.EndAcceptSocket(ar);
+                loginClientTcp.Stop();
 
                 clientStream = new NetworkStream(clientSocket);
                 clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
+
+                int type = (int)ar.AsyncState;
+
+                //we have to connect to the world server now.. and send w8 for response..
+                if (type == 1)
+                {
+
+
+                }
             }
             catch (ObjectDisposedException) { Restart(); }
             catch (System.IO.IOException) { Restart(); }
@@ -619,7 +634,7 @@ namespace Tibia.Packets
                                     charList[i].WorldIP = serverRecvMsg.PeekUInt32();
                                     serverRecvMsg.AddBytes(localHostBytes);
                                     charList[i].WorldPort = serverRecvMsg.PeekUInt16();
-                                    serverRecvMsg.AddUInt16(serverPort);
+                                    serverRecvMsg.AddUInt16(worldServerPort);
                                 }
 
                                 //send this data to client
@@ -675,8 +690,8 @@ namespace Tibia.Packets
                         PlayerLogout.Invoke(this, new EventArgs());
                 }
 
-                if (clientTcp != null)
-                    clientTcp.Stop();
+                if (loginClientTcp != null)
+                    loginClientTcp.Stop();
 
                 if (clientSocket != null)
                     clientSocket.Close();

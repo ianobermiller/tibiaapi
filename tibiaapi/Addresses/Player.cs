@@ -66,7 +66,7 @@ namespace Tibia.Addresses
         public static uint TilesToGo = 0x62BD3C; // 8.40
 
 
-        public static uint RedSquare = 0x62BCFC; // 8.40
+        public static uint RedSquare = 0x62CCFC; // 8.41
         public static uint GreenSquare = RedSquare - 4;
         public static uint WhiteSquare = GreenSquare - 8;
 
@@ -83,7 +83,7 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint Z = 0x63BAD8; // 8.41
 
-        public static uint Y = Z + 4; // 8.40
-        public static uint X = Z + 8; // 8.40
+        public static uint Y = Z + 4; // 8.41
+        public static uint X = Z + 8; // 8.41
     }
 }
