@@ -58,8 +58,7 @@ namespace Tibia.Addresses
             IsIdleAnimation = 134217728,
             HasAutoMapColor = 268435456,
             HasHelpLens = 536870912,
-            Unknown = 1073741824, //old isGround flag
-            IsGround = 2147483648,
+            Unknown = 1073741824,
         }
 
         public enum Help
