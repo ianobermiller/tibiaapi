@@ -118,11 +118,18 @@ namespace Tibia.Objects
                 //press entrer..
                 client.Input.SendKey(Keys.Enter);
 
-                Thread.Sleep(100);
-
                 //wait for the charlist dialog
                 waitTime = 4000;
-                while (!client.IsDialogOpen && client.DialogCaption != "Connecting" && CharListCount == 0)
+                while (CharListCount == 0)
+                {
+                    Thread.Sleep(100);
+                    waitTime -= 100;
+                    if (waitTime <= 0)
+                        return false;
+                }
+
+                waitTime = 1000;
+                while (client.DialogCaption == "Connecting")
                 {
                     Thread.Sleep(100);
                     waitTime -= 100;
@@ -133,7 +140,6 @@ namespace Tibia.Objects
                 Thread.Sleep(100);
 
                 // Check if there is a message of the day
-                System.Console.WriteLine(client.DialogCaption);
                 if (client.DialogCaption != "Select Character")
                 {
                     client.Input.SendKey(Keys.Enter);
