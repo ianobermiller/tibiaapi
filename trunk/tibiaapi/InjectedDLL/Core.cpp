@@ -37,7 +37,7 @@ using namespace std;
 list<NormalText> DisplayTexts;		//Used for normal text displyaing
 list<PlayerText> CreatureTexts;		//Used for storing current text to display above creature
 DWORD OldPrintName = 0;				//Used for restoring PrintText when uninjecting DLL
-DWORD OldPrintFPS = 0;				//Used for restroring PrintFPS when uninjecting DLL
+DWORD OldPrintFPS = 0;				//Used for restoring PrintFPS when uninjecting DLL
 BYTE* OldNopFPS = 0;				//Used for restoring conditional jump (FPS)
 
 
@@ -435,7 +435,7 @@ inline void PipeOnRead()
 					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu) 
 				{
-					MessageBoxA(0, "Error. All the constant doesn't contain a value", "Error", MB_ICONERROR);
+					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
 					break;
 				}
 
@@ -443,7 +443,7 @@ inline void PipeOnRead()
 				{
 					if(HookInjected)
 					{
-						MessageBoxA(0, "The Hook is already injected", "Information", MB_ICONINFORMATION);
+						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
 						break;
 					}
 
@@ -715,12 +715,12 @@ void PipeThreadProc(HMODULE Module)
 		}
 	} 
 	else 
-		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?.", "TibiaAPI Injected DLL - Fatal Error", 0);
+		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?", "TibiaAPI Injected DLL - Fatal Error", 0);
 }
 
 void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* overlapped)
 {
-	errorStatus = errorCode;;
+	errorStatus = errorCode;
 
 	if (errorStatus == ERROR_SUCCESS)
 	{
@@ -736,7 +736,7 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 	{
 		//pipe disconnected 
 		//clean everything and remove the hook
-		//MessageBoxA(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		MessageBoxA(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 
 		//TODO: need more tests.
 
@@ -752,6 +752,8 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			}
 			DisplayTexts.clear();
 			LeaveCriticalSection(&NormalTextCriticalSection);
+
+			MessageBoxA(0, "Removed all text", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 
 			//remove all contextmenus
 			list<ContextMenu>::iterator cmIT;
@@ -776,16 +778,22 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			if (OldNopFPS)
 				UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
+			MessageBoxA(0, "Removed all context menus.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
 			//OnClickContextMenuEvent..
 			DWORD dwOldProtect, dwNewProtect, funcAddress;
 			funcAddress = (DWORD)&MyOnClickContextMenu;
 			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 			memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
 			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+
+			MessageBoxA(0, "Removed context menu click events.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 					
 			HookInjected = false;
 		}
 		
+		MessageBoxA(0, "Detach pipe...", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
 		pipe.Detach();
 		//::DeleteFileA(PipeName.c_str());
 		//TerminateThread(PipeThread, EXIT_SUCCESS);
@@ -795,7 +803,11 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 		DeleteCriticalSection(&ContextMenuCriticalSection);
 		DeleteCriticalSection(&OnClickCriticalSection);
 
+		MessageBoxA(0, "Detached pipe, deleted critical sections.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
 		UninjectSelf(hMod);
+
+		MessageBoxA(0, "Uninjected self.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 	}
 }
 
