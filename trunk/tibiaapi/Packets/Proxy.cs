@@ -60,6 +60,8 @@ namespace Tibia.Packets
         private bool connected;
 
         private DateTime lastInteraction;
+
+        private bool firstWorldServerPacket;
         #endregion
 
         #region Event Handlers
@@ -244,28 +246,35 @@ namespace Tibia.Packets
         {
             try
             {
+                if (!accepting)
+                    return;
+
                 accepting = false;
                 clientSocket = loginClientTcp.EndAcceptSocket(ar);
-                loginClientTcp.Stop();
 
-                clientStream = new NetworkStream(clientSocket);
-                clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
+                loginClientTcp.Stop();
+                worldClientTcp.Stop();
 
                 int type = (int)ar.AsyncState;
-
                 //we have to connect to the world server now.. and send w8 for response..
                 if (type == 1)
                 {
+                    serverTcp = new TcpClient(BitConverter.GetBytes(charList[client.Login.SelectedChar].WorldIP).ToIPString(), charList[client.Login.SelectedChar].WorldPort);
+                    serverStream = serverTcp.GetStream();
 
-
+                    firstWorldServerPacket = true;
+                    serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                 }
+
+                clientStream = new NetworkStream(clientSocket);
+                clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
             catch (ObjectDisposedException) { Restart(); }
             catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
@@ -366,8 +375,8 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
@@ -447,30 +456,18 @@ namespace Tibia.Packets
                         xteaKey[2] = clientRecvMsg.GetUInt32();
                         xteaKey[3] = clientRecvMsg.GetUInt32();
 
+                        if (isOtServer)
+                            clientRecvMsg.RsaOTEncrypt(position);
+                        else
+                            clientRecvMsg.RsaCipEncrypt(position);
 
-                        clientRecvMsg.GetByte(); //unknow..
-                        clientRecvMsg.GetString();
-                        string name = clientRecvMsg.GetString();
-                        int selectedChar = GetSelectedChar(name);
+                        clientRecvMsg.AddAdler32();
+                        clientRecvMsg.InsertPacketHeader();
 
-                        if (selectedChar >= 0)
-                        {
-                            if (isOtServer)
-                                clientRecvMsg.RsaOTEncrypt(position);
-                            else
-                                clientRecvMsg.RsaCipEncrypt(position);
+                        serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
 
-                            clientRecvMsg.AddAdler32();
-                            clientRecvMsg.InsertPacketHeader();
-
-                            serverTcp = new TcpClient(BitConverter.GetBytes(charList[selectedChar].WorldIP).ToIPString(), charList[selectedChar].WorldPort);
-                            serverStream = serverTcp.GetStream();
-
-                            serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
-
-                            serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
-                            clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
-                        }
+                        serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
+                        clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
 
                         break;
 
@@ -511,7 +508,6 @@ namespace Tibia.Packets
                 }
 
                 serverRecvMsg.Length = pSize;
-
                 OnReceivedDataFromServer(serverRecvMsg.Data);
 
                 switch (protocol)
@@ -580,6 +576,7 @@ namespace Tibia.Packets
                         serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                         break;
                     case Protocol.None:
+                        SendToClient(serverRecvMsg.Data);
                         break;
                 }
             }
@@ -587,8 +584,8 @@ namespace Tibia.Packets
             catch (ObjectDisposedException) { }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
