@@ -24,7 +24,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
-        public static uint SendPointer = 0x571A0B; //8.41
+        public static uint SendPointer = 0x5AB600; //8.41
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
