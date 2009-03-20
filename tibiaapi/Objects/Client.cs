@@ -35,7 +35,7 @@ namespace Tibia.Objects
         private Inventory inventory;
         private Console console;
         private Screen screen;
-        private Util.PathFinder pathFinder;
+        private Util.AStarPathFinder pathFinder;
         private ContextMenu contextMenu;
         private MemoryHelper memory;
         private WindowHelper window;
@@ -92,7 +92,7 @@ namespace Tibia.Objects
             // every read/write operation
             processHandle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
-            pathFinder = new Tibia.Util.PathFinder(this);
+            pathFinder = new Tibia.Util.AStarPathFinder(this);
             contextMenu = new ContextMenu(this);
 
             memory = new MemoryHelper(this);
@@ -551,7 +551,7 @@ namespace Tibia.Objects
             get { return contextMenu; }
         }
 
-        public Util.PathFinder PathFinder
+        public Util.AStarPathFinder PathFinder
         {
             get { return pathFinder; }
         }

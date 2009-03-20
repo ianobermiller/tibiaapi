@@ -43,6 +43,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -224,6 +225,7 @@
     <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
     <Compile Include="Packets\Xtea.cs" />
+    <Compile Include="Util\AStarPathFinder.cs" />
     <Compile Include="Util\BigInteger.cs" />
     <Compile Include="Util\ClientChooser.cs">
       <SubType>Form</SubType>
@@ -268,7 +270,6 @@
     <Compile Include="Util\Misc.cs" />
     <Compile Include="Util\MouseHook.cs" />
     <Compile Include="Packets\NetworkMessage.cs" />
-    <Compile Include="Util\PathFinder.cs" />
     <Compile Include="Packets\Pipe.cs" />
     <Compile Include="Packets\Proxy.cs" />
     <Compile Include="Packets\RawSocket.cs" />
@@ -294,6 +295,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Util\ClientChooser.resx">
       <DependentUpon>ClientChooser.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

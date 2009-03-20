@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Tibia.Packets;
-using System.Drawing;
 
 namespace Tibia.Objects
 {
@@ -12,7 +11,7 @@ namespace Tibia.Objects
     {
         protected Client client;
         protected uint address;
-
+        
         /// <summary>
         /// Create a new creature object with the given client and address.
         /// </summary>
@@ -36,6 +35,25 @@ namespace Tibia.Objects
                 && party != Constants.Party.Inviter);
         }
 
+        private static Location AdjustLocation(Location loc, int xDiff, int yDiff)
+        {
+            int xNew = loc.X - xDiff;
+            int yNew = loc.Y - yDiff;
+
+            if (xNew > 17)
+                xNew -= 18;
+            else if (xNew < 0)
+                xNew += 18;
+
+            if (yNew > 13)
+                yNew -= 14;
+            else if (yNew < 0)
+                yNew += 14;
+
+            return new Location(xNew, yNew, loc.Z);
+        }
+
+
         /// <summary>
         /// Check if have a path to the creature.
         /// </summary>
@@ -49,38 +67,23 @@ namespace Tibia.Objects
             if (playerTile == null || creatureTile == null)
                 return false;
 
-            int xDiff, yDiff, xNew, yNew;
+            int xDiff, yDiff;
             int playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
             var creatures = client.BattleList.GetCreatures().Where(c => c.Z == playerZ);
-
             int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
 
             xDiff = (int)playerTile.MemoryLocation.X - 8;
             yDiff = (int)playerTile.MemoryLocation.Y - 6;
 
+            playerTile.MemoryLocation = AdjustLocation(playerTile.MemoryLocation, xDiff, yDiff);
+            creatureTile.MemoryLocation = AdjustLocation(creatureTile.MemoryLocation, xDiff, yDiff);
+
             foreach (Tile tile in tileList)
             {
-                xNew = tile.MemoryLocation.X - xDiff;
-                yNew = tile.MemoryLocation.Y - yDiff;
+                tile.MemoryLocation = AdjustLocation(tile.MemoryLocation, xDiff, yDiff);
 
-                if (xNew > 17)
-                    xNew -= 18;
-                else if (xNew < 0)
-                    xNew += 18;
-
-                if (yNew > 13)
-                    yNew -= 14;
-                else if (yNew < 0)
-                    yNew += 14;
-
-
-                tile.MemoryLocation = new Location(xNew, yNew, tile.MemoryLocation.Z);
-
-                if (tile.Ground.GetFlag(Addresses.DatItem.Flag.Blocking) ||
-                    tile.Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
-                    tile.Items.Any(i => 
-                        i.GetFlag(Addresses.DatItem.Flag.Blocking) || 
-                        i.GetFlag(Addresses.DatItem.Flag.BlocksPath)) ||
+                if (tile.Ground.GetFlag(Addresses.DatItem.Flag.Blocking) || tile.Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
+                    tile.Items.Any(i => i.GetFlag(Addresses.DatItem.Flag.Blocking) || i.GetFlag(Addresses.DatItem.Flag.BlocksPath) || client.PathFinder.ModifiedItems.ContainsKey(i.Id)) ||
                     creatures.Any(c => tile.Objects.Any(o => o.Data == c.Id && o.Data != playerId && o.Data != this.Id)))
                 {
                     client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 0;
@@ -91,8 +94,7 @@ namespace Tibia.Objects
                 }
             }
 
-            return client.PathFinder.FindPath(new Point(playerTile.MemoryLocation.X, playerTile.MemoryLocation.Y),
-                new Point(creatureTile.MemoryLocation.X, creatureTile.MemoryLocation.Y)) != null;
+            return client.PathFinder.FindPath(playerTile.MemoryLocation, creatureTile.MemoryLocation);
         }
 
         /// <summary>

@@ -60,8 +60,6 @@ namespace Tibia.Packets
         private bool connected;
 
         private DateTime lastInteraction;
-
-        private bool firstWorldServerPacket;
         #endregion
 
         #region Event Handlers
@@ -261,8 +259,6 @@ namespace Tibia.Packets
                 {
                     serverTcp = new TcpClient(BitConverter.GetBytes(charList[client.Login.SelectedChar].WorldIP).ToIPString(), charList[client.Login.SelectedChar].WorldPort);
                     serverStream = serverTcp.GetStream();
-
-                    firstWorldServerPacket = true;
                     serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                 }
 
