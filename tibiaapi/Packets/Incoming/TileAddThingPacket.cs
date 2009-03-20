@@ -11,6 +11,7 @@ namespace Tibia.Packets.Incoming
         public Objects.Item Item { get; set; }
         public PacketCreature Creature { get; set; }
         public ushort ThingId { get; set; }
+        public byte Stack { get; set; }
 
         public TileAddThingPacket(Objects.Client c)
             : base(c)
@@ -32,6 +33,7 @@ namespace Tibia.Packets.Incoming
             try
             {
                 Position = msg.GetLocation();
+                Stack = msg.GetByte();
                 ThingId = msg.GetUInt16();
 
                 if (ThingId == 0x0061 || ThingId == 0x0062)
@@ -94,6 +96,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddLocation(Position);
+            msg.AddByte(Stack);
             msg.AddUInt16(ThingId);
 
             if (ThingId == 0x0061 || ThingId == 0x0062)
