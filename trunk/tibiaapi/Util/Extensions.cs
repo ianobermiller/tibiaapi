@@ -276,14 +276,8 @@ namespace Tibia
 
         public static Objects.Tile GetTileWithCreature(this IEnumerable<Objects.Tile> tiles, int creatureId)
         {
-            var result = tiles.Where(
-                t => t.Objects.Any(
+            return tiles.FirstOrDefault( t => t.Objects.Any(
                     o => o.Id == 0x63 && o.Data == creatureId));
-
-            if (result.Count() != 0)
-                return result.First();
-
-            return null;
         }
 
         #endregion

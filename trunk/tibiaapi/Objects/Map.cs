@@ -29,7 +29,7 @@ namespace Tibia.Objects
             int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
             if (playerTile == null || !playerTile.Location.Equals(client.PlayerLocation))
             {
-                playerTile = GetTiles(false, false).First(
+                playerTile = GetTiles(false, false).FirstOrDefault(
                     t => t.Objects.Any(
                         o => o.Id == 0x63 && o.Data == playerId));
                 playerTile.Location = client.PlayerLocation;

@@ -59,6 +59,8 @@ namespace Tibia.Packets
         private object debugLock;
         private bool connected;
 
+        private byte lastRecvPacketType;
+
         private DateTime lastInteraction;
         #endregion
 
@@ -323,7 +325,7 @@ namespace Tibia.Packets
                             {
                                 //unknown packet
                                 byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
-                                
+
                                 if (SplitPacketFromClient != null)
                                     SplitPacketFromClient.Invoke(unknown[0], unknown);
 
@@ -531,10 +533,12 @@ namespace Tibia.Packets
                                     if (SplitPacketFromServer != null)
                                         SplitPacketFromServer.Invoke(unknown[0], unknown);
 
-                                    WriteDebug("Unknown incoming packet: " + unknown.ToHexString());
+                                    WriteDebug("Last recv packet type: " + lastRecvPacketType.ToString("X") + " Unknown incoming packet: " + unknown.ToHexString());
                                     clientSendMsg.AddBytes(unknown);
                                     break;
                                 }
+
+                                lastRecvPacketType = serverRecvMsg.GetBuffer()[position];
 
                                 if (SplitPacketFromServer != null)
                                 {
