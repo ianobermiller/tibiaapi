@@ -91,6 +91,14 @@ namespace Tibia
                 Container.DistanceItemCount = 64;
                 Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
 
+                ContextMenus.AddContextMenuPtr = 0x450B00;
+                ContextMenus.OnClickContextMenuPtr = 0x44D2F0;
+                ContextMenus.OnClickContextMenuVf = 0x5B0980;
+                ContextMenus.AddSetOutfitContextMenu = 0x451A32;
+                ContextMenus.AddPartyActionContextMenu = 0x451A83;
+                ContextMenus.AddCopyNameContextMenu = 0x451A9A;
+                ContextMenus.AddTradeWithContextMenu = 0x4516A9;
+
                 Creature.DistanceId = 0;
                 Creature.DistanceType = 3;
                 Creature.DistanceName = 4;

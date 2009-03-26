@@ -17,12 +17,12 @@
         /// <summary>
         /// Offset, if user wants to show FPS
         /// </summary>
-        public static uint ShowFPS = 0x629A34; // 8.40
+        public static uint ShowFPS = 0x62AA30; // 8.40
 
         /// <summary>
         /// PrintText function address
         /// </summary
-        public static uint PrintTextFunc = 0x4AF090; // 8.41
+        public static uint PrintTextFunc = 0x4AF480; // 8.41
 
 
         /// <summary>
