@@ -26,6 +26,7 @@ namespace Tibia.Objects
         {
             if (number < 0 || number > Addresses.Container.MaxContainers)
                 throw new ArgumentOutOfRangeException("number", "number must be between 0 and Addresses.Container.MaxContainers");
+            
             uint i = Addresses.Container.Start + (number * Addresses.Container.StepContainer);
             if (client.Memory.ReadByte(i + Addresses.Container.DistanceIsOpen) == 1)
             {
@@ -74,15 +75,15 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Item GetItem(ItemLocation location)
         {
-            if (location.type == Tibia.Constants.ItemLocationType.Slot)
+            if (location.Type == Tibia.Constants.ItemLocationType.Slot)
             {
-                return GetItemInSlot(location.slot);
+                return GetItemInSlot(location.Slot);
             }
-            else if (location.type == Tibia.Constants.ItemLocationType.Container)
+            else if (location.Type == Tibia.Constants.ItemLocationType.Container)
             {
                 long address = Addresses.Container.Start +
-                              Addresses.Container.StepContainer * (int)location.container +
-                              Addresses.Container.StepSlot * (int)location.slot;
+                              Addresses.Container.StepContainer * (int)location.ContainerId +
+                              Addresses.Container.StepSlot * (int)location.Slot;
                 return new Item(client,
                     client.Memory.ReadUInt32(address + Addresses.Container.DistanceItemId),
                     client.Memory.ReadByte(address + Addresses.Container.DistanceItemCount),

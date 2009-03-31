@@ -76,7 +76,7 @@ namespace Tibia.Packets.Incoming
                 else
                 {
                     Item = new Tibia.Objects.Item(Client, ThingId);
-                    Item.Loc = Tibia.Objects.ItemLocation.FromLocation(Position);
+                    Item.Location = Tibia.Objects.ItemLocation.FromLocation(Position);
 
                     if (Item.HasExtraByte)
                         Item.Count = msg.GetByte();

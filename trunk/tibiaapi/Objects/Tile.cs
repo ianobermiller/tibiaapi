@@ -53,7 +53,7 @@ namespace Tibia.Objects
             this.type = ObjectType.Packet;
             this.client = client;
             this.location = location;
-            this.items = new List<Item> { };
+            this.items = new List<Item>();
 
             if (groundId > 0)
                 this.ground = new Item(client, groundId);
@@ -109,16 +109,19 @@ namespace Tibia.Objects
                 List<TileObject> objects = new List<TileObject>();
                 uint pointer = address + Addresses.Map.DistanceTileObjects;
 
-                for (int i = 0; i < objectCount; i++)
+                if (objectCount <= 11)
                 {
-                    // Go to the next object
-                    pointer += Addresses.Map.StepTileObject;
+                    for (int i = 0; i < objectCount; i++)
+                    {
+                        // Go to the next object
+                        pointer += Addresses.Map.StepTileObject;
 
-                    objects.Add(new TileObject(
-                        client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectId),
-                        client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectData),
-                        client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectDataEx),
-                        i + 1));
+                        objects.Add(new TileObject(
+                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectId),
+                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectData),
+                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectDataEx),
+                            i + 1));
+                    }
                 }
 
                 return objects;
