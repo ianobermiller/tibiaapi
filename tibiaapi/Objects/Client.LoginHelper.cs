@@ -28,7 +28,10 @@ namespace Tibia.Objects
             private Client client;
             private LoginServer openTibiaServer = null;
 
-            internal LoginHelper(Client client) { this.client = client; }
+            internal LoginHelper(Client client) 
+            {
+                this.client = client; 
+            }
 
             #region Account Info
 
@@ -81,7 +84,7 @@ namespace Tibia.Objects
                 set { openTibiaServer = value; }
             }
 
-            public bool AutoLogin(string login, string password, string charName)
+            public bool Login(string login, string password, string charName)
             {
                 //if the player is logged or the window is minimazed return false.
                 if (client.LoggedIn || client.Window.IsMinimized)

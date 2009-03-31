@@ -15,7 +15,7 @@ namespace Tibia.Objects
         protected uint id;
         protected string name;
         protected byte count;
-        protected ItemLocation loc;
+        protected ItemLocation location;
 
         #region Constructors
 
@@ -42,7 +42,7 @@ namespace Tibia.Objects
             this.id = id;
             this.count = count;
             this.name = name;
-            this.loc = location;
+            this.location = location;
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenAsContainer(byte container)
         {
-            return Packets.Outgoing.ItemUsePacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, container);
+            return Packets.Outgoing.ItemUsePacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, container);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use()
         {
-            return Packets.Outgoing.ItemUsePacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder, 0x0F);
+            return Packets.Outgoing.ItemUsePacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, 0x0F);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, location.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, 0, onItem.Loc.ToLocation(), (ushort)onItem.Id, 0); 
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, location.ToLocation(), (ushort)id, 0, onItem.Location.ToLocation(), (ushort)onItem.Id, 0); 
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Creature onCreature)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], onCreature.Location, 0x63, 0);
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, location.ToLocation(), (ushort)id, location.ToBytes()[4], onCreature.Location, 0x63, 0);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.ItemLocation toLocation, byte count)
         {
-            return Packets.Outgoing.ItemMovePacket.Send(client, loc.ToLocation(), (ushort)id, loc.ToBytes()[4], toLocation.ToLocation(), count);
+            return Packets.Outgoing.ItemMovePacket.Send(client, location.ToLocation(), (ushort)id, location.ToBytes()[4], toLocation.ToLocation(), count);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Look()
         {
-            return Packets.Outgoing.LookAtPacket.Send(client, loc.ToLocation(), (ushort)id, loc.stackOrder);
+            return Packets.Outgoing.LookAtPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder);
         }
 
         #endregion
@@ -195,10 +195,10 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the location of this item.
         /// </summary>
-        public ItemLocation Loc
+        public ItemLocation Location
         {
-            get { return loc; }
-            set { loc = value; }
+            get { return location; }
+            set { location = value; }
         }
 
         /// <summary>
@@ -439,14 +439,12 @@ namespace Tibia.Objects
             {
                 foreach (T i in list)
                 {
-                    if (Id == i.Id) 
+                    if (Id == i.Id)
                         return true;
                 }
-
-                return false;
             }
-            else
-                return false;
+
+            return false;
         }
 
         public override string ToString()
@@ -542,45 +540,60 @@ namespace Tibia.Objects
     /// </summary>
     public class ItemLocation
     {
-        public Constants.ItemLocationType type;
-        public byte container;
-        public byte position;
-        public Location groundLocation;
-        public byte stackOrder;
-        public Constants.SlotNumber slot;
+        public Constants.ItemLocationType Type;
+        public byte ContainerId;
+        public byte ContainerSlot;
+        public Location GroundLocation;
+        public byte StackOrder;
+        public Constants.SlotNumber Slot;
 
         public ItemLocation() { }
 
-        public static ItemLocation FromSlot(Constants.SlotNumber s)
+        public static ItemLocation FromSlot(Constants.SlotNumber slot)
         {
             ItemLocation loc = new ItemLocation();
-            loc.type = Constants.ItemLocationType.Slot;
-            loc.slot = s;
+            loc.Type = Constants.ItemLocationType.Slot;
+            loc.Slot = slot;
             return loc;
         }
 
         public static ItemLocation FromContainer(byte container, byte position)
         {
             ItemLocation loc = new ItemLocation();
-            loc.type = Constants.ItemLocationType.Container;
-            loc.container = container;
-            loc.position = position;
-            loc.stackOrder = position;
+            loc.Type = Constants.ItemLocationType.Container;
+            loc.ContainerId = container;
+            loc.ContainerSlot = position;
+            loc.StackOrder = position;
             return loc;
         }
 
         public static ItemLocation FromLocation(Location location, byte stack)
         {
             ItemLocation loc = new ItemLocation();
-            loc.type = Constants.ItemLocationType.Ground;
-            loc.groundLocation = location;
-            loc.stackOrder = stack;
+            loc.Type = Constants.ItemLocationType.Ground;
+            loc.GroundLocation = location;
+            loc.StackOrder = stack;
             return loc;
         }
 
         public static ItemLocation FromLocation(Location location)
         {
             return FromLocation(location, 1);
+        }
+
+        public static ItemLocation FromItemLocation(ItemLocation location)
+        {
+            switch (location.Type)
+            {
+                case Tibia.Constants.ItemLocationType.Container:
+                    return ItemLocation.FromContainer(location.ContainerId, location.ContainerSlot);
+                case Tibia.Constants.ItemLocationType.Ground:
+                    return ItemLocation.FromLocation(location.GroundLocation, location.StackOrder);
+                case Tibia.Constants.ItemLocationType.Slot:
+                    return ItemLocation.FromSlot(location.Slot);
+                default:
+                    return null;
+            }
         }
 
         /// <summary>
@@ -596,28 +609,28 @@ namespace Tibia.Objects
         {
             byte[] bytes = new byte[5];
 
-            switch (type)
+            switch (Type)
             {
                 case Constants.ItemLocationType.Container:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
-                    bytes[02] = (byte)(0x40 + container);
+                    bytes[02] = (byte)(0x40 + ContainerId);
                     bytes[03] = 0x00;
-                    bytes[04] = position;
+                    bytes[04] = ContainerSlot;
                     break;
                 case Constants.ItemLocationType.Slot:
                     bytes[00] = 0xFF;
                     bytes[01] = 0xFF;
-                    bytes[02] = (byte)slot;
+                    bytes[02] = (byte)Slot;
                     bytes[03] = 0x00;
                     bytes[04] = 0x00;
                     break;
                 case Constants.ItemLocationType.Ground:
-                    bytes[00] = groundLocation.X.Low();
-                    bytes[01] = groundLocation.X.High();
-                    bytes[02] = groundLocation.Y.Low();
-                    bytes[03] = groundLocation.Y.High(); 
-                    bytes[04] = (byte)groundLocation.Z;
+                    bytes[00] = GroundLocation.X.Low();
+                    bytes[01] = GroundLocation.X.High();
+                    bytes[02] = GroundLocation.Y.Low();
+                    bytes[03] = GroundLocation.Y.High(); 
+                    bytes[04] = (byte)GroundLocation.Z;
                     break;
             }
 
@@ -628,20 +641,20 @@ namespace Tibia.Objects
         {
             Location newPos = new Location();
 
-            switch (type)
+            switch (Type)
             {
                 case Constants.ItemLocationType.Container:
                     newPos.X = 0xFFFF;
-                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)(0x40 + container), 0x00 }, 0);
-                    newPos.Z = (int)position;
+                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)(0x40 + ContainerId), 0x00 }, 0);
+                    newPos.Z = (int)ContainerSlot;
                     break;
                 case Constants.ItemLocationType.Slot:
                     newPos.X = 0xFFFF;
-                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)slot, 0x00 }, 0);
+                    newPos.Y = (int)BitConverter.ToUInt16(new byte[] { (byte)Slot, 0x00 }, 0);
                     newPos.Z = 0;
                     break;
                 case Constants.ItemLocationType.Ground:
-                    newPos = groundLocation;
+                    newPos = GroundLocation;
                     break;
             }
 

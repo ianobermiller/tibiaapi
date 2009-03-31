@@ -51,7 +51,7 @@ namespace Tibia.Packets.Incoming
                     if (item.HasExtraByte)
                         item.Count = msg.GetByte();
 
-                    item.Loc = Tibia.Objects.ItemLocation.FromContainer(Id, (byte)i);
+                    item.Location = Tibia.Objects.ItemLocation.FromContainer(Id, (byte)i);
                     Items.Add(item);
                 }
             }

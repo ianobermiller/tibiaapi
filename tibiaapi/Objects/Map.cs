@@ -26,9 +26,10 @@ namespace Tibia.Objects
         #region Get Tiles
         public Tile GetTileWithPlayer()
         {
-            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
             if (playerTile == null || !playerTile.Location.Equals(client.PlayerLocation))
             {
+                int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+                
                 playerTile = GetTiles(false, false).FirstOrDefault(
                     t => t.Objects.Any(
                         o => o.Id == 0x63 && o.Data == playerId));

@@ -138,7 +138,9 @@ namespace Tibia.Constants
         Legs = 7,
         Feet = 8,
         Ring = 9,
-        Ammo = 10
+        Ammo = 10,
+        First = Head,
+        Last = Ammo,
     }
 
     #endregion
