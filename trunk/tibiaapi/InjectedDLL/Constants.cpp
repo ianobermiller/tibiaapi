@@ -19,6 +19,10 @@ namespace Consts {
 	DWORD ptrCopyNameContextMenu = 0;
 	DWORD ptrTradeWithContextMenu = 0;
 	DWORD prtOnClickContextMenuVf = 0;
+
+	/* Socket Stuff */
+	DWORD ptrRecv = 0;
+	DWORD ptrSend = 0;
 }
 
 /* DLL Injection Related Stuff */

@@ -20,6 +20,9 @@ namespace Consts {
 	extern DWORD ptrCopyNameContextMenu;
 	extern DWORD ptrTradeWithContextMenu;
 	extern DWORD prtOnClickContextMenuVf;
+
+	extern DWORD ptrRecv;
+	extern DWORD ptrSend;
 }
 
 /* DLL Injection Related Stuff */
@@ -52,6 +55,8 @@ enum PipeConstantType : BYTE
         CopyNameContextMenu = 0x0A,
 		OnClickContextMenuVf = 0x0B,
 		TradeWithContextMenu = 0x0C,
+		Recv=0x0D,
+		Send=0x0E
 };
 
 /* Structures */

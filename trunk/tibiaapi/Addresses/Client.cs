@@ -22,9 +22,15 @@ namespace Tibia.Addresses
         public static uint SocketStruct = 0x785D68; //8.41
 
         /// <summary>
+        /// Pointer to the WS2_32.Recv function
+        /// </summary>
+        public static uint RecvPointer = 0x5AB5D4; //8.41
+
+        /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
         public static uint SendPointer = 0x5AB600; //8.41
+
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer

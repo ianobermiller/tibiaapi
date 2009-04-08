@@ -9,6 +9,7 @@
 #include "Core.h"
 #include "Packet.h"
 
+
 #ifdef _MANAGED
 #pragma managed(push, off)
 #endif
@@ -47,6 +48,10 @@ DWORD OldPartyActionContextMenu = 0;//Used for restoring PartyActionContextMenu 
 DWORD OldCopyNameContextMenu = 0;   //Used for restoring CopyNameContextMenu ~
 DWORD OldTradeWithContextMenu = 0;
 list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
+//recv/send
+DWORD OrigSendAddress = 0;
+DWORD OrigRecvAddress = 0;
+
 
 //Asynchronisation variables
 CHandle pipe;						//Holds the Pipe handle (CHandle is from ATL library)
@@ -54,6 +59,18 @@ OVERLAPPED overlapped = { 0 };
 DWORD errorStatus = ERROR_SUCCESS;
 
 /*Addresses are loaded from Constants.xml file */
+
+int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
+{	
+	//MessageBoxA(0,"Recv","!",MB_ICONINFORMATION);
+	return OrigRecv(s,buf,len,flags);
+}
+
+int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
+{
+	//MessageBoxA(0,"Send","!",MB_ICONINFORMATION);
+	return OrigSend(s,buf,len,flags);
+}
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign)
 {
@@ -235,6 +252,8 @@ void __stdcall MyOnClickContextMenu (int eventId)
 	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
 }
 
+
+
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 {   
 	DWORD dwOldProtect, dwNewProtect, dwOldCall, dwNewCall;
@@ -245,10 +264,10 @@ DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 	dwNewCall = dwFunction - dwAddress - 5;
 	memcpy(&callByte[1], &dwNewCall, 4);
 	
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect); //Gain access to read/write
+	VirtualProtect((LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect); //Gain access to read/write
 	memcpy(&dwOldCall, (LPVOID)(dwAddress+1), 4); //Get the old function address for unhooking
 	memcpy((LPVOID)(dwAddress), &callByte, 5); //Hook the function
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect); //Restore access
+	VirtualProtect((LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect); //Restore access
 	
 	return dwOldCall; //Return old funtion address for unhooking
 }
@@ -260,20 +279,20 @@ void UnhookCall(DWORD dwAddress, DWORD dwOldCall)
 
 	memcpy(&callByte[1], &dwOldCall, 4);
 	
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect);
+	VirtualProtect((LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)(dwAddress), &callByte, 5);
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect);
+	VirtualProtect((LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect);
 }
 
 BYTE* Nop(DWORD dwAddress, int size)
 {
 	DWORD dwOldProtect, dwNewProtect;
 	BYTE* OldBytes;
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), size, PAGE_READWRITE, &dwOldProtect);
+	VirtualProtect((LPVOID)(dwAddress), size, PAGE_READWRITE, &dwOldProtect);
 	OldBytes = new BYTE[size];
 	memcpy(OldBytes, (LPVOID)(dwAddress), size);
 	memset((LPVOID)(dwAddress), 0x90, size);
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), size, dwOldProtect, &dwNewProtect);
+	VirtualProtect((LPVOID)(dwAddress), size, dwOldProtect, &dwNewProtect);
 	
 	return OldBytes;
 }
@@ -281,9 +300,9 @@ BYTE* Nop(DWORD dwAddress, int size)
 void UnNop(DWORD dwAddress, BYTE* OldBytes, int size)
 {
 	DWORD dwOldProtect, dwNewProtect;
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), size, PAGE_READWRITE, &dwOldProtect);
+	VirtualProtect((LPVOID)(dwAddress), size, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)(dwAddress), OldBytes, size);
-	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwAddress), size, dwOldProtect, &dwNewProtect);
+	VirtualProtect((LPVOID)(dwAddress), size, dwOldProtect, &dwNewProtect);
 
 	delete [] OldBytes;
 	OldBytes = 0;
@@ -351,6 +370,12 @@ inline void PipeOnRead()
 						break;
 					case TradeWithContextMenu:
 						Consts::ptrTradeWithContextMenu = Packet::ReadDWord(Buffer, &position);
+						break;
+					case Recv:
+						Consts::ptrRecv = Packet::ReadDWord(Buffer, &position);
+						break;
+					case Send:
+						Consts::ptrSend = Packet::ReadDWord(Buffer, &position);
 						break;
 					default:
 						break;
@@ -433,7 +458,8 @@ inline void PipeOnRead()
 				/* Testing that every constant contains a value */
 				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
-					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu) 
+					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
+					!Consts::ptrRecv || !Consts::ptrSend) 
 				{
 					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
 					break;
@@ -445,7 +471,7 @@ inline void PipeOnRead()
 					{
 						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
 						break;
-					}
+					}		
 
 					OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
 					OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
@@ -455,15 +481,32 @@ inline void PipeOnRead()
 					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
 					OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 
+					DWORD dwOldProtect, dwNewProtect, funcAddress;	
+
 					//OnClickContextMenuEvent..
-					DWORD dwOldProtect, dwNewProtect, funcAddress;
 					funcAddress = (DWORD)&MyOnClickContextMenu;
-					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
-					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 					
+					//recv/send
+					OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
+					OrigSend=(PSEND)OrigSendAddress;
+					funcAddress = (DWORD)&MySend;
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+								
+					OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
+					OrigRecv=(PRECV)OrigRecvAddress;
+					funcAddress = (DWORD)&MyRecv;
+					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
+					VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
 					//TODO: Add Bytes nop to Constants
 					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
+
 					HookInjected = true;
 				} 
 				else 
@@ -492,10 +535,19 @@ inline void PipeOnRead()
 					//OnClickContextMenuEvent..
 					DWORD dwOldProtect, dwNewProtect, funcAddress;
 					funcAddress = (DWORD)&MyOnClickContextMenu;
-					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-					VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 					
+					//recv/send
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+					VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
 					HookInjected = false;
 				}
 			}
@@ -783,11 +835,22 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			//OnClickContextMenuEvent..
 			DWORD dwOldProtect, dwNewProtect, funcAddress;
 			funcAddress = (DWORD)&MyOnClickContextMenu;
-			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+			VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 			memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-			VirtualProtectEx(GetCurrentProcess(), (LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-
+			VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+				
 			MessageBoxA(0, "Removed context menu click events.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
+			//recv/send			
+			VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+			memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+			VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+			VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+			memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+			VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+			MessageBoxA(0,"Removed recv and send hooks", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+
 					
 			HookInjected = false;
 		}
@@ -830,7 +893,6 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			InitializeCriticalSection(&ContextMenuCriticalSection);
 			InitializeCriticalSection(&OnClickCriticalSection);
 			PipeConnected = false;
-
 			//Start new thread for Pipe
 			PipeThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)PipeThreadProc, hMod, NULL, NULL);
 		}

@@ -9,6 +9,11 @@
 typedef void _PrintText(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
 static _PrintText *PrintText = 0; //(_PrintText*)0x4A3C00;
 
+typedef int (WINAPI *PRECV)(SOCKET s, char* buf, int len, int flags);
+static PRECV OrigRecv = 0;
+typedef int (WINAPI *PSEND)(SOCKET s, char* buf, int len, int flags);
+static PSEND OrigSend = 0;
+
 bool CompareLists(PlayerText first, PlayerText second);
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
 void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
