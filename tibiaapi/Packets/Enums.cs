@@ -189,7 +189,9 @@ namespace Tibia.Packets
         AddContextMenu      = 0x09,
         RemoveContextMenu   = 0x0A,
         RemoveAllContextMenus=0x0B,
-        OnClickContextMenu  = 0x0C
+        OnClickContextMenu  = 0x0C,
+        ReceivedPacket      = 0x0D,
+        SentPacket          = 0x0E
     }
 
     public enum PipeConstantType : byte
@@ -206,6 +208,8 @@ namespace Tibia.Packets
         CopyNameContextMenu = 0x0A,
         OnClickContextMenuVf = 0x0B,
         TradeWithContextMenu = 0x0C,
+        Recv                 =0x0D,
+        Send                 =0x0E
     }
     
     /// <summary>

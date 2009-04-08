@@ -77,6 +77,7 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintTextFunc, Tibia.Addresses.TextDisplay.PrintTextFunc);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.NopFPS, Tibia.Addresses.TextDisplay.NopFPS);
 
+                //Context Menus
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.AddContextMenuFunc, Tibia.Addresses.ContextMenus.AddContextMenuPtr);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenu, Tibia.Addresses.ContextMenus.OnClickContextMenuPtr);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.SetOutfitContextMenu, Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu);
@@ -84,6 +85,10 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.CopyNameContextMenu, Tibia.Addresses.ContextMenus.AddCopyNameContextMenu);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.TradeWithContextMenu, Tibia.Addresses.ContextMenus.AddTradeWithContextMenu);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, Tibia.Addresses.ContextMenus.OnClickContextMenuVf);
+
+                //winsock recv/send
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
 
                 //Hook Display functions
                 Packets.Pipes.InjectDisplayPacket.Send(client, true);
