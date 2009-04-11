@@ -265,7 +265,7 @@ void __stdcall MyOnClickContextMenu (int eventId)
      * Here, we'll exemplify using a switch statement.
      */
 
-	Packet* packet = new Packet();
+	Packet* packet = new Packet(5);
 	packet->AddByte(0x0C);
 	packet->AddDWord(eventId);
 	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 

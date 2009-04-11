@@ -132,14 +132,19 @@ namespace Tibia.Addresses
         public static uint ClickZ = ClickId - 0x68;
 
         /// <summary>
-        /// Used for show item id functions
+        /// Used for showing item id functions
         /// </summary>
         public static uint ClickContextMenuItemId = 0x7894A0; //8.41
 
         /// <summary>
-        /// Used for show item id functions
+        /// Used for showing item id functions
         /// </summary>
         public static uint ClickContextMenuItemGroundId = 0x7894AC; //8.41
+
+        /// <summary>
+        /// Used for searching the last right-clicked creature
+        /// </summary>
+        public static uint ClickContextMenuCreatureId = 0x7893FC; //8.41
 
         /// <summary>
         /// The id of the last item seen (looked at).
