@@ -7,6 +7,7 @@ public:
 
 	/* Constructors and Destructors */
 	Packet();
+	Packet( int PacketSize);
 	Packet(BYTE* Packet, int PacketSize);
 	~Packet();
 
