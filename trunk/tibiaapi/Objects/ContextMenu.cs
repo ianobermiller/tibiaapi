@@ -16,17 +16,14 @@ namespace Tibia.Objects
 
         internal void AddInternalEvents()
         {
-            client.Dll.Pipe.OnReceive += Pipe_OnReceive;
+            client.Dll.Pipe.OnContextMenuClick +=new Tibia.Packets.Pipe.PipeListener(Pipe_OnContextMenuClick);
         }
 
-        private void Pipe_OnReceive(Tibia.Packets.NetworkMessage msg)
+        private void Pipe_OnContextMenuClick(Tibia.Packets.NetworkMessage msg)
         {
-            if (msg.GetUInt16() == 5 && msg.GetByte() == (byte)Packets.PipePacketType.OnClickContextMenu)
-            {
-                //raise the event
-                if (Click != null)
-                    Click.BeginInvoke((int)msg.GetUInt32(), null, null);
-            }
+            msg.Position = 3;
+            if (Click != null)
+                Click.BeginInvoke((int)msg.GetUInt32(), null, null);
         }
 
         public bool AddContextMenu(int eventId, string text, Constants.ContextMenuType type, bool hasSeparator)

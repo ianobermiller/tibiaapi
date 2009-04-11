@@ -41,8 +41,44 @@ namespace SmartTeamMarker
             else
             {
                 screen = client.Screen;
+                client.ContextMenu.AddContextMenu(1000, "Add as Ally", ContextMenuType.CopyNameContextMenu, true);
+                client.ContextMenu.AddContextMenu(1001, "Add as Enemy", ContextMenuType.CopyNameContextMenu, true);
+                client.ContextMenu.Click+=new Tibia.Objects.ContextMenu.ContextMenuEvent(ContextMenu_Click);
             }
         }
+
+        private void ContextMenu_Click(int eventId)
+        {
+            Creature clicked = client.BattleList.GetCreatures().FirstOrDefault(
+                creature => creature.Id == client.Memory.ReadInt32((long)0x7893FC));
+            if (clicked != null)
+            {
+                Website.CharInfo character = new Website.CharInfo();
+                character.Name = clicked.Name;
+                this.Invoke(new MethodInvoker(delegate{
+                if (eventId == 1000)
+                {
+                    AllyMembers.Add(character);
+                    AlliesList.Items.Add(new ListViewItem(new string[] {
+                    character.Name,
+                    character.GuildName,
+                    character.GuildNickName
+                }));
+                }
+                else if (eventId == 1001)
+                {
+                    EnemyMembers.Add(character);
+                    EnemiesList.Items.Add(new ListViewItem(new string[] {
+                    character.Name,
+                    character.GuildName,
+                    character.GuildNickName
+                }));
+                }
+            }));
+            }
+        }
+
+
 
         private void cmdAddAlly_Click(object sender, EventArgs e)
         {

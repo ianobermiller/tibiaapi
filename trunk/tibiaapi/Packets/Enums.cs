@@ -190,8 +190,8 @@ namespace Tibia.Packets
         RemoveContextMenu   = 0x0A,
         RemoveAllContextMenus=0x0B,
         OnClickContextMenu  = 0x0C,
-        ReceivedPacket      = 0x0D,
-        SentPacket          = 0x0E
+        HookReceivedPacket  = 0x0D,
+        HookSentPacket      = 0x0E
     }
 
     public enum PipeConstantType : byte

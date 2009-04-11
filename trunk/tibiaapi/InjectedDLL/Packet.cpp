@@ -10,6 +10,13 @@ Packet::Packet(){
 	m_CurrentPos = 0;
 }
 
+Packet::Packet(int PacketSize){
+	m_Packet = new BYTE[PacketSize];
+	o_Packet = 0;
+	m_PacketSize = 0;
+	m_CurrentPos = 0;
+}
+
 Packet::Packet(BYTE* Packet, int PacketSize){
 	m_Packet = Packet;
 	m_PacketSize = PacketSize;

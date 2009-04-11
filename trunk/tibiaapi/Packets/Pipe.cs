@@ -11,7 +11,7 @@ namespace Tibia.Packets
         #region Variables
         private Client client;
         private NamedPipeServerStream pipe;
-        private byte[] buffer = new byte[1024];
+        private byte[] buffer = new byte[2];
         private string name = string.Empty;
         #endregion
 
@@ -37,6 +37,21 @@ namespace Tibia.Packets
         ///  Called when data is received.
         /// </summary>
         public event PipeListener OnReceive;
+
+        /// <summary>
+        ///  Called when ContextMenuClick event is received.
+        /// </summary>
+        public event PipeListener OnContextMenuClick;
+
+        /// <summary>
+        ///  Called when a packet from the recv hook is received.
+        /// </summary>
+        public event PipeListener OnSocketRecv;
+
+        /// <summary>
+        ///  Called when a packet from the send hook is received.
+        /// </summary>
+        public event PipeListener OnSocketSend;
 
         /// <summary>
         ///  Called when data is sent.
@@ -85,9 +100,43 @@ namespace Tibia.Packets
             if (read == 0)
                 return;
 
+            int length = BitConverter.ToInt16(buffer, 0)+2;
+
+            if (length <= 2)
+                return;
+
+            byte[] received = new byte[length];
+            Array.Copy(buffer, received, 2);
+            
+            int pos = 2;
+
+            while (length - pos > 0)
+            {
+                pos += pipe.Read(received, pos, length - pos);
+            }
+
             // Call OnReceive asynchronously
             if (OnReceive != null)
-                OnReceive.BeginInvoke(new NetworkMessage(client, buffer, read), null, null);
+                OnReceive.BeginInvoke(new NetworkMessage(client, received, read), null, null);
+            PipePacketType type = (PipePacketType)received[2];
+            switch (type)
+            {
+                case PipePacketType.OnClickContextMenu:
+                    if (OnContextMenuClick != null)
+                        if(length == 7)
+                            OnContextMenuClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                case PipePacketType.HookReceivedPacket:
+                    if (OnSocketRecv != null)
+                        OnSocketRecv.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                case PipePacketType.HookSentPacket:
+                    if (OnSocketSend != null)
+                        OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                default:
+                    break;
+            }
 
             pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
         }

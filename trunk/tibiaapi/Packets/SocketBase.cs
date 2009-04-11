@@ -139,7 +139,7 @@ namespace Tibia.Util
             bool packetKnown = true;
             IncomingPacket packet = null;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
-
+            //System.Console.WriteLine(type.ToString());
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:
@@ -819,6 +819,7 @@ namespace Tibia.Util
             bool packetKnown = true;
             OutgoingPacket packet = null;
             OutgoingPacketType type = (OutgoingPacketType)msg.PeekByte();
+            //System.Console.WriteLine(type.ToString());
 
             switch (type)
             {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -110,6 +110,7 @@
     <Compile Include="Objects\Screen.cs" />
     <Compile Include="Objects\Tile.cs" />
     <Compile Include="Packets\AdlerChecksum.cs" />
+    <Compile Include="Packets\HookProxy.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
     <Compile Include="Packets\Incoming\CancelTargetPacket.cs" />
@@ -272,7 +273,6 @@
     <Compile Include="Packets\NetworkMessage.cs" />
     <Compile Include="Packets\Pipe.cs" />
     <Compile Include="Packets\Proxy.cs" />
-    <Compile Include="Packets\RawSocket.cs" />
     <Compile Include="Util\Scheduler.cs" />
     <Compile Include="Packets\SocketBase.cs" />
     <Compile Include="Util\SpriteReader.cs" />

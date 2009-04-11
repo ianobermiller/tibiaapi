@@ -51,6 +51,7 @@ list<ContextMenu> ContextMenus;    //Used for storing the context menus that wil
 //recv/send
 DWORD OrigSendAddress = 0;
 DWORD OrigRecvAddress = 0;
+//SOCKET sock = 0;
 
 
 //Asynchronisation variables
@@ -62,14 +63,32 @@ DWORD errorStatus = ERROR_SUCCESS;
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 {	
-	//MessageBoxA(0,"Recv","!",MB_ICONINFORMATION);
-	return OrigRecv(s,buf,len,flags);
+	//sock=s;
+	int bytesCount=OrigRecv(s,buf,len,flags);
+	if(bytesCount>0)
+	{		
+		Packet* packet = new Packet(((WORD)buf)+1);
+		packet->AddByte(0x0D);
+		for(int i=0;i<bytesCount;i++)
+			packet->AddByte((BYTE)buf[i]);
+		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+	}
+	return bytesCount;
 }
 
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
 {
-	//MessageBoxA(0,"Send","!",MB_ICONINFORMATION);
-	return OrigSend(s,buf,len,flags);
+	//sock=s;
+	if(len>0)
+	{
+		Packet* packet = new Packet(((WORD)buf)+1);
+		packet->AddByte(0x0E);
+		for(int i=0;i<len;i++)
+			packet->AddByte((BYTE)buf[i]);
+		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+	}
+
+	return OrigSend(s,buf,len,flags);;
 }
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign)
