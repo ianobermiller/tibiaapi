@@ -50,7 +50,7 @@ namespace SmartTeamMarker
         private void ContextMenu_Click(int eventId)
         {
             Creature clicked = client.BattleList.GetCreatures().FirstOrDefault(
-                creature => creature.Id == client.Memory.ReadInt32((long)0x7893FC));
+                creature => creature.Id == client.Memory.ReadInt32(Tibia.Addresses.Client.ClickContextMenuCreatureId));
             if (clicked != null)
             {
                 Website.CharInfo character = new Website.CharInfo();
