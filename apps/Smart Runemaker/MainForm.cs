@@ -76,7 +76,7 @@ namespace SmartRunemaker
                 if (original != null)
                 {
                     // Save the current location of the original
-                    ItemLocation oldLocation = original.Loc;
+                    ItemLocation oldLocation = original.Location;
 
                     // The location where the item will be made
                     ItemLocation newLocation = null;
@@ -124,7 +124,7 @@ namespace SmartRunemaker
                     Thread.Sleep(200);
                     if (itemMovedToAmmo != null)
                     {
-                        itemMovedToAmmo.Loc = ItemLocation.FromSlot(Tibia.Constants.SlotNumber.Ammo);
+                        itemMovedToAmmo.Location = ItemLocation.FromSlot(Tibia.Constants.SlotNumber.Ammo);
                         itemMovedToAmmo.Move(ItemLocation.FromSlot(Tibia.Constants.SlotNumber.Right));
                     }
                 }

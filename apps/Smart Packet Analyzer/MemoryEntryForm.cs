@@ -8,12 +8,12 @@ using System.Windows.Forms;
 
 namespace SmartPacketAnalyzer
 {
-    public partial class uxMemoryEntry : Form
+    public partial class MemoryEntryForm : Form
     {
-        private static uxMemoryEntry newMemory;
+        private static MemoryEntryForm newMemory;
         private static string[] s;
         
-        public uxMemoryEntry()
+        public MemoryEntryForm()
         {
             InitializeComponent();
             foreach (string name in Enum.GetNames(typeof(DataType)))
@@ -23,7 +23,7 @@ namespace SmartPacketAnalyzer
 
         public static string[] ShowNew()
         {
-            newMemory = new uxMemoryEntry();
+            newMemory = new MemoryEntryForm();
             newMemory.Text = "New memory address";
             newMemory.uxAdd.Text = "Add";
             newMemory.uxType.SelectedIndex = 1;
@@ -34,7 +34,7 @@ namespace SmartPacketAnalyzer
 
         public static string[] ShowEdit(string[] data)
         {
-            newMemory = new uxMemoryEntry();
+            newMemory = new MemoryEntryForm();
             newMemory.Text = "Edit memory address";
             newMemory.uxAdd.Text = "Edit";
             newMemory.uxDescription.Text = data[0];

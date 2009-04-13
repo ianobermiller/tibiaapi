@@ -1,6 +1,6 @@
 ﻿namespace SmartPacketAnalyzer
 {
-    partial class uxMemory
+    partial class MemoryForm
     {
         /// <summary>
         /// Required designer variable.

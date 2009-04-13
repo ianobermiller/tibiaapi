@@ -11,10 +11,10 @@ using Tibia.Objects;
 
 namespace SmartPacketAnalyzer
 {
-    public partial class uxMemory : Form
+    public partial class MemoryForm : Form
     {
         Client client;
-        public uxMemory(Client c)
+        public MemoryForm(Client c)
         {
             client = c;
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace SmartPacketAnalyzer
 
         private void uxAddAddress_Click(object sender, EventArgs e)
         {
-            string[] s = uxMemoryEntry.ShowNew();
+            string[] s = MemoryEntryForm.ShowNew();
             if (s != null)
                 uxMemoryList.Items.Add(new ListViewItem(s));
         }
@@ -51,7 +51,7 @@ namespace SmartPacketAnalyzer
             if (uxMemoryList.SelectedIndices.Count > 0)
             {
                 int index = uxMemoryList.SelectedIndices[0];
-                string[] s = uxMemoryEntry.ShowEdit(new string[]{
+                string[] s = MemoryEntryForm.ShowEdit(new string[]{
                     uxMemoryList.Items[index].SubItems[0].Text,
                     uxMemoryList.Items[index].SubItems[1].Text,
                     uxMemoryList.Items[index].SubItems[2].Text,
