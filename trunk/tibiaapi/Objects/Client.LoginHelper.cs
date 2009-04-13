@@ -75,7 +75,7 @@ namespace Tibia.Objects
             public string RSA
             {
                 get { return client.Memory.ReadString(Addresses.Client.RSA, 309); }
-                set { Tibia.Memory.WriteRSA(client.ProcessHandle, Addresses.Client.RSA, value); }
+                set { Util.Memory.WriteRSA(client.ProcessHandle, Addresses.Client.RSA, value); }
             }
 
             public LoginServer OpenTibiaServer

@@ -267,8 +267,8 @@ namespace Tibia.Packets
                 clientStream = new NetworkStream(clientSocket);
                 clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
-            catch (ObjectDisposedException) { Restart(); }
-            catch (System.IO.IOException) { Restart(); }
+            //catch (ObjectDisposedException) { Restart(); }
+            //catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
@@ -369,8 +369,8 @@ namespace Tibia.Packets
                         break;
                 }
             }
-            catch (ObjectDisposedException) { }
-            catch (System.IO.IOException) { }
+            catch (ObjectDisposedException ex) { WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace); }
+            catch (System.IO.IOException ex) { WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace); }
             catch (Exception ex)
             {
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
@@ -851,7 +851,7 @@ namespace Tibia.Packets
                 lock (debugLock)
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "proxy_log.txt"), true);
-                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg);
+                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg + "\n");
                     sw.Close();
                 }
             }

@@ -9,22 +9,23 @@ using Tibia;
 using Tibia.Objects;
 using Tibia.Util;
 using Tibia.Packets;
+using System.IO;
 
 namespace SmartPacketAnalyzer
 {
-    public partial class uxForm : Form
+    public partial class MainForm : Form
     {
         bool LogPackets = true;
         List<CapturedPacket> packetList = new List<CapturedPacket>();
         Dictionary<byte, string> incomingPacketTypeNames = new Dictionary<byte, string>();
         Dictionary<byte, string> outgoingPacketTypeNames = new Dictionary<byte, string>();
         byte[] displayedPacket = null;
-        uxMemory memoryForm;
+        MemoryForm memoryForm;
         PacketType filterType = null;
 
         Client client;
 
-        public uxForm()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -58,6 +59,19 @@ namespace SmartPacketAnalyzer
                 client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
                 client.IO.Proxy.SplitPacketFromServer += SplitMessageFromServer;
                 client.IO.Proxy.SplitPacketFromClient += SplitMessageFromClient;
+
+                StreamWriter writer = File.AppendText("log.txt");
+                client.IO.Proxy.ReceivedDataFromServer += new SocketBase.DataListener(delegate(byte[] bytes)
+                {
+                    writer.WriteLine("===RECV==============================");
+                    writer.WriteLine(bytes.ToHexString());
+                });
+
+                client.IO.Proxy.ReceivedDataFromClient += new SocketBase.DataListener(delegate(byte[] bytes)
+                {
+                    writer.WriteLine("===SEND==============================");
+                    writer.WriteLine(bytes.ToHexString());
+                });
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
@@ -226,7 +240,7 @@ namespace SmartPacketAnalyzer
         {
             if (memoryForm == null || memoryForm.Disposing || memoryForm.IsDisposed)
             {
-                memoryForm = new uxMemory(client);
+                memoryForm = new MemoryForm(client);
             }
             memoryForm.Show();
         }

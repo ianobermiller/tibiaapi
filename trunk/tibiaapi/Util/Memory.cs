@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Tibia
+namespace Tibia.Util
 {
     /// <summary>
     /// Helper methods for reading memory.

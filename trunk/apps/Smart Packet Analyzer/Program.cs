@@ -14,7 +14,7 @@ namespace SmartPacketAnalyzer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new uxForm());
+            Application.Run(new MainForm());
         }
     }
 }
