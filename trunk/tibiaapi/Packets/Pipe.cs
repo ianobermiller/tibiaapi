@@ -66,7 +66,7 @@ namespace Tibia.Packets
         {
             this.client = client;
             this.name = name;
-            pipe = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            pipe = new NamedPipeServerStream(name, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
             pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
         }
 
