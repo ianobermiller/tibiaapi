@@ -43,14 +43,14 @@ namespace SmartAutoLooter
 
                     _client.Exited += new EventHandler(_client_Exited);
 
-                    _client.StartProxy();
+                    _client.IO.StartProxy();
                     //autoloot
-                    _client.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                    _client.Proxy.ReceivedContainerUpdateItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerUpdateItemIncomingPacket);
-                    _client.Proxy.ReceivedContainerRemoveItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerRemoveItemIncomingPacket);
-                    _client.Proxy.ReceivedContainerAddItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerAddItemIncomingPacket);
-                    _client.Proxy.ReceivedTileAddThingIncomingPacket += new Proxy.IncomingPacketListener(_proxy_ReceivedTileAddThingIncomingPacket);
-                    _client.Proxy.ReceivedContainerOpenIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerOpenIncomingPacket);
+                    _client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                    _client.IO.Proxy.ReceivedContainerUpdateItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerUpdateItemIncomingPacket);
+                    _client.IO.Proxy.ReceivedContainerRemoveItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerRemoveItemIncomingPacket);
+                    _client.IO.Proxy.ReceivedContainerAddItemIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerAddItemIncomingPacket);
+                    _client.IO.Proxy.ReceivedTileAddThingIncomingPacket += new Proxy.IncomingPacketListener(_proxy_ReceivedTileAddThingIncomingPacket);
+                    _client.IO.Proxy.ReceivedContainerOpenIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedContainerOpenIncomingPacket);
                 }
                 else
                     MessageBox.Show("Please start this program before login.");
@@ -78,7 +78,7 @@ namespace SmartAutoLooter
                 bool lootContainer = isLootContainer(p.Id);
 
                 if (lootContainer && !Tibia.Constants.ItemLists.Backpacks.ContainsKey(p.ItemId))
-                    Scheduler.addTask(new Action(autoLoot), null, 200);
+                    Scheduler.AddTask(new Action(autoLoot), null, 200);
                 else if (!lootContainer)
                 {
                     p.Name = "Container " + (p.Id + 1);
@@ -86,7 +86,7 @@ namespace SmartAutoLooter
                     if (_autoLootWait == AutoLootWait_t.OPEN_NEW_LOOT_CONTAINER)
                     {
                         _autoLootWait = AutoLootWait_t.STOP;
-                        Scheduler.addTask(new Action(autoLoot), null, 100);
+                        Scheduler.AddTask(new Action(autoLoot), null, 100);
                     }
                 }
             }
@@ -117,19 +117,19 @@ namespace SmartAutoLooter
                                 if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable))
                                 {
                                     //o item é "stackable"
-                                    var lootContainerItem = lootContainer.GetItem(delegate(Item lCItem) { return lCItem.Id == item.Id && lCItem.Count < 100; });
+                                    var lootContainerItem = lootContainer.GetItems().FirstOrDefault(lCItem => lCItem.Id == item.Id && lCItem.Count < 100 );
 
                                     if (lootContainerItem != null && (lootContainerItem.Count + item.Count <= 100 || lootContainer.Amount < lootContainer.Volume))
                                     {
-                                        item.Move(lootContainerItem);
+                                        item.Move(lootContainerItem.Location);
 
                                         //change others items location;
                                         foreach (Item i in cItems)
                                         {
-                                            if (i.Loc.stackOrder > item.Loc.stackOrder)
+                                            if (i.Location.StackOrder > item.Location.StackOrder)
                                             {
-                                                i.Loc.stackOrder--;
-                                                i.Loc.position--;
+                                                i.Location.StackOrder--;
+                                                i.Location.ContainerSlot--;
                                             }
                                         }
 
@@ -142,15 +142,19 @@ namespace SmartAutoLooter
                                     }
                                     else if (lootContainerItem == null && lootContainer.Amount < lootContainer.Volume)
                                     {
-                                        item.Move(new ItemLocation(lootContainer.Number, (byte)(lootContainer.Volume - 1)));
+                                        var iLoc=new ItemLocation();
+                                        iLoc.Type = Tibia.Constants.ItemLocationType.Container;
+                                        iLoc.ContainerId=lootContainer.Number;
+                                        iLoc.ContainerSlot=(byte)(lootContainer.Volume - 1);
+                                        item.Move(iLoc);
 
                                         //change others items location...
                                         foreach (Item i in cItems)
                                         {
-                                            if (i.Loc.stackOrder > item.Loc.stackOrder)
+                                            if (i.Location.StackOrder > item.Location.StackOrder)
                                             {
-                                                i.Loc.stackOrder--;
-                                                i.Loc.position--;
+                                                i.Location.StackOrder--;
+                                                i.Location.ContainerSlot--;
                                             }
                                         }
 
@@ -166,7 +170,7 @@ namespace SmartAutoLooter
 
                                         if (lootContainerItem != null)
                                         {
-                                            item.Move(lootContainerItem);
+                                            item.Move(lootContainerItem.Location);
                                             _container = lootContainer.Number;
                                             _autoLootWait = AutoLootWait_t.MOVE_ITEM;
                                             _autoLootAutoEvent.WaitOne();
@@ -174,11 +178,11 @@ namespace SmartAutoLooter
                                         }
 
                                         //abrir um novo container...
-                                        var newContainer = lootContainer.GetItem(delegate(Item newItemContainer) { return newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer); });
+                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer=> newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                                         if (newContainer != null)
                                         {
-                                            newContainer.OpenContainer(lootContainer.Number);
+                                            newContainer.OpenAsContainer(lootContainer.Number);
 
                                             _container = lootContainer.Number;
                                             _autoLootWait = AutoLootWait_t.OPEN_NEW_LOOT_CONTAINER;
@@ -190,15 +194,19 @@ namespace SmartAutoLooter
                                 {
                                     if (lootContainer.Amount < lootContainer.Volume)
                                     {
-                                        item.Move(new ItemLocation(lootContainer.Number, (byte)(lootContainer.Volume - 1)));
+                                        var iLoc = new ItemLocation();
+                                        iLoc.Type = Tibia.Constants.ItemLocationType.Container;
+                                        iLoc.ContainerId = lootContainer.Number;
+                                        iLoc.ContainerSlot = (byte)(lootContainer.Volume - 1);
+                                        item.Move(iLoc);
 
                                         //change others items location...
                                         foreach (Item i in cItems)
                                         {
-                                            if (i.Loc.stackOrder > item.Loc.stackOrder)
+                                            if (i.Location.StackOrder > item.Location.StackOrder)
                                             {
-                                                i.Loc.stackOrder--;
-                                                i.Loc.position--;
+                                                i.Location.StackOrder--;
+                                                i.Location.ContainerSlot--;
                                             }
                                         }
 
@@ -214,11 +222,11 @@ namespace SmartAutoLooter
                                     else
                                     {
                                         //abrir um novo container
-                                        var newContainer = lootContainer.GetItem(delegate(Item newItemContainer) { return newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer); });
+                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer=>newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                                         if (newContainer != null)
                                         {
-                                            newContainer.OpenContainer(lootContainer.Number);
+                                            newContainer.OpenAsContainer(lootContainer.Number);
                                             _container = lootContainer.Number;
                                             _autoLootWait = AutoLootWait_t.OPEN_NEW_LOOT_CONTAINER;
                                             return;
@@ -231,16 +239,16 @@ namespace SmartAutoLooter
 
                     //abrir bag se tiver.. no mesmo container?
 
-                    var bag = cItems.Find(delegate(Item i) { return i.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer); });
+                    var bag = cItems.FirstOrDefault(i=>i.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                     if (bag != null)
                     {
-                        bag.OpenContainer(c.Number);
+                        bag.OpenAsContainer(c.Number);
                         return;
                     }
                     else if (_autoEatFoodFromBodys)
                     {
-                        var food = cItems.Find(delegate(Item i) { return Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id); });
+                        var food = cItems.FirstOrDefault(i=>Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id));
 
                         if (food != null)
                         {
@@ -266,12 +274,12 @@ namespace SmartAutoLooter
             {
                 TileAddThingPacket p = (TileAddThingPacket)packet;
 
-                if (p.Item != null && p.Position.IsCloseTo(_client.Proxy.GetPlayer().Location))
+                if (p.Item != null && p.Position.DistanceTo(_client.GetPlayer().Location)<=3)
                 {
                     if (p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer) &&
                         p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsCorpse))
                     {
-                        p.Item.OpenContainer((byte)_client.Inventory.GetContainers().Count);
+                        p.Item.OpenAsContainer((byte)_client.Inventory.GetContainers().Count());
                     }
                 }
             }
@@ -385,7 +393,7 @@ namespace SmartAutoLooter
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Tibia.Packets.NetworkMessage msg = new NetworkMessage(null, 0);
+                Tibia.Packets.NetworkMessage msg = new NetworkMessage(new byte[0], 0);
 
                 msg.AddUInt16((ushort)_lootItems.Count);
 
@@ -396,7 +404,7 @@ namespace SmartAutoLooter
                     msg.AddString(i.Comment);
                 }
 
-                System.IO.File.WriteAllBytes(dialog.FileName, msg.Packet);
+                System.IO.File.WriteAllBytes(dialog.FileName, msg.Data);
             }
         }
 
