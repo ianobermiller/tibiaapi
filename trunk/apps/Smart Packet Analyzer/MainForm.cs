@@ -55,23 +55,28 @@ namespace SmartPacketAnalyzer
             }
             else
             {
-                client.IO.StartProxy();
-                client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                client.IO.Proxy.SplitPacketFromServer += SplitMessageFromServer;
-                client.IO.Proxy.SplitPacketFromClient += SplitMessageFromClient;
+                //client.IO.StartProxy();
+                //client.IO.Proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                //client.IO.Proxy.SplitPacketFromServer += SplitMessageFromServer;
+                //client.IO.Proxy.SplitPacketFromClient += SplitMessageFromClient;
+                client.Dll.InitializePipe();
+                HookProxy hookProxy = new HookProxy(client);
+                hookProxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+                hookProxy.SplitPacketFromServer += SplitMessageFromServer;
+                hookProxy.SplitPacketFromClient += SplitMessageFromClient;
 
-                StreamWriter writer = File.AppendText("log.txt");
-                client.IO.Proxy.ReceivedDataFromServer += new SocketBase.DataListener(delegate(byte[] bytes)
-                {
-                    writer.WriteLine("===RECV==============================");
-                    writer.WriteLine(bytes.ToHexString());
-                });
+                //StreamWriter writer = File.AppendText("log.txt");
+                //client.IO.Proxy.ReceivedDataFromServer += new SocketBase.DataListener(delegate(byte[] bytes)
+                //{
+                //    writer.WriteLine("===RECV==============================");
+                //    writer.WriteLine(bytes.ToHexString());
+                //});
 
-                client.IO.Proxy.ReceivedDataFromClient += new SocketBase.DataListener(delegate(byte[] bytes)
-                {
-                    writer.WriteLine("===SEND==============================");
-                    writer.WriteLine(bytes.ToHexString());
-                });
+                //client.IO.Proxy.ReceivedDataFromClient += new SocketBase.DataListener(delegate(byte[] bytes)
+                //{
+                //    writer.WriteLine("===SEND==============================");
+                //    writer.WriteLine(bytes.ToHexString());
+                //});
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))

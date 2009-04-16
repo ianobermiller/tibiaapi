@@ -275,7 +275,7 @@
     <Compile Include="Packets\Pipe.cs" />
     <Compile Include="Packets\Proxy.cs" />
     <Compile Include="Util\Scheduler.cs" />
-    <Compile Include="Packets\SocketBase.cs" />
+    <Compile Include="Packets\ProxyBase.cs" />
     <Compile Include="Util\SpriteReader.cs" />
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>

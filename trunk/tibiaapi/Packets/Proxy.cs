@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace Tibia.Packets
 {
-    public class Proxy : Util.SocketBase
+    public class Proxy : Util.ProxyBase
     {
         #region Vars
 
@@ -82,10 +82,6 @@ namespace Tibia.Packets
 
         public event EventHandler PlayerLogin;
         public event EventHandler PlayerLogout;
-
-        public delegate void SplitPacket(byte type, byte[] data);
-        public event SplitPacket SplitPacketFromServer;
-        public event SplitPacket SplitPacketFromClient;
 
         #endregion
 
@@ -326,19 +322,15 @@ namespace Tibia.Packets
                                 //unknown packet
                                 byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
 
-                                if (SplitPacketFromClient != null)
-                                    SplitPacketFromClient.Invoke(unknown[0], unknown);
+                                OnSplitPacketFromClient(unknown[0], unknown);
 
                                 WriteDebug("Unknown outgoing packet: " + unknown.ToHexString());
                                 serverSendMsg.AddBytes(unknown);
                             }
 
-                            if (SplitPacketFromClient != null)
-                            {
-                                byte[] data = new byte[clientRecvMsg.Position - position];
-                                Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
-                                SplitPacketFromClient.Invoke(data[0], data);
-                            }
+                            byte[] data = new byte[clientRecvMsg.Position - position];
+                            Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                            OnSplitPacketFromClient(data[0], data);
 
                             if (serverSendMsg.Length > 8)
                             {
@@ -530,8 +522,7 @@ namespace Tibia.Packets
                                 {
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
 
-                                    if (SplitPacketFromServer != null)
-                                        SplitPacketFromServer.Invoke(unknown[0], unknown);
+                                    OnSplitPacketFromServer(unknown[0], unknown);
 
                                     WriteDebug("Last recv packet type: " + lastRecvPacketType.ToString("X") + " Unknown incoming packet: " + unknown.ToHexString());
                                     clientSendMsg.AddBytes(unknown);
@@ -540,13 +531,10 @@ namespace Tibia.Packets
 
                                 lastRecvPacketType = serverRecvMsg.GetBuffer()[position];
 
-                                if (SplitPacketFromServer != null)
-                                {
-                                    byte[] data = new byte[serverRecvMsg.Position - position];
-                                    Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                                byte[] data = new byte[serverRecvMsg.Position - position];
+                                Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
 
-                                    SplitPacketFromServer.Invoke(data[0], data);
-                                }
+                                OnSplitPacketFromServer(data[0], data);
                             }
 
                             if (clientSendMsg.Length > 8)
@@ -827,17 +815,6 @@ namespace Tibia.Packets
                 Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
             }
-        }
-
-        #endregion
-
-        #region Private Enums
-
-        private enum Protocol
-        {
-            None,
-            Login,
-            World
         }
 
         #endregion
