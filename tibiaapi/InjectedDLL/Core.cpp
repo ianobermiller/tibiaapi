@@ -746,6 +746,8 @@ inline void PipeOnRead()
 			//TODO:Nothing here?the injected dll should send this packet to tibiaapi containing the eventid
 			//and the matching contextmenu eventid would raise its event
 			break;
+		case 0xD:
+			UninjectSelf(hMod);
 		default:
 			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
