@@ -9,42 +9,33 @@ using Tibia.Objects;
 
 namespace Tibia.Packets
 {
-    public class HookProxy : Tibia.Util.SocketBase
+    public class HookProxy : Tibia.Util.ProxyBase
     {
-        private enum Protocol { None, Login, World }
-
         private Client client;
 
         private Protocol protocol;
-
-        private uint[] xteaKey;
-        private byte lastRecvPacketType;
 
         private NetworkMessage serverRecvMsg;
         private NetworkMessage serverSendMsg;
         private NetworkMessage clientRecvMsg;
         private NetworkMessage clientSendMsg;
 
-        public delegate void SplitPacket(byte type, byte[] data);
-
-        public event SplitPacket SplitPacketFromServer;
-        public event SplitPacket SplitPacketFromClient;
-
+        private int fullPacketSize;
+        private int partialPacketSize;
 
         public HookProxy(Client client)
         {
             this.client = client;
-            serverRecvMsg = new NetworkMessage(client);
-            serverSendMsg = new NetworkMessage(client);
-            clientRecvMsg = new NetworkMessage(client);
-            clientSendMsg = new NetworkMessage(client);
+            serverRecvMsg = new NetworkMessage(client, 4096);
+            serverSendMsg = new NetworkMessage(client, 4096);
+            clientRecvMsg = new NetworkMessage(client, 4096);
+            clientSendMsg = new NetworkMessage(client, 4096);
 
             client.Dll.Pipe.OnSocketRecv += new Pipe.PipeListener(Pipe_OnSocketRecv);
             client.Dll.Pipe.OnSocketSend += new Pipe.PipeListener(Pipe_OnSocketSend);
             if (client.LoggedIn)
             {
                 protocol = Protocol.World;
-                xteaKey = client.IO.XteaKey;
             }
             else
             {
@@ -57,8 +48,8 @@ namespace Tibia.Packets
             int length = msg.GetUInt16();
             if (msg.GetByte() == (byte)Packets.PipePacketType.HookReceivedPacket)
             {
-                byte[] buf=new byte[msg.Data.Length-3];
-                Array.Copy(msg.Data,3,buf,0,buf.Length);
+                byte[] buf = new byte[msg.Data.Length - 3];
+                Array.Copy(msg.Data, 3, buf, 0, buf.Length);
                 ProcessFromServer(buf);
             }
         }
@@ -78,8 +69,42 @@ namespace Tibia.Packets
         {
             int length = (int)BitConverter.ToUInt16(buffer, 0) + 2;
 
-            Array.Copy(buffer, serverRecvMsg.GetBuffer(), length);
-            serverRecvMsg.Length = length;
+            if (length > buffer.Length)
+            {
+                // Packet is split into multiple chunks
+                if (partialPacketSize == 0)
+                {
+                    // This is the first chunk
+                    fullPacketSize = length;
+                    Array.Copy(buffer, serverRecvMsg.GetBuffer(), buffer.Length);
+                    partialPacketSize = buffer.Length;
+                    return;
+                }
+                else
+                {
+                    // This is a subsequent chunk
+                    Array.Copy(buffer, 0, serverRecvMsg.GetBuffer(), partialPacketSize, buffer.Length);
+                    partialPacketSize += buffer.Length;
+
+                    if (partialPacketSize < fullPacketSize)
+                    {
+                        // Packet is still incomplete
+                        return;
+                    }
+                    else
+                    {
+                        // Packet is complete
+                        serverRecvMsg.Length = fullPacketSize;
+                    }
+                }
+            }
+            else
+            {
+                fullPacketSize = 0;
+                partialPacketSize = 0;
+                Array.Copy(buffer, serverRecvMsg.GetBuffer(), length);
+                serverRecvMsg.Length = length;
+            }
 
             OnReceivedDataFromServer(serverRecvMsg.Data);
 
@@ -103,21 +128,14 @@ namespace Tibia.Packets
                             if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                             {
                                 byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
-
-                                if (SplitPacketFromServer != null)
-                                    SplitPacketFromServer.Invoke(unknown[0], unknown);
+                                OnSplitPacketFromServer(unknown[0], unknown);
                                 break;
                             }
 
-                            lastRecvPacketType = serverRecvMsg.GetBuffer()[position];
+                            byte[] data = new byte[serverRecvMsg.Position - position];
+                            Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
 
-                            if (SplitPacketFromServer != null)
-                            {
-                                byte[] data = new byte[serverRecvMsg.Position - position];
-                                Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
-
-                                SplitPacketFromServer.Invoke(data[0], data);
-                            }
+                            OnSplitPacketFromServer(data[0], data);
                         }
                     }
                     break;
@@ -158,16 +176,12 @@ namespace Tibia.Packets
                             //unknown packet
                             byte[] unknown = clientRecvMsg.GetBytes(clientRecvMsg.Length - clientRecvMsg.Position);
 
-                            if (SplitPacketFromClient != null)
-                                SplitPacketFromClient.Invoke(unknown[0], unknown);
+                            OnSplitPacketFromClient(unknown[0], unknown);
                         }
 
-                        if (SplitPacketFromClient != null)
-                        {
-                            byte[] data = new byte[clientRecvMsg.Position - position];
-                            Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
-                            SplitPacketFromClient.Invoke(data[0], data);
-                        }
+                        byte[] data = new byte[clientRecvMsg.Position - position];
+                        Array.Copy(clientRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                        OnSplitPacketFromClient(data[0], data);
                     }
                     break;
             }
