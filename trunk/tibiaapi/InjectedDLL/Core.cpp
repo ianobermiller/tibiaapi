@@ -14,6 +14,8 @@
 #pragma managed(push, off)
 #endif
 
+#define DEBUG
+
 #define AddContextMenu(eventId, text, shortcut)   \
 		__asm push shortcut \
 		__asm push text \
@@ -140,7 +142,7 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 //TODO: onclick event
 void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
+	//MessageBox(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 	
 	//FIX HERE
@@ -165,7 +167,7 @@ void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char
 
 void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MyPartyActionContextMenu", "Error!", MB_ICONERROR);
+	//MessageBox(0, "MyPartyActionContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
 	//FIX HERE
@@ -189,7 +191,7 @@ void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const ch
 
 void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+	//MessageBox(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
 	//FIX HERE
@@ -213,7 +215,7 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 
 void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+	//MessageBox(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
 	//FIX HERE
@@ -480,7 +482,7 @@ inline void PipeOnRead()
 					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
 					!Consts::ptrRecv || !Consts::ptrSend) 
 				{
-					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
+					MessageBox(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
 					break;
 				}
 
@@ -488,7 +490,7 @@ inline void PipeOnRead()
 				{
 					if(HookInjected)
 					{
-						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
+						MessageBox(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
 						break;
 					}		
 
@@ -532,7 +534,7 @@ inline void PipeOnRead()
 				{
 					if(!HookInjected) 
 					{
-						MessageBoxA(0, "Please inject the hook before uninjecting", "Information", MB_ICONINFORMATION);
+						MessageBox(0, "Please inject the hook before uninjecting", "Information", MB_ICONINFORMATION);
 						break;
 					}
 
@@ -704,7 +706,7 @@ inline void PipeOnRead()
 			}
 		case 0xA://remove item from ContextMenus
 			{
-				//MessageBoxA(0, "Remove", "Error!", MB_ICONERROR);
+				//MessageBox(0, "Remove", "Error!", MB_ICONERROR);
 				int id = Packet::ReadDWord(Buffer, &position);
 				string text = Packet::ReadString(Buffer, &position);
 				BYTE type = Packet::ReadByte(Buffer,&position);
@@ -748,8 +750,9 @@ inline void PipeOnRead()
 			break;
 		case 0xD:
 			UninjectSelf(hMod);
+			break;
 		default:
-			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
+			MessageBox(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
 	}
 }
@@ -764,7 +767,7 @@ void PipeThreadProc(HMODULE Module)
 		if (pipe == INVALID_HANDLE_VALUE)
 		{
 			errorStatus = ::GetLastError();
-			MessageBoxA(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			MessageBox(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 			return;
 		} 
 		else 
@@ -774,7 +777,7 @@ void PipeThreadProc(HMODULE Module)
 			if(!::ReadFileEx(pipe, Buffer, sizeof(Buffer), &overlapped, ReadFileCompleted))
 			{
 				errorStatus = ::GetLastError();
-				MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+				MessageBox(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 				return;
 			} 
 			else 
@@ -788,7 +791,7 @@ void PipeThreadProc(HMODULE Module)
 		}
 	} 
 	else 
-		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?", "TibiaAPI Injected DLL - Fatal Error", 0);
+		MessageBox(0, "Failed waiting for pipe, maybe pipe is not ready?", "TibiaAPI Injected DLL - Fatal Error", 0);
 }
 
 void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* overlapped)
@@ -802,20 +805,24 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 		if (!::ReadFileEx(pipe, Buffer, sizeof(Buffer), overlapped, ReadFileCompleted))
 		{
 			errorStatus = ::GetLastError();
-			MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			MessageBox(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 		}
 	}
 	else
 	{
 		//pipe disconnected 
 		//clean everything and remove the hook
-		MessageBoxA(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
+		#ifdef DEBUG
+			MessageBox(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#endif
 		//TODO: need more tests.
 
 		if(HookInjected) 
 		{
 			//remove all text
+			#ifdef DEBUG
+				MessageBox(0, "Removing all text.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			list<NormalText>::iterator ntIT;
 			EnterCriticalSection(&NormalTextCriticalSection);
 			for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
@@ -826,9 +833,11 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			DisplayTexts.clear();
 			LeaveCriticalSection(&NormalTextCriticalSection);
 
-			MessageBoxA(0, "Removed all text", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 
 			//remove all contextmenus
+			#ifdef DEBUG
+				MessageBox(0, "Removing all context menus.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			list<ContextMenu>::iterator cmIT;
 			EnterCriticalSection(&ContextMenuCriticalSection);
 			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
@@ -836,6 +845,9 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			ContextMenus.clear();
 			LeaveCriticalSection(&ContextMenuCriticalSection);
 
+			#ifdef DEBUG
+				MessageBox(0, "Unhooking all functions.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			if (OldPrintName)
 				UnhookCall(Consts::ptrPrintName, OldPrintName);
 			if (OldPrintFPS)
@@ -851,8 +863,9 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			if (OldNopFPS)
 				UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
-			MessageBoxA(0, "Removed all context menus.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
+			#ifdef DEBUG
+				MessageBox(0, "Removing context menu click events.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			//OnClickContextMenuEvent..
 			DWORD dwOldProtect, dwNewProtect, funcAddress;
 			funcAddress = (DWORD)&MyOnClickContextMenu;
@@ -860,9 +873,10 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
 			VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 				
-			MessageBoxA(0, "Removed context menu click events.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-			//recv/send			
+			//recv/send	
+			#ifdef DEBUG
+				MessageBox(0,"Removing recv and send hooks", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
 			memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
 			VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
@@ -870,13 +884,14 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 			VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
 			memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
 			VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-			MessageBoxA(0,"Removed recv and send hooks", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
 
 					
 			HookInjected = false;
 		}
 		
-		MessageBoxA(0, "Detach pipe...", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#ifdef DEBUG
+			MessageBox(0, "Detach pipe, delete critical sections.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#endif
 
 		pipe.Detach();
 		//::DeleteFileA(PipeName.c_str());
@@ -887,11 +902,15 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 		DeleteCriticalSection(&ContextMenuCriticalSection);
 		DeleteCriticalSection(&OnClickCriticalSection);
 
-		MessageBoxA(0, "Detached pipe, deleted critical sections.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#ifdef DEBUG
+			MessageBox(0, "Uninject self.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#endif
 
 		UninjectSelf(hMod);
 
-		MessageBoxA(0, "Uninjected self.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#ifdef DEBUG
+			MessageBox(0, "Uninjection successful.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#endif
 	}
 }
 
