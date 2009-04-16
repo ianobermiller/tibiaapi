@@ -127,15 +127,21 @@ namespace Tibia.Packets
 
                             if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                             {
-                                byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
-                                OnSplitPacketFromServer(unknown[0], unknown);
+                                if (serverRecvMsg.Length - serverRecvMsg.Position > 0)
+                                {
+                                    byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
+                                    OnSplitPacketFromServer(unknown[0], unknown);
+                                }
                                 break;
                             }
 
-                            byte[] data = new byte[serverRecvMsg.Position - position];
-                            Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
+                            if (serverRecvMsg.Position - position > 0)
+                            {
+                                byte[] data = new byte[serverRecvMsg.Position - position];
+                                Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
 
-                            OnSplitPacketFromServer(data[0], data);
+                                OnSplitPacketFromServer(data[0], data);
+                            }
                         }
                     }
                     break;
