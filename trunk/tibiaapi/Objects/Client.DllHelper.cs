@@ -31,11 +31,24 @@ namespace Tibia.Objects
             public bool Inject(string filename)
             {
                 if (!File.Exists(filename)) return false;
+
                 // Get a block of memory to store the filename in the client
-                IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(client.ProcessHandle, IntPtr.Zero, (uint)filename.Length, Util.WinApi.MEM_COMMIT | Util.WinApi.MEM_RESERVE, Util.WinApi.PAGE_READWRITE);
+                IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(
+                    client.ProcessHandle, IntPtr.Zero, (uint)filename.Length, 
+                    Util.WinApi.MEM_COMMIT | Util.WinApi.MEM_RESERVE, Util.WinApi.PAGE_READWRITE);
+
+                // Write the filename to the client's memory
                 client.Memory.WriteStringNoEncoding(remoteAddress.ToInt32(), filename);
-                IntPtr thread = Util.WinApi.CreateRemoteThread(client.ProcessHandle, IntPtr.Zero, 0, Util.WinApi.GetProcAddress(Util.WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"), remoteAddress, 0, IntPtr.Zero);
+
+                // Start the remote thread, first loading our library
+                IntPtr thread = Util.WinApi.CreateRemoteThread(
+                    client.ProcessHandle, IntPtr.Zero, 0, 
+                    Util.WinApi.GetProcAddress(Util.WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"), 
+                    remoteAddress, 0, IntPtr.Zero);
+
+                // Free the memory used for the filename
                 Util.WinApi.VirtualFreeEx(client.ProcessHandle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
+
                 return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
             }
 

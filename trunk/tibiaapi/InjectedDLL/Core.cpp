@@ -327,18 +327,112 @@ void UnNop(DWORD dwAddress, BYTE* OldBytes, int size)
 	OldBytes = 0;
 }
 
-void __declspec(noreturn) UninjectSelf(HMODULE Module)
+void __declspec(noreturn) UninjectSelf()
 {
-   __asm
-   {
-      push -2
-      push 0
-      push Module
-      mov eax, TerminateThread
-      push eax
-      mov eax, FreeLibrary
-      jmp eax
-   }
+	LPVOID ExitThreadAddress = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "ExitThread");
+	__asm
+	{
+		push hMod
+		push ExitThreadAddress
+		jmp dword ptr [FreeLibrary] 
+	}
+}
+
+void StartUninjectSelf()
+{
+        try
+		{
+                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)UninjectSelf, hMod, NULL, NULL);
+        }
+		catch (...)
+		{
+                MessageBox(0, "StartUninjectSelf -> Unable to uninject from process.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
+        }
+}
+
+void UnloadSelf()
+{
+	if(HookInjected) 
+	{
+		//remove all text
+		//MessageBoxA(0, "Removing all text...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		list<NormalText>::iterator ntIT;
+		EnterCriticalSection(&NormalTextCriticalSection);
+		for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
+		{
+			delete [] ntIT->text;
+			delete [] ntIT->TextName;
+		}
+		DisplayTexts.clear();
+		LeaveCriticalSection(&NormalTextCriticalSection);
+
+
+		//remove all contextmenus
+		//MessageBoxA(0, "Removing all context menus...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		list<ContextMenu>::iterator cmIT;
+		EnterCriticalSection(&ContextMenuCriticalSection);
+		for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
+			delete [] cmIT->MenuText;
+		ContextMenus.clear();
+		LeaveCriticalSection(&ContextMenuCriticalSection);
+
+		
+		//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		if (OldPrintName)
+			UnhookCall(Consts::ptrPrintName, OldPrintName);
+		if (OldPrintFPS)
+			UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
+		if(OldSetOutfitContextMenu)
+			UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
+		if(OldPartyActionContextMenu)
+			UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
+		if(OldCopyNameContextMenu)
+			UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+		if(OldTradeWithContextMenu)
+			UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
+		if (OldNopFPS)
+			UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
+
+		//OnClickContextMenuEvent..
+		//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		DWORD dwOldProtect, dwNewProtect, funcAddress;
+		funcAddress = (DWORD)&MyOnClickContextMenu;
+		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
+		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+
+		//recv/send
+		//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+		VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+		VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+		VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+		HookInjected = false;
+	}
+
+	//MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+
+	pipe.Detach();
+	//::DeleteFileA(PipeName.c_str());
+	//TerminateThread(PipeThread, EXIT_SUCCESS);
+
+	//MessageBoxA(0, "Deleting critical sections...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+
+	DeleteCriticalSection(&PipeReadCriticalSection);
+	DeleteCriticalSection(&NormalTextCriticalSection);
+	DeleteCriticalSection(&CreatureTextCriticalSection);
+	DeleteCriticalSection(&ContextMenuCriticalSection);
+	DeleteCriticalSection(&OnClickCriticalSection);
+
+	//MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+
+	StartUninjectSelf();
+
+	//MessageBoxA(0, "Done.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
 }
 
 inline void PipeOnRead()
@@ -747,7 +841,7 @@ inline void PipeOnRead()
 			//and the matching contextmenu eventid would raise its event
 			break;
 		case 0xD:
-			UninjectSelf(hMod);
+			UnloadSelf();
 		default:
 			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
@@ -809,89 +903,9 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 	{
 		//pipe disconnected 
 		//clean everything and remove the hook
-		//MessageBoxA(0, "Pipe Disconnected!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		//MessageBoxA(0, "Pipe disconnected, cleaning up.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
 
-		//TODO: need more tests.
-
-		if(HookInjected) 
-		{
-			//remove all text
-			list<NormalText>::iterator ntIT;
-			EnterCriticalSection(&NormalTextCriticalSection);
-			for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
-			{
-				delete [] ntIT->text;
-				delete [] ntIT->TextName;
-			}
-			DisplayTexts.clear();
-			LeaveCriticalSection(&NormalTextCriticalSection);
-
-			//MessageBoxA(0, "Removed all text", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-			//remove all contextmenus
-			list<ContextMenu>::iterator cmIT;
-			EnterCriticalSection(&ContextMenuCriticalSection);
-			for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
-				delete [] cmIT->MenuText;
-			ContextMenus.clear();
-			LeaveCriticalSection(&ContextMenuCriticalSection);
-
-			if (OldPrintName)
-				UnhookCall(Consts::ptrPrintName, OldPrintName);
-			if (OldPrintFPS)
-				UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
-			if(OldSetOutfitContextMenu)
-				UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
-			if(OldPartyActionContextMenu)
-				UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
-			if(OldCopyNameContextMenu)
-				UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
-			if(OldTradeWithContextMenu)
-				UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
-			if (OldNopFPS)
-				UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
-
-			//MessageBoxA(0, "Removed all context menus.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-			//OnClickContextMenuEvent..
-			DWORD dwOldProtect, dwNewProtect, funcAddress;
-			funcAddress = (DWORD)&MyOnClickContextMenu;
-			VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-			memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-			VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-				
-			//MessageBoxA(0, "Removed context menu click events.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-			//recv/send			
-			VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-			memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
-			VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
-
-			VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-			memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
-			VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-			//MessageBoxA(0,"Removed recv and send hooks", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-					
-			HookInjected = false;
-		}
-		
-		//MessageBoxA(0, "Detach pipe...", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-		pipe.Detach();
-		//::DeleteFileA(PipeName.c_str());
-		//TerminateThread(PipeThread, EXIT_SUCCESS);
-		DeleteCriticalSection(&PipeReadCriticalSection);
-		DeleteCriticalSection(&NormalTextCriticalSection);
-		DeleteCriticalSection(&CreatureTextCriticalSection);
-		DeleteCriticalSection(&ContextMenuCriticalSection);
-		DeleteCriticalSection(&OnClickCriticalSection);
-
-		//MessageBoxA(0, "Detached pipe, deleted critical sections.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-
-		UninjectSelf(hMod);
-
-		MessageBoxA(0, "Uninjected self.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		UnloadSelf();
 	}
 }
 
