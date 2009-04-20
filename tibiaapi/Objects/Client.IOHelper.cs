@@ -11,7 +11,6 @@ namespace Tibia.Objects
         public class IOHelper
         {
             private Client client;
-            //private RawSocket rawsocket;
             private Proxy proxy;
             private bool usingProxy = false;
             private bool sendCodeWritten = false;
@@ -32,47 +31,6 @@ namespace Tibia.Objects
                         return client.Memory.ReadBytes(Tibia.Addresses.Client.XTeaKey, 16).ToUInt32Array();
                 }
             }
-            #endregion
-
-            #region RawSocket wrappers
-
-            //public void StartRawSocket()
-            //{
-            //    StartRawSocket(true);
-            //}
-
-            //public void StartRawSocket(bool adler)
-            //{
-            //    if (client.LoggedIn)
-            //        client.playerLocation = client.GetPlayer().Location;
-
-            //    if (rawsocket == null)
-            //        rawsocket = new RawSocket(client, adler);
-
-            //    rawsocket.Enabled = true;
-            //}
-
-            //public void StartRawSocket(bool adler, string localIp)
-            //{
-            //    if (client.LoggedIn)
-            //        client.playerLocation = client.GetPlayer().Location;
-
-            //    if (rawsocket == null)
-            //        rawsocket = new RawSocket(client, adler, localIp);
-
-            //    rawsocket.Enabled = true;
-            //}
-
-            //public void StopRawSocket()
-            //{
-            //    if (rawsocket != null)
-            //        rawsocket.Enabled = false;
-            //}
-
-            //public RawSocket RawSocket
-            //{
-            //    get { return rawsocket; }
-            //}
             #endregion
 
             #region Proxy wrappers
