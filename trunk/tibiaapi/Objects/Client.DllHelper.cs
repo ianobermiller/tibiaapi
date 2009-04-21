@@ -113,7 +113,7 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
 
                 //Hook Display functions
-                Packets.Pipes.InjectDisplayPacket.Send(client, true);
+                Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();
 
                 if (PipeInitialized != null)

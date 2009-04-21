@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -217,7 +217,7 @@
     <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayCreatureTextPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayTextPacket.cs" />
-    <Compile Include="Packets\Pipes\InjectDisplayPacket.cs" />
+    <Compile Include="Packets\Pipes\HooksEnableDisablePacket.cs" />
     <Compile Include="Packets\Pipes\OnClickContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveAllContextMenusPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveContextMenuPacket.cs" />

@@ -3,23 +3,23 @@ using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
-    public class InjectDisplayPacket : PipePacket
+    public class HooksEnableDisablePacket : PipePacket
     {
-        public bool Injected { get; set; }
+        public bool Enable { get; set; }
 
-        public InjectDisplayPacket(Client client)
+        public HooksEnableDisablePacket(Client client)
             : base(client)
         {
-            Type = PipePacketType.InjectDisplayText;
+            Type = PipePacketType.HooksEnableDisable;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)PipePacketType.InjectDisplayText)
+            if (msg.GetByte() != (byte)PipePacketType.HooksEnableDisable)
                 return false;
 
-            Type = PipePacketType.InjectDisplayText;
-            Injected = Convert.ToBoolean(msg.GetByte());
+            Type = PipePacketType.HooksEnableDisable;
+            Enable = Convert.ToBoolean(msg.GetByte());
 
             return true;
         }
@@ -29,14 +29,14 @@ namespace Tibia.Packets.Pipes
             NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 2);
             msg.AddByte((byte)Type);
 
-            msg.AddByte(Convert.ToByte(Injected));
+            msg.AddByte(Convert.ToByte(Enable));
             return msg.Data;
         }
 
         public static bool Send(Objects.Client client, bool injected)
         {
-            InjectDisplayPacket p = new InjectDisplayPacket(client);
-            p.Injected = injected;
+            HooksEnableDisablePacket p = new HooksEnableDisablePacket(client);
+            p.Enable = injected;
             return p.Send();
         }
 

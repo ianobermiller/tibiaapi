@@ -27,7 +27,7 @@ namespace Consts {
 
 /* DLL Injection Related Stuff */
 extern HINSTANCE hMod;
-extern bool HookInjected;
+extern bool HooksEnabled;
 
 /* Pipes */
 extern std::string PipeName;

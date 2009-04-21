@@ -178,11 +178,11 @@ namespace Tibia.Packets
     public enum PipePacketType : byte
     {
         DefaultTemplate     = 0x00,
-        SetConstant         = 0x01,
-        DisplayText         = 0x02,
-        RemoveText          = 0x03,
-        RemoveAllText       = 0x04,
-        InjectDisplayText   = 0x05,
+        HooksEnableDisable   = 0x01,
+        SetConstant         = 0x02,
+        DisplayText         = 0x03,
+        RemoveText          = 0x04,
+        RemoveAllText       = 0x05,
         DisplayCreatureText = 0x06,
         RemoveCreatureText  = 0x07,
         UpdateCreatureText  = 0x08,

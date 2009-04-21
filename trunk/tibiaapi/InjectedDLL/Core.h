@@ -22,6 +22,7 @@ void __stdcall MySetOutfitContextMenu(int eventId, const char* text, const char*
 void __stdcall MyPartyActionContextMenu(int eventId, const char* text, const char* shortcut);
 void __stdcall MyCopyNameContextMenu(int eventId, const char* text, const char* shortcut);
 
+bool DisableHooks();
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction);
 void UnhookCall(DWORD dwAddress, DWORD dwOldCall);
 BYTE* Nop(DWORD dwAddress, int size);

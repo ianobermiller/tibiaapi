@@ -27,7 +27,7 @@ namespace Consts {
 
 /* DLL Injection Related Stuff */
 HINSTANCE hMod = 0;
-bool HookInjected = false;
+bool HooksEnabled = false;
 
 /* Pipes */
 std::string PipeName;
