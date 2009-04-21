@@ -298,14 +298,13 @@ namespace Tibia.Packets
 
                 clientRecvMsg.Length = pSize;
 
-                OnReceivedDataFromClient(clientRecvMsg.Data);
-
                 switch (protocol)
                 {
                     case Protocol.None:
                         ParseFirstClientMsg();
                         break;
                     case Protocol.World:
+                        OnReceivedDataFromClient(clientRecvMsg.Data);
 
                         if (clientRecvMsg.CheckAdler32() && clientRecvMsg.XteaDecrypt(xteaKey))
                         {
@@ -498,7 +497,6 @@ namespace Tibia.Packets
                 }
 
                 serverRecvMsg.Length = pSize;
-                OnReceivedDataFromServer(serverRecvMsg.Data);
 
                 switch (protocol)
                 {
@@ -506,6 +504,7 @@ namespace Tibia.Packets
                         ParseCharacterList();
                         break;
                     case Protocol.World:
+                        OnReceivedDataFromServer(serverRecvMsg.Data);
 
                         if (serverRecvMsg.CheckAdler32() && serverRecvMsg.XteaDecrypt(xteaKey))
                         {
