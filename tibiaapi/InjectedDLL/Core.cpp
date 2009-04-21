@@ -59,7 +59,6 @@ CHandle pipe;						//Holds the Pipe handle (CHandle is from ATL library)
 OVERLAPPED overlapped = { 0 };		
 DWORD errorStatus = ERROR_SUCCESS;
 
-/*Addresses are loaded from Constants.xml file */
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 {	
@@ -68,7 +67,7 @@ int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 	if(bytesCount>0)
 	{		
 		Packet* packet = new Packet(((WORD)buf)+1);
-		packet->AddByte(0x0D);
+		packet->AddByte(0x0E);
 		for(int i=0;i<bytesCount;i++)
 			packet->AddByte((BYTE)buf[i]);
 		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
@@ -82,7 +81,7 @@ int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
 	if(len>0)
 	{
 		Packet* packet = new Packet(((WORD)buf)+1);
-		packet->AddByte(0x0E);
+		packet->AddByte(0x0F);
 		for(int i=0;i<len;i++)
 			packet->AddByte((BYTE)buf[i]);
 		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
@@ -125,7 +124,7 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 	if(*fps == true)
 	{
 		PrintText(nSurface, nX, nY, nFont, nRed, nGreen, nBlue, lpText, nAlign);
-		nY += 12;
+		//nY += 12; ??????
 	}
 	
 	EnterCriticalSection(&NormalTextCriticalSection);
@@ -137,13 +136,12 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 	LeaveCriticalSection(&NormalTextCriticalSection);
 }
 
-//TODO: onclick event
+
 void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char* shortcut)
 {
 	//MessageBoxA(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 	
-	//FIX HERE
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
@@ -168,7 +166,6 @@ void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const ch
 	//MessageBoxA(0, "MyPartyActionContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
-	//FIX HERE
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
@@ -192,7 +189,6 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
-	//FIX HERE
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
@@ -216,7 +212,6 @@ void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char
 	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
 
-	//FIX HERE
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
@@ -273,6 +268,46 @@ void __stdcall MyOnClickContextMenu (int eventId)
 
 
 
+bool DisableHooks()
+{
+		//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		if (OldPrintName)
+			UnhookCall(Consts::ptrPrintName, OldPrintName);
+		if (OldPrintFPS)
+			UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
+		if(OldSetOutfitContextMenu)
+			UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
+		if(OldPartyActionContextMenu)
+			UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
+		if(OldCopyNameContextMenu)
+			UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+		if(OldTradeWithContextMenu)
+			UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
+		if (OldNopFPS)
+			UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
+
+		//OnClickContextMenuEvent..
+		//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		DWORD dwOldProtect, dwNewProtect, funcAddress;
+		funcAddress = (DWORD)&MyOnClickContextMenu;
+		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
+		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+
+		//recv/send
+		//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+		VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+		VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+		memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+		VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+		HooksEnabled = false;
+		return !HooksEnabled;
+}
+
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 {   
 	DWORD dwOldProtect, dwNewProtect, dwOldCall, dwNewCall;
@@ -328,13 +363,13 @@ void UnNop(DWORD dwAddress, BYTE* OldBytes, int size)
 }
 
 void __declspec(noreturn) UninjectSelf()
-{
-	LPVOID ExitThreadAddress = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "ExitThread");
+{	
+	DWORD ExitCode=0;
 	__asm
 	{
 		push hMod
-		push ExitThreadAddress
-		jmp dword ptr [FreeLibrary] 
+		push ExitCode
+		jmp dword ptr [FreeLibraryAndExitThread] 
 	}
 }
 
@@ -352,7 +387,7 @@ void StartUninjectSelf()
 
 void UnloadSelf()
 {
-	if(HookInjected) 
+	if(HooksEnabled) 
 	{
 		//remove all text
 		//MessageBoxA(0, "Removing all text...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
@@ -376,42 +411,12 @@ void UnloadSelf()
 		ContextMenus.clear();
 		LeaveCriticalSection(&ContextMenuCriticalSection);
 
-		
-		//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		if (OldPrintName)
-			UnhookCall(Consts::ptrPrintName, OldPrintName);
-		if (OldPrintFPS)
-			UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
-		if(OldSetOutfitContextMenu)
-			UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
-		if(OldPartyActionContextMenu)
-			UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
-		if(OldCopyNameContextMenu)
-			UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
-		if(OldTradeWithContextMenu)
-			UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
-		if (OldNopFPS)
-			UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
-
-		//OnClickContextMenuEvent..
-		//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		DWORD dwOldProtect, dwNewProtect, funcAddress;
-		funcAddress = (DWORD)&MyOnClickContextMenu;
-		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-
-		//recv/send
-		//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
-		VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
-
-		VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
-		VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-
-		HookInjected = false;
+		//if(!
+			DisableHooks();
+			/*)
+		{
+			MessageBoxA(0,"Could not remove all function hooks","TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		}*/
 	}
 
 	//MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
@@ -442,7 +447,81 @@ inline void PipeOnRead()
 	BYTE PacketID = Packet::ReadByte(Buffer, &position);
 
 	switch (PacketID){
-		case 0x1: // Set Constant
+		
+		case 0x1: //Hook Enable/Disable
+			{
+				BYTE Enable = Packet::ReadByte(Buffer, &position);
+				/* Testing that every constant contains a value */
+				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
+					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
+					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
+					!Consts::ptrRecv || !Consts::ptrSend) 
+				{
+					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
+					break;
+				}
+
+				if(Enable) 
+				{
+					if(HooksEnabled)
+					{
+						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
+						break;
+					}		
+
+					OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
+					OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
+
+					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
+					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
+					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
+					OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
+
+					DWORD dwOldProtect, dwNewProtect, funcAddress;	
+
+					//OnClickContextMenuEvent..
+					funcAddress = (DWORD)&MyOnClickContextMenu;
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
+					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+					
+					//recv/send
+					OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
+					OrigSend=(PSEND)OrigSendAddress;
+					funcAddress = (DWORD)&MySend;
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
+					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+								
+					OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
+					OrigRecv=(PRECV)OrigRecvAddress;
+					funcAddress = (DWORD)&MyRecv;
+					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+					memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
+					VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
+
+					HooksEnabled = true;
+				} 
+				else 
+				{
+					if(!HooksEnabled) 
+					{
+						MessageBoxA(0, "Please enable the function hooks before uninjecting", "Information", MB_ICONINFORMATION);
+						break;
+					}
+
+				//if(!
+					DisableHooks();
+					/*)
+				{
+					MessageBoxA(0,"Could not remove all function hooks","TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+				}*/
+				}
+			}
+			break;
+		case 0x2: // Set Constant
 			{
 				PipeConstantType type = (PipeConstantType)Packet::ReadByte(Buffer, &position);
 
@@ -496,7 +575,7 @@ inline void PipeOnRead()
 
 			}
 			break;
-		case 0x2: // DisplayText
+		case 0x3: // DisplayText
 			{
 				string TextName = Packet::ReadString(Buffer, &position);
 				int PosX = Packet::ReadWord(Buffer, &position);
@@ -528,7 +607,7 @@ inline void PipeOnRead()
 				LeaveCriticalSection(&NormalTextCriticalSection);
 			}
 			break;
-		case 0x3: //RemoveText
+		case 0x4: //RemoveText
 			{
 				string RemovalTextName = Packet::ReadString(Buffer, &position);
 				list<NormalText>::iterator ntIT;
@@ -550,7 +629,7 @@ inline void PipeOnRead()
 						
 			}
 			break;
-		case 0x4: //Remove All
+		case 0x5: //Remove All
 			{
 				list<NormalText>::iterator ntIT;
 				EnterCriticalSection(&NormalTextCriticalSection);
@@ -563,106 +642,6 @@ inline void PipeOnRead()
 
 				DisplayTexts.clear();
 				LeaveCriticalSection(&NormalTextCriticalSection);
-			}
-			break;
-		case 0x5: //Inject Display
-			{
-				BYTE Inject = Packet::ReadByte(Buffer, &position);
-				/* Testing that every constant contains a value */
-				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
-					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
-					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-					!Consts::ptrRecv || !Consts::ptrSend) 
-				{
-					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
-					break;
-				}
-
-				if(Inject) 
-				{
-					if(HookInjected)
-					{
-						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
-						break;
-					}		
-
-					OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
-					OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
-
-					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
-					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
-					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
-					OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
-
-					DWORD dwOldProtect, dwNewProtect, funcAddress;	
-
-					//OnClickContextMenuEvent..
-					funcAddress = (DWORD)&MyOnClickContextMenu;
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-					
-					//recv/send
-					OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
-					OrigSend=(PSEND)OrigSendAddress;
-					funcAddress = (DWORD)&MySend;
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
-								
-					OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
-					OrigRecv=(PRECV)OrigRecvAddress;
-					funcAddress = (DWORD)&MyRecv;
-					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
-					VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-
-					//TODO: Add Bytes nop to Constants
-					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
-
-					HookInjected = true;
-				} 
-				else 
-				{
-					if(!HookInjected) 
-					{
-						MessageBoxA(0, "Please inject the hook before uninjecting", "Information", MB_ICONINFORMATION);
-						break;
-					}
-
-					if (OldPrintName)
-						UnhookCall(Consts::ptrPrintName, OldPrintName);
-					if (OldPrintFPS)
-						UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
-					if(OldSetOutfitContextMenu)
-						UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
-					if(OldPartyActionContextMenu)
-						UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
-					if(OldCopyNameContextMenu)
-						UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
-					if(OldTradeWithContextMenu)
-						UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
-					if (OldNopFPS)
-						UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
-
-					//OnClickContextMenuEvent..
-					DWORD dwOldProtect, dwNewProtect, funcAddress;
-					funcAddress = (DWORD)&MyOnClickContextMenu;
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-					
-					//recv/send
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
-
-					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
-					VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-
-					HookInjected = false;
-				}
 			}
 			break;
 		case 0x6: //Set Text Above Creature
@@ -836,12 +815,13 @@ inline void PipeOnRead()
 				LeaveCriticalSection(&ContextMenuCriticalSection);
 				break;
 			}
-		case 0xC:
-			//TODO:Nothing here?the injected dll should send this packet to tibiaapi containing the eventid
-			//and the matching contextmenu eventid would raise its event
-			break;
 		case 0xD:
 			UnloadSelf();
+		case 0xC:
+		case 0xE:
+		case 0xF:
+			//OUTGOING PACKETS
+			break;
 		default:
 			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
