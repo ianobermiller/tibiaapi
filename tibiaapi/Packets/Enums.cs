@@ -177,21 +177,23 @@ namespace Tibia.Packets
     /// </summary>
     public enum PipePacketType : byte
     {
-        DefaultTemplate     = 0x00,
+        DefaultTemplate      = 0x00,
         HooksEnableDisable   = 0x01,
-        SetConstant         = 0x02,
-        DisplayText         = 0x03,
-        RemoveText          = 0x04,
-        RemoveAllText       = 0x05,
-        DisplayCreatureText = 0x06,
-        RemoveCreatureText  = 0x07,
-        UpdateCreatureText  = 0x08,
-        AddContextMenu      = 0x09,
-        RemoveContextMenu   = 0x0A,
-        RemoveAllContextMenus=0x0B,
-        OnClickContextMenu  = 0x0C,
-        HookReceivedPacket  = 0x0D,
-        HookSentPacket      = 0x0E
+        SetConstant          = 0x02,
+        DisplayText          = 0x03,
+        RemoveText           = 0x04,
+        RemoveAllText        = 0x05,
+        DisplayCreatureText  = 0x06,
+        RemoveCreatureText   = 0x07,
+        UpdateCreatureText   = 0x08,
+        AddContextMenu       = 0x09,
+        RemoveContextMenu    = 0x0A,
+        RemoveAllContextMenus= 0x0B,
+        OnClickContextMenu   = 0x0C,
+        UnloadDll            = 0x0D,
+        HookReceivedPacket   = 0x0E,
+        HookSentPacket       = 0x0F,
+
     }
 
     public enum PipeConstantType : byte
