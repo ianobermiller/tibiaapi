@@ -193,6 +193,7 @@
     <Compile Include="Packets\Outgoing\ShopClosePacket.cs" />
     <Compile Include="Packets\Outgoing\TileUpdatePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
+    <Compile Include="Packets\Pipes\HookSendToServerPacket.cs" />
     <Compile Include="Packets\Rsa.cs" />
     <Compile Include="Packets\RSA\GameServerRequestPacket.cs" />
     <Compile Include="Packets\RSA\LoginServerRequestPacket.cs" />

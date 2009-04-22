@@ -23,7 +23,9 @@ enum PipePacketType : unsigned char
 	PipePacketType_OnClickContextMenu = 0x0C,
 	PipePacketType_UnloadDll = 0x0D,
 	PipePacketType_HookReceivedPacket = 0x0E,
-	PipePacketType_HookSentPacket = 0x0F
+	PipePacketType_HookSentPacket = 0x0F,
+	PipePacketType_HookSendToServer = 0x10
+
 };
 
 typedef void _PrintText(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
@@ -69,5 +71,6 @@ void ParseUpdateCreatureText(BYTE *Buffer, int position);
 void ParseAddContextMenu(BYTE *Buffer, int position);
 void ParseRemoveContextMenu(BYTE *Buffer, int position);
 void RemoveAllContextMenus();
+void ParseHookSendToServer(BYTE *Buffer, int position);
 
 #endif
