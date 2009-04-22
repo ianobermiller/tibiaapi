@@ -9,7 +9,7 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x78B258; //8.41
+        public static uint StartTime = 0x7902B8; //8.42
 
         /// <summary>
         /// Address to the XTea encryption key.
@@ -50,19 +50,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x1054F4; //8.31
+        public static uint MultiClient = 0x505EF4; //8.42
 
 
         /// <summary>
         /// Value to be written to the multiclient address.
         /// </summary>
         public static uint MultiClientValue = 0xEB;
-
-
-        /// <summary>
-        /// Address to activate multiclient.
-        /// </summary>
-        public static uint DMultiClient = 0x5061C4; //8.41
 
 
         /// <summary>
@@ -78,12 +72,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x7893F8; //8.41
+        public static uint Status = 0x78E458; //8.42
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x7861BC; //8.41
+        public static uint SafeMode = 0x78B21C; //8.42
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
@@ -97,7 +91,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x789458; //8.41
+        public static uint ActionState = 0x78E4B8; //8.42
 
         /// <summary>
         /// The text of the last message sent to the default channel.
