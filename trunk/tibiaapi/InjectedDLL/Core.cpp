@@ -15,21 +15,21 @@
 #endif
 
 #define AddContextMenu(eventId, text, shortcut)   \
-		__asm push shortcut \
-		__asm push text \
-		__asm push eventId \
-		__asm mov ecx, esi \
-		__asm mov eax, Consts::ptrAddContextMenu \
-		__asm call eax
+	__asm push shortcut \
+	__asm push text \
+	__asm push eventId \
+	__asm mov ecx, esi \
+	__asm mov eax, Consts::ptrAddContextMenu \
+	__asm call eax
 
 #define AddContextMenuEx(eventId, text, shortcut)   \
-		__asm mov byte ptr[esi+0x30], 1 \
-		__asm push shortcut \
-		__asm push text \
-		__asm push eventId \
-		__asm mov ecx, esi \
-		__asm mov eax, Consts::ptrAddContextMenu \
-		__asm call eax
+	__asm mov byte ptr[esi+0x30], 1 \
+	__asm push shortcut \
+	__asm push text \
+	__asm push eventId \
+	__asm mov ecx, esi \
+	__asm mov eax, Consts::ptrAddContextMenu \
+	__asm call eax
 
 using namespace std;
 
@@ -126,13 +126,13 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 		PrintText(nSurface, nX, nY, nFont, nRed, nGreen, nBlue, lpText, nAlign);
 		//nY += 12; ??????
 	}
-	
+
 	EnterCriticalSection(&NormalTextCriticalSection);
 
 	list<NormalText>::iterator ntIT;
 	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
 		PrintText(0x01, ntIT->x, ntIT->y, ntIT->font, ntIT->r, ntIT->g, ntIT->b, ntIT->text, 0x00); //0x01 Surface, 0x00 Align
-	
+
 	LeaveCriticalSection(&NormalTextCriticalSection);
 }
 
@@ -141,7 +141,7 @@ void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char
 {
 	//MessageBoxA(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
 	AddContextMenu(eventId, text, shortcut);
-	
+
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
@@ -230,82 +230,123 @@ void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char
 	}
 }
 
-//function from http://www.tpforums.org/forum/showthread.php?t=2399 by Vitor
 void __stdcall MyOnClickContextMenu (int eventId)
 {
-    __asm mov esi, ecx //; Compiler will ensure esi register is safe to use
+	//function from http://www.tpforums.org/forum/showthread.php?t=2399 by Vitor
+	__asm mov esi, ecx //; Compiler will ensure esi register is safe to use
 
-    if (eventId >= 0x2000)
-    {
-        __asm
-        {
-            push eventId
-            mov ecx, esi //; Ensure ecx carries the right value - you never know!
-            mov eax, Consts::ptrOnClickContextMenu
-            call eax
-        }
-        return;
-    }
+		if (eventId >= 0x2000)
+		{
+			__asm
+			{
+				push eventId
+					mov ecx, esi //; Ensure ecx carries the right value - you never know!
+					mov eax, Consts::ptrOnClickContextMenu
+					call eax
+			}
+			return;
+		}
 
-	/*WARNING:
-	Again, as AddContextMenu, this function is a thiscall. But, unfortunately this time,
-	the registers that carry the this are ecx and eax, registers commonly used to do random
-	tasks at function's epilogue (that is, the code executed by the compiler when it enters
-	a function). If, however, you can confirm that your compiler does not change ecx - or
-	that it does not change eax, case in which you could move eax to ecx - you are ok to go on.
-	If you can not confirm or you are not sure, we have to go deeper.
-	*/
+		/*WARNING:
+		Again, as AddContextMenu, this function is a thiscall. But, unfortunately this time,
+		the registers that carry the this are ecx and eax, registers commonly used to do random
+		tasks at function's epilogue (that is, the code executed by the compiler when it enters
+		a function). If, however, you can confirm that your compiler does not change ecx - or
+		that it does not change eax, case in which you could move eax to ecx - you are ok to go on.
+		If you can not confirm or you are not sure, we have to go deeper.
+		*/
 
-    /* Either switch event IDs if application is C++ or, if using TibiaAPI, send this information to the caller code using a pipe.
-     * Here, we'll exemplify using a switch statement.
-     */
+		/* Either switch event IDs if application is C++ or, if using TibiaAPI, send this information to the caller code using a pipe.
+		* Here, we'll exemplify using a switch statement.
+		*/
 
-	Packet* packet = new Packet(5);
-	packet->AddByte(0x0C);
-	packet->AddDWord(eventId);
-	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+		Packet* packet = new Packet(5);
+		packet->AddByte(0x0C);
+		packet->AddDWord(eventId);
+		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
 }
 
-
-
-bool DisableHooks()
+void EnableHooks()
 {
-		//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		if (OldPrintName)
-			UnhookCall(Consts::ptrPrintName, OldPrintName);
-		if (OldPrintFPS)
-			UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
-		if(OldSetOutfitContextMenu)
-			UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
-		if(OldPartyActionContextMenu)
-			UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
-		if(OldCopyNameContextMenu)
-			UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
-		if(OldTradeWithContextMenu)
-			UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
-		if (OldNopFPS)
-			UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
+	if(HooksEnabled)
+	{
+		MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
+		return;
+	}		
 
-		//OnClickContextMenuEvent..
-		//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		DWORD dwOldProtect, dwNewProtect, funcAddress;
-		funcAddress = (DWORD)&MyOnClickContextMenu;
-		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
-		VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+	OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
+	OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
 
-		//recv/send
-		//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
-		VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+	OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
+	OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
+	OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
+	OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 
-		VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-		memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
-		VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+	DWORD dwOldProtect, dwNewProtect, funcAddress;	
 
-		HooksEnabled = false;
-		return !HooksEnabled;
+	//OnClickContextMenuEvent..
+	funcAddress = (DWORD)&MyOnClickContextMenu;
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+
+	//recv/send
+	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
+	OrigSend=(PSEND)OrigSendAddress;
+	funcAddress = (DWORD)&MySend;
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+	OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
+	OrigRecv=(PRECV)OrigRecvAddress;
+	funcAddress = (DWORD)&MyRecv;
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
+	VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+	OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
+
+	HooksEnabled = true;
+}
+
+void DisableHooks()
+{
+	//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	if (OldPrintName)
+		UnhookCall(Consts::ptrPrintName, OldPrintName);
+	if (OldPrintFPS)
+		UnhookCall(Consts::ptrPrintFPS, OldPrintFPS);
+	if(OldSetOutfitContextMenu)
+		UnhookCall(Consts::ptrSetOutfitContextMenu, OldSetOutfitContextMenu);
+	if(OldPartyActionContextMenu)
+		UnhookCall(Consts::ptrPartyActionContextMenu, OldPartyActionContextMenu);
+	if(OldCopyNameContextMenu)
+		UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
+	if(OldTradeWithContextMenu)
+		UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
+	if (OldNopFPS)
+		UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
+
+	//OnClickContextMenuEvent..
+	//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	DWORD dwOldProtect, dwNewProtect, funcAddress;
+	funcAddress = (DWORD)&MyOnClickContextMenu;
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
+
+	//recv/send
+	//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+	HooksEnabled = false;
 }
 
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
@@ -317,12 +358,12 @@ DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
 	//Calculate the distance
 	dwNewCall = dwFunction - dwAddress - 5;
 	memcpy(&callByte[1], &dwNewCall, 4);
-	
+
 	VirtualProtect((LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect); //Gain access to read/write
 	memcpy(&dwOldCall, (LPVOID)(dwAddress+1), 4); //Get the old function address for unhooking
 	memcpy((LPVOID)(dwAddress), &callByte, 5); //Hook the function
 	VirtualProtect((LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect); //Restore access
-	
+
 	return dwOldCall; //Return old funtion address for unhooking
 }
 
@@ -332,7 +373,7 @@ void UnhookCall(DWORD dwAddress, DWORD dwOldCall)
 	BYTE callByte[5] = {0xE8, 0x00, 0x00, 0x00, 0x00};
 
 	memcpy(&callByte[1], &dwOldCall, 4);
-	
+
 	VirtualProtect((LPVOID)(dwAddress), 5, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)(dwAddress), &callByte, 5);
 	VirtualProtect((LPVOID)(dwAddress), 5, dwOldProtect, &dwNewProtect);
@@ -347,7 +388,7 @@ BYTE* Nop(DWORD dwAddress, int size)
 	memcpy(OldBytes, (LPVOID)(dwAddress), size);
 	memset((LPVOID)(dwAddress), 0x90, size);
 	VirtualProtect((LPVOID)(dwAddress), size, dwOldProtect, &dwNewProtect);
-	
+
 	return OldBytes;
 }
 
@@ -368,21 +409,21 @@ void __declspec(noreturn) UninjectSelf()
 	__asm
 	{
 		push hMod
-		push ExitCode
-		jmp dword ptr [FreeLibraryAndExitThread] 
+			push ExitCode
+			jmp dword ptr [FreeLibraryAndExitThread] 
 	}
 }
 
 void StartUninjectSelf()
 {
-        try
-		{
-                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)UninjectSelf, hMod, NULL, NULL);
-        }
-		catch (...)
-		{
-                MessageBox(0, "StartUninjectSelf -> Unable to uninject from process.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
-        }
+	try
+	{
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)UninjectSelf, hMod, NULL, NULL);
+	}
+	catch (...)
+	{
+		MessageBox(0, "StartUninjectSelf -> Unable to uninject from process.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
+	}
 }
 
 void UnloadSelf()
@@ -411,12 +452,7 @@ void UnloadSelf()
 		ContextMenus.clear();
 		LeaveCriticalSection(&ContextMenuCriticalSection);
 
-		//if(!
-			DisableHooks();
-			/*)
-		{
-			MessageBoxA(0,"Could not remove all function hooks","TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-		}*/
+		DisableHooks();
 	}
 
 	//MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
@@ -447,379 +483,46 @@ inline void PipeOnRead()
 	BYTE PacketID = Packet::ReadByte(Buffer, &position);
 
 	switch (PacketID){
-		
-		case 0x1: //Hook Enable/Disable
-			{
-				BYTE Enable = Packet::ReadByte(Buffer, &position);
-				/* Testing that every constant contains a value */
-				if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
-					!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
-					|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-					!Consts::ptrRecv || !Consts::ptrSend) 
-				{
-					MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
-					break;
-				}
 
-				if(Enable) 
-				{
-					if(HooksEnabled)
-					{
-						MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
-						break;
-					}		
-
-					OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
-					OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
-
-					OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
-					OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
-					OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
-					OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
-
-					DWORD dwOldProtect, dwNewProtect, funcAddress;	
-
-					//OnClickContextMenuEvent..
-					funcAddress = (DWORD)&MyOnClickContextMenu;
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
-					VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
-					
-					//recv/send
-					OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
-					OrigSend=(PSEND)OrigSendAddress;
-					funcAddress = (DWORD)&MySend;
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
-					VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
-								
-					OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
-					OrigRecv=(PRECV)OrigRecvAddress;
-					funcAddress = (DWORD)&MyRecv;
-					VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-					memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
-					VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
-
-					OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
-
-					HooksEnabled = true;
-				} 
-				else 
-				{
-					if(!HooksEnabled) 
-					{
-						MessageBoxA(0, "Please enable the function hooks before uninjecting", "Information", MB_ICONINFORMATION);
-						break;
-					}
-
-				//if(!
-					DisableHooks();
-					/*)
-				{
-					MessageBoxA(0,"Could not remove all function hooks","TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
-				}*/
-				}
-			}
+		case PipePacketType_HooksEnableDisable:
+			ParseHooksEnableDisable(Buffer, position);
 			break;
-		case 0x2: // Set Constant
-			{
-				PipeConstantType type = (PipeConstantType)Packet::ReadByte(Buffer, &position);
-
-				switch(type)
-				{
-					case PrintName:
-						Consts::ptrPrintName = Packet::ReadDWord(Buffer, &position);
-						break;
-					case PrintFPS:
-						Consts::ptrPrintFPS = Packet::ReadDWord(Buffer, &position);
-						break;
-					case ShowFPS:
-						Consts::ptrShowFPS = Packet::ReadDWord(Buffer, &position);
-						break;
-					case PrintTextFunc:
-						PrintText = (_PrintText*)Packet::ReadDWord(Buffer, &position);
-						break;
-					case NopFPS:
-						Consts::ptrNopFPS = Packet::ReadDWord(Buffer, &position);
-						break;
-					case AddContextMenuFunc:
-						Consts::ptrAddContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case OnClickContextMenu:
-						Consts::ptrOnClickContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case SetOutfitContextMenu:
-						Consts::ptrSetOutfitContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case PartyActionContextMenu:
-						Consts::ptrPartyActionContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case CopyNameContextMenu:
-						Consts::ptrCopyNameContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case OnClickContextMenuVf:
-						Consts::prtOnClickContextMenuVf = Packet::ReadDWord(Buffer, &position);
-						break;
-					case TradeWithContextMenu:
-						Consts::ptrTradeWithContextMenu = Packet::ReadDWord(Buffer, &position);
-						break;
-					case Recv:
-						Consts::ptrRecv = Packet::ReadDWord(Buffer, &position);
-						break;
-					case Send:
-						Consts::ptrSend = Packet::ReadDWord(Buffer, &position);
-						break;
-					default:
-						break;
-				};
-
-			}
+		case PipePacketType_SetConstant:
+			ParseSetConstant(Buffer, position);
 			break;
-		case 0x3: // DisplayText
-			{
-				string TextName = Packet::ReadString(Buffer, &position);
-				int PosX = Packet::ReadWord(Buffer, &position);
-				int PosY = Packet::ReadWord(Buffer, &position);
-				int ColorRed = Packet::ReadWord(Buffer, &position);
-				int ColorGreen = Packet::ReadWord(Buffer, &position);
-				int ColorBlue = Packet::ReadWord(Buffer, &position);
-				int Font = Packet::ReadWord(Buffer, &position);
-				string Text = Packet::ReadString(Buffer, &position);
-
-				NormalText NewText;
-				NewText.b = ColorBlue;
-				NewText.g = ColorGreen;
-				NewText.r = ColorRed;
-				NewText.x = PosX;
-				NewText.y = PosY;
-				NewText.font = Font;
-
-				NewText.TextName = new char[TextName.size() + 1];
-				NewText.text = new char[Text.size() + 1];
-
-				memcpy(NewText.TextName, TextName.c_str(), TextName.size() + 1);
-				memcpy(NewText.text, Text.c_str(), Text.size() + 1);
-
-				EnterCriticalSection(&NormalTextCriticalSection);
-
-				DisplayTexts.push_back(NewText);
-
-				LeaveCriticalSection(&NormalTextCriticalSection);
-			}
+		case PipePacketType_DisplayText:
+			ParseDisplayText(Buffer, position);
 			break;
-		case 0x4: //RemoveText
-			{
-				string RemovalTextName = Packet::ReadString(Buffer, &position);
-				list<NormalText>::iterator ntIT;
-				EnterCriticalSection(&NormalTextCriticalSection);
-
-				for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ) 
-				{
-					if (ntIT->TextName == RemovalTextName)
-					{
-						delete [] ntIT->TextName;
-						delete [] ntIT->text;
-						ntIT = DisplayTexts.erase(ntIT);
-					} 
-					else
-						++ntIT;
-				}
-
-				LeaveCriticalSection(&NormalTextCriticalSection);
-						
-			}
+		case PipePacketType_RemoveText:
+			ParseRemoveText(Buffer, position);
 			break;
-		case 0x5: //Remove All
-			{
-				list<NormalText>::iterator ntIT;
-				EnterCriticalSection(&NormalTextCriticalSection);
-
-				for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
-				{
-					delete [] ntIT->text;
-					delete [] ntIT->TextName;
-				}
-
-				DisplayTexts.clear();
-				LeaveCriticalSection(&NormalTextCriticalSection);
-			}
+		case PipePacketType_RemoveAllText:
+			RemoveAllText();
 			break;
-		case 0x6: //Set Text Above Creature
-			{
-				int Id = Packet::ReadDWord(Buffer, &position);
-				string CName = Packet::ReadString(Buffer, &position);
-                int nX = Packet::ReadShort(Buffer, &position);
-                int nY = Packet::ReadShort(Buffer, &position);
-                int ColorR = Packet::ReadWord(Buffer, &position);
-                int ColorG = Packet::ReadWord(Buffer, &position);
-                int ColorB = Packet::ReadWord(Buffer, &position);
-                int TxtFont = Packet::ReadWord(Buffer, &position);
-                string Text = Packet::ReadString(Buffer, &position);
-                char *lpText = (char*)calloc(Text.size() + 1, sizeof(char));
-				char *cText = (char*)calloc(CName.size() + 1, sizeof(char));
-                strcpy(lpText, Text.c_str());
-				strcpy(cText, CName.c_str());
-                PlayerText Creature = {0};
-                Creature.cB = ColorB;
-                Creature.cG = ColorG;
-                Creature.cR = ColorR;
-                Creature.CreatureId = Id;
-                Creature.DisplayText = lpText;
-				Creature.CreatureName = cText;
-                Creature.RelativeX = nX;
-				Creature.RelativeY = nY;
-                Creature.TextFont = TxtFont;
-
-                EnterCriticalSection(&CreatureTextCriticalSection);
-				CreatureTexts.push_back(Creature);
-				LeaveCriticalSection(&CreatureTextCriticalSection);
-			}
+		case PipePacketType_DisplayCreatureText:
+			ParseDisplayCreatureText(Buffer, position);
 			break;
-		case 0x7: //Remove Text Above Creature
-			{	
-				int Id = Packet::ReadDWord(Buffer, &position);
-				string Name = Packet::ReadString(Buffer, &position);
-				
-				list<PlayerText>::iterator ptIT;
-				EnterCriticalSection(&CreatureTextCriticalSection);
-				for(ptIT = CreatureTexts.begin(); ptIT != CreatureTexts.end(); ) 
-				{
-					if (ptIT->CreatureId == 0) 
-					{
-						if (ptIT->CreatureName == Name) 
-						{
-							free(ptIT->DisplayText);
-							free(ptIT->CreatureName);
-							ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
-							ptIT->CreatureName = 0;
-							ptIT = CreatureTexts.erase(ptIT);
-						} 
-						else
-							++ptIT;
-					} 
-					else if (ptIT->CreatureId == Id) 
-					{
-						free(ptIT->DisplayText);
-						free(ptIT->CreatureName);
-						ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
-						ptIT->CreatureName = 0;
-						ptIT = CreatureTexts.erase(ptIT);
-					} 
-					else 
-						++ptIT;
-				}
-				LeaveCriticalSection(&CreatureTextCriticalSection);
-				
-			}
+		case PipePacketType_RemoveCreatureText:
+			ParseRemoveCreatureText(Buffer, position);
 			break;
-		case 0x8: //Update Text Above Creature
-			{
-				int ID = Packet::ReadDWord(Buffer, &position);
-				string CName = Packet::ReadString(Buffer, &position);
-				int PosX = Packet::ReadShort(Buffer, &position);
-				int PosY = Packet::ReadShort(Buffer, &position);
-				string NewText = Packet::ReadString(Buffer, &position);
-				char *lpNewText = (char*)calloc(NewText.size() + 1, sizeof(char));
-				char *OldText;
-				strcpy(lpNewText, NewText.c_str());
-				
-				EnterCriticalSection(&CreatureTextCriticalSection);
-
-				list<PlayerText>::iterator newit;
-				for(newit = CreatureTexts.begin(); newit != CreatureTexts.end(); ++newit) 
-				{
-					if (newit->CreatureId == 0) 
-					{
-						if (newit->CreatureName == CName && newit->RelativeX == PosX && newit->RelativeY == PosY) 
-						{
-							OldText = newit->DisplayText;
-							strcpy(OldText, "");
-							newit->DisplayText = lpNewText;
-							free(OldText);
-							OldText = 0;
-							break;
-						}
-					}
-					else if (newit->CreatureId == ID && newit->RelativeX == PosX && newit->RelativeY == PosY) 
-					{
-						OldText = newit->DisplayText;
-						strcpy(OldText, "");
-						newit->DisplayText = lpNewText;
-						free(OldText);
-						OldText = 0;
-						break;
-					}
-				}
-
-				LeaveCriticalSection(&CreatureTextCriticalSection);
-			}
+		case PipePacketType_UpdateCreatureText:
+			ParseUpdateCreatureText(Buffer, position);
 			break;
-		case 0x9://add item to ContextMenus
-			{
-				int id = Packet::ReadDWord(Buffer, &position);
-				string text=Packet::ReadString(Buffer, &position);
-				BYTE type = Packet::ReadByte(Buffer,&position);
-				BYTE hasSeparator=Packet::ReadByte(Buffer,&position);
-				
-				ContextMenu ctxt;
-				ctxt.EventId = id;
-				ctxt.Type = type;
-				ctxt.HasSeparator = hasSeparator;		
-				ctxt.MenuText = new char[text.size()+1];
-
-				memcpy(ctxt.MenuText, text.c_str(), text.size() + 1);
-				
-				EnterCriticalSection(&ContextMenuCriticalSection);
-				ContextMenus.push_back(ctxt);
-				LeaveCriticalSection(&ContextMenuCriticalSection);
-
-				break;
-			}
-		case 0xA://remove item from ContextMenus
-			{
-				//MessageBoxA(0, "Remove", "Error!", MB_ICONERROR);
-				int id = Packet::ReadDWord(Buffer, &position);
-				string text = Packet::ReadString(Buffer, &position);
-				BYTE type = Packet::ReadByte(Buffer,&position);
-				BYTE hasSeparator = Packet::ReadByte(Buffer,&position);
-
-				EnterCriticalSection(&ContextMenuCriticalSection);
-
-				list<ContextMenu>::iterator cmIT;
-				for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ) 
-				{
-					if (cmIT->EventId == id && cmIT->MenuText == text
-						&& cmIT->Type == type && cmIT->HasSeparator == hasSeparator)
-					{
-						delete [] cmIT->MenuText;
-						cmIT = ContextMenus.erase(cmIT);
-					} 
-					else 
-						++cmIT;
-				}
-
-				LeaveCriticalSection(&ContextMenuCriticalSection);
-				break;
-			}
-		case 0xB://clear items from ContextMenus
-			{
-				list<ContextMenu>::iterator cmIT;
-
-				EnterCriticalSection(&ContextMenuCriticalSection);
-
-				for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
-					delete [] cmIT->MenuText;
-
-				ContextMenus.clear();
-
-				LeaveCriticalSection(&ContextMenuCriticalSection);
-				break;
-			}
-		case 0xD:
+		case PipePacketType_AddContextMenu:
+			ParseAddContextMenu(Buffer, position);
+			break;
+		case PipePacketType_RemoveContextMenu:
+			ParseRemoveContextMenu(Buffer, position);
+			break;
+		case PipePacketType_RemoveAllContextMenus:
+			RemoveAllContextMenus();
+			break;
+		case PipePacketType_UnloadDll:
 			UnloadSelf();
-		case 0xC:
-		case 0xE:
-		case 0xF:
+			break;
+		case PipePacketType_OnClickContextMenu:
+		case PipePacketType_HookReceivedPacket:
+		case PipePacketType_HookSentPacket:
 			//OUTGOING PACKETS
 			break;
 		default:
@@ -828,13 +531,333 @@ inline void PipeOnRead()
 	}
 }
 
+void ParseHooksEnableDisable(BYTE *Buffer, int position)
+{
+	BYTE Enable = Packet::ReadByte(Buffer, &position);
+	/* Testing that every constant contains a value */
+	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
+		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
+		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
+		!Consts::ptrRecv || !Consts::ptrSend) 
+	{
+		MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
+		return;
+	}
+
+	if(Enable) 
+	{
+		EnableHooks();
+	} 
+	else 
+	{
+		if(!HooksEnabled) 
+		{
+			MessageBoxA(0, "Please enable the function hooks before uninjecting", "Information", MB_ICONINFORMATION);
+			return;
+		}
+
+		DisableHooks();
+	}
+}
+
+void ParseSetConstant(BYTE *Buffer, int position)
+{
+	PipeConstantType type = (PipeConstantType)Packet::ReadByte(Buffer, &position);
+	DWORD value = Packet::ReadDWord(Buffer, &position);
+
+	switch(type)
+	{
+	case PrintName:
+		Consts::ptrPrintName = value;
+		break;
+	case PrintFPS:
+		Consts::ptrPrintFPS = value;
+		break;
+	case ShowFPS:
+		Consts::ptrShowFPS = value;
+		break;
+	case PrintTextFunc:
+		PrintText = (_PrintText*)value;
+		break;
+	case NopFPS:
+		Consts::ptrNopFPS = value;
+		break;
+	case AddContextMenuFunc:
+		Consts::ptrAddContextMenu = value;
+		break;
+	case OnClickContextMenu:
+		Consts::ptrOnClickContextMenu = value;
+		break;
+	case SetOutfitContextMenu:
+		Consts::ptrSetOutfitContextMenu = value;
+		break;
+	case PartyActionContextMenu:
+		Consts::ptrPartyActionContextMenu = value;
+		break;
+	case CopyNameContextMenu:
+		Consts::ptrCopyNameContextMenu = value;
+		break;
+	case OnClickContextMenuVf:
+		Consts::prtOnClickContextMenuVf = value;
+		break;
+	case TradeWithContextMenu:
+		Consts::ptrTradeWithContextMenu = value;
+		break;
+	case Recv:
+		Consts::ptrRecv = value;
+		break;
+	case Send:
+		Consts::ptrSend = value;
+		break;
+	default:
+		break;
+	};
+}
+
+void ParseDisplayText(BYTE *Buffer, int position)
+{
+	string TextName = Packet::ReadString(Buffer, &position);
+	int PosX = Packet::ReadWord(Buffer, &position);
+	int PosY = Packet::ReadWord(Buffer, &position);
+	int ColorRed = Packet::ReadWord(Buffer, &position);
+	int ColorGreen = Packet::ReadWord(Buffer, &position);
+	int ColorBlue = Packet::ReadWord(Buffer, &position);
+	int Font = Packet::ReadWord(Buffer, &position);
+	string Text = Packet::ReadString(Buffer, &position);
+
+	NormalText NewText;
+	NewText.b = ColorBlue;
+	NewText.g = ColorGreen;
+	NewText.r = ColorRed;
+	NewText.x = PosX;
+	NewText.y = PosY;
+	NewText.font = Font;
+
+	NewText.TextName = new char[TextName.size() + 1];
+	NewText.text = new char[Text.size() + 1];
+
+	memcpy(NewText.TextName, TextName.c_str(), TextName.size() + 1);
+	memcpy(NewText.text, Text.c_str(), Text.size() + 1);
+
+	EnterCriticalSection(&NormalTextCriticalSection);
+
+	DisplayTexts.push_back(NewText);
+
+	LeaveCriticalSection(&NormalTextCriticalSection);
+}
+
+void ParseRemoveText(BYTE *Buffer, int position)
+{
+	string RemovalTextName = Packet::ReadString(Buffer, &position);
+	list<NormalText>::iterator ntIT;
+	EnterCriticalSection(&NormalTextCriticalSection);
+
+	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ) 
+	{
+		if (ntIT->TextName == RemovalTextName)
+		{
+			delete [] ntIT->TextName;
+			delete [] ntIT->text;
+			ntIT = DisplayTexts.erase(ntIT);
+		} 
+		else
+			++ntIT;
+	}
+
+	LeaveCriticalSection(&NormalTextCriticalSection);
+
+}
+
+void RemoveAllText()
+{
+	list<NormalText>::iterator ntIT;
+	EnterCriticalSection(&NormalTextCriticalSection);
+
+	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
+	{
+		delete [] ntIT->text;
+		delete [] ntIT->TextName;
+	}
+
+	DisplayTexts.clear();
+	LeaveCriticalSection(&NormalTextCriticalSection);
+}
+
+void ParseDisplayCreatureText(BYTE *Buffer, int position)
+{
+	int Id = Packet::ReadDWord(Buffer, &position);
+	string CName = Packet::ReadString(Buffer, &position);
+	int nX = Packet::ReadShort(Buffer, &position);
+	int nY = Packet::ReadShort(Buffer, &position);
+	int ColorR = Packet::ReadWord(Buffer, &position);
+	int ColorG = Packet::ReadWord(Buffer, &position);
+	int ColorB = Packet::ReadWord(Buffer, &position);
+	int TxtFont = Packet::ReadWord(Buffer, &position);
+	string Text = Packet::ReadString(Buffer, &position);
+	char *lpText = (char*)calloc(Text.size() + 1, sizeof(char));
+	char *cText = (char*)calloc(CName.size() + 1, sizeof(char));
+	strcpy(lpText, Text.c_str());
+	strcpy(cText, CName.c_str());
+	PlayerText Creature = {0};
+	Creature.cB = ColorB;
+	Creature.cG = ColorG;
+	Creature.cR = ColorR;
+	Creature.CreatureId = Id;
+	Creature.DisplayText = lpText;
+	Creature.CreatureName = cText;
+	Creature.RelativeX = nX;
+	Creature.RelativeY = nY;
+	Creature.TextFont = TxtFont;
+
+	EnterCriticalSection(&CreatureTextCriticalSection);
+	CreatureTexts.push_back(Creature);
+	LeaveCriticalSection(&CreatureTextCriticalSection);
+}
+
+void ParseRemoveCreatureText(BYTE *Buffer, int position)
+{	
+	int Id = Packet::ReadDWord(Buffer, &position);
+	string Name = Packet::ReadString(Buffer, &position);
+
+	list<PlayerText>::iterator ptIT;
+	EnterCriticalSection(&CreatureTextCriticalSection);
+	for(ptIT = CreatureTexts.begin(); ptIT != CreatureTexts.end(); ) 
+	{
+		if (ptIT->CreatureId == 0) 
+		{
+			if (ptIT->CreatureName == Name) 
+			{
+				free(ptIT->DisplayText);
+				free(ptIT->CreatureName);
+				ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
+				ptIT->CreatureName = 0;
+				ptIT = CreatureTexts.erase(ptIT);
+			} 
+			else
+				++ptIT;
+		} 
+		else if (ptIT->CreatureId == Id) 
+		{
+			free(ptIT->DisplayText);
+			free(ptIT->CreatureName);
+			ptIT->DisplayText = 0; //Just to make sure I won't try to free this twice
+			ptIT->CreatureName = 0;
+			ptIT = CreatureTexts.erase(ptIT);
+		} 
+		else 
+			++ptIT;
+	}
+	LeaveCriticalSection(&CreatureTextCriticalSection);
+}
+
+void ParseUpdateCreatureText(BYTE *Buffer, int position)
+{
+	int ID = Packet::ReadDWord(Buffer, &position);
+	string CName = Packet::ReadString(Buffer, &position);
+	int PosX = Packet::ReadShort(Buffer, &position);
+	int PosY = Packet::ReadShort(Buffer, &position);
+	string NewText = Packet::ReadString(Buffer, &position);
+	char *lpNewText = (char*)calloc(NewText.size() + 1, sizeof(char));
+	char *OldText;
+	strcpy(lpNewText, NewText.c_str());
+
+	EnterCriticalSection(&CreatureTextCriticalSection);
+
+	list<PlayerText>::iterator newit;
+	for(newit = CreatureTexts.begin(); newit != CreatureTexts.end(); ++newit) 
+	{
+		if (newit->CreatureId == 0) 
+		{
+			if (newit->CreatureName == CName && newit->RelativeX == PosX && newit->RelativeY == PosY) 
+			{
+				OldText = newit->DisplayText;
+				strcpy(OldText, "");
+				newit->DisplayText = lpNewText;
+				free(OldText);
+				OldText = 0;
+				break;
+			}
+		}
+		else if (newit->CreatureId == ID && newit->RelativeX == PosX && newit->RelativeY == PosY) 
+		{
+			OldText = newit->DisplayText;
+			strcpy(OldText, "");
+			newit->DisplayText = lpNewText;
+			free(OldText);
+			OldText = 0;
+			break;
+		}
+	}
+
+	LeaveCriticalSection(&CreatureTextCriticalSection);
+}
+
+void ParseAddContextMenu(BYTE *Buffer, int position)
+{
+	int id = Packet::ReadDWord(Buffer, &position);
+	string text=Packet::ReadString(Buffer, &position);
+	BYTE type = Packet::ReadByte(Buffer,&position);
+	BYTE hasSeparator=Packet::ReadByte(Buffer,&position);
+
+	ContextMenu ctxt;
+	ctxt.EventId = id;
+	ctxt.Type = type;
+	ctxt.HasSeparator = hasSeparator;		
+	ctxt.MenuText = new char[text.size()+1];
+
+	memcpy(ctxt.MenuText, text.c_str(), text.size() + 1);
+
+	EnterCriticalSection(&ContextMenuCriticalSection);
+	ContextMenus.push_back(ctxt);
+	LeaveCriticalSection(&ContextMenuCriticalSection);
+}
+
+void ParseRemoveContextMenu(BYTE *Buffer, int position)
+{
+	int id = Packet::ReadDWord(Buffer, &position);
+	string text = Packet::ReadString(Buffer, &position);
+	BYTE type = Packet::ReadByte(Buffer,&position);
+	BYTE hasSeparator = Packet::ReadByte(Buffer,&position);
+
+	EnterCriticalSection(&ContextMenuCriticalSection);
+
+	list<ContextMenu>::iterator cmIT;
+	for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ) 
+	{
+		if (cmIT->EventId == id && cmIT->MenuText == text
+			&& cmIT->Type == type && cmIT->HasSeparator == hasSeparator)
+		{
+			delete [] cmIT->MenuText;
+			cmIT = ContextMenus.erase(cmIT);
+		} 
+		else 
+			++cmIT;
+	}
+
+	LeaveCriticalSection(&ContextMenuCriticalSection);
+}
+
+void RemoveAllContextMenus()
+{
+	list<ContextMenu>::iterator cmIT;
+
+	EnterCriticalSection(&ContextMenuCriticalSection);
+
+	for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
+		delete [] cmIT->MenuText;
+
+	ContextMenus.clear();
+
+	LeaveCriticalSection(&ContextMenuCriticalSection);
+}
+
 void PipeThreadProc(HMODULE Module)
 {
 	//Connect to Pipe
 	if (WaitNamedPipeA(PipeName.c_str(), NMPWAIT_WAIT_FOREVER)) 
 	{
 		pipe.Attach(::CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL));
-		
+
 		if (pipe == INVALID_HANDLE_VALUE)
 		{
 			errorStatus = ::GetLastError();
@@ -881,8 +904,7 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 	}
 	else
 	{
-		//pipe disconnected 
-		//clean everything and remove the hook
+		// pipe disconnected clean everything and remove the hook
 		//MessageBoxA(0, "Pipe disconnected, cleaning up.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
 
 		UnloadSelf();
@@ -894,7 +916,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 	switch (reason)
 	{
 		case DLL_PROCESS_ATTACH: //DLL was injected
-        {
+		{
 			hMod = hModule;
 			/* Get Current Process ID and use it as Pipename (Pipe is named as TibiaAPI<processID> */
 			DWORD CurrentPID = GetCurrentProcessId();
@@ -910,8 +932,8 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			PipeConnected = false;
 			//Start new thread for Pipe
 			PipeThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)PipeThreadProc, hMod, NULL, NULL);
+			break;
 		}
-        break;
 		case DLL_PROCESS_DETACH: //DLL was uninjected
 		{
 			TerminateThread(PipeThread, EXIT_SUCCESS);
@@ -920,9 +942,9 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&CreatureTextCriticalSection);
 			DeleteCriticalSection(&ContextMenuCriticalSection);
 			DeleteCriticalSection(&OnClickCriticalSection);
+			break;
 		}
-		break;
-    }
+	}
 
-    return true;
+	return true;
 }
