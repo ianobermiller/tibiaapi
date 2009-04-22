@@ -193,6 +193,7 @@ namespace Tibia.Packets
         UnloadDll            = 0x0D,
         HookReceivedPacket   = 0x0E,
         HookSentPacket       = 0x0F,
+        HookSendToServer     = 0x10
 
     }
 

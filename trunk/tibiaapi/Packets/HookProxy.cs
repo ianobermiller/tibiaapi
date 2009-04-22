@@ -30,6 +30,12 @@ namespace Tibia.Packets
             serverSendMsg = new NetworkMessage(client, 4096);
             clientRecvMsg = new NetworkMessage(client, 4096);
             clientSendMsg = new NetworkMessage(client, 4096);
+            
+            if (client.Dll.Pipe == null)
+            {
+                client.Dll.InitializePipe();
+                client.Dll.PipeIsReady.WaitOne();
+            }
 
             client.Dll.Pipe.OnSocketRecv += new Pipe.PipeListener(Pipe_OnSocketRecv);
             client.Dll.Pipe.OnSocketSend += new Pipe.PipeListener(Pipe_OnSocketSend);
@@ -191,6 +197,11 @@ namespace Tibia.Packets
                     }
                     break;
             }
+        }
+
+        public void SendToServer(byte[] packet)
+        {
+            Pipes.HookSendToServerPacket.Send(client, packet);
         }
 
         private void ParseFirstClientMsg()

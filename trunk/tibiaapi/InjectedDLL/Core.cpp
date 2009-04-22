@@ -51,7 +51,7 @@ list<ContextMenu> ContextMenus;    //Used for storing the context menus that wil
 //recv/send
 DWORD OrigSendAddress = 0;
 DWORD OrigRecvAddress = 0;
-//SOCKET sock = 0;
+SOCKET sock = 0;
 
 
 //Asynchronisation variables
@@ -77,7 +77,7 @@ int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
 {
-	//sock=s;
+	sock=s;
 	if(len>0)
 	{
 		Packet* packet = new Packet(((WORD)buf)+1);
@@ -520,6 +520,9 @@ inline void PipeOnRead()
 		case PipePacketType_UnloadDll:
 			UnloadSelf();
 			break;
+		case PipePacketType_HookSendToServer:		
+			ParseHookSendToServer(Buffer, position);
+			break;
 		case PipePacketType_OnClickContextMenu:
 		case PipePacketType_HookReceivedPacket:
 		case PipePacketType_HookSentPacket:
@@ -851,6 +854,17 @@ void RemoveAllContextMenus()
 	LeaveCriticalSection(&ContextMenuCriticalSection);
 }
 
+
+
+void ParseHookSendToServer(BYTE *Buffer, int position)
+{			
+	int packetLen = Packet::ReadWord(Buffer,&position);
+	char* buf =new char[packetLen+2];
+	memcpy((LPVOID)buf,(LPVOID)(Buffer+position-2),packetLen+2);
+
+	int ret=OrigSend(sock,buf,packetLen+2,0);	
+	delete buf;
+}
 void PipeThreadProc(HMODULE Module)
 {
 	//Connect to Pipe
@@ -862,6 +876,7 @@ void PipeThreadProc(HMODULE Module)
 		{
 			errorStatus = ::GetLastError();
 			MessageBoxA(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			UnloadSelf();
 			return;
 		} 
 		else 
@@ -872,6 +887,7 @@ void PipeThreadProc(HMODULE Module)
 			{
 				errorStatus = ::GetLastError();
 				MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+				UnloadSelf();
 				return;
 			} 
 			else 
@@ -900,6 +916,7 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 		{
 			errorStatus = ::GetLastError();
 			MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			UnloadSelf();
 		}
 	}
 	else
