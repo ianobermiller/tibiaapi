@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x6405F0; // 8.41
+        public static uint MapPointer = 0x645650; // 8.42
 
         /// <summary>
         /// Step between tiles on the map.
@@ -127,7 +127,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x638734;  // 8.41
+        public static uint LevelSpyPtr = 0x63D794;  // 8.42
 
         /// <summary>
         /// Defaults for level spy.

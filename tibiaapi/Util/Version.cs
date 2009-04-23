@@ -28,9 +28,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x789F3C;
                 Client.FrameRateCurrentOffset = 0x60;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x5061C4;
-                Client.DMultiClientJMP = 0xEB;
-                Client.DMultiClientJNZ = 0x75;
+                Client.MultiClient = 0x5061C4;//not verified
                 Client.Status = 0x7893F8;
                 Client.SafeMode = 0x7861BC;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -68,7 +66,7 @@ namespace Tibia
                 Client.DialogHeight = 0x20;
                 Client.DialogCaption = 0x50;
                 Client.LastRcvPacket = 0x781548;
-                Client.DecryptCall = 0x45ACD0;
+                Client.DecryptCall = 0x45ACD5;
                 Client.LoginAccountNum = 0;
                 Client.LoginPassword = 0x7893B4;
                 Client.LoginAccount = Client.LoginPassword + 32;
@@ -274,11 +272,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x788EB4;
                 Client.FrameRateCurrentOffset = 0x60;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x1054F4;
-                Client.MultiClientValue = 0xEB;
                 Client.MultiClient = 0x505924;
-                Client.DMultiClientJMP = 0xEB;
-                Client.DMultiClientJNZ = 0x75;
                 Client.Status = 0x788370;
                 Client.SafeMode = 0x785134;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -520,11 +514,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x783FF4;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x1054F4;
-                Client.MultiClientValue = 0xEB;
                 Client.MultiClient = 0x505894;
-                Client.DMultiClientJMP = 0xEB;
-                Client.DMultiClientJNZ = 0x75;
                 Client.Status = 0x7834B0;
                 Client.SafeMode = 0x780274;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -757,8 +747,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x77FF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x102B94;
-                Client.MultiClientValue = 0xEB;
+                Client.MultiClient = 0x502B94;//not verified
                 Client.Status = 0x77F3F8;
                 Client.SafeMode = 0x77C1D0;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -975,8 +964,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x77DF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x102B74;
-                Client.MultiClientValue = 0xEB;
+                Client.MultiClient = 0x502B74;//not verified
                 Client.Status = 0x77D3F8;
                 Client.SafeMode = 0x77A1D0;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -1164,8 +1152,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x77AF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0x100CE4;
-                Client.MultiClientValue = 0xEB;
+                Client.MultiClient = 0x500CE4;//not verified
                 Client.Status = 0x77A3F8;
                 Client.SafeMode = 0x7771D0;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -1351,8 +1338,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x76CE0C;
                 Client.FrameRateCurrentOffset = 0x00;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.MultiClient = 0xF8944;
-                Client.MultiClientValue = 0xEB;
+                Client.MultiClient = 0;//?
                 Client.Status = 0x76C2C8;
                 Client.SafeMode = 0x76909C;
                 Client.FollowMode = Client.SafeMode + 4;
@@ -1570,8 +1556,7 @@ namespace Tibia
 
                 Client.XTeaKey = 0x7637AC;
                 //Client.FrameRate = 0x7661F4; 
-                Client.MultiClient = 0x4EFB71;
-                Client.MultiClientValue = 0xEB;
+                Client.MultiClient = 0x4EFB71;//not verified
                 Client.Status = 0x766DF8;
                 Client.FollowMode = 0x763BD0;
                 Client.AttackMode = 0x763BD4;
