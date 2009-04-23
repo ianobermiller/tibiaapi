@@ -28,7 +28,7 @@ namespace Tibia
                 Client.FrameRatePointer = 0x789F3C;
                 Client.FrameRateCurrentOffset = 0x60;
                 Client.FrameRateLimitOffset = 0x58;
-                Client.DMultiClient = 0x5061C4;
+                Client.MultiClient = 0x5061C4;
                 Client.DMultiClientJMP = 0xEB;
                 Client.DMultiClientJNZ = 0x75;
                 Client.Status = 0x7893F8;
@@ -258,6 +258,7 @@ namespace Tibia
                 Vip.DistanceIcon = 40;
                 Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
             }
+            #endregion
             #region 8.40 Addresses
             if (version == "8.40")
             {
@@ -275,7 +276,7 @@ namespace Tibia
                 Client.FrameRateLimitOffset = 0x58;
                 Client.MultiClient = 0x1054F4;
                 Client.MultiClientValue = 0xEB;
-                Client.DMultiClient = 0x505924;
+                Client.MultiClient = 0x505924;
                 Client.DMultiClientJMP = 0xEB;
                 Client.DMultiClientJNZ = 0x75;
                 Client.Status = 0x788370;
@@ -521,7 +522,7 @@ namespace Tibia
                 Client.FrameRateLimitOffset = 0x58;
                 Client.MultiClient = 0x1054F4;
                 Client.MultiClientValue = 0xEB;
-                Client.DMultiClient = 0x505894;
+                Client.MultiClient = 0x505894;
                 Client.DMultiClientJMP = 0xEB;
                 Client.DMultiClientJNZ = 0x75;
                 Client.Status = 0x7834B0;
