@@ -13,7 +13,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Step between tiles on the map.
         /// </summary>
-        public static uint StepTile = 172;
+        public static uint StepTile = 168;
 
         /// <summary>
         /// Step between objects on a tile.
@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Maximum number of objects per tile.
         /// </summary>
-        public static uint MaxTileObjects = 13;
+        public static uint MaxTileObjects = 10;
 
         /// <summary>
         /// Maximum number of tiles in the X direction
