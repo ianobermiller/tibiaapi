@@ -343,10 +343,10 @@ namespace Tibia.Objects
 
             IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
             Process p = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
-            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.DMultiClient, Tibia.Addresses.Client.DMultiClientJMP);
+            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.MultiClient, Tibia.Addresses.Client.DMultiClientJMP);
             Util.WinApi.ResumeThread(pi.hThread);
             p.WaitForInputIdle();
-            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.DMultiClient, Tibia.Addresses.Client.DMultiClientJNZ);
+            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.MultiClient, Tibia.Addresses.Client.DMultiClientJNZ);
             Util.WinApi.CloseHandle(handle);
             Util.WinApi.CloseHandle(pi.hProcess);
             Util.WinApi.CloseHandle(pi.hThread);
