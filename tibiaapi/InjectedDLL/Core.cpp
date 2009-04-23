@@ -291,14 +291,14 @@ void EnableHooks()
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 
 	//recv/send
-	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"send");
+	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"send");
 	OrigSend=(PSEND)OrigSendAddress;
 	funcAddress = (DWORD)&MySend;
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
 
-	OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandle("WS2_32.dll"),"recv");
+	OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"recv");
 	OrigRecv=(PRECV)OrigRecvAddress;
 	funcAddress = (DWORD)&MyRecv;
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
@@ -422,7 +422,7 @@ void StartUninjectSelf()
 	}
 	catch (...)
 	{
-		MessageBox(0, "StartUninjectSelf -> Unable to uninject from process.", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
+		MessageBoxA(0,"StartUninjectSelf -> Unable to uninject from process." ,"TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
 	}
 }
 
