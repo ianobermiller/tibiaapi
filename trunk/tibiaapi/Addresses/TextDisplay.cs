@@ -22,7 +22,7 @@
         /// <summary>
         /// PrintText function address
         /// </summary
-        public static uint PrintTextFunc = 0x4AF4E0; // 8.42
+        public static uint PrintTextFunc = 0x4AF8D0; // 8.42
 
 
         /// <summary>
