@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
 {
@@ -26,10 +27,9 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                //the client send the player location here.
                 Client.playerLocation = msg.GetLocation();
                 outMsg.AddLocation(Client.playerLocation);
-                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
+                SetMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
             }
             catch (Exception)
             {
@@ -39,6 +39,14 @@ namespace Tibia.Packets.Incoming
             }
 
             return true;   
+        }
+
+        public override void ToNetworkMessage(ref NetworkMessage msg)
+        {
+            Location playerLocation = Client.PlayerLocation;
+            msg.AddByte((byte)Type);
+            msg.AddLocation(playerLocation);
+            GetMapDescription(playerLocation.X - 8, playerLocation.Y - 6, playerLocation.Z, 18, 14, msg);
         }
     }
 }

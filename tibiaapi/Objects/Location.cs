@@ -134,6 +134,16 @@ namespace Tibia.Objects
             return other.X == X && other.Y == Y && other.Z == Z;
         }
 
+        public static bool operator ==(Location me, Location other)
+        {
+            return me.Equals(other);
+        }
+
+        public static bool operator !=(Location me, Location other)
+        {
+            return !me.Equals(other);
+        }
+
         public Location Offset(int x, int y, int z)
         {
             return new Location(X + x, Y + y, Z + z);

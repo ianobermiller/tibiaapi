@@ -28,7 +28,7 @@ namespace Tibia.Packets.Incoming
 
             try
             {
-                setMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 1, outMsg);
+                SetMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 1, outMsg);
             }
             catch (Exception)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
@@ -30,7 +31,7 @@ namespace Tibia.Packets.Incoming
 
         public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg);
 
-        protected bool setMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height, NetworkMessage outMsg)
+        protected bool SetMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height, NetworkMessage outMsg)
         {
             int startz, endz, zstep;
             //calculate map limits
@@ -50,14 +51,14 @@ namespace Tibia.Packets.Incoming
             for (int nz = startz; nz != endz + zstep; nz += zstep)
             {
                 //pare each floor
-                if (!setFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
+                if (!SetFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
                     return false;
             }
 
             return true;
         }
 
-        protected bool setFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset, NetworkMessage outMsg)
+        protected bool SetFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset, NetworkMessage outMsg)
         {
             ushort skipTiles;
 
@@ -82,7 +83,7 @@ namespace Tibia.Packets.Incoming
                             //real tile so read tile
                             Objects.Location pos = new Tibia.Objects.Location(x + nx + offset, y + ny + offset, z);
 
-                            if (!setTileDescription(msg, pos, outMsg))
+                            if (!SetTileDescription(msg, pos, outMsg))
                             {
                                 return false;
                             }
@@ -103,7 +104,7 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        protected bool setTileDescription(NetworkMessage msg, Objects.Location pos, NetworkMessage outMsg)
+        protected bool SetTileDescription(NetworkMessage msg, Objects.Location pos, NetworkMessage outMsg)
         {
             int n = 0;
             bool ret = true;
@@ -129,7 +130,7 @@ namespace Tibia.Packets.Incoming
                         break;
                     }
                     //read tile things: items and creatures
-                    internalGetThing(msg, pos, tile, n, outMsg);
+                    InternalGetThing(msg, pos, tile, n, outMsg);
                 }
             }
 
@@ -137,7 +138,7 @@ namespace Tibia.Packets.Incoming
             return ret;
         }
 
-        protected bool internalGetThing(NetworkMessage msg, Location pos, Tile tile, int n, NetworkMessage outMsg)
+        protected bool InternalGetThing(NetworkMessage msg, Location pos, Tile tile, int n, NetworkMessage outMsg)
         {
             //get thing type
             ushort thingId = msg.GetUInt16();
@@ -236,6 +237,146 @@ namespace Tibia.Packets.Incoming
 
                 return true;
             }
+        }
+
+        protected void GetMapDescription(int x, int y, int z, int width, int height, NetworkMessage msg)
+        {
+	        int skip = -1;
+	        int startz, endz, zstep = 0;
+
+	        if (z > 7) 
+            {
+		        startz = z - 2;
+		        endz = Math.Min(16 - 1, z + 2);
+		        zstep = 1;
+	        }
+	        else 
+            {
+		        startz = 7;
+		        endz = 0;
+
+		        zstep = -1;
+	        }
+
+	        for (int nz = startz; nz != endz + zstep; nz += zstep)
+            {
+                skip = GetFloorDescription(x, y, nz, width, height, z - nz, skip, msg);
+	        }
+
+	        if(skip >= 0)
+            {
+                msg.AddByte((byte)skip);
+                msg.AddByte(0xFF);
+	        }
+        }
+
+        protected int GetFloorDescription(int x, int y, int z, int width, int height, int offset, int skip, NetworkMessage msg)
+        {
+	        Tile tile;
+
+	        for(int nx = 0; nx < width; nx++)
+            {
+		        for(int ny = 0; ny < height; ny++)
+                {
+			        tile = Client.Map.GetTile(new Location(x + nx + offset, y + ny + offset, z));
+			        if(tile != null)
+                    {
+				        if(skip >= 0)
+                        {
+                            msg.AddByte((byte)skip);
+                            msg.AddByte(0xFF);
+				        }
+				        skip = 0;
+
+
+                        GetTileDescription(tile, msg);
+			        }
+			        else 
+                    {
+				        skip++;
+				        if(skip == 0xFF)
+                        {
+                            msg.AddByte(0xFF);
+                            msg.AddByte(0xFF);
+					        skip = -1;
+				        }
+			        }
+		        }
+	        }
+            return skip;
+        }
+
+        protected void GetTileDescription(Tile tile, NetworkMessage msg)
+        {
+            //Tile player = Client.Map.GetTileWithPlayer();
+            System.Console.WriteLine(tile.MemoryLocation);
+            //if (tile.MemoryLocation == player.MemoryLocation)
+            //    System.Console.WriteLine(tile.MemoryLocation);
+	        if(tile != null)
+            {
+                List<TileObject> objects = tile.Objects;
+                objects.Insert(0, new TileObject((int)tile.Ground.Id, tile.Ground.Count, 0));
+
+                foreach (TileObject o in objects)
+                {
+                    if (o.Id <= 0)
+                    {
+                        return;
+                    }
+                    else if (o.Id == 0x0061 || o.Id == 0x0062 || o.Id == 0x0063)
+                    {
+                        // Add a creature
+                        Creature c = Client.BattleList.GetCreatures().FirstOrDefault(cr => cr.Id == o.Data);
+
+                        if (c == null)
+                            throw new Exception("Creature does not exist.");
+
+                        // Add as unknown
+                        msg.AddUInt16(0x0061);
+
+                        // No need to remove a creature
+                        msg.AddUInt32(0);
+
+                        // Add the creature id
+                        msg.AddUInt32((uint)c.Id);
+
+                        msg.AddString(c.Name);
+
+                        msg.AddByte((byte)c.HPBar);
+
+                        msg.AddByte((byte)c.Direction);
+
+                        msg.AddOutfit(c.Outfit);
+
+                        msg.AddByte((byte)c.Light);
+
+                        msg.AddByte((byte)c.LightColor);
+
+                        msg.AddUInt16((ushort)c.WalkSpeed);
+
+                        msg.AddByte((byte)c.Skull);
+
+                        msg.AddByte((byte)c.Party);
+                    }
+                    else if (o.Id <= 9999)
+                    {
+                        // Add an item
+                        Item item = new Item(Client, (uint)o.Id, (byte)o.Data, "",
+                            ItemLocation.FromLocation(tile.Location, (byte)o.StackOrder));
+
+                        msg.AddUInt16((ushort)o.Id);
+
+                        try
+                        {
+                            if (item.HasExtraByte)
+                            {
+                                msg.AddByte(item.Count);
+                            }
+                        }
+                        catch { }
+                    }
+                }
+	        }
         }
     }
 }

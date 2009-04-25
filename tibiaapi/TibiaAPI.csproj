@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -97,8 +97,8 @@
     <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\TAConstants.cs" />
     <Compile Include="Constants\Tiles.cs" />
-    <Compile Include="Exceptions\Misc.cs" />
-    <Compile Include="Exceptions\Version.cs" />
+    <Compile Include="Objects\Exceptions\Misc.cs" />
+    <Compile Include="Objects\Exceptions\Version.cs" />
     <Compile Include="Objects\Client.DllHelper.cs" />
     <Compile Include="Objects\Client.InputHelper.cs" />
     <Compile Include="Objects\Client.IOHelper.cs" />

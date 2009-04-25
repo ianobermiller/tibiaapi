@@ -41,7 +41,7 @@ namespace Tibia.Packets.Incoming
                 }
                 else
                 {
-                    if (!setTileDescription(msg, pos, outMsg))
+                    if (!SetTileDescription(msg, pos, outMsg))
                     {
                         //RAISE_PROTOCOL_ERROR("Tile Update - SetTileDescription");
                     }

@@ -295,15 +295,15 @@ void EnableHooks()
 	OrigSend=(PSEND)OrigSendAddress;
 	funcAddress = (DWORD)&MySend;
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-	memcpy((LPVOID) Consts::ptrSend,&funcAddress,4);
+	memcpy((LPVOID)Consts::ptrSend, &funcAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
 
 	OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"recv");
 	OrigRecv=(PRECV)OrigRecvAddress;
 	funcAddress = (DWORD)&MyRecv;
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-	memcpy((LPVOID) Consts::ptrRecv,&funcAddress,4);
-	VirtualProtect( (LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+	memcpy((LPVOID)Consts::ptrRecv, &funcAddress, 4);
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 
 	OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
 
@@ -339,11 +339,11 @@ void DisableHooks()
 	//recv/send
 	//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
-	memcpy((LPVOID) Consts::ptrSend,&OrigSendAddress,4);
+	memcpy((LPVOID)Consts::ptrSend, &OrigSendAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
 
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
-	memcpy((LPVOID) Consts::ptrRecv,&OrigRecvAddress,4);
+	memcpy((LPVOID)Consts::ptrRecv, &OrigRecvAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 
 	HooksEnabled = false;
