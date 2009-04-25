@@ -26,10 +26,10 @@ namespace Tibia.Packets
         public HookProxy(Client client)
         {
             this.client = client;
-            serverRecvMsg = new NetworkMessage(client, 4096);
-            serverSendMsg = new NetworkMessage(client, 4096);
-            clientRecvMsg = new NetworkMessage(client, 4096);
-            clientSendMsg = new NetworkMessage(client, 4096);
+            serverRecvMsg = new NetworkMessage(client);
+            serverSendMsg = new NetworkMessage(client);
+            clientRecvMsg = new NetworkMessage(client);
+            clientSendMsg = new NetworkMessage(client);
             
             if (client.Dll.Pipe == null)
             {
@@ -130,10 +130,21 @@ namespace Tibia.Packets
                         while (serverRecvMsg.Position < msgSize)
                         {
                             int position = serverRecvMsg.Position;
+                            bool parsed = false;
 
-                            if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
+                            try
                             {
-                                if (serverRecvMsg.Length - serverRecvMsg.Position > 0)
+                                parsed = ParsePacketFromServer(client, serverRecvMsg, clientSendMsg);
+                            }
+                            catch (Exception e)
+                            {
+                                System.Console.Write(e);
+                            }
+
+                            if (!parsed)
+                            {
+                                if (serverRecvMsg.Length - serverRecvMsg.Position > 0 &&
+                                    serverRecvMsg.Length < serverRecvMsg.GetBuffer().Length)
                                 {
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
                                     OnSplitPacketFromServer(unknown[0], unknown);
@@ -158,7 +169,7 @@ namespace Tibia.Packets
 
         public void ProcessFromClient(byte[] buffer)
         {
-            int length = (int)BitConverter.ToUInt16(buffer, 0) + 2;
+            int length = buffer.Length;
 
             Array.Copy(buffer, clientRecvMsg.GetBuffer(), length);
             clientRecvMsg.Length = length;

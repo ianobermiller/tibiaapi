@@ -34,12 +34,12 @@ namespace Tibia.Packets.Incoming
                 {
                     int j, i;
                     for (i = Client.playerLocation.Z, j = -1; i < Client.playerLocation.Z + 3; ++i, --j)
-                        setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, j, outMsg);
+                        SetFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, j, outMsg);
 
                 }
                 //going further down
                 else if (Client.playerLocation.Z > 8 && Client.playerLocation.Z < 14)
-                    setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z + 2, 18, 14, -3, outMsg);
+                    SetFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z + 2, 18, 14, -3, outMsg);
 
                 return true;
             }

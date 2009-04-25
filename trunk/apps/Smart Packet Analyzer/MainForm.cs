@@ -1,3 +1,5 @@
+#define UseHookProxy
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,11 +57,7 @@ namespace SmartPacketAnalyzer
             }
             else
             {
-                client.Dll.InitializePipe();
-                HookProxy hookProxy = new HookProxy(client);
-                hookProxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
-                hookProxy.SplitPacketFromServer += SplitMessageFromServer;
-                hookProxy.SplitPacketFromClient += SplitMessageFromClient;
+                InitializeProxy();
             }
 
             foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
@@ -82,6 +80,23 @@ namespace SmartPacketAnalyzer
             {
                 uxTypes.Items.Add(new PacketType(kvp.Key, kvp.Value, false));
             }
+        }
+
+        void InitializeProxy()
+        {
+            ProxyBase proxy;
+
+#if UseHookProxy
+                client.Dll.InitializePipe();
+                proxy = new HookProxy(client);
+#else
+                client.IO.StartProxy();
+                proxy = client.IO.Proxy;
+#endif
+
+            proxy.ReceivedTextMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+            proxy.SplitPacketFromServer += SplitMessageFromServer;
+            proxy.SplitPacketFromClient += SplitMessageFromClient;
         }
 
         bool Proxy_ReceivedTextMessageIncomingPacket(IncomingPacket packet)
@@ -252,7 +267,6 @@ namespace SmartPacketAnalyzer
                 filterType = (PacketType)uxTypes.Items[uxTypes.SelectedIndex];
             }
         }
-
     }
 
     public struct CapturedPacket

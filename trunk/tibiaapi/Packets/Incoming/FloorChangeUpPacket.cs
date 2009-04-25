@@ -34,11 +34,11 @@ namespace Tibia.Packets.Incoming
                 {
                     //floor 7 and 6 already set
                     for (int i = 5; i >= 0; i--)
-                        setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, 8 - i, outMsg);
+                        SetFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, i, 18, 14, 8 - i, outMsg);
                 }
                 //underground, going one floor up (still underground)
                 else if (Client.playerLocation.Z > 7)
-                    setFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z - 2, 18, 14, 3, outMsg);
+                    SetFloorDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z - 2, 18, 14, 3, outMsg);
 
                 return true;
             }
