@@ -97,8 +97,8 @@
     <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\TAConstants.cs" />
     <Compile Include="Constants\Tiles.cs" />
-    <Compile Include="Objects\Exceptions\Misc.cs" />
-    <Compile Include="Objects\Exceptions\Version.cs" />
+    <Compile Include="Exceptions\Misc.cs" />
+    <Compile Include="Exceptions\Version.cs" />
     <Compile Include="Objects\Client.DllHelper.cs" />
     <Compile Include="Objects\Client.InputHelper.cs" />
     <Compile Include="Objects\Client.IOHelper.cs" />
