@@ -10,7 +10,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Max names in VipList.
         /// </summary>
-        public static uint MaxPlayers = 100;
+        public static uint MaxPlayers = 200;
 
         /// <summary>
         /// Start of the VipList.
