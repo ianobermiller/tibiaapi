@@ -49,12 +49,7 @@ namespace Tibia.Objects
                     int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
                     double value = 1000 / client.Memory.ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
 
-                    //FIX HERE: Does the .net have some function to do this?
-                    double valueL = Math.Floor(value);
-                    if (valueL + 0.5 < value)
-                        return Math.Ceiling(value);
-                    else
-                        return valueL;
+                    double valueL = Math.Round(value); // using Math.Round
                 }
                 set
                 {
