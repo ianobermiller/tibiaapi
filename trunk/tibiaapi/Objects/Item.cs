@@ -34,7 +34,7 @@ namespace Tibia.Objects
             : this(client, id, count, "") { }
 
         public Item(Client client, uint id, byte count, string name)
-            : this(client, id, count, "", null) { }
+            : this(client, id, count, name, null) { }
 
         public Item(Client client, uint id, byte count, string name, ItemLocation location)
         {
