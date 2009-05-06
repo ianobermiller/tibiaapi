@@ -16,17 +16,6 @@ namespace Tibia.Objects
             internal WindowHelper(Client client) { this.client = client; }
 
             /// <summary>
-            /// This will set the FPSLimit with the value you give
-            /// NOTE: The official value is 1000/fpsmax
-            /// </summary>
-            /// <param name="value"></param>
-            public void SetFPSLimit(double value)
-            {
-                int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
-                client.Memory.WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, value);
-            }
-
-            /// <summary>
             /// Get the current FPS of the client.
             /// </summary>
             public double FPSCurrent
@@ -47,9 +36,7 @@ namespace Tibia.Objects
                 get
                 {
                     int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
-                    double value = 1000 / client.Memory.ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset);
-
-                    double valueL = Math.Round(value); // using Math.Round
+                    return Calculate.ConvertFPS(client.Memory.ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset));
                 }
                 set
                 {
@@ -72,13 +59,15 @@ namespace Tibia.Objects
             /// </summary>
             public bool IsActive
             {
-                get
-                { return Handle == Util.WinApi.GetForegroundWindow(); }
-                set
-                {
-                    if (value)
-                        Util.WinApi.SetForegroundWindow(Handle);
-                }
+                get { return Handle == Util.WinApi.GetForegroundWindow(); }
+            }
+
+            /// <summary>
+            /// Bring the window to the front.
+            /// </summary>
+            public void Activate()
+            {
+                Util.WinApi.SetForegroundWindow(Handle);
             }
 
             /// <summary>
