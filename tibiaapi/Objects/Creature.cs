@@ -157,7 +157,7 @@ namespace Tibia.Objects
         /// Gets the distance between player and creature / player.
         /// </summary>
         /// <returns></returns>
-        public int DistanceTo(Location l)
+        public double DistanceTo(Location l)
         {
             return Location.DistanceTo(l);
         }
