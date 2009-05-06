@@ -70,7 +70,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool IsAdjacentTo(Location loc)
         {
-            return DistanceTo(loc) <= 1 && loc.Z == Z;
+
+            return loc.Z == Z && Math.Max(Math.Abs(X - loc.X), Math.Abs(Y - loc.Y)) <= 1;
         }
 
         /// <summary>
@@ -83,16 +84,16 @@ namespace Tibia.Objects
         }
 
         /// <summary>
-        /// Gets the distance between locations.
+        /// Gets the distance between locations. Ignores Z.
         /// </summary>
         /// <param name="l"></param>
         /// <returns></returns>
-        public int DistanceTo(Location l)
+        public double DistanceTo(Location l)
         {
-            int xDist = Math.Abs(X - l.X);
-            int yDist = Math.Abs(Y - l.Y);
+            int xDist = X - l.X;
+            int yDist = Y - l.Y;
 
-            return (xDist > yDist ? xDist : yDist);
+            return Math.Sqrt(xDist * xDist + yDist * yDist);
         }
 
         /// <summary>
