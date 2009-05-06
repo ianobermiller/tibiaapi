@@ -31,11 +31,12 @@ namespace Tibia.Constants
     /// <summary>
     /// The byte that is sent on RSA encrypted packets
     /// </summary>
-    public enum OperationalSystem : byte
+    public enum OperatingSystem : byte
     {
         Linux = 1,
         Windows = 2
-    };
+    }
+
     /// <summary>
     /// Different types of locations.
     /// </summary>

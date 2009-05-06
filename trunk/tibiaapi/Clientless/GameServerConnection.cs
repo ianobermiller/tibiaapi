@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using Tibia.Objects;
 using Tibia.Packets.RSA;
 using Tibia.Packets;
-using Tibia.Constants;
 
 namespace Tibia.Clientless
 {
@@ -42,11 +41,11 @@ namespace Tibia.Clientless
         #endregion
 
         #region Constructors/Destructors
-        public GameServerConnection(OperationalSystem opSystem, ushort version, string accountName,
+        public GameServerConnection(Constants.OperatingSystem opSystem, ushort version, string accountName,
             string password, bool openTibia, bool debug, CharacterLoginInfo charInfo) :
             this(opSystem, version, accountName, password, openTibia, debug, charInfo.CharName, charInfo.WorldIPString, charInfo.WorldPort) { }
 
-        public GameServerConnection(OperationalSystem opSystem, ushort version, string accountName,
+        public GameServerConnection(Constants.OperatingSystem opSystem, ushort version, string accountName,
             string password, bool openTibia, bool debug, string charName, string serverIp, ushort port)
         {
             this.version = version;
