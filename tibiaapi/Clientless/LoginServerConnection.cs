@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using Tibia.Objects;
 using Tibia.Packets.RSA;
 using Tibia.Packets;
-using Tibia.Constants;
 
 namespace Tibia.Clientless
 {
@@ -57,7 +56,7 @@ namespace Tibia.Clientless
         #endregion
 
         #region Constructors/Destructors
-        public LoginServerConnection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, bool debug) :
+        public LoginServerConnection(Constants.OperatingSystem opSystem, ushort version, string accountName, string password, bool openTibia, bool debug) :
             this(opSystem, version, accountName, password, openTibia,
             new LoginServer[] {
             new LoginServer("login01.tibia.com", 7171),
@@ -71,7 +70,7 @@ namespace Tibia.Clientless
             new LoginServer("tibia04.cipsoft.com", 7171),
             new LoginServer("tibia05.cipsoft.com", 7171)}, debug) { }
 
-        public LoginServerConnection(OperationalSystem opSystem, ushort version, string accountName, string password, bool openTibia, LoginServer[] loginServers, bool debug)
+        public LoginServerConnection(Constants.OperatingSystem opSystem, ushort version, string accountName, string password, bool openTibia, LoginServer[] loginServers, bool debug)
         {
             this.version = version;
             this.accName = accountName;
