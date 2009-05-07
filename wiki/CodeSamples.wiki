@@ -3,6 +3,7 @@
 
 === Table of Contents ===
  * [CodeSamples#Get_a_client_object_to_work_with Get a client object to work with]
+ * [CodeSamples#Using_the_hook_proxy Using the hook proxy]
  * [CodeSamples#Getting_player_information_from_the_Tibia_website Getting player information from the Tibia website]
  * [CodeSamples#Parsing_commands_from_the_player Parsing commands from the player]
  * [CodeSamples#Using_the_proxy Using the proxy]
@@ -50,6 +51,33 @@ If client Is Nothing Then
 	Application.[Exit]()
 End If
 }}}
+
+== Using the hook proxy ==
+*VB.Net*
+{{{
+Imports Tibia.Objects
+Imports Tibia.Packets
+Imports Tibia.Util
+
+Public Class MainForm
+    Private client As Client
+    Private proxy As HookProxy
+
+    Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        client = ClientChooser.ShowBox()
+        proxy = New HookProxy(client)
+
+        AddHandler proxy.ReceivedCreatureSpeechIncomingPacket, AddressOf ReceivedCreatureSpeechIncomingPacket
+    End Sub
+
+    Private Function ReceivedCreatureSpeechIncomingPacket(ByVal p As IncomingPacket)
+        Dim packet As Incoming.CreatureSpeechPacket = p
+        MessageBox.Show(packet.SenderName & ": " & packet.Message)
+        Return True
+    End Function
+End Class
+}}}
+
 == Getting player information from the Tibia website ==
 *C#*
 {{{
