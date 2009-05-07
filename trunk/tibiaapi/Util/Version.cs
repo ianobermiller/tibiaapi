@@ -429,7 +429,7 @@ namespace Tibia
                 Map.FullLightAdrDefault = 0x80;
                 Map.FullLightAdrEdited = 0xFF;
 
-                Player.Exp = 0x00613B64;
+                Player.Exp = 0x62BD24;
                 Player.Flags = Player.Exp - 108;
                 Player.Id = Player.Exp + 12;
                 Player.HP = Player.Exp + 8;
