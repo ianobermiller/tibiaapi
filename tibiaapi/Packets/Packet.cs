@@ -53,6 +53,24 @@ namespace Tibia.Packets
                     }
                 }
             }
+            else if (Client.Dll.Pipe.Connected)
+            {
+                lock (msgLock)
+                {
+                    msg.Reset();
+                    ToNetworkMessage(ref msg);
+
+                    if (msg.Length > 8)
+                    {
+                        msg.InsetLogicalPacketHeader();
+                        msg.PrepareToSend();
+
+                        Pipes.HookSendToServerPacket.Send(Client, msg.Data);
+
+                        return true;
+                    }
+                }
+            }
             else if (Destination == PacketDestination.Server)
             {
                 lock (msgLock)
