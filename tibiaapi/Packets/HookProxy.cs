@@ -9,7 +9,7 @@ using Tibia.Objects;
 
 namespace Tibia.Packets
 {
-    public class HookProxy : Tibia.Util.ProxyBase
+    public class HookProxy : ProxyBase
     {
         private Client client;
 

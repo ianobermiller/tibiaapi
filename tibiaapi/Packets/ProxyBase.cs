@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Net;
 
 
-namespace Tibia.Util
+namespace Tibia.Packets
 {
     public abstract class ProxyBase
     {
