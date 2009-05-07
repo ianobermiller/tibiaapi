@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace Tibia.Packets
 {
-    public class Proxy : Util.ProxyBase
+    public class Proxy : ProxyBase
     {
         #region Vars
 
