@@ -56,7 +56,6 @@ namespace Tibia.Packets
         private Thread serverSendThread;
         private object serverSendThreadLock;
 
-        private object debugLock;
         private bool connected;
 
         private byte lastRecvPacketType;
@@ -70,6 +69,9 @@ namespace Tibia.Packets
         {
             connected = true;
 
+            if (ReceivedSelfAppearIncomingPacket != null)
+                ReceivedSelfAppearIncomingPacket.BeginInvoke(packet, null, null);
+
             if (PlayerLogin != null)
                 Util.Scheduler.AddTask(PlayerLogin, new object[] { this, new EventArgs() }, 1000);
 
@@ -82,6 +84,7 @@ namespace Tibia.Packets
 
         public event EventHandler PlayerLogin;
         public event EventHandler PlayerLogout;
+        public new event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
 
         #endregion
 
@@ -174,8 +177,6 @@ namespace Tibia.Packets
             clientSendThreadLock = new object();
             serverSendThreadLock = new object();
 
-            debugLock = new object();
-
             xteaKey = new uint[4];
 
             loginServers = client.Login.Servers;
@@ -205,7 +206,7 @@ namespace Tibia.Packets
             }
 
             //login event
-            ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
+            base.ReceivedSelfAppearIncomingPacket += new IncomingPacketListener(Proxy_ReceivedSelfAppearIncomingPacket);
 
             StartListenFromClient();
             client.IO.UsingProxy = true;
@@ -263,8 +264,6 @@ namespace Tibia.Packets
                 clientStream = new NetworkStream(clientSocket);
                 clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
-            //catch (ObjectDisposedException) { Restart(); }
-            //catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
@@ -466,8 +465,8 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
@@ -641,8 +640,8 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
@@ -750,8 +749,8 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
@@ -811,30 +810,14 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
-                Restart();
                 WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+                Restart();
             }
         }
 
         #endregion
 
         #region Other Functions
-
-        private void WriteDebug(string msg)
-        {
-            try
-            {
-                lock (debugLock)
-                {
-                    System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "proxy_log.txt"), true);
-                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg + "\n");
-                    sw.Close();
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
 
         private int GetSelectedChar(string name)
         {

@@ -101,7 +101,7 @@ namespace Tibia.Packets
         public event IncomingPacketListener ReceivedSafeTradeCloseIncomingPacket;
         public event IncomingPacketListener ReceivedSafeTradeRequestAckIncomingPacket;
         public event IncomingPacketListener ReceivedSafeTradeRequestNoAckIncomingPacket;
-        public event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
+        public virtual event IncomingPacketListener ReceivedSelfAppearIncomingPacket;
         public event IncomingPacketListener ReceivedShopSaleGoldCountIncomingPacket;
         public event IncomingPacketListener ReceivedShopWindowCloseIncomingPacket;
         public event IncomingPacketListener ReceivedShopWindowOpenIncomingPacket;
@@ -1377,6 +1377,23 @@ namespace Tibia.Packets
                 }
             }
             return localIp;
+        }
+
+        private object debugLock = new object();
+        protected void WriteDebug(string msg)
+        {
+            try
+            {
+                lock (debugLock)
+                {
+                    System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "proxy_log.txt"), true);
+                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg + "\n");
+                    sw.Close();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
         #endregion
 
