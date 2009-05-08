@@ -65,6 +65,8 @@ namespace Tibia.Util
             {
                 client = (Client)selectedItem;
             }
+            
+            Version.Set(client.Version);
 
             // Set OT server
             if (client != null && options.UseOT)
