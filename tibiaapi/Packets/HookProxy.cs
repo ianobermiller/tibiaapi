@@ -136,9 +136,9 @@ namespace Tibia.Packets
                             {
                                 parsed = ParsePacketFromServer(client, serverRecvMsg, clientSendMsg);
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
-                                System.Console.Write(e);
+                                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
                             }
 
                             if (!parsed)
@@ -236,7 +236,10 @@ namespace Tibia.Packets
                         break;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
+            }
         }
     }
 }

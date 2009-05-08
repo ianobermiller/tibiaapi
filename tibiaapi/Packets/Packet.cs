@@ -8,6 +8,7 @@ namespace Tibia.Packets
 {
     public class Packet
     {
+        public enum SendMethod { Proxy, HookProxy, Memory }
         public uint PacketId { get; set; }
         public bool Forward { get; set; }
         public PacketDestination Destination { get; set; }
@@ -27,65 +28,87 @@ namespace Tibia.Packets
             throw new Exception("ToNetworkMessage not implemented.");
         }
 
-        public bool Send() 
+        public bool Send()
+        {
+            
+            if (Client.IO.UsingProxy)
+            {
+                return Send(SendMethod.Proxy);
+            }
+            else if (Client.Dll.Pipe.Connected)
+            {
+                return Send(SendMethod.HookProxy);
+            }
+            else if (Destination == PacketDestination.Server)
+            {
+                return Send(SendMethod.Memory);
+            }
+            return false;
+        }
+
+        public bool Send(SendMethod method) 
         {
             if (msg == null)
                 msg = new NetworkMessage(Client, 4048);
 
-            if (Client.IO.UsingProxy)
+            switch (method)
             {
-                lock (msgLock)
-                {
-                    msg.Reset();
-                    ToNetworkMessage(ref msg);
-
-                    if (msg.Length > 8)
+                
+                case SendMethod.Proxy:
+                    lock (msgLock)
                     {
-                        msg.InsetLogicalPacketHeader();
-                        msg.PrepareToSend();
+                        msg.Reset();
+                        ToNetworkMessage(ref msg);
 
-                        if (Destination == PacketDestination.Client)
-                            Client.IO.Proxy.SendToClient(msg.Data);
-                        else if (Destination == PacketDestination.Server)
-                            Client.IO.Proxy.SendToServer(msg.Data);
+                        if (msg.Length > 8)
+                        {
+                            msg.InsetLogicalPacketHeader();
+                            msg.PrepareToSend();
 
-                        return true;
+                            if (Destination == PacketDestination.Client)
+                                Client.IO.Proxy.SendToClient(msg.Data);
+                            else if (Destination == PacketDestination.Server)
+                                Client.IO.Proxy.SendToServer(msg.Data);
+
+                            return true;
+                        }
                     }
-                }
-            }
-            else if (Client.Dll.Pipe.Connected)
-            {
-                lock (msgLock)
-                {
-                    msg.Reset();
-                    ToNetworkMessage(ref msg);
-
-                    if (msg.Length > 8)
+                    break;
+                case SendMethod.HookProxy:
+                    lock (msgLock)
                     {
-                        msg.InsetLogicalPacketHeader();
-                        msg.PrepareToSend();
+                        msg.Reset();
+                        ToNetworkMessage(ref msg);
 
-                        Pipes.HookSendToServerPacket.Send(Client, msg.Data);
+                        if (msg.Length > 8)
+                        {
+                            msg.InsetLogicalPacketHeader();
+                            msg.PrepareToSend();
 
-                        return true;
+                            Pipes.HookSendToServerPacket.Send(Client, msg.Data);
+
+                            return true;
+                        }
                     }
-                }
-            }
-            else if (Destination == PacketDestination.Server)
-            {
-                lock (msgLock)
-                {
-                    msg.Reset();
-                    ToNetworkMessage(ref msg);
-
-                    if (msg.Length > 8)
+                    break;
+                case SendMethod.Memory:
+                    if (Destination == PacketDestination.Server)
                     {
-                        msg.InsetLogicalPacketHeader();
-                        msg.PrepareToSend();
+                        lock (msgLock)
+                        {
+                            msg.Reset();
+                            ToNetworkMessage(ref msg);
 
-                        return SendPacketByMemory(Client, msg.Data);
+                            if (msg.Length > 8)
+                            {
+                                msg.InsetLogicalPacketHeader();
+                                msg.PrepareToSend();
+
+                                return SendPacketByMemory(Client, msg.Data);
+                            }
+                        }   
                     }
-                }                
+                    break;
             }
 
             return false;
