@@ -179,7 +179,7 @@ namespace Tibia
                 Map.RevealInvisible1 = 0x45EB63;
                 Map.RevealInvisible2 = 0x4EBCD5;
                 Map.FullLightNop = 0x4E51B9;
-                Map.FullLightAdr = 0x4E51BB;
+                Map.FullLightAdr = 0x4E51BC;
                 Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
                 Map.FullLightNopEdited = new byte[] { 0x90, 0x90 };
                 Map.FullLightAdrDefault = 0x80;
@@ -429,7 +429,7 @@ namespace Tibia
                 Map.FullLightAdrDefault = 0x80;
                 Map.FullLightAdrEdited = 0xFF;
 
-                Player.Exp = 0x62BD24;
+                Player.Exp = 0x00613B64;
                 Player.Flags = Player.Exp - 108;
                 Player.Id = Player.Exp + 12;
                 Player.HP = Player.Exp + 8;
