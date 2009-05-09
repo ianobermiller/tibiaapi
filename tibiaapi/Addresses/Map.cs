@@ -161,7 +161,7 @@ namespace Tibia.Addresses
         public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
         public static byte[] FullLightNopEdited = { 0x90, 0x90 };
 
-        public static uint FullLightAdr = 0x4E523B;  // 8.42
+        public static uint FullLightAdr = 0x4E523C;  // 8.42
         public static byte FullLightAdrDefault = 0x80;
         public static byte FullLightAdrEdited = 0xFF;
     }
