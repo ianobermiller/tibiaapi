@@ -35,7 +35,7 @@ namespace Tibia.Packets
             {
                 return Send(SendMethod.Proxy);
             }
-            else if (Client.Dll.Pipe.Connected)
+            else if (Client.Dll.Pipe != null && Client.Dll.Pipe.Connected)
             {
                 return Send(SendMethod.HookProxy);
             }
