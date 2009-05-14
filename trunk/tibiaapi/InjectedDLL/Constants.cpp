@@ -23,6 +23,9 @@ namespace Consts {
 	/* Socket Stuff */
 	DWORD ptrRecv = 0;
 	DWORD ptrSend = 0;
+
+	/* Event Trigger Stuff */
+	DWORD ptrEventTrigger = 0;
 }
 
 /* DLL Injection Related Stuff */
@@ -39,5 +42,6 @@ CRITICAL_SECTION NormalTextCriticalSection;
 CRITICAL_SECTION CreatureTextCriticalSection;
 CRITICAL_SECTION ContextMenuCriticalSection;
 CRITICAL_SECTION OnClickCriticalSection;
+CRITICAL_SECTION EventTriggerCriticalSection;
 
 

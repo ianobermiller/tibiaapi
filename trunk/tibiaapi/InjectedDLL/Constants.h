@@ -23,6 +23,8 @@ namespace Consts {
 
 	extern DWORD ptrRecv;
 	extern DWORD ptrSend;
+
+	extern DWORD ptrEventTrigger;
 }
 
 /* DLL Injection Related Stuff */
@@ -39,6 +41,7 @@ extern CRITICAL_SECTION NormalTextCriticalSection;
 extern CRITICAL_SECTION CreatureTextCriticalSection;
 extern CRITICAL_SECTION ContextMenuCriticalSection;
 extern CRITICAL_SECTION OnClickCriticalSection;
+extern CRITICAL_SECTION EventTriggerCriticalSection;
 
 
 enum PipeConstantType : BYTE
@@ -56,7 +59,8 @@ enum PipeConstantType : BYTE
 		OnClickContextMenuVf = 0x0B,
 		TradeWithContextMenu = 0x0C,
 		Recv=0x0D,
-		Send=0x0E
+		Send=0x0E,
+		EventTriggered = 0x0F
 };
 
 /* Structures */
