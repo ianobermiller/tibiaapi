@@ -877,10 +877,10 @@ void ParseHookSendToServer(BYTE *Buffer, int position)
 
 void ParseEventTrigger(BYTE *Buffer, int position)
 {
-	//int type = Packet::ReadWord(Buffer, &position);
+	int type = Packet::ReadDWord(Buffer, &position);
 
 	EnterCriticalSection(&EventTriggerCriticalSection);
-	EventTrigger(0x08, NULL, NULL);
+	EventTrigger(type, NULL, NULL);
 	LeaveCriticalSection(&EventTriggerCriticalSection);
 }
 
