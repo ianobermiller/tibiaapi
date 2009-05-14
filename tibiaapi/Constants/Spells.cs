@@ -84,6 +84,7 @@ namespace Tibia.Constants
         public static Spell UndeadLegion = new Spell("Undead Legion", "exana mas mort", 500, SpellCategory.Summon, SpellType.Instant);
         public static Spell WhirlwindThrow = new Spell("Whirlwind Throw", "exori hur", 40, SpellCategory.Attack, SpellType.Instant);
         public static Spell WildGrowth = new Spell("Wild Growth", "exevo grav vita", 220, SpellCategory.Support, SpellType.Instant);
+        public static Spell WoundCleanse = new Spell("Wound Cleanse", "exana mort", 65, SpellCategory.Healing, SpellType.Instant);
         public static Spell WrathofNature = new Spell("Wrath of Nature", "exevo gran mas tera", 770, SpellCategory.Attack, SpellType.Instant);
     }
 }
