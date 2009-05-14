@@ -112,6 +112,8 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
 
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, Tibia.Addresses.Client.EventTriggerPointer);
+
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();

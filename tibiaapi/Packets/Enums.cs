@@ -193,7 +193,8 @@ namespace Tibia.Packets
         UnloadDll            = 0x0D,
         HookReceivedPacket   = 0x0E,
         HookSentPacket       = 0x0F,
-        HookSendToServer     = 0x10
+        HookSendToServer     = 0x10,
+        EventTriggers        = 0x11
 
     }
 
@@ -212,7 +213,8 @@ namespace Tibia.Packets
         OnClickContextMenuVf = 0x0B,
         TradeWithContextMenu = 0x0C,
         Recv                 =0x0D,
-        Send                 =0x0E
+        Send                 =0x0E,
+        EventTrigger         =0x0F
     }
     
     /// <summary>
@@ -458,6 +460,91 @@ namespace Tibia.Packets
         {
             Client = client;
         }
+    }
+
+    // (http://www.tpforums.org/forum/showthread.php?t=2399)
+    /// <summary>
+    /// Credits to Vitor for the EventTypes
+    /// </summary>
+    public enum EventType : byte
+    {
+        RegularDialog = 0x01,
+        RegularDialog2 = 0x02,
+        CharacterListLoading = 0x03,
+        ConnectionToGameWorld = 0x04,
+        LoginQueue = 0x05,
+        Logout = 0x06,
+        Exit = 0x07,
+        EnterGame = 0x08,
+        CharacterListLoading2 = 0x09,
+        CharacterList = 0x0A,
+        YouAreDead = 0x0B,
+        LinkcopyWarning = 0x0C,
+        AccountDataWarning = 0x0D,
+        Undefined1 = 0x0E,
+        Undefined2 = 0x0F,
+        EditList = 0x10,
+        SetOutfit = 0x11,
+        BugReport = 0x12,
+        ChannelList = 0x13,
+        InvitePlayerPrivate = 0x14,
+        ExcludePlayerPrivate = 0x15,
+        IgnoreList = 0x16,
+        RuleViolationReport = 0x17,
+        AddToVip = 0x18,
+        EditVip = 0x19,
+        Undefined3 = 0x1A,
+        Undefined4 = 0x1B,
+        QuestLog = 0x1C,
+        QuestLine = 0x1D,
+        Info = 0x1E,
+        GMRuleViolationPanel = 0x1F,
+        EditMinimapMark = 0x20,
+        EditMinimapMark2 = 0x21,
+        HelpMenu = 0x22,
+        TutorialHintsMenu = 0x23,
+        OptionsMenu = 0x24,
+        GraphicsOptionMenu = 0x25,
+        AdvancedGraphicsOptionMenu = 0x26,
+        ConsoleOptions = 0x27,
+        Hotkey = 0x28,
+        GeneralOptionsMenu = 0x29,
+        MessageOfTheDay = 0x2A,
+        DownloadClientUpdate = 0x2B,
+        Undefined5 = 0x2C,
+        Undefined6 = 0x2D,
+        LastUsedHotkeyCrosshair = 0x2E,
+        LastTradedItem = 0x2F,
+        ClientHelp = 0x30,
+        OpenPrivateChannelWithPlayer = 0x31,
+        OpenChatChannel = 0x32,
+        OpenChatChannel2 = 0x33,
+        Undefined7 = 0x34,
+        RuleViolationReportChannel = 0x35,
+        OpenNPCsChannel = 0x36,
+        Undefined8 = 0x37,
+        Undefined9 = 0x38,
+        NPCTrade = 0x39,
+        Undefined10 = 0x3A,
+        Undefined11 = 0x3B,
+        Undefined12 = 0x3C,
+        Undefined13 = 0x3D,
+        TutorialHint = 0x3E,
+        LastLookedItemContextMenu = 0x3F,
+        AttackCreatureContextMenu = 0x40,
+        AddToVipContextMenu = 0x41,
+        CurrentSelectedChannelMessagesContextMenu = 0x42,
+        CurrentSelectedChannelContextMenu = 0x43,
+        EmptyContextMenu = 0x44,
+        PasteContextMenu = 0x45,
+        MinimapMark = 0x46,
+        SkillsContextMenu = 0x47,
+        NPCTradingItemsContextMenu = 0x48,
+        ConnectToCharacterList = 0x49,
+        ConnectToGameWorldUsingLastChosenCharacter = 0x4A,
+        Undefined14 = 0x4B,
+        RestartClientAfterPatchExecution = 0x53,
+        UpdateClient = 0x54
     }
 
 

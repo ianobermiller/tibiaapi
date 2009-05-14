@@ -272,7 +272,7 @@ void EnableHooks()
 	{
 		MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
 		return;
-	}		
+	}
 
 	OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
 	OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);
@@ -306,6 +306,8 @@ void EnableHooks()
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 
 	OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
+
+	EventTrigger = (_EventTrigger*)Consts::ptrEventTrigger;
 
 	HooksEnabled = true;
 }
@@ -345,6 +347,8 @@ void DisableHooks()
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::ptrRecv, &OrigRecvAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+
+	EventTrigger = 0;
 
 	HooksEnabled = false;
 }
@@ -468,6 +472,7 @@ void UnloadSelf()
 	DeleteCriticalSection(&CreatureTextCriticalSection);
 	DeleteCriticalSection(&ContextMenuCriticalSection);
 	DeleteCriticalSection(&OnClickCriticalSection);
+	DeleteCriticalSection(&EventTriggerCriticalSection);
 
 	//MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
 
@@ -528,6 +533,9 @@ inline void PipeOnRead()
 		case PipePacketType_HookSentPacket:
 			//OUTGOING PACKETS
 			break;
+		case PipePacketType_EventTrigger:
+			ParseEventTrigger(Buffer, position);
+			break;
 		default:
 			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
 			break;
@@ -541,7 +549,7 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-		!Consts::ptrRecv || !Consts::ptrSend) 
+		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger) 
 	{
 		MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
 		return;
@@ -611,6 +619,9 @@ void ParseSetConstant(BYTE *Buffer, int position)
 		break;
 	case Send:
 		Consts::ptrSend = value;
+		break;
+	case EventTriggered:
+		Consts::ptrEventTrigger = value;
 		break;
 	default:
 		break;
@@ -854,8 +865,6 @@ void RemoveAllContextMenus()
 	LeaveCriticalSection(&ContextMenuCriticalSection);
 }
 
-
-
 void ParseHookSendToServer(BYTE *Buffer, int position)
 {			
 	int packetLen = Packet::ReadWord(Buffer,&position);
@@ -865,6 +874,16 @@ void ParseHookSendToServer(BYTE *Buffer, int position)
 	int ret=OrigSend(sock,buf,packetLen+2,0);	
 	delete buf;
 }
+
+void ParseEventTrigger(BYTE *Buffer, int position)
+{
+	//int type = Packet::ReadWord(Buffer, &position);
+
+	EnterCriticalSection(&EventTriggerCriticalSection);
+	EventTrigger(0x08, NULL, NULL);
+	LeaveCriticalSection(&EventTriggerCriticalSection);
+}
+
 void PipeThreadProc(HMODULE Module)
 {
 	//Connect to Pipe
@@ -946,6 +965,8 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			InitializeCriticalSection(&CreatureTextCriticalSection);
 			InitializeCriticalSection(&ContextMenuCriticalSection);
 			InitializeCriticalSection(&OnClickCriticalSection);
+			InitializeCriticalSection(&EventTriggerCriticalSection);
+
 			PipeConnected = false;
 			//Start new thread for Pipe
 			PipeThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)PipeThreadProc, hMod, NULL, NULL);
@@ -959,6 +980,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&CreatureTextCriticalSection);
 			DeleteCriticalSection(&ContextMenuCriticalSection);
 			DeleteCriticalSection(&OnClickCriticalSection);
+			DeleteCriticalSection(&EventTriggerCriticalSection);
 			break;
 		}
 	}
