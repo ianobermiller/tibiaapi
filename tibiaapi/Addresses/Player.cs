@@ -76,7 +76,7 @@ namespace Tibia.Addresses
         public static uint TargetID = RedSquare;    
         public static uint TargetBListID = TargetID - 8; 
         public static uint TargetBListType = TargetID - 5;
-        public static uint TargetType = TargetID + 3;     
+        public static uint TargetType = TargetID + 3;
 
         /// <summary>
         /// Static address for player Z, used for level spy

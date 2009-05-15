@@ -233,6 +233,36 @@ namespace Tibia
             return new Location(worldLocation.X - xAdjustment, worldLocation.Y - yAdjustment, worldLocation.Z - zAdjustment);
         }
 
+        public static Location OffsetAsMemoryLocation(this Location loc, Location offset)
+        {
+            int maxX = (int)Addresses.Map.MaxX;
+            int maxY = (int)Addresses.Map.MaxY;
+            int maxZ = (int)Addresses.Map.MaxZ;
+
+            Location newLoc = new Location();
+
+            newLoc.X = loc.X + offset.X;
+
+            if (newLoc.X < 0)
+                newLoc.X += maxX;
+            if (newLoc.X > maxX - 1)
+                newLoc.X -= maxX;
+
+            newLoc.Y = loc.Y + offset.Y;
+            if (newLoc.Y < 0)
+                newLoc.Y += maxY;
+            if (newLoc.Y > maxY - 1)
+                newLoc.Y -= maxY;
+
+
+            newLoc.Z = loc.Z + offset.Z;
+            if (newLoc.Z < 0)
+                newLoc.Z += maxZ;
+            if (newLoc.Z > maxZ - 1)
+                newLoc.Z -= maxZ;
+
+            return newLoc;
+        }
 
         /// <summary>
         /// Convert a tile number to map tile address

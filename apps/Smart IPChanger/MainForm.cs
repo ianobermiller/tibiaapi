@@ -14,13 +14,13 @@ using System.IO;
 
 namespace SmartIPChanger
 {
-    public partial class uxForm : Form
+    public partial class MainForm : Form
     {
         // Todo:
         // move stuff into a separate class in TibiaAPI
-        // save the last used server
+
         public static string SavedServersLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"servers.xml");
-        public uxForm()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -64,6 +64,7 @@ namespace SmartIPChanger
                     first = false;
                 }
             }
+            uxServer.SelectedIndex = uxServer.Items.Count - 1;
         }
 
         private static List<LoginServer> GetSavedServers()
