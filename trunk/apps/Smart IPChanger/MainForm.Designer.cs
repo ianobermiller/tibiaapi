@@ -1,6 +1,6 @@
 namespace SmartIPChanger
 {
-    partial class uxForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

@@ -308,10 +308,6 @@ namespace Tibia.Packets.Incoming
 
         protected void GetTileDescription(Tile tile, NetworkMessage msg)
         {
-            //Tile player = Client.Map.GetTileWithPlayer();
-            System.Console.WriteLine(tile.MemoryLocation);
-            //if (tile.MemoryLocation == player.MemoryLocation)
-            //    System.Console.WriteLine(tile.MemoryLocation);
 	        if(tile != null)
             {
                 List<TileObject> objects = tile.Objects;
@@ -332,7 +328,7 @@ namespace Tibia.Packets.Incoming
                             throw new Exception("Creature does not exist.");
 
                         // Add as unknown
-                        msg.AddUInt16(0x0061);
+                        msg.AddUInt16((ushort)o.Id);
 
                         // No need to remove a creature
                         msg.AddUInt32(0);

@@ -26,7 +26,7 @@ namespace Tibia.Objects
         #region Get Tiles
         public Tile GetTileWithPlayer()
         {
-            if (playerTile == null || !playerTile.Location.Equals(client.PlayerLocation))
+            if (playerTile == null || playerTile.Location != client.PlayerLocation)
             {
                 int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
                 
@@ -77,30 +77,6 @@ namespace Tibia.Objects
                     yield return GetTile(i);
             }
 
-        }
-        #endregion
-
-        #region Conversions
-        private Location OffsetMemoryLocation(Location loc, int offsetX, int offsetY)
-        {
-            Location newLoc = new Location();
-
-            newLoc.X = loc.X + offsetX;
-
-            if (newLoc.X < 0) 
-                newLoc.X += 18;
-            if (newLoc.X > 17) 
-                newLoc.X -= 18;
-
-            newLoc.Y = loc.Y + offsetY;
-            if (newLoc.Y < 0) 
-                newLoc.Y += 14;
-            if (newLoc.Y > 13) 
-                newLoc.Y -= 14;
-
-            newLoc.Z = loc.Z;
-
-            return newLoc;
         }
         #endregion
 

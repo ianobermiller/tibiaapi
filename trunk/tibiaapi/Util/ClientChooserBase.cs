@@ -27,7 +27,7 @@ namespace Tibia.Util
                     case NewClientCustomText:
                         OpenFileDialog dialog = new OpenFileDialog();
                         dialog.Filter =
-                           "executable files (*.exe)|*.exe|All files (*.*)|*.*";
+                           "Executable files (*.exe)|*.exe|All files (*.*)|*.*";
                         dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                         dialog.Title = "Select a Tibia client executable";
                         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

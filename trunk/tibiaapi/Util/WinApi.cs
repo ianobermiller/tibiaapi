@@ -53,6 +53,7 @@ namespace Tibia.Util
         public const uint PROCESS_VM_READ = 0x0010;
         public const uint PROCESS_VM_WRITE = 0x0020;
         public const uint PROCESS_VM_OPERATION = 0x0008;
+        public const uint PAGE_EXECUTE_READ = 0x20;
         public const uint PAGE_EXECUTE_READWRITE = 0x40;
         public const uint PAGE_READWRITE = 0x4;
         public const uint MEM_COMMIT = 0x1000;
