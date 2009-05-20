@@ -511,6 +511,8 @@ namespace Tibia
 
                 Client.StartTime = 0x785310;
                 Client.XTeaKey = 0x77FE4C;
+                Client.SocketStruct = 0x77FE20;
+                Client.SendPointer = 0x5AA600;
                 Client.FrameRatePointer = 0x783FF4;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
@@ -744,6 +746,8 @@ namespace Tibia
 
                 Client.StartTime = 0x781258;
                 Client.XTeaKey = 0x77BDB4;
+                Client.SocketStruct = 0x77BD88;
+                Client.SendPointer = 0x5A7600;
                 Client.FrameRatePointer = 0x77FF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
@@ -961,6 +965,8 @@ namespace Tibia
 
                 Client.StartTime = 0x77BA3C;
                 Client.XTeaKey = 0x779DB4;
+                Client.SocketStruct = 0x779D88;
+                Client.SendPointer = 0x5A5600;
                 Client.FrameRatePointer = 0x77DF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
@@ -1149,6 +1155,8 @@ namespace Tibia
 
                 Client.StartTime = 0x77BA3C;
                 Client.XTeaKey = 0x776DB4;
+                Client.SocketStruct = 0x776D88;
+                Client.SendPointer = 0x5A3600;
                 Client.FrameRatePointer = 0x77AF3C;
                 Client.FrameRateCurrentOffset = 0x0;
                 Client.FrameRateLimitOffset = 0x58;
@@ -1335,6 +1343,8 @@ namespace Tibia
 
                 Client.StartTime = 0x76D90C;
                 Client.XTeaKey = 0x768C7C;
+                Client.SocketStruct = 0x768C50;
+                Client.SendPointer = 0x597600;
                 Client.FrameRatePointer = 0x76CE0C;
                 Client.FrameRateCurrentOffset = 0x00;
                 Client.FrameRateLimitOffset = 0x58;
@@ -1555,6 +1565,8 @@ namespace Tibia
                 BattleList.MaxCreatures = 100;
 
                 Client.XTeaKey = 0x7637AC;
+                Client.SocketStruct = 0x763780;
+                Client.SendPointer = 0x593600;
                 //Client.FrameRate = 0x7661F4; 
                 Client.MultiClient = 0x4EFB71;//not verified
                 Client.Status = 0x766DF8;
