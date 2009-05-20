@@ -4,7 +4,7 @@ using Tibia.Packets;
 
 namespace Tibia.Objects
 {
-    public class VipList
+    public class VipList : IEnumerable<Vip>
     {
         private Client client;
 
@@ -42,5 +42,19 @@ namespace Tibia.Objects
         {
             return Packets.Outgoing.VipRemovePacket.Send(client, (uint)vip.Id);
         }
+
+        #region IEnumerable<Vip> Members
+
+        IEnumerator<Vip> IEnumerable<Vip>.GetEnumerator()
+        {
+            return GetPlayers().GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetPlayers().GetEnumerator();
+        }
+
+        #endregion
     }
 }
