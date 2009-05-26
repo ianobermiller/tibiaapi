@@ -413,8 +413,8 @@ void __declspec(noreturn) UninjectSelf()
 	__asm
 	{
 		push hMod
-			push ExitCode
-			jmp dword ptr [FreeLibraryAndExitThread] 
+		push ExitCode
+		jmp dword ptr [FreeLibraryAndExitThread] 
 	}
 }
 
