@@ -111,9 +111,6 @@ namespace Tibia.Packets.Incoming
             Tile tile = new Tile(Client, 0, pos);
             while (true)
             {
-                //avoid infinite loop
-                n++;
-
                 ushort inspectTileId = msg.PeekUInt16();
 
                 if (inspectTileId >= 0xFF00)
@@ -132,6 +129,8 @@ namespace Tibia.Packets.Incoming
                     //read tile things: items and creatures
                     InternalGetThing(msg, pos, tile, n, outMsg);
                 }
+
+                n++;
             }
 
             tiles.Add(tile);
