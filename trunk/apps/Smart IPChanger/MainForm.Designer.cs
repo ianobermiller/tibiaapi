@@ -28,6 +28,7 @@ namespace SmartIPChanger
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxGo = new System.Windows.Forms.Button();
             this.uxServer = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
@@ -53,15 +54,17 @@ namespace SmartIPChanger
             this.uxServer.Name = "uxServer";
             this.uxServer.Size = new System.Drawing.Size(232, 21);
             this.uxServer.TabIndex = 3;
+            this.uxServer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.uxServer_KeyDown);
             // 
-            // uxForm
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(307, 30);
             this.Controls.Add(this.uxServer);
             this.Controls.Add(this.uxGo);
-            this.Name = "uxForm";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "MainForm";
             this.Text = "Smart IPChanger";
             this.Load += new System.EventHandler(this.uxForm_Load);
             this.ResumeLayout(false);

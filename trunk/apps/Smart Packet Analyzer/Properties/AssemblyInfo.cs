@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Smart Packet Analyzer")]
 [assembly: AssemblyDescription("A simple packet logger for Tibia.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TProgramming")]
+[assembly: AssemblyCompany("TibiaAPI")]
 [assembly: AssemblyProduct("Smart Packet Analyzer")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright ©  2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

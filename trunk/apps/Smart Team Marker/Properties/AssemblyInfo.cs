@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SmartTeamMarker")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Mark your friends and enemies in Tibia")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("koti")]
+[assembly: AssemblyCompany("TibiaAPI")]
 [assembly: AssemblyProduct("SmartTeamMarker")]
-[assembly: AssemblyCopyright("Copyright © koti 2008")]
+[assembly: AssemblyCopyright("Copyright © 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
