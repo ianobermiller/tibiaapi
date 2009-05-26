@@ -306,7 +306,7 @@ namespace Tibia
 
         public static Objects.Tile GetTileWithCreature(this IEnumerable<Objects.Tile> tiles, int creatureId)
         {
-            return tiles.FirstOrDefault( t => t.Objects.Any(
+            return tiles.FirstOrDefault(t => t.Objects.Any(
                     o => o.Id == 0x63 && o.Data == creatureId));
         }
 
@@ -328,7 +328,7 @@ namespace Tibia
                 {
                     s.AppendLine("\tValues = ");
                     s.AppendLine("\t{");
-                    foreach(object val in (IEnumerable)obj)
+                    foreach (object val in (IEnumerable)obj)
                     {
                         s.AppendLine("\t\t" + val.ToString());
                     }

@@ -112,6 +112,10 @@ namespace SmartIPChanger
                     otherserver.GetAttribute("port").Equals(port))
                 {
                     found = true;
+
+                    // Move it to the bottom of the list
+                    servers.RemoveChild(otherserver);
+                    servers.AppendChild(otherserver);
                     break;
                 }
             }
@@ -137,6 +141,14 @@ namespace SmartIPChanger
                 Directory.CreateDirectory(Tibia.Constants.TAConstants.AppDataPath);
 
             document.Save(SavedServersLocation);
+        }
+
+        private void uxServer_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                MessageBox.Show("deleted " + uxServer.SelectedValue);
+            }
         }
     }
 }

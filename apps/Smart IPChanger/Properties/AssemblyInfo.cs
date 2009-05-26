@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Smart IP Changer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Easily change the server your Tibia client connects to")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ian Obermiller")]
+[assembly: AssemblyCompany("TibiaAPI")]
 [assembly: AssemblyProduct("Smart IP Changer")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright ©  2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
