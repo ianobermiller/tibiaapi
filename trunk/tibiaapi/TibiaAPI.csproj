@@ -229,6 +229,11 @@
     <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
     <Compile Include="Packets\Xtea.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Util\AStarPathFinder.cs" />
     <Compile Include="Util\BigInteger.cs" />
     <Compile Include="Util\ClientChooser.cs">
@@ -294,9 +299,15 @@
     <None Include="TibiaAPI.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\Release\TibiaAPI_Inject.dll" />
     <Content Include="CurrentForumPost.txt" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Util\ClientChooser.resx">
       <DependentUpon>ClientChooser.cs</DependentUpon>
       <SubType>Designer</SubType>

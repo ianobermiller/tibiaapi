@@ -30,7 +30,7 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool Inject(string filename)
             {
-                if (!File.Exists(filename)) return false;
+                Extract();
 
                 // Get a block of memory to store the filename in the client
                 IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(
@@ -121,6 +121,45 @@ namespace Tibia.Objects
                 if (PipeInitialized != null)
                     PipeInitialized.BeginInvoke(client, new EventArgs(), null, null);
 
+            }
+
+            public void Extract()
+            {
+                bool doExtract = false;
+
+                if (File.Exists("TibiaAPI_Inject.dll"))
+                {
+                    byte[] embeddedBytes = Tibia.Properties.Resources.TibiaAPI_Inject;
+                    byte[] existingBytes = File.ReadAllBytes("TibiaAPI_Inject.dll");
+
+                    if (embeddedBytes.Length == existingBytes.Length)
+                    {
+                        uint embeddedChecksum = AdlerChecksum.Generate(
+                            ref embeddedBytes, 0, embeddedBytes.Length);
+                        uint existingChecksum = AdlerChecksum.Generate(
+                            ref existingBytes, 0, existingBytes.Length);
+
+                        if (embeddedChecksum != existingChecksum)
+                        {
+                            doExtract = true;
+                        }
+                    }
+                    else
+                    {
+                        doExtract = true;
+                    }
+                }
+                else
+                {
+                    doExtract = true;
+                }
+
+                if (doExtract)
+                {
+                    FileStream fileStream = new FileStream("TibiaAPI_Inject.dll", FileMode.Create);
+                    fileStream.Write(Tibia.Properties.Resources.TibiaAPI_Inject, 0, (int)Tibia.Properties.Resources.TibiaAPI_Inject.Length);
+                    fileStream.Close();
+                }
             }
         }
     }
