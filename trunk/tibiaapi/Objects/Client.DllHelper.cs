@@ -83,9 +83,7 @@ namespace Tibia.Objects
 
             public void DisconnectPipe()
             {
-                byte[] removeByte = { 0x2, 0x0, 0x5, 0x0 };
                 byte[] uninjectByte = { 0x2, 0x0, 0xD, 0x0 };
-                pipe.Send(new NetworkMessage(removeByte));
                 pipe.Send(new NetworkMessage(uninjectByte));
                 pipe = null;
             }
