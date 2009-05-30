@@ -344,6 +344,14 @@ namespace Tibia.Objects
             get { return client.Memory.ReadInt32(Addresses.Player.X); }
             set { client.Memory.WriteInt32(Addresses.Player.X, value); }
         }
+        public string WorldName
+        {
+            get
+            {
+                return client.Login.CharacterList[client.Login.SelectedChar].WorldName;
+            }
+        }
+
         #endregion
     }
 }
