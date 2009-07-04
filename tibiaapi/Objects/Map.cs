@@ -118,18 +118,16 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void ReplaceTrees()
         {
-            uint smallFirTreeId = 3682;
-            byte[] smallFirTreeBytes = client.Memory.ReadBytes(
-                client.Memory.ReadUInt32(
-                    client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8)
-                + Addresses.DatItem.Sprite
-                + (uint)(0x4C * (smallFirTreeId - 100)), 3);
+            
+            Item smallFirTree = new Item(client, 3682);
+            ushort smallFirTreeSpriteId = smallFirTree.SpriteIds[0];
+            ushort[] newIds;
             foreach (int id in Tibia.Constants.Items.TreeArray)
             {
-                uint address = client.Memory.ReadUInt32(client.Memory.ReadUInt32(Addresses.Client.DatPointer) + 8) 
-                    + Addresses.DatItem.Sprite 
-                    + (uint)(0x4C * (id - 100));
-                client.Memory.WriteBytes(address, smallFirTreeBytes, 3); 
+                Item tree = new Item(client,(uint) id);
+                newIds = new ushort[tree.SpriteCount];
+                newIds[0] = smallFirTreeSpriteId;
+                tree.SpriteIds = newIds;
             }
         }
         #endregion

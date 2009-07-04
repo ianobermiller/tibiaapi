@@ -135,15 +135,17 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
-                    DatItem.WalkSpeed = 40;
-                    DatItem.TextLimit = 44;
-                    DatItem.LightRadius = 48;
-                    DatItem.LightColor = 52;
-                    DatItem.ShiftX = 56;
-                    DatItem.ShiftY = 60;
-                    DatItem.WalkHeight = 64;
-                    DatItem.Automap = 68;
-                    DatItem.LensHelp = 72;
+                    DatItem.Unknown2 = 40;
+                    DatItem.Unknown2 = 44;
+                    DatItem.WalkSpeed = 48;
+                    DatItem.TextLimit = 52;
+                    DatItem.LightRadius = 56;
+                    DatItem.LightColor = 60;
+                    DatItem.ShiftX = 64;
+                    DatItem.ShiftY = 68;
+                    DatItem.WalkHeight = 72;
+                    DatItem.Automap = 76;
+                    DatItem.LensHelp = 80;
 
                     Hotkey.SendAutomaticallyStart = 0x78C558;
                     Hotkey.SendAutomaticallyStep = 0x01;
@@ -380,6 +382,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -624,6 +627,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -866,6 +870,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -1101,6 +1106,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -1326,6 +1332,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -1542,6 +1549,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -1729,6 +1737,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
@@ -1924,6 +1933,7 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
+                    DatItem.Unknown2 = 0;
                     DatItem.WalkSpeed = 40;
                     DatItem.TextLimit = 44;
                     DatItem.LightRadius = 48;
