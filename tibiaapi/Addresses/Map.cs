@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x645650; // 8.42
+        public static uint MapPointer = 0x646790; // 8.50
 
         /// <summary>
         /// Step between tiles on the map.
@@ -88,13 +88,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4ECA89; // 8.42
+        public static uint NameSpy1 = 0x4ED239; // 8.50
 
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4ECA93;  // 8.42
+        public static uint NameSpy2 = 0x4ED243;  // 8.50
 
 
         /// <summary>
@@ -109,25 +109,25 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4EE93A;  // 8.42
+        public static uint LevelSpy1 = 0x4EF0EA;  // 8.50
 
 
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4EEA3F;  // 8.42
+        public static uint LevelSpy2 = 0x4EF1EF;  // 8.50
 
 
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4EEAC0;  // 8.42
+        public static uint LevelSpy3 = 0x4EF270;  // 8.50
 
 
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x63D794;  // 8.42
+        public static uint LevelSpyPtr = 0x63E8D4;  // 8.50
 
         /// <summary>
         /// Defaults for level spy.
@@ -146,22 +146,22 @@ namespace Tibia.Addresses
         /// Write to this byte to reveal invisible creatures.
         /// Thanks to Stiju @ http://www.tpforums.org/forum/showthread.php?t=1141
         /// </summary>
-        public static uint RevealInvisible1 = 0x45EFE3;  // 8.42
+        public static uint RevealInvisible1 = 0x45F6F3;  // 8.50
         public static byte RevealInvisible1Default = 0x72;
         public static byte RevealInvisible1Edited = 0xEB;
 
-        public static uint RevealInvisible2 = 0x4EBD55;  // 8.42
+        public static uint RevealInvisible2 = 0x4EC505;  // 8.50
         public static byte RevealInvisible2Default = 0x75;
         public static byte RevealInvisible2Edited = 0xEB;
 
         /// <summary>
         /// Global light, all floors, used for improving levelspy
         /// </summary>
-        public static uint FullLightNop = 0x4E5239;  // 8.42
+        public static uint FullLightNop = 0x4E59C9;  // 8.50
         public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
         public static byte[] FullLightNopEdited = { 0x90, 0x90 };
 
-        public static uint FullLightAdr = 0x4E523C;  // 8.42
+        public static uint FullLightAdr = 0x4E59CC;  // 8.50
         public static byte FullLightAdrDefault = 0x80;
         public static byte FullLightAdrEdited = 0xFF;
     }
