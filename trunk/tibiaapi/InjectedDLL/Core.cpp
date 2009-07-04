@@ -13,6 +13,10 @@
 #ifdef _MANAGED
 #pragma managed(push, off)
 #endif
+/*
+#ifdef _DEBUG
+#undef _DEBUG
+#endif*/
 
 #define AddContextMenu(eventId, text, shortcut)   \
 	__asm push shortcut \

@@ -70,8 +70,8 @@ namespace Tibia.Addresses
         public static uint GreenSquare = RedSquare - 4;
         public static uint WhiteSquare = GreenSquare - 8;
 
-        public static uint AccessN = 0x766DF4; // 8.0
-        public static uint AccessS = 0x766DC4; // 8.0
+        public static uint AccessN = 0; // 8.0
+        public static uint AccessS = 0; // 8.0
 
         public static uint TargetID = RedSquare;    
         public static uint TargetBListID = TargetID - 8; 
