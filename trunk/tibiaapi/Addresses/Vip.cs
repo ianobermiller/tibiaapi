@@ -15,12 +15,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the VipList.
         /// </summary>
-        public static uint Start = 0x62FAB0; // 8.42
+        public static uint Start = 0x630BF0; // 8.50
 
         /// <summary>
         /// End of the VipList.
         /// </summary>
-        public static uint End = Start + (StepPlayers * MaxPlayers); // 8.42
+        public static uint End = Start + (StepPlayers * MaxPlayers);
 
         /// <summary>
         /// Distances for Vips.

@@ -20,7 +20,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the battle list.
         /// </summary>
-        public static uint Start = 0x631DF0; //8.42 Player.Exp + 108;
+        public static uint Start = 0x632F30; //8.50
 
         /// <summary>
         /// End of the battle list.
