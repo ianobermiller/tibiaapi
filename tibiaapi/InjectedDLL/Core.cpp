@@ -58,6 +58,9 @@ SOCKET sock = 0;
 CHandle pipe;						//Holds the Pipe handle (CHandle is from ATL library)
 OVERLAPPED overlapped = { 0 };		
 DWORD errorStatus = ERROR_SUCCESS;
+bool mustUnload = false;
+
+
 
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
@@ -139,7 +142,9 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 
 void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MySetOutfitContextMenu", "Error!", MB_ICONERROR);
+	/*#if _DEBUG	
+		MessageBoxA(0, "MySetOutfitContextMenu", "", 0);
+	#endif*/
 	AddContextMenu(eventId, text, shortcut);
 
 	list<ContextMenu>::iterator it;
@@ -163,7 +168,9 @@ void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char
 
 void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const char* shortcut)
 {
-	//MessageBoxA(0, "MyPartyActionContextMenu", "Error!", MB_ICONERROR);
+	/*#if _DEBUG
+		MessageBoxA(0, "MyPartyActionContextMenu", "", 0);
+	#endif*/
 	AddContextMenu(eventId, text, shortcut);
 
 	list<ContextMenu>::iterator it;
@@ -185,8 +192,10 @@ void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const ch
 }
 
 void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char* shortcut)
-{
-	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+{	
+	/*#if _DEBUG
+		MessageBoxA(0, "MyCopyNameContextMenu", "",MB_ICONERROR);
+	#endif*/
 	AddContextMenu(eventId, text, shortcut);
 
 	list<ContextMenu>::iterator it;
@@ -208,8 +217,10 @@ void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char*
 }
 
 void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char* shortcut)
-{
-	//MessageBoxA(0, "MyCopyNameContextMenu", "Error!", MB_ICONERROR);
+{	
+	/*#if _DEBUG
+		MessageBoxA(0, "MyCopyNameContextMenu", "", 0);
+	#endif*/
 	AddContextMenu(eventId, text, shortcut);
 
 	list<ContextMenu>::iterator it;
@@ -270,7 +281,9 @@ void EnableHooks()
 {
 	if(HooksEnabled)
 	{
-		MessageBoxA(0, "The hook is already injected", "Information", MB_ICONINFORMATION);
+		#if _DEBUG
+			MessageBoxA(0, "The hook is already injected", "", MB_ICONINFORMATION);
+		#endif
 		return;
 	}
 
@@ -313,8 +326,10 @@ void EnableHooks()
 }
 
 void DisableHooks()
-{
-	//MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+{	
+	#if _DEBUG
+		MessageBoxA(0, "Removing all hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 	if (OldPrintName)
 		UnhookCall(Consts::ptrPrintName, OldPrintName);
 	if (OldPrintFPS)
@@ -331,7 +346,9 @@ void DisableHooks()
 		UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
 	//OnClickContextMenuEvent..
-	//MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Removing context menu click event...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 	DWORD dwOldProtect, dwNewProtect, funcAddress;
 	funcAddress = (DWORD)&MyOnClickContextMenu;
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
@@ -339,7 +356,9 @@ void DisableHooks()
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 
 	//recv/send
-	//MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::ptrSend, &OrigSendAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
@@ -426,7 +445,9 @@ void StartUninjectSelf()
 	}
 	catch (...)
 	{
-		MessageBoxA(0,"StartUninjectSelf -> Unable to uninject from process." ,"TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR & MB_TOPMOST & MB_OK);
+		#if _DEBUG
+			MessageBoxA(0,"StartUninjectSelf -> Unable to uninject from process." ,"TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR | MB_TOPMOST );
+		#endif
 	}
 }
 
@@ -435,7 +456,9 @@ void UnloadSelf()
 	if(HooksEnabled) 
 	{
 		//remove all text
-		//MessageBoxA(0, "Removing all text...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		#if _DEBUG
+			MessageBoxA(0, "Removing all text...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+		#endif
 		list<NormalText>::iterator ntIT;
 		EnterCriticalSection(&NormalTextCriticalSection);
 		for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
@@ -448,7 +471,9 @@ void UnloadSelf()
 
 
 		//remove all contextmenus
-		//MessageBoxA(0, "Removing all context menus...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		#if _DEBUG
+			MessageBoxA(0, "Removing all context menus...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+		#endif
 		list<ContextMenu>::iterator cmIT;
 		EnterCriticalSection(&ContextMenuCriticalSection);
 		for(cmIT = ContextMenus.begin(); cmIT != ContextMenus.end(); ++cmIT)
@@ -459,13 +484,17 @@ void UnloadSelf()
 		DisableHooks();
 	}
 
-	//MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 
 	pipe.Detach();
 	//::DeleteFileA(PipeName.c_str());
 	//TerminateThread(PipeThread, EXIT_SUCCESS);
 
-	//MessageBoxA(0, "Deleting critical sections...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Deleting critical sections...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 
 	DeleteCriticalSection(&PipeReadCriticalSection);
 	DeleteCriticalSection(&NormalTextCriticalSection);
@@ -474,11 +503,15 @@ void UnloadSelf()
 	DeleteCriticalSection(&OnClickCriticalSection);
 	DeleteCriticalSection(&EventTriggerCriticalSection);
 
-	//MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 
 	StartUninjectSelf();
 
-	//MessageBoxA(0, "Done.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+	#if _DEBUG
+		MessageBoxA(0, "Done.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
 }
 
 inline void PipeOnRead()
@@ -523,7 +556,7 @@ inline void PipeOnRead()
 			RemoveAllContextMenus();
 			break;
 		case PipePacketType_UnloadDll:
-			UnloadSelf();
+			mustUnload=true;
 			break;
 		case PipePacketType_HookSendToServer:		
 			ParseHookSendToServer(Buffer, position);
@@ -537,7 +570,9 @@ inline void PipeOnRead()
 			ParseEventTrigger(Buffer, position);
 			break;
 		default:
-			MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
+			#if _DEBUG
+				MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
+			#endif
 			break;
 	}
 }
@@ -551,7 +586,9 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
 		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger) 
 	{
-		MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
+		#if _DEBUG
+			MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
+		#endif
 		return;
 	}
 
@@ -563,7 +600,9 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 	{
 		if(!HooksEnabled) 
 		{
-			MessageBoxA(0, "Please enable the function hooks before uninjecting", "Information", MB_ICONINFORMATION);
+			#if _DEBUG
+				MessageBoxA(0, "Enable the function hooks before uninjecting", "Information", MB_ICONINFORMATION);
+			#endif
 			return;
 		}
 
@@ -894,7 +933,9 @@ void PipeThreadProc(HMODULE Module)
 		if (pipe == INVALID_HANDLE_VALUE)
 		{
 			errorStatus = ::GetLastError();
-			MessageBoxA(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#if _DEBUG
+				MessageBoxA(0, "Pipe connection failed!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			#endif
 			UnloadSelf();
 			return;
 		} 
@@ -902,25 +943,39 @@ void PipeThreadProc(HMODULE Module)
 		{
 			//Pipe is ready. Let's start listening for incoming packets
 			PipeConnected = true;
-			if(!::ReadFileEx(pipe, Buffer, sizeof(Buffer), &overlapped, ReadFileCompleted))
+			
+			if (!mustUnload)
 			{
-				errorStatus = ::GetLastError();
-				MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
-				UnloadSelf();
-				return;
-			} 
-			else 
-			{
-				while (errorStatus == ERROR_SUCCESS)
+				if(!::ReadFileEx(pipe, Buffer, sizeof(Buffer), &overlapped, ReadFileCompleted))
 				{
-					const DWORD sleepResult = ::SleepEx(INFINITE, TRUE);
-					assert(WAIT_IO_COMPLETION == sleepResult);
+					errorStatus = ::GetLastError();					
+					#if _DEBUG
+						MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+					#endif
+					UnloadSelf();
+					return;
+				} 
+				else 
+				{
+					while (errorStatus == ERROR_SUCCESS)
+					{
+						const DWORD sleepResult = ::SleepEx(INFINITE, TRUE);
+						assert(WAIT_IO_COMPLETION == sleepResult);
+					}
 				}
+			}
+			else
+			{
+				UnloadSelf();
 			}
 		}
 	} 
 	else 
-		MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?", "TibiaAPI Injected DLL - Fatal Error", 0);
+	{
+		#if _DEBUG
+			MessageBoxA(0, "Failed waiting for pipe, maybe pipe is not ready?", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+		#endif
+	}
 }
 
 void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* overlapped)
@@ -931,17 +986,28 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 	{
 		PipeOnRead();
 
-		if (!::ReadFileEx(pipe, Buffer, sizeof(Buffer), overlapped, ReadFileCompleted))
+		if (!mustUnload)
 		{
-			errorStatus = ::GetLastError();
-			MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+			if (!::ReadFileEx(pipe, Buffer, sizeof(Buffer), overlapped, ReadFileCompleted))
+			{
+				errorStatus = ::GetLastError();				
+				#if _DEBUG
+					MessageBoxA(0, "Pipe read error!", "TibiaAPI Injected DLL - Fatal Error", MB_ICONERROR);
+				#endif
+				UnloadSelf();
+			}
+		}
+		else
+		{
 			UnloadSelf();
 		}
 	}
 	else
 	{
 		// pipe disconnected clean everything and remove the hook
-		//MessageBoxA(0, "Pipe disconnected, cleaning up.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONERROR);
+		#if _DEBUG
+			MessageBoxA(0, "Pipe disconnected, cleaning up.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+		#endif
 
 		UnloadSelf();
 	}
@@ -959,6 +1025,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			std::stringstream sout;
 			sout << "\\\\.\\pipe\\TibiaAPI" << CurrentPID;
 			PipeName =  sout.str();
+			
 
 			InitializeCriticalSection(&PipeReadCriticalSection);
 			InitializeCriticalSection(&NormalTextCriticalSection);
