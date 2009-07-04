@@ -23,14 +23,14 @@ namespace Tibia
                     BattleList.MaxCreatures = 250;
 
                     Client.StartTime = 0x7913F8;
-                    Client.XTeaKey = 0x78BF04;
+                    Client.XTeaKey = 0x78BF34;
                     Client.SocketStruct = 0x78BF08;
                     Client.RecvPointer = 0x5B05DC;
                     Client.SendPointer = 0x5B0608;
                     Client.FrameRatePointer = 0x7900DC;
                     Client.FrameRateCurrentOffset = 0x60;
                     Client.FrameRateLimitOffset = 0x58;
-                    Client.MultiClient = 0x506794;//not verified
+                    Client.MultiClient = 0x506794;
                     Client.Status = 0x78F598;
                     Client.SafeMode = 0x78C35C;
                     Client.FollowMode = Client.SafeMode + 4;
@@ -136,16 +136,15 @@ namespace Tibia
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
                     DatItem.Unknown2 = 40;
-                    DatItem.Unknown2 = 44;
-                    DatItem.WalkSpeed = 48;
-                    DatItem.TextLimit = 52;
-                    DatItem.LightRadius = 56;
-                    DatItem.LightColor = 60;
-                    DatItem.ShiftX = 64;
-                    DatItem.ShiftY = 68;
-                    DatItem.WalkHeight = 72;
-                    DatItem.Automap = 76;
-                    DatItem.LensHelp = 80;
+                    DatItem.WalkSpeed = 44;
+                    DatItem.TextLimit = 48;
+                    DatItem.LightRadius = 52;
+                    DatItem.LightColor = 56;
+                    DatItem.ShiftX = 60;
+                    DatItem.ShiftY = 64;
+                    DatItem.WalkHeight = 68;
+                    DatItem.Automap = 72;
+                    DatItem.LensHelp = 76;
 
                     Hotkey.SendAutomaticallyStart = 0x78C558;
                     Hotkey.SendAutomaticallyStep = 0x01;
@@ -204,7 +203,7 @@ namespace Tibia
                     Player.Soul = Player.Exp - 28;
                     Player.Stamina = Player.Exp - 32;
                     Player.Cap = Player.Exp - 36;
-                    Player.FistPercent = 0x63F310;
+                    Player.FistPercent = 0x632E5C;
                     Player.ClubPercent = Player.FistPercent + 4;
                     Player.SwordPercent = Player.FistPercent + 8;
                     Player.AxePercent = Player.FistPercent + 12;
@@ -218,7 +217,7 @@ namespace Tibia
                     Player.Distance = Player.FistPercent + 44;
                     Player.Shielding = Player.FistPercent + 48;
                     Player.Fishing = Player.FistPercent + 52;
-                    Player.SlotHead = 0x63E1D0;
+                    Player.SlotHead = 0x63F310;
                     Player.SlotNeck = Player.SlotHead + 12;
                     Player.SlotBackpack = Player.SlotHead + 24;
                     Player.SlotArmor = Player.SlotHead + 36;

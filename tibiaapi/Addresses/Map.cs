@@ -78,7 +78,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Memory address for player tile
         /// </summary>
-        public static uint PlayerTile = 0x3E3A08; // 8.1, Doesn't appear to exist in 8.21
+        public static uint PlayerTile = 0; // 8.1, Doesn't appear to exist in 8.21
 
         /// <summary>
         /// Nop Value, to use with namespy and levelspy
