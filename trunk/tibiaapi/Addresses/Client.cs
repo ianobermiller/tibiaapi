@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x78BF04; //8.50
+        public static uint XTeaKey = 0x78BF34; //8.50
 
         /// <summary>
         /// Address of the socket struct

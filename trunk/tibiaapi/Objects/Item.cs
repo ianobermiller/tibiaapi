@@ -208,8 +208,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
-                return client.Memory.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
+                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);                
+                return client.Memory.ReadUInt32(baseAddr + 8) + (0x4C + Addresses.DatItem.Unknown2/10) * (id - 100);
             }
         }
 
@@ -275,19 +275,45 @@ namespace Tibia.Objects
             }
         }
 
-        public Image[] Sprites
+        public ushort[] SpriteIds
         {
             get
             {
                 int count = SpriteCount;
-                Image[] sprites = new Bitmap[count];
+                uint address = client.Memory.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
+                ushort[] spriteIds = new ushort[count];
+                for (int i = 0; i < count; i++)
+                {
+                    spriteIds[i] = client.Memory.ReadUInt16(address + i * 2);
+                }
+                return spriteIds;
+            }
+            set
+            {
+                int count = SpriteCount;
+                if (value.Length != count)
+                    throw new ArgumentException("value.Length!=SpriteCount");
                 uint address = client.Memory.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
                 for (int i = 0; i < count; i++)
                 {
-                    int spriteId = client.Memory.ReadInt16(address + i * 2);
+                    client.Memory.WriteUInt16(address + i * 2,value[i]);
+                }
+
+            }
+
+        }
+
+        public Image[] Sprites
+        {
+            get
+            {
+                ushort[] spriteIds = SpriteIds;
+                Image[] sprites = new Image[spriteIds.Length];
+                for (int i = 0; i < spriteIds.Length; i++)
+                {
                     try
                     {
-                        sprites[i] = SpriteReader.GetSpriteImage(client, spriteId);
+                        sprites[i] = SpriteReader.GetSpriteImage(client, spriteIds[i]);
                     }
                     catch (ArgumentOutOfRangeException)
                     {
