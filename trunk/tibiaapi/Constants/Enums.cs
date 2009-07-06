@@ -504,7 +504,8 @@ namespace Tibia.Constants
         Yellow = 1,
         Green = 2,
         White = 3,
-        Red = 4
+        Red = 4,
+        Black = 5
     }
 
     public enum Party
