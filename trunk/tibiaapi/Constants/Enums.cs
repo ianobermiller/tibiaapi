@@ -119,6 +119,7 @@ namespace Tibia.Constants
         Drunk = 8,
         ProtectedByMagicShield = 16,
         Paralysed = 32,
+        Paralyzed = 32,
         Hasted = 64,
         InBattle = 128,
         Drowning = 256,
