@@ -470,7 +470,14 @@ namespace Tibia.Constants
         MutatedHuman = 323,
         YalaharianFemale = 324,
         YalaharianMale = 325,
-        WarGolem = 326
+        WarGolem = 326,
+        WhiteFemale = 327,
+        WeddingMale = 328,
+        WeddingFemale = 329,
+        Medusa = 330,
+        PinkQueen = 331,
+        King = 332,
+        SmallStoneGolem = 333
     }
 
     #endregion
