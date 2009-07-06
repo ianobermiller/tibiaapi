@@ -112,19 +112,22 @@ namespace Tibia.Constants
 
     public enum Flag
     {
+        None = 0,
         Poisoned = 1,
         Burning = 2,
-        Energized = 4,
+        Electrified = 4,
         Drunk = 8,
-        MagicShield = 16,
-        Paralyzed = 32,
+        ProtectedByMagicShield = 16,
+        Paralysed = 32,
         Hasted = 64,
-        Battle = 128,
+        InBattle = 128,
         Drowning = 256,
-        Frozen = 512,
+        Freezing = 512,
         Dazzled = 1024,
         Cursed = 2048,
-        None = 0
+        Strengthened = 4096,
+        CannotLogoutOrEnterProtectionZone = 8192,
+        WithinProtectionZone = 16384
     }
 
     public enum SlotNumber
