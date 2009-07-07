@@ -16,7 +16,7 @@ namespace Tibia.Addresses
         public static uint Phase = 28;
         public static uint Sprite = 32;
         public static uint Flags = 36;
-        public static uint Unknown2 = 40;
+        public static uint CanLookAt = 40;
         public static uint WalkSpeed = 44;
         public static uint TextLimit = 48; // If it is readable/writable
         public static uint LightRadius = 52;
