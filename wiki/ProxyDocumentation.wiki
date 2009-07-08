@@ -39,4 +39,4 @@ SendToServer and SendToClient allow you to inject packets into the client->serve
  * SendToClient - send a packet directly to the client (you provide the unencrypted packet)
 
 == Revised Proxy Flowchart (from the branch code) ==
-http://tibiaapi.googlecode.com/svn/branches/ian-skinny-tibiaapi/documentation/proxy-flow-chart.png
+http://tibiaapi.googlecode.com/svn/trunk/documentation/proxy-flow-chart.png
