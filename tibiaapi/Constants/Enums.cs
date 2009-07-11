@@ -66,13 +66,21 @@ namespace Tibia.Constants
     {
         None = 0,
         Left = 1,    // walk etc
+        LeftClick = 1, // // left-click to walk or to use the client interface
         Right = 2,   // use
+        RightClick = 2, // right-click to use an object such as a torch or an apple
         Inspect = 3,
+        InspectObject = 3, // left-click + right-click to see or inspect an object
         Drag = 6,
+        MoveObject = 6, // dragging an object to move it to a new location
         Using = 7,   // in-use fishing shooting rune
+        UseObject = 7, // using an object such as a rope, a shovel, a fishing rod, or a rune
+        SelectHotkeyObject = 8, // selecting an object to bind to a hotkey from the "Hotkey Options" window
         Trade = 9,
+        TradeObject = 9, // using "Trade with..." on an object to select a player with whom to trade
         Help = 10,   // client help
-        PopupMenu = 12
+        OpenDialogWindow = 11, // opening a dialog window such as the "Options" window, "Select Outfit" window, or "Move Objects" window
+        PopupMenu = 12 // showing a popup menu with options such as "Invite to Party", "Set Outfit", "Copy Name", or "Set Mark"
     }
 
     public enum CurrentDialog
