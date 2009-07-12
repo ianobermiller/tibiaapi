@@ -10,7 +10,7 @@ namespace Tibia.Constants
     public enum ObjectType
     {
         Memory,
-        Packet,
+        Packet
     }
 
     /// <summary>
@@ -65,20 +65,21 @@ namespace Tibia.Constants
     public enum ActionState : byte
     {
         None = 0,
-        Left = 1,    // walk etc
         LeftClick = 1, // // left-click to walk or to use the client interface
-        Right = 2,   // use
+        Left = LeftClick,    // walk etc
         RightClick = 2, // right-click to use an object such as a torch or an apple
-        Inspect = 3,
+        Right = RightClick,   // use
         InspectObject = 3, // left-click + right-click to see or inspect an object
-        Drag = 6,
+        Inspect = InspectObject,
         MoveObject = 6, // dragging an object to move it to a new location
-        Using = 7,   // in-use fishing shooting rune
+        Drag = MoveObject,
         UseObject = 7, // using an object such as a rope, a shovel, a fishing rod, or a rune
+        Using = UseObject,   // in-use fishing shooting rune
         SelectHotkeyObject = 8, // selecting an object to bind to a hotkey from the "Hotkey Options" window
-        Trade = 9,
         TradeObject = 9, // using "Trade with..." on an object to select a player with whom to trade
-        Help = 10,   // client help
+        Trade = TradeObject,
+        ClientHelp = 10, // // client mouse over tooltip help
+        Help = ClientHelp,   // client help
         OpenDialogWindow = 11, // opening a dialog window such as the "Options" window, "Select Outfit" window, or "Move Objects" window
         PopupMenu = 12 // showing a popup menu with options such as "Invite to Party", "Set Outfit", "Copy Name", or "Set Mark"
     }
@@ -90,7 +91,8 @@ namespace Tibia.Constants
 
     public enum LoginStatus : byte
     {
-        NotLoggedIn = 0,
+        LoggedOut = 0,
+        NotLoggedIn = LoggedOut,
         LoggingIn = 6,
         LoggedIn = 8
     }
@@ -127,7 +129,7 @@ namespace Tibia.Constants
         Drunk = 8,
         ProtectedByMagicShield = 16,
         Paralysed = 32,
-        Paralyzed = 32,
+        Paralyzed = Paralysed,
         Hasted = 64,
         InBattle = 128,
         Drowning = 256,
@@ -153,7 +155,7 @@ namespace Tibia.Constants
         Ring = 9,
         Ammo = 10,
         First = Head,
-        Last = Ammo,
+        Last = Ammo
     }
 
     #endregion
@@ -165,7 +167,10 @@ namespace Tibia.Constants
         None = 0,
         Addon1 = 1,
         Addon2 = 2,
-        Both = 3
+        Addon3 = 3,
+        First = Addon1,
+        Second = Addon2,
+        Both = Addon3
     }
 
     // Not really an enum, because we want to allow any number for color.
@@ -487,7 +492,7 @@ namespace Tibia.Constants
         WeddingMale = 328,
         WeddingFemale = 329,
         Medusa = 330,
-        PinkQueen = 331,
+        Queen = 331,
         King = 332,
         SmallStoneGolem = 333
     }
@@ -506,7 +511,8 @@ namespace Tibia.Constants
     public static class LightColor
     {
         public static int None = 0;
-        public static int Orange = 206;  // default light color
+        public static int Default = 206; // default light color
+        public static int Orange = Default;
         public static int White = 215;
     }
 
@@ -523,8 +529,10 @@ namespace Tibia.Constants
     public enum Party
     {
         None = 0,
-        Inviter = 1,
-        Invitee = 2,
+        Host = 1, // the host invites the guest to the party
+        Inviter = Host,
+        Guest = 2, // the guest joins the host at the party
+        Invitee = Guest,
         Member = 3,
         Leader = 4,
         MemberSharedExp = 5,
@@ -567,8 +575,8 @@ namespace Tibia.Constants
 
     public enum VipStatus
     {
-        Online = 1,
-        Offline = 0
+        Offline = 0,
+        Online = 1
     }
     public enum VipIcon
     {
@@ -582,8 +590,7 @@ namespace Tibia.Constants
         Triangle = 7,
         X = 8,
         Dollar = 9,
-        Cross = 10,
-
+        Cross = 10
     }
 
     #endregion
@@ -604,7 +611,7 @@ namespace Tibia.Constants
     {
         Normal = 1,
         NormalBorder = 2,
-        Small = 3,
+        Small = 3
     }
     #endregion
 
@@ -614,6 +621,6 @@ namespace Tibia.Constants
         SetOutfitContextMenu = 0x01,
         PartyActionContextMenu = 0x02,
         CopyNameContextMenu = 0x03,
-        TradeWithContextMenu = 0x04,
+        TradeWithContextMenu = 0x04
     }
 }
