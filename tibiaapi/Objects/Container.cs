@@ -159,7 +159,18 @@ namespace Tibia.Objects
         public string Name
         {
             get { return client.Memory.ReadString(address + Addresses.Container.DistanceName); }
-            set { client.Memory.WriteString(address + Addresses.Container.DistanceName, value); }
+            set 
+            {
+                if (value.Length > 31)
+                    throw new ArgumentOutOfRangeException("value.Length > 31");
+                else
+                {
+                    client.Memory.WriteString(address + Addresses.Container.DistanceName, value);
+                    Tibia.Util.WinApi.RECT clientRect = new Tibia.Util.WinApi.RECT();
+                    Tibia.Util.WinApi.GetClientRect(client.Process.MainWindowHandle, out clientRect);
+                    client.Input.SendMessage(Hooks.WM_SIZE, 0, Tibia.Util.WinApi.MakeLParam(clientRect.right, clientRect.bottom));
+                }
+            }
         }
 
         /// <summary>

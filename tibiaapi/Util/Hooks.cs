@@ -9,9 +9,10 @@ namespace Tibia
     {
         #region Interop
 
+        internal const int WM_SIZE = 0x5;
         internal const int WM_KEYDOWN = 0x0100;
         internal const int WM_KEYUP = 0x0101;
-        internal const int VM_CHAR = 0x0102;
+        internal const int WM_CHAR = 0x0102;
         internal const int WM_SYSKEYDOWN = 0x0104;
         internal const int WM_SYSKEYUP = 0x0105;
 

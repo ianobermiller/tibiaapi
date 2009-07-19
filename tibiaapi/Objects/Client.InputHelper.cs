@@ -31,7 +31,7 @@ namespace Tibia.Objects
             public void SendKey(Keys key)
             {
                 SendMessage(Hooks.WM_KEYDOWN, (int)key, 0);
-                SendMessage(Hooks.VM_CHAR, (int)key, 0);
+                SendMessage(Hooks.WM_CHAR, (int)key, 0);
                 SendMessage(Hooks.WM_KEYUP, (int)key, 0);
             }
 
@@ -42,7 +42,7 @@ namespace Tibia.Objects
             public void SendKey(int key)
             {
                 SendMessage(Hooks.WM_KEYDOWN, key, 0);
-                SendMessage(Hooks.VM_CHAR, key, 0);
+                SendMessage(Hooks.WM_CHAR, key, 0);
                 SendMessage(Hooks.WM_KEYUP, key, 0);
             }
 
