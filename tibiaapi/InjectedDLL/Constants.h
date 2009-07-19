@@ -19,6 +19,7 @@ namespace Consts {
 	extern DWORD ptrPartyActionContextMenu;
 	extern DWORD ptrCopyNameContextMenu;
 	extern DWORD ptrTradeWithContextMenu;
+	extern DWORD ptrLookContextMenu;
 	extern DWORD prtOnClickContextMenuVf;
 
 	extern DWORD ptrRecv;
@@ -60,7 +61,8 @@ enum PipeConstantType : BYTE
 		TradeWithContextMenu = 0x0C,
 		Recv=0x0D,
 		Send=0x0E,
-		EventTriggered = 0x0F
+		EventTriggered = 0x0F,
+		LookContextMenu = 0x10
 };
 
 /* Structures */

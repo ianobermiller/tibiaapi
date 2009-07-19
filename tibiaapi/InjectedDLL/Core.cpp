@@ -51,6 +51,7 @@ DWORD OldSetOutfitContextMenu = 0;  //Used for restoring SetOutfitContextMenu ~
 DWORD OldPartyActionContextMenu = 0;//Used for restoring PartyActionContextMenu ~
 DWORD OldCopyNameContextMenu = 0;   //Used for restoring CopyNameContextMenu ~
 DWORD OldTradeWithContextMenu = 0;
+DWORD OldLookContextMenu = 0;
 list<ContextMenu> ContextMenus;    //Used for storing the context menus that will be added on this call
 //recv/send
 DWORD OrigSendAddress = 0;
@@ -230,8 +231,33 @@ void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char
 	list<ContextMenu>::iterator it;
 	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
 	{
-		//CopyNameContextMenu or AllMenus
+		//TradeWithContextMenu or AllMenus
 		if(it->Type == 0x04 || it->Type == 0x00)
+		{
+			const char* custom = it->MenuText;
+			const char* shortcut_ = "";
+			int eventid = it->EventId;
+
+			if(it->HasSeparator == 0x00)
+				AddContextMenu(eventid, custom, shortcut_);
+			else if(it->HasSeparator == 0x01)
+				AddContextMenuEx(eventid, custom, shortcut_);
+		}
+	}
+}
+
+void __stdcall MyLookContextMenu (int eventId, const char* text, const char* shortcut)
+{	
+	/*#if _DEBUG
+		MessageBoxA(0, "MyLookContextMenu", "", 0);
+	#endif*/
+	AddContextMenu(eventId, text, shortcut);
+
+	list<ContextMenu>::iterator it;
+	for(it = ContextMenus.begin(); it != ContextMenus.end(); ++it)
+	{
+		//LookContextMenu or AllMenus
+		if(it->Type == 0x05 || it->Type == 0x00)
 		{
 			const char* custom = it->MenuText;
 			const char* shortcut_ = "";
@@ -298,6 +324,7 @@ void EnableHooks()
 	OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
 	OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
 	OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
+	OldLookContextMenu = HookCall(Consts::ptrLookContextMenu,(DWORD) &MyLookContextMenu);
 
 	DWORD dwOldProtect, dwNewProtect, funcAddress;	
 
@@ -346,6 +373,8 @@ void DisableHooks()
 		UnhookCall(Consts::ptrCopyNameContextMenu, OldCopyNameContextMenu);
 	if(OldTradeWithContextMenu)
 		UnhookCall(Consts::ptrTradeWithContextMenu, OldTradeWithContextMenu);
+	if(OldLookContextMenu)
+		UnhookCall(Consts::ptrLookContextMenu, OldLookContextMenu);
 	if (OldNopFPS)
 		UnNop(Consts::ptrNopFPS, OldNopFPS, 6);
 
@@ -588,7 +617,7 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger) 
+		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger || !Consts::ptrLookContextMenu) 
 	{
 		#if _DEBUG
 			MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
@@ -665,6 +694,9 @@ void ParseSetConstant(BYTE *Buffer, int position)
 		break;
 	case EventTriggered:
 		Consts::ptrEventTrigger = value;
+		break;
+	case LookContextMenu:
+		Consts::ptrLookContextMenu = value;
 		break;
 	default:
 		break;
