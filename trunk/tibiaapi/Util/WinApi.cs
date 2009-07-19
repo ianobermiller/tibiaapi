@@ -38,6 +38,9 @@ namespace Tibia.Util
         public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
 
         [DllImport("user32.dll")]
+        public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
