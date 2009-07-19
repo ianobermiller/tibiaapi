@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include <list>
-#include <atlbase.h>
+//#include <atlbase.h>
 #include <assert.h>
 #include "Constants.h"
 #include "Core.h"
@@ -60,7 +60,8 @@ SOCKET sock = 0;
 
 
 //Asynchronisation variables
-CHandle pipe;						//Holds the Pipe handle (CHandle is from ATL library)
+//CHANDLE pipe;						//Holds the Pipe handle (CHandle is from ATL library)
+HANDLE pipe;
 OVERLAPPED overlapped = { 0 };		
 DWORD errorStatus = ERROR_SUCCESS;
 bool mustUnload = false;
@@ -521,7 +522,8 @@ void UnloadSelf()
 		MessageBoxA(0, "Detaching pipe...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
 	#endif
 
-	pipe.Detach();
+	//pipe.Detach();
+	CloseHandle(pipe);
 	//::DeleteFileA(PipeName.c_str());
 	//TerminateThread(PipeThread, EXIT_SUCCESS);
 
@@ -964,7 +966,8 @@ void PipeThreadProc(HMODULE Module)
 	//Connect to Pipe
 	if (WaitNamedPipeA(PipeName.c_str(), NMPWAIT_WAIT_FOREVER)) 
 	{
-		pipe.Attach(::CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL));
+		//pipe.Attach(::CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL));
+		pipe=CreateFileA(PipeName.c_str(), GENERIC_READ | GENERIC_WRITE , 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 
 		if (pipe == INVALID_HANDLE_VALUE)
 		{
