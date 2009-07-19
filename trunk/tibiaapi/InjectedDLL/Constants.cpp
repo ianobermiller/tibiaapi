@@ -18,6 +18,7 @@ namespace Consts {
 	DWORD ptrPartyActionContextMenu = 0;
 	DWORD ptrCopyNameContextMenu = 0;
 	DWORD ptrTradeWithContextMenu = 0;
+	DWORD ptrLookContextMenu = 0;
 	DWORD prtOnClickContextMenuVf = 0;
 
 	/* Socket Stuff */

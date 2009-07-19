@@ -46,6 +46,7 @@ void __stdcall MySetOutfitContextMenu (int eventId, const char* text, const char
 void __stdcall MyPartyActionContextMenu (int eventId, const char* text, const char* shortcut);
 void __stdcall MyCopyNameContextMenu (int eventId, const char* text, const char* shortcut);
 void __stdcall MyTradeWithContextMenu (int eventId, const char* text, const char* shortcut);
+void __stdcall MyLookContextMenu (int eventId, const char* text, const char* shortcut);
 void __stdcall MyOnClickContextMenu (int eventId);
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags);
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags);

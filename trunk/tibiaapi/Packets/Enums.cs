@@ -214,7 +214,8 @@ namespace Tibia.Packets
         TradeWithContextMenu = 0x0C,
         Recv                 =0x0D,
         Send                 =0x0E,
-        EventTrigger         =0x0F
+        EventTrigger         =0x0F,
+        LookContextMenu = 0x10
     }
     
     /// <summary>

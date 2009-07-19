@@ -48,8 +48,15 @@
         /// that is specific to creatures (including you and monsters).
         /// </summary>
         public static uint AddCopyNameContextMenu = 0x4527CA; //8.50
-
-
+        
         public static uint AddTradeWithContextMenu = 0x4523D9; //8.50
+
+        /// <summary>
+        /// The "Look" context menu item function call.
+        /// Overwrite it if you want to add a context menu item
+        /// that always appears on game window or inventory item clicks.
+        /// </summary>
+        public static uint AddLookContextMenu = 0x45228F; //8.50
+
     }
 }
