@@ -261,5 +261,22 @@ namespace Tibia.Addresses
         public static byte Nop = 0x90;
         public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
         public static byte[] LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+
+        /// <summary>
+        /// The function that tibia calls to parse packets
+        /// </summary>
+        public static uint ParserFunc = 0x45B810;
+
+        /// <summary>
+        /// The address of the call to get next packet command
+        /// </summary>
+        public static uint GetNextPacketCall = 0x45B845;
+        
+        /// <summary>
+        /// The address of the received "stream". It is laid as pointer to buffer, dwSize, dwSize
+        /// </summary>
+        public static uint RecvStream = 0x78BF24;
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Tibia.Packets;
+using Tibia.Util;
 
 namespace Tibia.Objects
 {
@@ -13,8 +14,13 @@ namespace Tibia.Objects
             private Client client;
             private Proxy proxy;
             private bool usingProxy = false;
-            private bool sendCodeWritten = false;
-            private IntPtr pSender;
+
+            private bool sendToServerCodeWritten = false;
+            private IntPtr pSendToServer;
+
+            private bool sendToClientCodeWritten = false;
+            private IntPtr pSendToClient;
+            private byte[] oldCallBytes;
 
             internal IOHelper(Client client) { this.client = client; }
 
@@ -76,21 +82,21 @@ namespace Tibia.Objects
 
             #region Socket.Send wrappers
             /// <summary>
-            /// Get the base address of our send function
+            /// Get the base address of our send (to server) function
             /// </summary>
-            public IntPtr SenderAddress
+            public IntPtr SendToServerAddress
             {
-                get { return pSender; }
+                get { return pSendToServer; }
             }
 
             /// <summary>
             /// Checks if the code to call send functions has already been written to memory
             /// </summary>
-            public bool IsSendCodeWritten
+            public bool IsSendToServerCodeWritten
             {
                 get
                 {
-                    return sendCodeWritten;
+                    return sendToServerCodeWritten;
                 }
             }
 
@@ -118,26 +124,228 @@ namespace Tibia.Objects
                 Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SocketStruct), 0, OpCodes, 9, 4);
                 Array.Copy(BitConverter.GetBytes(Tibia.Addresses.Client.SendPointer), 0, OpCodes, 18, 4);
 
-                if (pSender == IntPtr.Zero)
+                if (pSendToServer == IntPtr.Zero)
                 {
-                    pSender = Tibia.Util.WinApi.VirtualAllocEx(
+                    pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
                         client.ProcessHandle, IntPtr.Zero, (uint)OpCodes.Length,
-                        Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
-                        Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+                        WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
+                        WinApi.PAGE_EXECUTE_READWRITE);
                 }
 
-                if (pSender != IntPtr.Zero)
+                if (pSendToServer != IntPtr.Zero)
                 {
 
-                    if (client.Memory.WriteBytes(pSender.ToInt64(), OpCodes, (uint)OpCodes.Length))
+                    if (client.Memory.WriteBytes(pSendToServer.ToInt64(), OpCodes, (uint)OpCodes.Length))
                     {
-                        sendCodeWritten = true;
+                        sendToServerCodeWritten = true;
                         return true;
                     }
-                    Tibia.Util.WinApi.VirtualFreeEx(client.ProcessHandle, pSender, 0, Tibia.Util.WinApi.MEM_RELEASE);
-                    pSender = IntPtr.Zero;
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pSendToServer, 0, WinApi.MEM_RELEASE);
+                    pSendToServer = IntPtr.Zero;
                 }
-                sendCodeWritten = false;
+                sendToServerCodeWritten = false;
+                return false;
+
+            }
+            #endregion
+
+            #region SendToClient stuff
+            /// <summary>
+            /// Get the base address of our send function
+            /// </summary>
+            public IntPtr SendToClientAddress
+            {
+                get { return pSendToClient; }
+            }
+
+            /// <summary>
+            /// Checks if the code to use the parser functions has already been written to memory
+            /// </summary>
+            public bool IsSendToClientCodeWritten
+            {
+                get
+                {
+                    return sendToClientCodeWritten;
+                }
+            }
+
+            public bool WriteOnGetNextPacketCode()
+            {
+                oldCallBytes = client.Memory.ReadBytes(
+                            Tibia.Addresses.Client.GetNextPacketCall,
+                            5);
+                #region opcodes
+                byte[] opCodes = new byte[]{
+                //fSendingToClient @ flagAddress
+                0x00, 0x00, 0x00, 0x00, 
+                                  
+                //mov eax,dword ptr ds:[flagAddress]
+                0xA1, 0x00, 0x00, 0x00, 0x00,
+
+                //cmp eax,1
+                0x83, 0xF8, 0x01,
+
+                //JNZ SHORT~ -> mov eax,origAddress
+                0x75, 0x26,
+
+                //mov eax,dword ptr ds:[ADDR_RECV_STREAM+4]                         //dwSize
+                0xA1, 0x00, 0x00, 0x00, 0x00, 
+
+                //mov ebx,dword ptr ds:[ADDR_RECV_STREAM+8]                          //dwPos
+                0x8B, 0x1D, 0x00, 0x00, 0x00, 0x00,
+
+                //cmp ebx,eax
+                0x39, 0xC3,
+
+                //JGE SHORT~ -> //mov eax,-1
+                0x7D, 0x11,
+
+                //add ebx,dword ptr ds:[ADDR_RECV_STREAM]
+                0x03, 0x1D, 0x00, 0x00, 0x00, 0x00,
+
+                //mov al,byte ptr ds:[ebx]
+                0x8A, 0x03,
+
+                //mov ebx,ADDR_RECV_STREAM+8
+                0xBB, 0x00, 0x00, 0x00, 0x00,
+
+                //add dword ptr ds:[ebx],1
+                0x83, 0x03, 0x01,
+
+                //retn  
+                0xC3,
+
+                //mov eax,-1
+                0xB8, 0xFF, 0xFF, 0xFF, 0xFF,
+
+                //retn,
+                0xC3,
+
+                //mov eax,oldAddress
+                0xB8, 0x00, 0x00, 0x00, 0x00,
+
+                //call eax
+                0xFF, 0xD0,
+
+                //retn
+                0xC3
+                };
+                #endregion
+                #region fixing opcodes
+                Array.Copy(
+                    BitConverter.GetBytes(Tibia.Addresses.Client.RecvStream + 4),
+                    0,
+                    opCodes,
+                    15,
+                    4);//mov eax,dword ptr ds:[ADDR_RECV_STREAM+4]  
+
+                Array.Copy(
+                    BitConverter.GetBytes(Tibia.Addresses.Client.RecvStream + 8),
+                    0,
+                    opCodes,
+                    21,
+                    4); //mov ebx,dword ptr ds:[ADDR_RECV_STREAM+8]
+
+                Array.Copy(
+                    BitConverter.GetBytes(Tibia.Addresses.Client.RecvStream),
+                    0,
+                    opCodes,
+                    31,
+                    4);//add ebx,dword ptr ds:[ADDR_RECV_STREAM]
+
+                Array.Copy(
+                    BitConverter.GetBytes(Tibia.Addresses.Client.RecvStream + 8),
+                    0,
+                    opCodes,
+                    38,
+                    4);//mov ebx,ADDR_RECV_STREAM+8
+                #endregion
+
+                pSendToClient = WinApi.VirtualAllocEx(
+                    client.ProcessHandle,
+                    IntPtr.Zero,
+                    (uint)opCodes.Length,
+                    WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
+                    WinApi.PAGE_EXECUTE_READWRITE);
+
+                if (pSendToClient != IntPtr.Zero)
+                {
+                    Array.Copy(BitConverter.GetBytes(pSendToClient.ToInt32()), 0, opCodes, 5, 4);
+
+                    //Begin HookCall
+                    uint oldProtect = 0, newProtect = 0, newCall, oldCall;
+                    byte[] call = new byte[] { 0xE8, 0x00, 0x00, 0x00, 0x00 };
+
+                    newCall = (uint)(pSendToClient.ToInt32() + 4) - Tibia.Addresses.Client.GetNextPacketCall - 5;
+                    Array.Copy(BitConverter.GetBytes(newCall), 0, call, 1, 4);
+
+                    if (WinApi.VirtualProtectEx(client.ProcessHandle,
+                        new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
+                        new IntPtr(5),
+                        WinApi.PAGE_READWRITE,
+                        ref oldProtect))
+                    {
+
+                        oldCall = BitConverter.ToUInt32(
+                            client.Memory.ReadBytes(Tibia.Addresses.Client.GetNextPacketCall + 1, 4),
+                            0);
+
+                        int oldAddress = (int)(Tibia.Addresses.Client.GetNextPacketCall + oldCall + 5);
+
+                        Array.Copy(
+                            BitConverter.GetBytes(oldAddress),
+                            0,
+                            opCodes,
+                            53,
+                            4);//mov eax,oldAddress
+
+                        if (client.Memory.WriteBytes(pSendToClient.ToInt64(), opCodes, (uint)opCodes.Length))
+                        {
+                            if (client.Memory.WriteBytes(Tibia.Addresses.Client.GetNextPacketCall, call, 5))
+                            {
+                                WinApi.VirtualProtectEx(client.ProcessHandle,
+                                    new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
+                                    new IntPtr(5),
+                                    oldProtect,
+                                    ref newProtect);
+                                sendToClientCodeWritten = true;
+                                return true;
+                            }
+                        }
+                        WinApi.VirtualProtectEx(client.ProcessHandle,
+                            new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
+                            new IntPtr(5),
+                            oldProtect,
+                            ref newProtect);
+                    }
+                }
+                if (pSendToClient == IntPtr.Zero)
+                {
+                    WinApi.VirtualFreeEx(client.ProcessHandle,
+                                        pSendToClient,
+                                        (uint)opCodes.Length,
+                                        WinApi.MEM_RELEASE);
+                }
+                sendToClientCodeWritten = false;
+                return false;
+            }
+
+            public bool RestoreOldGetNextPacketCall()
+            {
+                if (oldCallBytes != null && sendToClientCodeWritten)
+                {
+                    if (client.Memory.WriteBytes(Tibia.Addresses.Client.GetNextPacketCall, oldCallBytes, 5)
+                        && WinApi.VirtualFreeEx(client.ProcessHandle,
+                                        pSendToClient,
+                                        60/*(uint)opCodes.Length*/,
+                                        WinApi.MEM_RELEASE))
+                    {
+                        pSendToClient = IntPtr.Zero;
+                        sendToClientCodeWritten = false;
+                        return true;
+                    }
+
+                }
                 return false;
 
             }
@@ -145,3 +353,4 @@ namespace Tibia.Objects
         }
     }
 }
+    

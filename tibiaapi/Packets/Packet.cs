@@ -39,7 +39,7 @@ namespace Tibia.Packets
             {
                 return Send(SendMethod.HookProxy);
             }
-            else if (Destination == PacketDestination.Server)
+            else
             {
                 return Send(SendMethod.Memory);
             }
@@ -92,21 +92,26 @@ namespace Tibia.Packets
                     }
                     break;
                 case SendMethod.Memory:
-                    if (Destination == PacketDestination.Server)
+                    lock (msgLock)
                     {
-                        lock (msgLock)
+                        msg.Reset();
+                        ToNetworkMessage(ref msg);
+                        if (Destination == PacketDestination.Server)
                         {
-                            msg.Reset();
-                            ToNetworkMessage(ref msg);
-
                             if (msg.Length > 8)
                             {
                                 msg.InsetLogicalPacketHeader();
                                 msg.PrepareToSend();
 
-                                return SendPacketByMemory(Client, msg.Data);
+                                return SendPacketToServerByMemory(Client, msg.Data);
                             }
-                        }   
+                        }
+                        else if (Destination == PacketDestination.Client)
+                        {
+                            byte[] data = new byte[msg.Data.Length - 8];
+                            Array.Copy(msg.Data, 8, data, 0, data.Length);
+                            SendPacketToClientByMemory(Client, data);
+                        }
                     }
                     break;
             }
@@ -123,11 +128,11 @@ namespace Tibia.Packets
         /// <param name="client"></param>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public static bool SendPacketByMemory(Objects.Client client, byte[] packet)
+        public static bool SendPacketToServerByMemory(Objects.Client client, byte[] packet)
         {
             if (client.LoggedIn)
             {
-                if (!client.IO.IsSendCodeWritten)
+                if (!client.IO.IsSendToServerCodeWritten)
                     if (!client.IO.WriteSocketSendCode()) return false;
 
                 uint bufferSize = (uint)(4 + msg.Length);
@@ -145,7 +150,7 @@ namespace Tibia.Packets
                     if (client.Memory.WriteBytes(pRemote.ToInt64(), readyPacket, bufferSize))
                     {
                         IntPtr threadHandle = Tibia.Util.WinApi.CreateRemoteThread(client.ProcessHandle, IntPtr.Zero, 0,
-                            client.IO.SenderAddress, pRemote, 0, IntPtr.Zero);
+                            client.IO.SendToServerAddress, pRemote, 0, IntPtr.Zero);
                         Tibia.Util.WinApi.WaitForSingleObject(threadHandle, 0xFFFFFFFF);//INFINITE=0xFFFFFFFF
                         Tibia.Util.WinApi.CloseHandle(threadHandle);
                         return true;
@@ -156,9 +161,73 @@ namespace Tibia.Packets
             }
             else return false;
         }
-
-
         #endregion
+
+        public bool SendPacketToClientByMemory(Objects.Client client, byte[] packet)
+        {
+            bool ret = false;
+            if (client.LoggedIn)
+            {
+                if (!client.IO.IsSendToClientCodeWritten)
+                    if (!client.IO.WriteOnGetNextPacketCode()) return false;
+
+                byte[] originalStream = client.Memory.ReadBytes(Tibia.Addresses.Client.RecvStream, 12);
+                
+                IntPtr myStreamAddress = WinApi.VirtualAllocEx(
+                    client.ProcessHandle,
+                    IntPtr.Zero,
+                    (uint)packet.Length,
+                    Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
+                    Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+                if (myStreamAddress != IntPtr.Zero )
+                {
+
+                    if (client.Memory.WriteBytes(
+                        myStreamAddress.ToInt64(),
+                        packet,
+                        (uint)packet.Length))
+                    {
+                        byte[] myStream = new byte[12];
+                        Array.Copy(BitConverter.GetBytes(myStreamAddress.ToInt32()), myStream, 4);
+                        Array.Copy(BitConverter.GetBytes(packet.Length), 0, myStream, 4, 4);
+
+                        if (client.Memory.WriteBytes(Tibia.Addresses.Client.RecvStream,
+                            myStream, 12))
+                        {
+                            if (client.Memory.WriteByte(client.IO.SendToClientAddress.ToInt64(), 0x1))
+                            {
+
+                                IntPtr threadHandle = WinApi.CreateRemoteThread(
+                                                            client.ProcessHandle,
+                                                            IntPtr.Zero,
+                                                            0,
+                                                            new IntPtr(Tibia.Addresses.Client.ParserFunc),
+                                                            IntPtr.Zero,
+                                                            0,
+                                                            IntPtr.Zero);
+                                WinApi.WaitForSingleObject(threadHandle, 0xFFFFFFFF);//INFINITE=0xFFFFFFFF
+                                WinApi.CloseHandle(threadHandle);
+
+                                ret = true;
+                                client.Memory.WriteByte(client.IO.SendToClientAddress.ToInt64(), 0x0);
+
+                            }
+
+                            client.Memory.WriteBytes(Tibia.Addresses.Client.RecvStream,
+                            originalStream, 12);
+                        }
+
+                    }
+                }
+                if (myStreamAddress != IntPtr.Zero)
+                    WinApi.VirtualFreeEx(client.ProcessHandle,
+                                        myStreamAddress,
+                                        12,
+                                        WinApi.MEM_RELEASE);
+            }
+            return ret;
+        }
+
 
 
         public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination)
