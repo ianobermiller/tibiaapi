@@ -45,12 +45,21 @@ namespace Tibia.Objects
             }
 
             /// <summary>
-            /// Start the proxy associated with this client.
+            /// Start the proxy associated with this client for official servers.
             /// </summary>
             /// <returns>True if the proxy initialized correctly.</returns>
             public bool StartProxy()
             {
-                proxy = new Proxy(client);
+                return StartProxy(false);
+            }
+
+            /// <summary>
+            /// Start the proxy associated with this client specifying if it's for OT or official servers.
+            /// </summary>
+            /// <returns>True if the proxy initialized correctly.</returns>
+            public bool StartProxy(bool isOtServer)
+            {
+                proxy = new Proxy(client, isOtServer);
                 return UsingProxy;
             }
 
