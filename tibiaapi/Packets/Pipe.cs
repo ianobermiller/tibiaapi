@@ -44,6 +44,11 @@ namespace Tibia.Packets
         public event PipeListener OnContextMenuClick;
 
         /// <summary>
+        ///  Called when an icon click event is received.
+        /// </summary>
+        public event PipeListener OnIconClick;
+
+        /// <summary>
         ///  Called when a packet from the recv hook is received.
         /// </summary>
         public event PipeListener OnSocketRecv;
@@ -133,6 +138,10 @@ namespace Tibia.Packets
                 case PipePacketType.HookSentPacket:
                     if (OnSocketSend != null)
                         OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                case PipePacketType.OnClickIcon:
+                    if( OnIconClick !=null)
+                        OnIconClick.BeginInvoke(new NetworkMessage(client, received, length),null,null);
                     break;
                 default:
                     break;

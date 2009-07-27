@@ -611,7 +611,8 @@ namespace Tibia.Constants
     {
         Normal = 1,
         NormalBorder = 2,
-        Small = 3
+        Small = 3,
+        Weird = 4
     }
     #endregion
 

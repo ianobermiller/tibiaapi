@@ -194,8 +194,12 @@ namespace Tibia.Packets
         HookReceivedPacket   = 0x0E,
         HookSentPacket       = 0x0F,
         HookSendToServer     = 0x10,
-        EventTriggers        = 0x11
-
+        EventTriggers        = 0x11,
+        AddIcon              = 0x12,
+        UpdateIcon           = 0x13,
+        RemoveIcon           = 0x14,
+        OnClickIcon          = 0x15,
+        RemoveAllIcons       = 0x16
     }
 
     public enum PipeConstantType : byte
@@ -215,7 +219,8 @@ namespace Tibia.Packets
         Recv                 =0x0D,
         Send                 =0x0E,
         EventTrigger         =0x0F,
-        LookContextMenu = 0x10
+        LookContextMenu = 0x10,
+        DrawItemFunc = 0x11
     }
     
     /// <summary>

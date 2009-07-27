@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D132EB7-B97D-461D-85CF-949FF5A7BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="Addresses\ContextMenus.cs" />
     <Compile Include="Addresses\DatItem.cs" />
+    <Compile Include="Addresses\DrawItem.cs" />
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
     <Compile Include="Addresses\Vip.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Objects\Client.MemoryHelper.cs" />
     <Compile Include="Objects\Client.WindowHelper.cs" />
     <Compile Include="Objects\ContextMenu.cs" />
+    <Compile Include="Objects\Icon.cs" />
     <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\Outfit.cs" />
     <Compile Include="Objects\Screen.cs" />
@@ -193,8 +195,13 @@
     <Compile Include="Packets\Outgoing\ShopClosePacket.cs" />
     <Compile Include="Packets\Outgoing\TileUpdatePacket.cs" />
     <Compile Include="Packets\Packet.cs" />
+    <Compile Include="Packets\Pipes\AddIconPacket.cs" />
     <Compile Include="Packets\Pipes\EventTriggerPacket.cs" />
     <Compile Include="Packets\Pipes\HookSendToServerPacket.cs" />
+    <Compile Include="Packets\Pipes\OnClickIcon.cs" />
+    <Compile Include="Packets\Pipes\RemoveAllIconsPacket.cs" />
+    <Compile Include="Packets\Pipes\RemoveIconPacket.cs" />
+    <Compile Include="Packets\Pipes\UpdateIconPacket.cs" />
     <Compile Include="Packets\Rsa.cs" />
     <Compile Include="Packets\RSA\GameServerRequestPacket.cs" />
     <Compile Include="Packets\RSA\LoginServerRequestPacket.cs" />

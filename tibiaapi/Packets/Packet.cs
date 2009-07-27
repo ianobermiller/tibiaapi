@@ -43,7 +43,6 @@ namespace Tibia.Packets
             {
                 return Send(SendMethod.Memory);
             }
-            return false;
         }
 
         public bool Send(SendMethod method) 
