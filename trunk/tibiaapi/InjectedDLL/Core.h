@@ -25,7 +25,12 @@ enum PipePacketType : unsigned char
 	PipePacketType_HookReceivedPacket = 0x0E,
 	PipePacketType_HookSentPacket = 0x0F,
 	PipePacketType_HookSendToServer = 0x10,
-	PipePacketType_EventTrigger = 0x11
+	PipePacketType_EventTrigger = 0x11,
+	PipePacketType_AddIcon = 0x12,
+	PipePacketType_UpdateIcon = 0x13,
+	PipePacketType_RemoveIcon = 0x14,
+	PipePacketType_OnClickIcon = 0x15,
+	PipePacketType_RemoveAllIcons = 0x16
 
 };
 
@@ -39,6 +44,18 @@ typedef int (WINAPI *PRECV)(SOCKET s, char* buf, int len, int flags);
 static PRECV OrigRecv = 0;
 typedef int (WINAPI *PSEND)(SOCKET s, char* buf, int len, int flags);
 static PSEND OrigSend = 0;
+
+//Credits to Stepler (http://www.tpforums.org/forum/showthread.php?t=2981) and yaboomaster
+typedef void _DrawItem(int surface,
+					   int x, int y,
+					   int size,
+					   int itemId, int itemData1,
+					   int itemData2, int edgeR, int edgeG, int edgeB ,
+					   int clipX,int clipY, int clipW, int clipH,
+					   //text
+					   int textFont,int textRed,int textGreen,int textBlue,int textAlign,
+					   int textForce);
+static _DrawItem *DrawItem = 0;
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
 void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
@@ -78,5 +95,13 @@ void ParseRemoveContextMenu(BYTE *Buffer, int position);
 void RemoveAllContextMenus();
 void ParseHookSendToServer(BYTE *Buffer, int position);
 void ParseEventTrigger(BYTE *Buffer, int position);
+void ParseAddIcon(BYTE *Buffer, int position);
+void ParseUpdateIcon(BYTE *Buffer, int position);
+void ParseRemoveIcon(BYTE *Buffer, int position);
+void ParseRemoveAllIcons();
+
+BOOL CALLBACK EnumWindowsProc(HWND hwnd,LPARAM lParam);
+LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//LRESULT CALLBACK MouseHookProc(int nCode,WPARAM wParam, LPARAM lParam);
 
 #endif

@@ -43,6 +43,7 @@ namespace Tibia.Objects
         private LoginHelper login;
         private DllHelper dll;
         private InputHelper input;
+        private Icon icon;
 
         #endregion
 
@@ -101,6 +102,8 @@ namespace Tibia.Objects
             login = new LoginHelper(this);
             dll = new DllHelper(this);
             input = new InputHelper(this);
+
+            icon = new Icon(this);
 
             // Save the start time (it isn't changing)
             startTime = Memory.ReadInt32(Addresses.Client.StartTime);
@@ -550,6 +553,11 @@ namespace Tibia.Objects
         public ContextMenu ContextMenu
         {
             get { return contextMenu; }
+        }
+
+        public Icon Icon
+        {
+            get { return icon; }
         }
 
         public Util.AStarPathFinder PathFinder

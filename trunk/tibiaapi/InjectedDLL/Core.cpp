@@ -10,6 +10,7 @@
 #include "Packet.h"
 
 
+
 #ifdef _MANAGED
 #pragma managed(push, off)
 #endif
@@ -57,7 +58,8 @@ list<ContextMenu> ContextMenus;    //Used for storing the context menus that wil
 DWORD OrigSendAddress = 0;
 DWORD OrigRecvAddress = 0;
 SOCKET sock = 0;
-
+//icon
+list<Icon> Icons;
 
 //Asynchronisation variables
 //CHANDLE pipe;						//Holds the Pipe handle (CHandle is from ATL library)
@@ -66,8 +68,41 @@ OVERLAPPED overlapped = { 0 };
 DWORD errorStatus = ERROR_SUCCESS;
 bool mustUnload = false;
 
+DWORD CurrentPID;
+BOOL fUnicode;
+HWND hwndTibia=0;
+WNDPROC oldWndProc;
 
+LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	if(msg == WM_LBUTTONDOWN)
+	{
+		POINT pos;
+		pos.x=(WORD)lParam;
+		pos.y=(WORD)(lParam>>16);
+		
+		
+		EnterCriticalSection(&DrawItemCriticalSection);
 
+		list<Icon>::iterator iIT;
+		for(iIT = Icons.begin(); iIT != Icons.end(); ++iIT)	
+		{
+			if(pos.x >=iIT->X && pos.x <=iIT->X+iIT->BitmapSize)
+			{
+				if(pos.y >=iIT->Y && pos.y <=iIT->Y+iIT->BitmapSize)
+				{
+					Packet* packet = new Packet(5);
+					packet->AddByte(0x15);
+					packet->AddDWord(iIT->IconId);
+					WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 	
+				}
+			}
+		}
+		LeaveCriticalSection(&DrawItemCriticalSection);
+	}
+	return fUnicode ? CallWindowProcW(oldWndProc, hwnd, msg, wParam, lParam) : 
+					CallWindowProcA(oldWndProc, hwnd, msg, wParam, lParam);
+}
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 {	
@@ -135,14 +170,34 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 		PrintText(nSurface, nX, nY, nFont, nRed, nGreen, nBlue, lpText, nAlign);
 		//nY += 12; ??????
 	}
+	
 
 	EnterCriticalSection(&NormalTextCriticalSection);
 
+	{
 	list<NormalText>::iterator ntIT;
 	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
 		PrintText(0x01, ntIT->x, ntIT->y, ntIT->font, ntIT->r, ntIT->g, ntIT->b, ntIT->text, 0x00); //0x01 Surface, 0x00 Align
 
 	LeaveCriticalSection(&NormalTextCriticalSection);
+	}
+	
+	{
+	EnterCriticalSection(&DrawItemCriticalSection);
+
+	list<Icon>::iterator iIT;
+	for(iIT = Icons.begin(); iIT != Icons.end(); ++iIT)		
+		DrawItem(0x1,
+		iIT->X,iIT->Y,
+		iIT->BitmapSize,
+		iIT->ItemId, iIT->ItemCount,
+	    0, 255, 0, 0,
+	    iIT->X,iIT->Y,
+	    iIT->BitmapSize,iIT->BitmapSize,
+	    iIT->TextFont, iIT->cR, iIT->cG, iIT->cB, 0x2,
+	    0);
+	LeaveCriticalSection(&DrawItemCriticalSection);
+	}
 }
 
 
@@ -354,6 +409,11 @@ void EnableHooks()
 
 	EventTrigger = (_EventTrigger*)Consts::ptrEventTrigger;
 
+	
+	//subclassing tibia's main window procedure
+	oldWndProc = (WNDPROC) ((fUnicode) ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc) : 
+											SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc));
+
 	HooksEnabled = true;
 }
 
@@ -402,6 +462,10 @@ void DisableHooks()
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 
 	EventTrigger = 0;
+
+	
+	fUnicode ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc) : 
+			SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 
 	HooksEnabled = false;
 }
@@ -515,6 +579,13 @@ void UnloadSelf()
 		ContextMenus.clear();
 		LeaveCriticalSection(&ContextMenuCriticalSection);
 
+		#if _DEBUG
+			MessageBoxA(0, "Removing all icons...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+		#endif
+		EnterCriticalSection(&DrawItemCriticalSection);
+		Icons.clear();
+		LeaveCriticalSection(&DrawItemCriticalSection);
+
 		DisableHooks();
 	}
 
@@ -526,6 +597,11 @@ void UnloadSelf()
 	CloseHandle(pipe);
 	//::DeleteFileA(PipeName.c_str());
 	//TerminateThread(PipeThread, EXIT_SUCCESS);
+	#if _DEBUG
+		MessageBoxA(0, "Unhooking winproc...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
+	#endif
+
+
 
 	#if _DEBUG
 		MessageBoxA(0, "Deleting critical sections...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
@@ -537,6 +613,7 @@ void UnloadSelf()
 	DeleteCriticalSection(&ContextMenuCriticalSection);
 	DeleteCriticalSection(&OnClickCriticalSection);
 	DeleteCriticalSection(&EventTriggerCriticalSection);
+	DeleteCriticalSection(&DrawItemCriticalSection);
 
 	#if _DEBUG
 		MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
@@ -599,10 +676,20 @@ inline void PipeOnRead()
 		case PipePacketType_OnClickContextMenu:
 		case PipePacketType_HookReceivedPacket:
 		case PipePacketType_HookSentPacket:
+		case PipePacketType_OnClickIcon:
 			//OUTGOING PACKETS
 			break;
-		case PipePacketType_EventTrigger:
-			ParseEventTrigger(Buffer, position);
+		case PipePacketType_AddIcon:
+			ParseAddIcon(Buffer, position);
+			break;
+		case PipePacketType_UpdateIcon:
+			ParseUpdateIcon(Buffer, position);
+			break;
+		case PipePacketType_RemoveIcon:
+			ParseRemoveIcon(Buffer, position);
+			break;
+		case PipePacketType_RemoveAllIcons:
+			ParseRemoveAllIcons();
 			break;
 		default:
 			#if _DEBUG
@@ -619,7 +706,8 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger || !Consts::ptrLookContextMenu) 
+		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger || !Consts::ptrLookContextMenu/* ||
+		!PrintText || !DrawItem || !EventTrigger || !OrigSend || !OrigRecv*/) 
 	{
 		#if _DEBUG
 			MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
@@ -700,6 +788,8 @@ void ParseSetConstant(BYTE *Buffer, int position)
 	case LookContextMenu:
 		Consts::ptrLookContextMenu = value;
 		break;
+	case DrawItemFunc:		
+		DrawItem = (_DrawItem*)value;
 	default:
 		break;
 	};
@@ -961,6 +1051,82 @@ void ParseEventTrigger(BYTE *Buffer, int position)
 	LeaveCriticalSection(&EventTriggerCriticalSection);
 }
 
+void ParseAddIcon(BYTE *Buffer, int position)
+{
+	Icon icon;
+	icon.IconId=Packet::ReadDWord(Buffer, &position);
+	icon.X=Packet::ReadWord(Buffer, &position);
+	icon.Y=Packet::ReadWord(Buffer, &position);
+	icon.BitmapSize=Packet::ReadWord(Buffer, &position);
+	icon.ItemId=Packet::ReadWord(Buffer, &position);
+	icon.ItemCount=Packet::ReadWord(Buffer, &position);
+	icon.TextFont=Packet::ReadByte(Buffer, &position);
+	icon.cR=Packet::ReadByte(Buffer, &position);
+	icon.cG=Packet::ReadByte(Buffer, &position);
+	icon.cB=Packet::ReadByte(Buffer, &position);
+	
+	EnterCriticalSection(&DrawItemCriticalSection);
+	Icons.push_back(icon);
+	LeaveCriticalSection(&DrawItemCriticalSection);
+}
+void ParseUpdateIcon(BYTE *Buffer, int position)
+{
+	
+	Icon icon;
+	icon.IconId=Packet::ReadDWord(Buffer, &position);
+	icon.X=Packet::ReadWord(Buffer, &position);
+	icon.Y=Packet::ReadWord(Buffer, &position);
+	icon.BitmapSize=Packet::ReadWord(Buffer, &position);
+	icon.ItemId=Packet::ReadWord(Buffer, &position);
+	icon.ItemCount=Packet::ReadWord(Buffer, &position);
+	icon.TextFont=Packet::ReadByte(Buffer, &position);
+	icon.cR=Packet::ReadByte(Buffer, &position);
+	icon.cG=Packet::ReadByte(Buffer, &position);
+	icon.cB=Packet::ReadByte(Buffer, &position);
+
+	EnterCriticalSection(&DrawItemCriticalSection);
+	list<Icon>::iterator miIT;
+	for(miIT = Icons.begin(); miIT != Icons.end(); ++miIT)		
+		if(miIT->IconId == icon.ItemId)
+		{			
+			miIT->IconId=icon.IconId;
+			miIT->X=icon.X;
+			miIT->Y=icon.Y;
+			miIT->BitmapSize=icon.BitmapSize;
+			miIT->ItemId=icon.ItemId;
+			miIT->ItemCount=icon.ItemCount;
+			miIT->TextFont=icon.TextFont;
+			miIT->cR=icon.cR;
+			miIT->cG=icon.cG;
+			miIT->cB=icon.cB;
+			break;
+		}
+	LeaveCriticalSection(&DrawItemCriticalSection);
+
+}
+void ParseRemoveIcon(BYTE *Buffer, int position)
+{
+	int iconId = Packet::ReadDWord(Buffer, &position);
+
+	EnterCriticalSection(&DrawItemCriticalSection);
+	list<Icon>::iterator oiIT;
+	for(oiIT = Icons.begin(); oiIT != Icons.end(); ++oiIT)		
+		if(oiIT->IconId == iconId)
+		{			
+			oiIT=Icons.erase(oiIT);
+		}
+	LeaveCriticalSection(&DrawItemCriticalSection);
+}
+
+void ParseRemoveAllIcons()
+{
+	EnterCriticalSection(&DrawItemCriticalSection);
+
+	Icons.clear();
+
+	LeaveCriticalSection(&DrawItemCriticalSection);
+
+}
 void PipeThreadProc(HMODULE Module)
 {
 	//Connect to Pipe
@@ -1052,6 +1218,20 @@ void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* 
 	}
 }
 
+
+BOOL CALLBACK EnumWindowsProc(HWND hwnd,LPARAM lParam)
+{
+	DWORD PID ;
+	DWORD threadID;
+	threadID=GetWindowThreadProcessId(hwnd,&PID);
+	if(PID==CurrentPID)
+	{
+		hwndTibia=hwnd;
+		//::MessageBoxA(0,"found","",0);
+	}
+	return hwndTibia ?0:1;
+}
+
 extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved)
 {
 	switch (reason)
@@ -1060,18 +1240,22 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 		{
 			hMod = hModule;
 			/* Get Current Process ID and use it as Pipename (Pipe is named as TibiaAPI<processID> */
-			DWORD CurrentPID = GetCurrentProcessId();
+			CurrentPID = GetCurrentProcessId();
+
+			EnumWindows(EnumWindowsProc,0);
+			fUnicode=IsWindowUnicode(hwndTibia);
+
 			std::stringstream sout;
 			sout << "\\\\.\\pipe\\TibiaAPI" << CurrentPID;
 			PipeName =  sout.str();
-			
-
+	
 			InitializeCriticalSection(&PipeReadCriticalSection);
 			InitializeCriticalSection(&NormalTextCriticalSection);
 			InitializeCriticalSection(&CreatureTextCriticalSection);
 			InitializeCriticalSection(&ContextMenuCriticalSection);
 			InitializeCriticalSection(&OnClickCriticalSection);
 			InitializeCriticalSection(&EventTriggerCriticalSection);
+			InitializeCriticalSection(&DrawItemCriticalSection);
 
 			PipeConnected = false;
 			//Start new thread for Pipe
@@ -1087,6 +1271,11 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&ContextMenuCriticalSection);
 			DeleteCriticalSection(&OnClickCriticalSection);
 			DeleteCriticalSection(&EventTriggerCriticalSection);
+			DeleteCriticalSection(&DrawItemCriticalSection);
+			
+			fUnicode ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc) : 
+						SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
+
 			break;
 		}
 	}

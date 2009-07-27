@@ -76,6 +76,7 @@ namespace Tibia.Objects
                 pipe = new Pipe(client, "TibiaAPI" + client.Process.Id.ToString());
                 pipe.OnConnected += new Pipe.PipeNotification(OnPipeConnect);
                 client.ContextMenu.AddInternalEvents();
+                client.Icon.AddInternalEvents();
 
                 if (!Inject(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
                     throw new Tibia.Exceptions.InjectDLLNotFoundException();
@@ -111,7 +112,11 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
 
+                //event triggering
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, Tibia.Addresses.Client.EventTriggerPointer);
+
+                //image drawing
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawItemFunc, Tibia.Addresses.DrawItem.DrawItemFunc);
 
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);

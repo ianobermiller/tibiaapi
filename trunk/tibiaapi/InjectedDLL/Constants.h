@@ -43,6 +43,7 @@ extern CRITICAL_SECTION CreatureTextCriticalSection;
 extern CRITICAL_SECTION ContextMenuCriticalSection;
 extern CRITICAL_SECTION OnClickCriticalSection;
 extern CRITICAL_SECTION EventTriggerCriticalSection;
+extern CRITICAL_SECTION DrawItemCriticalSection;
 
 
 enum PipeConstantType : BYTE
@@ -62,7 +63,8 @@ enum PipeConstantType : BYTE
 		Recv=0x0D,
 		Send=0x0E,
 		EventTriggered = 0x0F,
-		LookContextMenu = 0x10
+		LookContextMenu = 0x10,
+		DrawItemFunc = 0x11
 };
 
 /* Structures */
@@ -98,6 +100,20 @@ struct ContextMenu
 	char *MenuText;
 	BYTE Type;
 	BYTE HasSeparator;
+};
+
+struct Icon
+{
+	int IconId;
+	int X;
+	int Y;
+	int BitmapSize;
+	int ItemId;
+	int ItemCount;
+	int TextFont;
+	int cR;
+	int cG;
+	int cB;
 };
 
 #endif
