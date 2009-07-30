@@ -384,6 +384,16 @@ namespace Tibia.Objects
         /// <returns></returns>
         public static List<Client> GetClients()
         {
+
+            return GetClients(null);
+        }
+
+        /// <summary>
+        /// Get a list of all the open clients of certain version. Class method.
+        /// </summary>
+        /// <returns></returns>
+        public static List<Client> GetClients(string version)
+        {
             List<Client> clients = new List<Client>();
 
             foreach (Process process in Process.GetProcesses())
@@ -392,9 +402,17 @@ namespace Tibia.Objects
                 Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
 
                 if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
-                    clients.Add(new Client(process));
+                {
+                    if (version == null)
+                    {
+                        clients.Add(new Client(process));
+                    }
+                    else if (process.MainModule.FileVersionInfo.FileVersion == version)
+                    {
+                        clients.Add(new Client(process));   
+                    }
+                }
             }
-
             return clients;
         }
 

@@ -60,6 +60,11 @@ namespace Tibia.Util
         /// </summary>
         public string SavedClientPathsLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"clientPaths.xml");
 
+        /// <summary>
+        /// Version of the clients to look for
+        /// </summary>
+        public string Version = null;
+
         public List<string> Addresses;
 
         public ClientChooserOptions()
