@@ -56,7 +56,7 @@ namespace Tibia.Util
             List<Objects.Client> clients = null;
             if (options.LookUpClients)
             {
-                clients = Objects.Client.GetClients();
+                clients = Objects.Client.GetClients(options.Version);
             }
             if (options.Smart &&
                 options.LookUpClients &&

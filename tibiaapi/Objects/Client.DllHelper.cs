@@ -30,8 +30,9 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool Inject(string filename)
             {
-                Extract();
-
+                #if _RELEASE
+                    Extract();
+                #endif
                 // Get a block of memory to store the filename in the client
                 IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(
                     client.ProcessHandle, IntPtr.Zero, (uint)filename.Length, 
@@ -127,6 +128,8 @@ namespace Tibia.Objects
 
             }
 
+
+            #if _RELEASE 
             public void Extract()
             {
                 bool doExtract = false;
@@ -165,6 +168,7 @@ namespace Tibia.Objects
                     fileStream.Close();
                 }
             }
+            #endif
         }
     }
 }
