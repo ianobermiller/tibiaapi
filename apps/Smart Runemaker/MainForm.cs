@@ -37,7 +37,7 @@ namespace SmartRunemaker
             else
             {
                 rune = RuneChooser.ShowBox();
-                notifyIcon.Icon = new Icon(GetType(), "icon.ico");
+                notifyIcon.Icon = new System.Drawing.Icon(GetType(), "icon.ico");
                 start();
             }
         }
