@@ -25,26 +25,22 @@ namespace Tibia.Packets
 
         public static bool RsaCipEncrypt(ref byte[] buffer, int position)
         {
-            byte[] temp = new byte[128];
-            Array.Copy(buffer, position, temp, 0, 128);
-
-            BigInteger input = new BigInteger(temp);
-            BigInteger output = input.modPow(cipE, cipM);
-            // it's sometimes possible for the results to be a byte short
-            // and this can break some software so we 0x00 pad the result
-            Array.Copy(GetPaddedValue(output), 0, buffer, position, 128);
-
-            return true;
+            return RsaEncrypt(cipE, cipM, ref buffer, position);
         }
 
         public static bool RsaOTEncrypt(ref byte[] buffer, int position)
+        {
+            return RsaEncrypt(otServerE, otServerM, ref buffer, position);
+        }
+
+        public static bool RsaEncrypt(BigInteger e, BigInteger m, ref byte[] buffer, int position)
         {
             byte[] temp = new byte[128];
 
             Array.Copy(buffer, position, temp, 0, 128);
 
             BigInteger input = new BigInteger(temp);
-            BigInteger output = input.modPow(otServerE, otServerM);
+            BigInteger output = input.modPow(e, m);
             // it's sometimes possible for the results to be a byte short
             // and this can break some software so we 0x00 pad the result
             Array.Copy(GetPaddedValue(output), 0, buffer, position, 128);

@@ -578,7 +578,7 @@ namespace Tibia.Packets
             {
                 if (serverRecvMsg.CheckAdler32() && serverRecvMsg.PrepareToRead())
                 {
-                    serverRecvMsg.GetUInt16();
+                    ushort x = serverRecvMsg.GetUInt16();
 
                     while (serverRecvMsg.Position < serverRecvMsg.Length)
                     {
