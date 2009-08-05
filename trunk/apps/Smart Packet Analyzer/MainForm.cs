@@ -80,6 +80,7 @@ namespace SmartPacketAnalyzer
             {
                 uxTypes.Items.Add(new PacketType(kvp.Key, kvp.Value, false));
             }
+            
         }
 
         void InitializeProxy()
@@ -141,11 +142,11 @@ namespace SmartPacketAnalyzer
                     packetList.Add(cp);
                     string name = "";
 
-                    if (cp.Source == "SERVER" && incomingPacketTypeNames.ContainsKey(cp.Type))
-                        name = incomingPacketTypeNames[cp.Type];
-                    if (cp.Source == "CLIENT" && outgoingPacketTypeNames.ContainsKey(cp.Type))
-                        name = outgoingPacketTypeNames[cp.Type];
-
+                    if (cp.Source == "SERVER")
+                        name = incomingPacketTypeNames.ContainsKey(cp.Type) ? incomingPacketTypeNames[cp.Type] : "UNKNOWN";
+                    if (cp.Source == "CLIENT")
+                        name = outgoingPacketTypeNames.ContainsKey(cp.Type) ? outgoingPacketTypeNames[cp.Type] : "UNKNOWN";
+                        
                     uxPacketList.Items.Add(new ListViewItem(new string[]{
                         cp.Time,
                         cp.Source,
