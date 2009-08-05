@@ -44,8 +44,24 @@ namespace SmartTeamMarker
                 client.ContextMenu.AddContextMenu(1000, "Add as Ally", ContextMenuType.CopyNameContextMenu, true);
                 client.ContextMenu.AddContextMenu(1001, "Add as Enemy", ContextMenuType.CopyNameContextMenu, true);
                 client.ContextMenu.AddContextMenu(1002, "Show Item Id", ContextMenuType.LookContextMenu, true);
-                client.ContextMenu.Click+=new Tibia.Objects.ContextMenu.ContextMenuEvent(ContextMenu_Click);
+                client.ContextMenu.Click += new Tibia.Objects.ContextMenu.ContextMenuEvent(ContextMenu_Click);
+
+                client.Icon.AddIcon(1, 20, 30, 64, 1841, 0, ClientFont.NormalBorder, Color.White);
+                client.Screen.DrawScreenText("ally",new Location(20,84,0),Color.LightBlue, ClientFont.NormalBorder, "Display/Hide Allies");
+                client.Icon.AddIcon(2, 20, 110, 64, 9438, 0, ClientFont.NormalBorder, Color.White);
+                client.Screen.DrawScreenText("enemy", new Location(20, 164, 0), Color.Red, ClientFont.NormalBorder, "Display/Hide Enemies");
+
+                client.Icon.Click+=new Tibia.Objects.Icon.IconEvent(Icon_Click);
             }
+        }
+
+        void Icon_Click(int iconId)
+        {
+            this.Invoke(new MethodInvoker(delegate()
+            {
+                if (iconId == 1) DisplayAllies.Checked = !DisplayAllies.Checked;
+                else if (iconId == 2) DisplayEnemies.Checked = !DisplayEnemies.Checked;
+            }));
         }
 
         private void ContextMenu_Click(int eventId)
@@ -184,20 +200,17 @@ namespace SmartTeamMarker
         private void ShowTexts(List<Website.CharInfo> Members, string Team)
         {
             Color color;
-            string letter;
             if (Team == "A")
             {
                 color = Color.LightBlue;
-                letter = "A";
             }
             else
             {
                 color = Color.Red;
-                letter = "E";
             }
             foreach(Website.CharInfo Character in Members)
             {
-                screen.DrawCreatureText(Character.Name, new Location(-10, 0, 0), color, ClientFont.NormalBorder, letter);
+                screen.DrawCreatureText(Character.Name, new Location(-10, 0, 0), color, ClientFont.NormalBorder, Team);
             }
         }
 

@@ -171,18 +171,7 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 		//nY += 12; ??????
 	}
 	
-
-	EnterCriticalSection(&NormalTextCriticalSection);
-
-	{
-	list<NormalText>::iterator ntIT;
-	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
-		PrintText(0x01, ntIT->x, ntIT->y, ntIT->font, ntIT->r, ntIT->g, ntIT->b, ntIT->text, 0x00); //0x01 Surface, 0x00 Align
-
-	LeaveCriticalSection(&NormalTextCriticalSection);
-	}
 	
-	{
 	EnterCriticalSection(&DrawItemCriticalSection);
 
 	list<Icon>::iterator iIT;
@@ -191,13 +180,24 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 		iIT->X,iIT->Y,
 		iIT->BitmapSize,
 		iIT->ItemId, iIT->ItemCount,
-	    0, 255, 0, 0,
+	    0, 0, 0, 0,
 	    iIT->X,iIT->Y,
 	    iIT->BitmapSize,iIT->BitmapSize,
 	    iIT->TextFont, iIT->cR, iIT->cG, iIT->cB, 0x2,
 	    0);
 	LeaveCriticalSection(&DrawItemCriticalSection);
-	}
+	
+
+	
+	EnterCriticalSection(&NormalTextCriticalSection);
+	
+	list<NormalText>::iterator ntIT;
+	for(ntIT = DisplayTexts.begin(); ntIT != DisplayTexts.end(); ++ntIT)
+		PrintText(0x01, ntIT->x, ntIT->y, ntIT->font, ntIT->r, ntIT->g, ntIT->b, ntIT->text, 0x00); //0x01 Surface, 0x00 Align
+
+	LeaveCriticalSection(&NormalTextCriticalSection);
+	
+	
 }
 
 
