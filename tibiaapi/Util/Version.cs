@@ -17,6 +17,9 @@ namespace Tibia
             {
                 #region 8.50 Addresses
                 case "8.50":
+                    CurrentVersion = 850;
+                    CurrentVersionString = "8.50";
+
                     BattleList.Start = 0x632F30;
                     BattleList.End = 0x632F30 + 0xA0 * 250;
                     BattleList.StepCreatures = 0xA0;
@@ -263,6 +266,9 @@ namespace Tibia
                 #endregion
                 #region 8.42 Addresses
                 case "8.42":
+                    CurrentVersion = 842;
+                    CurrentVersionString = "8.42";
+
                     BattleList.Start = 0x631DF0;
                     BattleList.End = 0x631DF0 + 0xA0*250;
                     BattleList.StepCreatures = 0xA0;
@@ -509,6 +515,9 @@ namespace Tibia
                 #endregion
                 #region 8.41 Addresses
                 case "8.41":
+                    CurrentVersion = 841;
+                    CurrentVersionString = "8.41";
+
                     BattleList.Start = 0x62CD90;
                     BattleList.End = 0x6369D0;
                     BattleList.StepCreatures = 0xA0;
@@ -754,6 +763,9 @@ namespace Tibia
                 #endregion
                 #region 8.40 Addresses
                 case "8.40":
+                    CurrentVersion = 840;
+                    CurrentVersionString = "8.40";
+
                     BattleList.Start = 0x062BD90;
                     BattleList.End = 0x6359D0;
                     BattleList.StepCreatures = 0xA0;
@@ -998,6 +1010,9 @@ namespace Tibia
                 #endregion
                 #region 8.31 Addresses
                 case "8.31":
+                    CurrentVersion = 831;
+                    CurrentVersionString = "8.31";
+
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1233,6 +1248,9 @@ namespace Tibia
                 #endregion
                 #region 8.22 Addresses
                 case "8.22":
+                    CurrentVersion = 822;
+                    CurrentVersionString = "8.22";
+
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1452,6 +1470,9 @@ namespace Tibia
                 #endregion
                 #region 8.21 Addresses
                 case "8.21":
+                    CurrentVersion = 821;
+                    CurrentVersionString = "8.21";
+
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1642,6 +1663,9 @@ namespace Tibia
                 #endregion
                 #region 8.20 Addresses
                 case "8.20":
+                    CurrentVersion = 820;
+                    CurrentVersionString = "8.20";
+
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1830,7 +1854,11 @@ namespace Tibia
                 #endregion
                 #region 8.10 & 8.11 Addresses
                 case "8.10":
+                    CurrentVersion = 810;
+                    CurrentVersionString = "8.10";
                 case "8.11":
+                    CurrentVersion = 811;
+                    CurrentVersionString = "8.11";
                     BattleList.Start = 0x613BD0;
                     BattleList.End = 0x619990;
                     BattleList.StepCreatures = 0xA0;
@@ -2054,6 +2082,9 @@ namespace Tibia
                 #endregion
                 #region 8.00 Addresses
                 case "8.00":
+                    CurrentVersion = 800;
+                    CurrentVersionString = "8.00";
+
                     BattleList.Start = 0x60EB30;
                     BattleList.End = 0x6148F0;
                     BattleList.StepCreatures = 0xA0;
