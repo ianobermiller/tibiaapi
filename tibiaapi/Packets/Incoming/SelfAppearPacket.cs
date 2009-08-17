@@ -9,7 +9,6 @@ namespace Tibia.Packets.Incoming
     {
         public uint YourId { get; set; }
         public byte Unknow1 { get; set; }
-        public byte Unknow2 { get; set; }
         public byte CanReportBug { get; set; }
 
         public SelfAppearPacket(Objects.Client c)
@@ -32,8 +31,7 @@ namespace Tibia.Packets.Incoming
             try
             {
                 YourId = msg.GetUInt32();
-                Unknow1 = msg.GetByte();
-                Unknow2 = msg.GetByte();
+                Unknow1 = msg.GetUInt16(); // Related to client-side drawing speed
                 CanReportBug = msg.GetByte();
             }
             catch (Exception)
@@ -49,8 +47,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
             msg.AddUInt32(YourId);
-            msg.AddByte(Unknow1);
-            msg.AddByte(Unknow2);
+            msg.AddUInt16(0x0032); // Related to client-side drawing speed
             msg.AddByte(CanReportBug);
         }
     }
