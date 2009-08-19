@@ -7,19 +7,33 @@ namespace Tibia
 {
     public class Version
     {
-        public const ushort CurrentVersion = 850;
-        public const string CurrentVersionString = "8.50";
+        public static ushort CurrentVersion = 850;
+        public static string CurrentVersionString = "8.50";
+
+        public static string VersionToString(ushort version)
+        {
+            int main = version / 100;
+            int secondary = version - main * 100;
+            return String.Format("{0}.{1:00}", main, secondary);
+        }
+
+        public static ushort StringToVersion(string versionString)
+        {
+            string[] split = versionString.Split('.');
+            int main = int.Parse(split[0]);
+            int secondary = int.Parse(split[1]);
+            return (ushort)(main * 100 + secondary);
+        }
 
         public static void Set(string version)
         {
-
+            CurrentVersion = StringToVersion(version);
+            CurrentVersionString = version;
             switch (version)
             {
                 #region 8.50 Addresses
-                case "8.50":
-                    CurrentVersion = 850;
-                    CurrentVersionString = "8.50";
 
+                case "8.50":
                     BattleList.Start = 0x632F30;
                     BattleList.End = 0x632F30 + 0xA0 * 250;
                     BattleList.StepCreatures = 0xA0;
@@ -263,12 +277,12 @@ namespace Tibia
                     Vip.DistanceIcon = 40;
                     Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
                     break;
-                #endregion
-                #region 8.42 Addresses
-                case "8.42":
-                    CurrentVersion = 842;
-                    CurrentVersionString = "8.42";
 
+                #endregion
+
+                #region 8.42 Addresses
+
+                case "8.42":
                     BattleList.Start = 0x631DF0;
                     BattleList.End = 0x631DF0 + 0xA0*250;
                     BattleList.StepCreatures = 0xA0;
@@ -512,12 +526,12 @@ namespace Tibia
                     Vip.DistanceIcon = 40;
                     Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
                     break;
-                #endregion
-                #region 8.41 Addresses
-                case "8.41":
-                    CurrentVersion = 841;
-                    CurrentVersionString = "8.41";
 
+                #endregion
+
+                #region 8.41 Addresses
+
+                case "8.41":
                     BattleList.Start = 0x62CD90;
                     BattleList.End = 0x6369D0;
                     BattleList.StepCreatures = 0xA0;
@@ -760,12 +774,12 @@ namespace Tibia
                     Vip.DistanceIcon = 40;
                     Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
                     break;
-                #endregion
-                #region 8.40 Addresses
-                case "8.40":
-                    CurrentVersion = 840;
-                    CurrentVersionString = "8.40";
 
+                #endregion
+
+                #region 8.40 Addresses
+
+                case "8.40":
                     BattleList.Start = 0x062BD90;
                     BattleList.End = 0x6359D0;
                     BattleList.StepCreatures = 0xA0;
@@ -1007,12 +1021,12 @@ namespace Tibia
                     Vip.DistanceIcon = 40;
                     Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
                     break;
-                #endregion
-                #region 8.31 Addresses
-                case "8.31":
-                    CurrentVersion = 831;
-                    CurrentVersionString = "8.31";
 
+                #endregion
+
+                #region 8.31 Addresses
+
+                case "8.31":
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1245,12 +1259,12 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
-                #endregion
-                #region 8.22 Addresses
-                case "8.22":
-                    CurrentVersion = 822;
-                    CurrentVersionString = "8.22";
 
+                #endregion
+
+                #region 8.22 Addresses
+
+                case "8.22":
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1467,12 +1481,12 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
-                #endregion
-                #region 8.21 Addresses
-                case "8.21":
-                    CurrentVersion = 821;
-                    CurrentVersionString = "8.21";
 
+                #endregion
+
+                #region 8.21 Addresses
+
+                case "8.21":
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1660,12 +1674,12 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
-                #endregion
-                #region 8.20 Addresses
-                case "8.20":
-                    CurrentVersion = 820;
-                    CurrentVersionString = "8.20";
 
+                #endregion
+
+                #region 8.20 Addresses
+
+                case "8.20":
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 150;
                     BattleList.Start = Player.Exp + 108;
@@ -1851,14 +1865,13 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
+
                 #endregion
+
                 #region 8.10 & 8.11 Addresses
+
                 case "8.10":
-                    CurrentVersion = 810;
-                    CurrentVersionString = "8.10";
                 case "8.11":
-                    CurrentVersion = 811;
-                    CurrentVersionString = "8.11";
                     BattleList.Start = 0x613BD0;
                     BattleList.End = 0x619990;
                     BattleList.StepCreatures = 0xA0;
@@ -2079,12 +2092,12 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
-                #endregion
-                #region 8.00 Addresses
-                case "8.00":
-                    CurrentVersion = 800;
-                    CurrentVersionString = "8.00";
 
+                #endregion
+
+                #region 8.00 Addresses
+
+                case "8.00":
                     BattleList.Start = 0x60EB30;
                     BattleList.End = 0x6148F0;
                     BattleList.StepCreatures = 0xA0;
@@ -2232,8 +2245,13 @@ namespace Tibia
                     Vip.DistanceStatus = 34;
                     Vip.DistanceIcon = 40;
                     break;
-            }
+
             #endregion
+
+                default:
+                    throw new Exceptions.VersionNotSupportedException("Tibia version " + CurrentVersionString + " is not supported by TibiaAPI.");
+            }
+
         }
 
     }

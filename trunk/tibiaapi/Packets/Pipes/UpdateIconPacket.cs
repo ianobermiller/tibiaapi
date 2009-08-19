@@ -31,7 +31,7 @@ namespace Tibia.Packets.Pipes
             return true;
         }
 
-        public static bool Send(Objects.Client client, uint iconId, ushort posX, ushort posY, ushort size, ushort itemId, ushort itemCount, ClientFont font, Color color)
+        public static new bool Send(Objects.Client client, uint iconId, ushort posX, ushort posY, ushort size, ushort itemId, ushort itemCount, ClientFont font, Color color)
         {
             UpdateIconPacket p = new UpdateIconPacket(client);
 

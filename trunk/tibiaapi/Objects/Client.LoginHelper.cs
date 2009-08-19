@@ -248,6 +248,7 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool SetOT(string ip, short port)
             {
+                client.Login.OpenTibiaServer = new LoginServer(ip, port);
                 bool result = SetServer(ip, port);
                 RSA = Constants.RSAKey.OpenTibia;
 
