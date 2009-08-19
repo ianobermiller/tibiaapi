@@ -71,7 +71,6 @@ namespace Tibia.Util
             // Set OT server
             if (client != null && options.UseOT)
             {
-                client.Login.OpenTibiaServer = ls;
                 client.Login.SetOT(ls);
             }
 

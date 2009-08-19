@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
     public class SelfAppearPacket : IncomingPacket
     {
         public uint YourId { get; set; }
-        public byte Unknow1 { get; set; }
+        public ushort Unknown { get; set; }
         public byte CanReportBug { get; set; }
 
         public SelfAppearPacket(Objects.Client c)
@@ -31,7 +31,7 @@ namespace Tibia.Packets.Incoming
             try
             {
                 YourId = msg.GetUInt32();
-                Unknow1 = msg.GetUInt16(); // Related to client-side drawing speed
+                Unknown = msg.GetUInt16(); // Related to client-side drawing speed
                 CanReportBug = msg.GetByte();
             }
             catch (Exception)
