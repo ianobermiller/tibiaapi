@@ -256,6 +256,15 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets or sets the attack mode.
+        /// </summary>
+        /// <returns></returns>
+        public Constants.Attack AttackMode {
+            get { return (Constants.Attack)Memory.ReadByte(Addresses.Client.AttackMode); }
+            set { Memory.WriteByte(Addresses.Client.AttackMode, (byte)value); }
+        }
+
+        /// <summary>
         /// Gets or sets the follow mode.
         /// </summary>
         /// <returns></returns>
