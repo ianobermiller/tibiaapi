@@ -131,7 +131,7 @@ int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
 		WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
 	}
 
-	return OrigSend(s,buf,len,flags);;
+	return OrigSend(s,buf,len,flags);
 }
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,9 +29,9 @@ namespace Tibia.Objects
             /// <param name="filename"></param>
             /// <returns></returns>
             public bool Inject(string filename)
-            {
-                #if _RELEASE
-                    Extract();
+            {    
+                #if (!DEBUG)
+                Extract();
                 #endif
                 // Get a block of memory to store the filename in the client
                 IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(
@@ -128,8 +128,7 @@ namespace Tibia.Objects
 
             }
 
-
-            #if _RELEASE 
+            #if (!DEBUG)
             public void Extract()
             {
                 bool doExtract = false;
