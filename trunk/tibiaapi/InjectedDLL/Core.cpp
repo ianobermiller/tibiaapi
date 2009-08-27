@@ -673,6 +673,9 @@ inline void PipeOnRead()
 		case PipePacketType_HookSendToServer:		
 			ParseHookSendToServer(Buffer, position);
 			break;
+		case PipePacketType_EventTrigger:
+			ParseEventTrigger(Buffer, position);
+			break;
 		case PipePacketType_OnClickContextMenu:
 		case PipePacketType_HookReceivedPacket:
 		case PipePacketType_HookSentPacket:
