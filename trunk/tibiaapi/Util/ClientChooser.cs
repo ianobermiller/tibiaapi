@@ -96,6 +96,7 @@ namespace Tibia.Util
                 }
 
                 newClientChooser.options = options;
+                newClientChooser.TopMost = options.Topmost;
                 newClientChooser.ShowDialog();
                 return client;
             }
