@@ -51,6 +51,11 @@ namespace Tibia.Util
         public bool SaveClientPath = true;
 
         /// <summary>
+        /// If the client chooser is topmost window
+        /// </summary>
+        public bool Topmost = true;
+
+        /// <summary>
         /// Command-line arguments for client
         /// </summary>
         public string Arguments = "";
