@@ -16,6 +16,7 @@ If you are not a member of the google code project, but would like to contribute
     # "In the last revision, r100 something broke. Fix for that." (r100 will be replaced with link to the specific revision automatically)
     # "Fixed issue 99 by changing..." (issue 99 will be replaced with a link to the issue)
   * The same as above goes for creating issues: if you need to, reference the specific revision something broke or another related issue that must be accomplished first.
+  * Don't forget to update programs in the apps directory as well; we don't want the examples to be broken. It is a good idea to include them in your solution so that you get compile errors when you change things in TibiaAPI.
   * Must use proper coding conventions (table based on http://www.irritatedvowel.com/Programming/Standards.aspx):
 
 == Coding Conventions (C# and C++) ==
