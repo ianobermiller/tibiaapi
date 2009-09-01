@@ -3,4 +3,5 @@
  # Checkout the latest version of the code (see [SVNSetup])
  # Open the project file tibiaapi/TibiaAPI.csproj in Visual Studio 2008 or later
  # Build the project by clicking Build > Build Solution
+ # You need to build in Release mode first, so the injected dll can be added as a resource for TibiaAPI
  # The DLL can be found at tibiaapi/bin/Release/TibiaAPI.dll
