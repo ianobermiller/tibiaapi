@@ -227,17 +227,27 @@ namespace Tibia.Constants
 			{ Items.Container.BackpackBlack.Id, Items.Container.BackpackBlack },
 			{ Items.Container.BackpackBlue.Id, Items.Container.BackpackBlue },
 			{ Items.Container.BackpackBrown.Id, Items.Container.BackpackBrown },
+            { Items.Container.BackpackBrocade.Id, Items.Container.BackpackBrocade },
 			{ Items.Container.BackpackGold.Id, Items.Container.BackpackGold },
 			{ Items.Container.BackpackGrass.Id, Items.Container.BackpackGrass },
 			{ Items.Container.BackpackGreen.Id, Items.Container.BackpackGreen },
+            { Items.Container.BackpackMoon.Id, Items.Container.BackpackMoon },
+            { Items.Container.BackpackOfHolding.Id, Items.Container.BackpackOfHolding },
 			{ Items.Container.BackpackPirate.Id, Items.Container.BackpackPirate },
 			{ Items.Container.BackpackPurple.Id, Items.Container.BackpackPurple },
 			{ Items.Container.BackpackRed.Id, Items.Container.BackpackRed },
 			{ Items.Container.BackpackStar.Id, Items.Container.BackpackStar },
 			{ Items.Container.BackpackYellow.Id, Items.Container.BackpackYellow },
-			{ Items.Container.BagBrown.Id, Items.Container.BagBrown },
+            { Items.Container.KeyRing.Id, Items.Container.KeyRing },
 			{ Items.Container.ParcelNew.Id, Items.Container.ParcelNew },
 			{ Items.Container.ParcelUsed.Id, Items.Container.ParcelUsed },
+            { Items.Container.BagBlue.Id, Items.Container.BagBlue },
+            { Items.Container.BagBrown.Id, Items.Container.BagBrown },
+            { Items.Container.BagGreen.Id, Items.Container.BagGreen },
+            { Items.Container.BagGrey.Id, Items.Container.BagGrey },
+            { Items.Container.BagPurple.Id, Items.Container.BagPurple },
+            { Items.Container.BagRed.Id, Items.Container.BagRed },
+            { Items.Container.BagYellow.Id, Items.Container.BagYellow },
         };
         #endregion
 
@@ -247,15 +257,18 @@ namespace Tibia.Constants
 			{ Items.Container.BackpackBlack.Id, Items.Container.BackpackBlack },
 			{ Items.Container.BackpackBlue.Id, Items.Container.BackpackBlue },
 			{ Items.Container.BackpackBrown.Id, Items.Container.BackpackBrown },
+            { Items.Container.BackpackBrocade.Id, Items.Container.BackpackBrocade },
 			{ Items.Container.BackpackGold.Id, Items.Container.BackpackGold },
 			{ Items.Container.BackpackGrass.Id, Items.Container.BackpackGrass },
 			{ Items.Container.BackpackGreen.Id, Items.Container.BackpackGreen },
+            { Items.Container.BackpackMoon.Id, Items.Container.BackpackMoon },
+            { Items.Container.BackpackOfHolding.Id, Items.Container.BackpackOfHolding },
 			{ Items.Container.BackpackPirate.Id, Items.Container.BackpackPirate },
 			{ Items.Container.BackpackPurple.Id, Items.Container.BackpackPurple },
 			{ Items.Container.BackpackRed.Id, Items.Container.BackpackRed },
 			{ Items.Container.BackpackStar.Id, Items.Container.BackpackStar },
 			{ Items.Container.BackpackYellow.Id, Items.Container.BackpackYellow },
-            { Items.Container.BackpackOfHolding.Id, Items.Container.BackpackOfHolding}
+            { Items.Container.KeyRing.Id, Items.Container.KeyRing },
         };
         #endregion
 
