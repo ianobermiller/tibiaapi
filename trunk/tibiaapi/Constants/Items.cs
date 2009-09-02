@@ -69,15 +69,17 @@ namespace Tibia.Constants
             public static Item BackpackBlack = new Item(2870, "Backpack Black");
             public static Item BackpackBlue = new Item(2869, "Backpack Blue");
             public static Item BackpackBrown = new Item(2854, "Backpack Brown");
+            public static Item BackpackBrocade = new Item(8860, "Backpack Brocade");
             public static Item BackpackGold = new Item(2871, "Backpack Gold");
             public static Item BackpackGrass = new Item(2872, "Backpack Grass");
             public static Item BackpackGreen = new Item(2865, "Backpack Green");
+            public static Item BackpackMoon = new Item(9604, "Backpack Moon");
+            public static Item BackpackOfHolding = new Item(3253, "Backpack of Holding");
             public static Item BackpackPirate = new Item(5926, "Backpack Pirate");
             public static Item BackpackPurple = new Item(2868, "Backpack Purple");
             public static Item BackpackRed = new Item(2867, "Backpack Red");
             public static Item BackpackStar = new Item(5949, "Backpack Star");
             public static Item BackpackYellow = new Item(2866, "Backpack Yellow");
-            public static Item ParcelUsed = new Item(3504, "Parcel Used");
             public static Item BagBrown = new Item(2853, "Bag Brown");
             public static Item BagGreen = new Item(2857, "Bag Green");
             public static Item BagYellow = new Item(2858, "Bag Yellow");
@@ -85,8 +87,9 @@ namespace Tibia.Constants
             public static Item BagPurple = new Item(2860, "Bag Purple");
             public static Item BagBlue = new Item(2861, "Bag Blue");
             public static Item BagGrey = new Item(2862, "Bag Grey");
+            public static Item KeyRing = new Item(5801, "Key Ring");
             public static Item ParcelNew = new Item(3503, "Parcel New");
-            public static Item BackpackOfHolding = new Item(3253, "Backpack of Holding");
+            public static Item ParcelUsed = new Item(3504, "Parcel Used");
         }
 
         public static class Fluid
