@@ -275,6 +275,15 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Gets or sets the follow mode.
+        /// </summary>
+        /// <returns></returns>
+        public byte SafeMode {
+            get { return Memory.ReadByte(Addresses.Client.SafeMode); }
+            set { Memory.WriteByte(Addresses.Client.FollowMode, value); }
+        }
+
+        /// <summary>
         /// Gets or sets the action state.
         /// </summary>
         /// <returns></returns>
