@@ -186,6 +186,7 @@ client.Map.ShowFloor(-1, true)
 The following code will show you how to set up a global mouse hook and capture when the ButtonDown event is raised
 
 *C#*
+{{{
 // Enable mouse hook and set the button down event to a function
 
 if (!MouseHook.Enabled) {
@@ -202,8 +203,10 @@ public bool GlobalMouseDown(System.Windows.Forms.MouseButtons button)
     
     return true;
 }
+}}}
 
 *VB.Net*
+{{{
 ' Enable mouse hook and set the button down event to a function
 If Not MouseHook.Enabled Then
     MouseHook.Enable()
@@ -218,6 +221,7 @@ Public Function GlobalMouseDown(ByVal button As System.Windows.Forms.MouseButton
 
     Return True
 End Function
+}}}
 
 == Setup a global keyboard hook ==
 Put the following in a button's click event. This example captures the hotkey Ctrl + Alt + A in the Tibia client only (doesn't let it go to the client). All other keypresses, client or otherwise, are ignored.
