@@ -87,6 +87,12 @@ namespace Tibia.Addresses
         public static uint ActionState = 0x78F5F8; //8.50
 
         /// <summary>
+        /// Action state freezer
+        /// </summary>
+        public static uint ActionStateFreezer = 0x517814; //8.50
+        public static byte[] ActionStateOriginal = new byte[] { 0xA3, 0x00, 0x00, 0x00, 0x00, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
+        public static byte[] ActionStateFreezed = new byte[] { 0xC7, 0x05, 0x00 , 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xC3 };
+        /// <summary>
         /// The text of the last message sent to the default channel(innacurate?).
         /// </summary>
         public static uint LastMSGText = 0x791668; //8.50

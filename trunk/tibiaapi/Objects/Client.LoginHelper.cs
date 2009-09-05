@@ -155,7 +155,7 @@ namespace Tibia.Objects
 
                     Thread.Sleep(100); //make sure the client process the msg
                     //we start at position 0
-                    if (ch.CharName.ToLower() == charName.ToLower())
+                    if (string.Compare(ch.CharName, charName, true) == 0)
                     {
                         //we found the char
                         //lets press the entrer key
