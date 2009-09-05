@@ -16,6 +16,28 @@ namespace Tibia.Objects
             internal WindowHelper(Client client) { this.client = client; }
 
             /// <summary>
+            /// Gets or sets action state freezer
+            /// </summary>
+            /// <returns></returns>
+            public bool ActionStateFreezer {
+                get {
+                    return client.Memory.ReadByte(Addresses.Client.ActionStateFreezer) == Addresses.Client.ActionStateFreezed[0];
+                }
+                set {
+                    Array.Copy(BitConverter.GetBytes((int)Tibia.Addresses.Client.ActionState), 0, Addresses.Client.ActionStateOriginal, 1, 4);
+                    Array.Copy(BitConverter.GetBytes((int)Tibia.Addresses.Client.ActionState), 0, Addresses.Client.ActionStateFreezed, 2, 4);
+                   
+                    if (value) {
+                        client.Memory.WriteByte((long)Tibia.Addresses.Client.ActionState, (byte)Tibia.Constants.ActionState.Using);
+                        client.Memory.WriteBytes(Addresses.Client.ActionStateFreezer, Addresses.Client.ActionStateFreezed, (uint)Addresses.Client.ActionStateFreezed.Length);
+                    }
+                    else
+                        client.Memory.WriteBytes(Addresses.Client.ActionStateFreezer, Addresses.Client.ActionStateOriginal, (uint)Addresses.Client.ActionStateOriginal.Length);
+
+                }
+            }
+
+            /// <summary>
             /// Get the current FPS of the client.
             /// </summary>
             public double FPSCurrent

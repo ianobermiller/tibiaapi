@@ -73,7 +73,7 @@ namespace Tibia.Addresses
         public static uint AccessN = 0; // 8.0
         public static uint AccessS = 0; // 8.0
 
-        public static uint TargetID = RedSquare;    
+        public static uint TargetID = RedSquare;
         public static uint TargetBListID = TargetID - 8; 
         public static uint TargetBListType = TargetID - 5;
         public static uint TargetType = TargetID + 3;

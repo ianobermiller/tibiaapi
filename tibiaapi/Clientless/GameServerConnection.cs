@@ -117,7 +117,6 @@ namespace Tibia.Clientless
             }
             catch (Exception)
             {
-
             }
         }
 
