@@ -51,6 +51,11 @@ namespace Tibia.Util
         public bool SaveClientPath = true;
 
         /// <summary>
+        /// Shows only offline clients
+        /// </summary>
+        public bool OfflineOnly = false;
+
+        /// <summary>
         /// If the client chooser is topmost window
         /// </summary>
         public bool Topmost = true;
