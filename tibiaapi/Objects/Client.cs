@@ -410,24 +410,32 @@ namespace Tibia.Objects
         /// Get a list of all the open clients of certain version. Class method.
         /// </summary>
         /// <returns></returns>
-        public static List<Client> GetClients(string version)
-        {
-            List<Client> clients = new List<Client>();
+        public static List<Client> GetClients(string version) {
+            return GetClients(version, false);
+        }
 
-            foreach (Process process in Process.GetProcesses())
-            {
+        /// <summary>
+        /// Get a list of all the open clients of certain version. Class method.
+        /// </summary>
+        /// <returns></returns>
+        public static List<Client> GetClients(string version, bool offline) {
+            List<Client> clients = new List<Client>();
+            Client client = null;
+
+            foreach (Process process in Process.GetProcesses()) {
                 StringBuilder classname = new StringBuilder();
                 Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
 
-                if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    if (version == null)
-                    {
-                        clients.Add(new Client(process));
+                if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase)) {
+                    if (version == null) {
+                        client = new Client(process);
+                        if (!offline || !client.LoggedIn) 
+                            clients.Add(client);
                     }
-                    else if (process.MainModule.FileVersionInfo.FileVersion == version)
-                    {
-                        clients.Add(new Client(process));   
+                    else if (process.MainModule.FileVersionInfo.FileVersion == version) {
+                        clients.Add(new Client(process));
+                        if (!offline || !client.LoggedIn)
+                            clients.Add(client);
                     }
                 }
             }
