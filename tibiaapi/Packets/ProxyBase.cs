@@ -120,7 +120,7 @@ namespace Tibia.Packets
         public event OutgoingPacketListener ReceivedAttackOutgoingPacket;
         public event OutgoingPacketListener ReceivedAutoWalkOutgoingPacket;
         public event OutgoingPacketListener ReceivedAutoWalkCancelOutgoingPacket;
-        public event OutgoingPacketListener ReceivedBattleWindowOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
         public event OutgoingPacketListener ReceivedCancelMoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedChannelCloseOutgoingPacket;
         public event OutgoingPacketListener ReceivedChannelListOutgoingPacket;
@@ -130,7 +130,7 @@ namespace Tibia.Packets
         public event OutgoingPacketListener ReceivedItemRotateOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemUseOutgoingPacket;
         public event OutgoingPacketListener ReceivedItemUseOnOutgoingPacket;
-        public event OutgoingPacketListener ReceivedItemUseBattlelistOutgoingPacket;
+        public event OutgoingPacketListener ReceivedItemMoveOutgoingPacket;
         public event OutgoingPacketListener ReceivedFightModesOutgoingPacket;
         public event OutgoingPacketListener ReceivedFollowOutgoingPacket;
         public event OutgoingPacketListener ReceivedLogoutOutgoingPacket;
@@ -932,8 +932,8 @@ namespace Tibia.Packets
                     packet = new Packets.Outgoing.ItemMovePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
-                        if (ReceivedItemUseBattlelistOutgoingPacket != null)
-                            packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
+                        if (ReceivedItemMoveOutgoingPacket != null)
+                            packet.Forward = ReceivedItemMoveOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
                             packet.ToNetworkMessage(ref outMsg);
@@ -954,8 +954,8 @@ namespace Tibia.Packets
                     packet = new Packets.Outgoing.ItemUseBattlelistPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
-                        if (ReceivedBattleWindowOutgoingPacket != null)
-                            packet.Forward = ReceivedBattleWindowOutgoingPacket.Invoke(packet);
+                        if (ReceivedItemUseBattlelistOutgoingPacket != null)
+                            packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
                             packet.ToNetworkMessage(ref outMsg);
