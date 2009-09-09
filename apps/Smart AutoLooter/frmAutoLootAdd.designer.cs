@@ -101,7 +101,6 @@
             this.buttonOk.TabIndex = 4;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // buttonCancel
             // 
@@ -145,7 +144,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmAutoLootAdd";
             this.Text = "Add Loot";
-            this.Load += new System.EventHandler(this.frmAutoLootAdd_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownItemId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownContainer)).EndInit();
             this.ResumeLayout(false);

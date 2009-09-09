@@ -1,277 +1,713 @@
 using System;
 using Tibia.Objects;
 
-namespace Tibia.Constants
-{
-    /// <summary>
-    /// Contains item ids.
-    /// </summary>
-    public static class Items
-    {
-        public static int[] TreeArray =
-            {
-                957, 958,
-                3608, 3609, 3613, 3614, 3615, 3616, 3617, 3618, 3619, 3620,
-                3621, 3622, 3623, 3624, 3625, 3626, 3631, 3632, 3633, 3634,
-                3635, 3636, 3637, 3638, 3639, 3640, 3641, 3647, 3649, 3687,
-                3688, 3689, 3691, 3692, 3694, 3742, 3743, 3744, 3745, 3750,
-                3751, 3752, 3753, 3754, 3755, 3756, 3757, 3758, 3759, 3760,
-                3761, 3762, 3780, 3871, 3872, 3873, 3877, 3878, 3884, 3885,
-                3899, 3901, 3902, 3903, 3905, 3908, 3909, 3910, 3911, 3920,
-                3921, 4433, 5091, 5092, 5093, 5094, 5095, 5155, 5156, 5389,
-                5390, 5391, 5392, 6094, 7020, 7021, 7022, 7023, 7024
-            };
-
-        public static class Ammunition
-        {
-            public static Item Arrow = new Item(3447, "Arrow");
-            public static Item BurstArrow = new Item(3449, "Burst Arrow");
-            public static Item PoisonedArrow = new Item(3448, "Poisoned Arrow");
-            public static Item EarthArrow = new Item(7774, "Earth Arrow");
-            public static Item FlashArrow = new Item(761, "Flash Arrow");
-            public static Item ShiverArrow = new Item(762, "Shiver Arrow");
-            public static Item FlamingArrow = new Item(763, "Flaming Arrow");
-            public static Item SniperArrow = new Item(7364, "Sniper Arrow");
-
-            public static Item PowerBolt = new Item(3450, "Power Bolt");
-            public static Item Bolts = new Item(3446, "Bolt");
-            public static Item PiercingBolt = new Item(7363, "Piercing Bolt");
-
-            public static Item SmallStone = new Item(1781, "Small Stone");
-            public static Item ThrowingStar = new Item(3287, "Throwing Star");
-            public static Item ThrowingKnife = new Item(3298, "Throwing Knife");
-
-            public static Item Spear = new Item(3277, "Spear");
-            public static Item HuntingSpear = new Item(3347, "Hunting Spear");
-            public static TransformingItem EnchantedSpear = new TransformingItem(7367, "Enchanted Spear", Spells.EnchantSpear, 3, Ammunition.Spear);
-            public static Item RoyalSpear = new Item(7378, "Royal Spear");
-        }
-
-        public static class Boots
-        {
-            public static Item BootsofHaste = new Item(3079, "Boots of Haste");
-            public static Item LeatherBoots = new Item(3552, "Leather Boots");
-            public static Item SteelBoots = new Item(3554, "Steel Boots");
-            public static Item CrocodileBoots = new Item(3556, "Crocodile Boots");
-            public static Item LightningBoots = new Item(820, "Lightning Boots");
-            public static Item TerraBoots = new Item(813, "Terra Boots");
-            public static Item FurBoots = new Item(7457, "Fur Boots");
-            public static Item SoftBoots = new Item(6529, "Soft Boots");
-        }
-
-        public static class Bottle
-        {
-            public static Item Vial = new Item(2874, "Vial");
-        }
-
-        public static class Container
-        {
-            public static Item BackpackBlack = new Item(2870, "Backpack Black");
-            public static Item BackpackBlue = new Item(2869, "Backpack Blue");
-            public static Item BackpackBrown = new Item(2854, "Backpack Brown");
-            public static Item BackpackBrocade = new Item(8860, "Backpack Brocade");
-            public static Item BackpackGold = new Item(2871, "Backpack Gold");
-            public static Item BackpackGrass = new Item(2872, "Backpack Grass");
-            public static Item BackpackGreen = new Item(2865, "Backpack Green");
-            public static Item BackpackMoon = new Item(9604, "Backpack Moon");
-            public static Item BackpackOfHolding = new Item(3253, "Backpack of Holding");
-            public static Item BackpackPirate = new Item(5926, "Backpack Pirate");
-            public static Item BackpackPurple = new Item(2868, "Backpack Purple");
-            public static Item BackpackRed = new Item(2867, "Backpack Red");
-            public static Item BackpackStar = new Item(5949, "Backpack Star");
-            public static Item BackpackYellow = new Item(2866, "Backpack Yellow");
-            public static Item BagBrown = new Item(2853, "Bag Brown");
-            public static Item BagGreen = new Item(2857, "Bag Green");
-            public static Item BagYellow = new Item(2858, "Bag Yellow");
-            public static Item BagRed = new Item(2859, "Bag Red");
-            public static Item BagPurple = new Item(2860, "Bag Purple");
-            public static Item BagBlue = new Item(2861, "Bag Blue");
-            public static Item BagGrey = new Item(2862, "Bag Grey");
-            public static Item KeyRing = new Item(5801, "Key Ring");
-            public static Item ParcelNew = new Item(3503, "Parcel New");
-            public static Item ParcelUsed = new Item(3504, "Parcel Used");
-        }
-
-        public static class Fluid
-        {
-            public static Item Empty = Bottle.Vial;
-            public static Item Life = new Item(Bottle.Vial.Id, "Lifefluid") { Count = 11 };
-            public static Item Mana = new Item(Bottle.Vial.Id, "Manafluid") { Count = 10 };
-        }
-
-        public static class Food
-        {
-            public static Objects.Food Apple = new Objects.Food(3585, "Apple", 72);
-            public static Objects.Food Banana = new Objects.Food(3587, "Banana", 96);
-            public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 12);
-            public static Objects.Food Bread = new Objects.Food(3600, "Bread", 120);
-            public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 96);
-            public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 264);
-            public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 60);
-            public static Objects.Food Cheese = new Objects.Food(3607, "Cheese", 108);
-            public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 12);
-            public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 216);
-            public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 24);
-            public static Objects.Food Corncob = new Objects.Food(3597, "Corncob", 108);
-            public static Objects.Food DragonHam = new Objects.Food(3583, "Dragon Ham", 720);
-            public static Objects.Food Egg = new Objects.Food(3606, "Egg", 72);
-            public static Objects.Food Fish = new Objects.Food(3578, "Fish", 144);
-            public static Objects.Food Grapes = new Objects.Food(3592, "Grapes", 108);
-            public static Objects.Food GreenMushroom = new Objects.Food(3732, "Green Mushroom", 60);
-            public static Objects.Food Ham = new Objects.Food(3582, "Ham", 360);
-            public static Objects.Food Meat = new Objects.Food(3577, "Meat", 180);
-            public static Objects.Food Mellon = new Objects.Food(3593, "Mellon", 240);
-            public static Objects.Food Orange = new Objects.Food(3586, "Orange", 156);
-            public static Objects.Food Roll = new Objects.Food(3601, "Roll", 36);
-            public static Objects.Food Salmon = new Objects.Food(3579, "Salmon", 120);
-            public static Objects.Food WhiteMushroom = new Objects.Food(3723, "White Mushroom", 108);
-        }
-
-        public static class Neck
-        {
-            public static Item AmuletOfLoss = new Item(3057, "Amulet of Loss");
-            public static Item BronzeAmulet = new Item(3056, "Bronze Amulet");
-            public static Item BronzeNecklace = new Item(3009, "Bronze Necklace");
-            public static Item CrystalNecklace = new Item(3008, "Crystal Necklace");
-            public static Item DragonNecklace = new Item(3085, "Dragon Necklace");
-            public static Item ElvenAmulet = new Item(3082, "Elven Amulet");
-            public static Item GarlicNecklace = new Item(3083, "Garlic Necklace");
-            public static Item GoldenAmulet = new Item(3013, "Golden Amulet");
-            public static Item PlatinumAmulet = new Item(3055, "Platinum Amulet");
-            public static Item ProtectionAmulet = new Item(3084, "Protection Amulet");
-            public static Item Scarf = new Item(3572, "Scarf");
-            public static Item SilverAmulet = new Item(3054, "Silver Amulet");
-            public static Item StarAmulet = new Item(3014, "Star Amulet");
-            public static Item StoneSkinAmulet = new Item(3081, "Stone Skin Amulet");
-            public static Item StrangeTalisman = new Item(3045, "Strange Talisman");
-            public static Item WolfToothChain = new Item(3012, "Wolf ToothChain");
-        }
-
-        public static class Potion
-        {
-            public static Item Health = new Item(266, "Health");
-            public static Item Mana = new Item(268, "Mana");
-            public static Item StrongHealth = new Item(236, "Strong Health");
-            public static Item StrongMana = new Item(237, "Strong Mana");
-            public static Item GreatMana = new Item(238, "Great Mana");
-            public static Item GreatHealth = new Item(239, "Great Health");
-            public static Item UltimateHealth = new Item(7643, "Ultimate Health");
-            public static Item GreatSpirit = new Item(7642, "Great Spirit");
-        }
-
-        public static class Quest
-        {
-            public static Item ApeFur = new Item(5883, "Ape Fur");
-            public static Item BatWing = new Item(5894, "Bat Wing");
-            public static Item BearPaw = new Item(5896, "Bear Paw");
-            public static Item BeholderEye = new Item(5898, "Beholder Eye");
-            public static Item BluePiece = new Item(5912, "Blue Piece");
-            public static Item BrownPiece = new Item(5913, "Brown Piece");
-            public static Item ChickenFeather = new Item(5890, "Chicken Feather");
-            public static Item DragonClaw = new Item(5919, "Dragon Claw");
-            public static Item FishFin = new Item(5895, "Fish Fin");
-            public static Item GreenDragonLeather = new Item(5877, "Green Dragon Leather");
-            public static Item GreenDragonScale = new Item(5920, "Green Dragon Scale");
-            public static Item GreenPiece = new Item(5910, "Green Piece");
-            public static Item HeavenBlossom = new Item(5921, "Heaven Blossom");
-            public static Item HoneyComb = new Item(5902, "Honey Comb");
-            public static Item LizardLeather = new Item(5876, "Lizard Leather");
-            public static Item LizardScale = new Item(5881, "Lizard Scale");
-            public static Item MinotaurLeather = new Item(5878, "Minotaur Leather");
-            public static Item RedDragonLeather = new Item(5948, "Red Dragon Leather");
-            public static Item RedDragonScale = new Item(5882, "Red Dragon Scale");
-            public static Item RedPiece = new Item(5911, "Red Piece");
-            public static Item SniperGloves = new Item(5875, "Sniper Gloves");
-            public static Item VampireDust = new Item(5905, "Vampire Dust");
-            public static Item WhitePiece = new Item(5909, "White Piece");
-            public static Item WolfPaw = new Item(5897, "Wolf Paw");
-            public static Item YellowPiece = new Item(5914, "Yellow Piece");
-            public static Item IronOre = new Item(5880, "Iron Ore");
-            public static Item Hook = new Item(6097, "Hook");
-            public static Item EyePatch = new Item(6098, "Eye Patch");
-            public static Item PegLeg = new Item(6126, "Peg Leg");
-        }
-
-        public static class Ring
-        {
-            public static Item AxeRing = new Item(3092, "Axe Ring");
-            public static Item ClubRing = new Item(3093, "Club Ring");
-            public static Item CrystalRing = new Item(3007, "Crystal Ring");
-            public static Item DwarvenRing = new Item(3097, "Dwarven Ring");
-            public static Item EnergyRing = new Item(3051, "Energy Ring");
-            public static Item GoldenRing = new Item(3063, "Golden Ring");
-            public static Item LifeRing = new Item(3052, "Life Ring");
-            public static Item MightRing = new Item(3048, "Might Ring");
-            public static Item PowerRing = new Item(3050, "Power Ring");
-            public static Item RingOfHealing = new Item(3098, "Ring Of Healing");
-            public static Item RingOfTheSkies = new Item(3006, "Ring of the Skies");
-            public static Item StealthRing = new Item(3049, "Stealth Ring");
-            public static Item SwordRing = new Item(3091, "Sword Ring");
-            public static Item TimeRing = new Item(3053, "Time Ring");
-            public static Item WeddingRing = new Item(3004, "Wedding Ring");
-        }
-
-        public static class Rune
-        {
-            public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", null, 0);
-            public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead Rune", Spells.AnimateDead, 5);
-            public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote Rune", Spells.AntidoteRune, 1);
-            public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche Rune", Spells.Avalanche, 3);
-            public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon Rune", Spells.Chameleon, 2);
-            public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature Rune", Spells.ConvinceCreature, 3);
-            public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate Rune", Spells.Desintegrate, 3);
-            public static Objects.Rune DestroyField = new Objects.Rune(3148, "Destroy Field Rune", Spells.DestroyField, 2);
-            public static Objects.Rune EnergyBomb = new Objects.Rune(3149, "Energy Bomb Rune", Spells.EnergyBomb, 5);
-            public static Objects.Rune EnergyField = new Objects.Rune(3164, "Energy Field Rune", Spells.EnergyField, 2);
-            public static Objects.Rune EnergyWall = new Objects.Rune(3166, "Energy Wall Rune", Spells.EnergyWall, 5);
-            public static Objects.Rune Explosion = new Objects.Rune(3200, "Explosion Rune", Spells.Explosion, 4);
-            public static Objects.Rune FireBomb = new Objects.Rune(3192, "Fire Bomb Rune", Spells.FireBomb, 4);
-            public static Objects.Rune FireField = new Objects.Rune(3188, "Fire Field Rune", Spells.FireField, 1);
-            public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall Rune", Spells.FireWall, 4);
-            public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball Rune", Spells.Fireball, 3);
-            public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball Rune", Spells.GreatFireball, 3);
-            public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile Rune", Spells.HeavyMagicMissile, 2);
-            public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle Rune", Spells.Icicle, 3);
-            public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealingRune, 2);
-            public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile Rune", Spells.LightMagicMissile, 1);
-            public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall Rune", Spells.MagicWall, 5);
-            public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze Rune", Spells.Paralyze, 3);
-            public static Objects.Rune PoisonBomb = new Objects.Rune(3173, "Poison Bomb Rune", Spells.PoisonBomb, 2);
-            public static Objects.Rune PoisonField = new Objects.Rune(3172, "Poison Field Rune", Spells.PoisonField, 1);
-            public static Objects.Rune PoisonWall = new Objects.Rune(3176, "Poison Wall Rune", Spells.PoisonWall, 3);
-            public static Objects.Rune Soulfire = new Objects.Rune(3195, "Soulfire Rune", Spells.Soulfire, 3);
-            public static Objects.Rune Stalagmite = new Objects.Rune(3179, "Stalagmite Rune", Spells.Stalagmite, 2);
-            public static Objects.Rune StoneShower = new Objects.Rune(3175, "Stone Shower Rune", Spells.StoneShower, 3);
-            public static Objects.Rune SuddenDeath = new Objects.Rune(3155, "Sudden Death Rune", Spells.SuddenDeath, 5);
-            public static Objects.Rune Thunderstorm = new Objects.Rune(3202, "Thunderstorm Rune", Spells.Thunderstorm, 3);
-            public static Objects.Rune UltimateHealing = new Objects.Rune(3160, "Ultimate Healing Rune", Spells.UltimateHealingRune, 3);
-        }
-
-        public static class Tool
-        {
-            public static Item Rope = new Item(3003, "Rope");
-            public static Item FishingRod = new Item(3483, "Fishing Rod");
-            public static Item Pick = new Item(3456, "Pick");
-            public static Item Shovel = new Item(3457, "Shovel");
-            public static Item Scythe = new Item(3453, "Scythe");
-            public static Item LightShovel = new Item(5710, "Light Shovel");
-            public static Item ElvenhairRope = new Item(646, "Elvenhair Rope");
-        }
-
-        public static class Valuable
-        {
-            public static Item GoldCoin = new Item(3031, "Gold Coin");
-            public static Item PlatinumCoin = new Item(3035, "Platinum Coin");
-            public static Item CrystalCoin = new Item(3043, "Crystal Coin");
-            public static Item ScarabCoin = new Item(3042, "Scarab Coin");
-            public static Item SmallAmethyst = new Item(3033, "Small Amethyst");
-            public static Item SmallEmerald = new Item(3032, "Small Emerald");
-            public static Item BlackPearl = new Item(3027, "Black Pearl");
-            public static Item WhitePearl = new Item(3026, "White Pearl");
-            public static Item SmallDiamond = new Item(3028, "Small Diamond");
-            public static Item SmallSapphire = new Item(3029, "Small Sapphire");
-            public static Item SmallRuby = new Item(3030, "Small Ruby");
-            public static Item Talon = new Item(3034, "Talon");
-        }
-    }
+namespace Tibia.Constants {
+  public static class Items {
+      public static int[] TreeArray = { 957, 958, 3608, 3609, 3613, 3614, 3615, 3616, 3617, 3618, 3619, 3620, 3621, 3622, 3623, 3624, 3625, 3626, 3631, 3632, 3633, 3634, 3635, 3636, 3637, 3638, 3639, 3640, 3641, 3647, 3649, 3687, 3688, 3689, 3691, 3692, 3694, 3742, 3743, 3744, 3745, 3750, 3751, 3752, 3753, 3754, 3755, 3756, 3757, 3758, 3759, 3760, 3761, 3762, 3780, 3871, 3872, 3873, 3877, 3878, 3884, 3885, 3899, 3901, 3902, 3903, 3905, 3908, 3909, 3910, 3911, 3920, 3921, 4433, 5091, 5092, 5093, 5094, 5095, 5155, 5156, 5389, 5390, 5391, 5392, 6094, 7020, 7021, 7022, 7023, 7024 };
+      public static class Armor {
+          public static Item FrozenPlate = new Item(8059, "Frozen Plate");
+          public static Item RangersCloak = new Item(3571, "Ranger's Cloak");
+          public static Item LavosArmor = new Item(8049, "Lavos Armor");
+          public static Item RobeoftheUnderworld = new Item(8062, "Robe of the Underworld");
+          public static Item MasterArchersArmor = new Item(8060, "Master Archer's Armor");
+          public static Item FirebornGiantArmor = new Item(8053, "Fireborn Giant Armor");
+          public static Item WindbornColossusArmor = new Item(8055, "Windborn Colossus Armor");
+          public static Item GreenwoodCoat = new Item(8041, "Greenwood Coat");
+          public static Item FocusCape = new Item(8043, "Focus Cape");
+          public static Item MagiciansRobe = new Item(7991, "Magician's Robe");
+          public static Item HibiscusDress = new Item(8045, "Hibiscus Dress");
+          public static Item BeltedCape = new Item(8044, "Belted Cape");
+          public static Item SkullcrackerArmor = new Item(8061, "Skullcracker Armor");
+          public static Item LethalLissysShirt = new Item(6100, "Lethal Lissy's Shirt");
+          public static Item TerraMantle = new Item(811, "Terra Mantle");
+          public static Item LightningRobe = new Item(825, "Lightning Robe");
+          public static Item PirateShirt = new Item(6095, "Pirate Shirt");
+          public static Item Mammothfurcape = new Item(7463, "Mammoth fur cape");
+          public static Item PlateArmor = new Item(3357, "Plate Armor");
+          public static Item ChainArmor = new Item(3358, "Chain Armor");
+          public static Item BrassArmor = new Item(3359, "Brass Armor");
+          public static Item GoldenArmor = new Item(3360, "Golden Armor");
+          public static Item LeatherArmor = new Item(3361, "Leather Armor");
+          public static Item MagicPlateArmor = new Item(3366, "Magic Plate Armor");
+          public static Item KnightArmor = new Item(3370, "Knight Armor");
+          public static Item ScaleArmor = new Item(3377, "Scale Armor");
+          public static Item StuddedArmor = new Item(3378, "Studded Armor");
+          public static Item Doublet = new Item(3379, "Doublet");
+          public static Item NobleArmor = new Item(3380, "Noble Armor");
+          public static Item CrownArmor = new Item(3381, "Crown Armor");
+          public static Item DarkArmor = new Item(3383, "Dark Armor");
+          public static Item DragonScaleMail = new Item(3386, "Dragon Scale Mail");
+          public static Item DemonArmor = new Item(3888, "Demon Armor");
+          public static Item AmazonArmor = new Item(3394, "Amazon Armor");
+          public static Item NativeArmor = new Item(3402, "Native Armor");
+          public static Item LeopardArmor = new Item(3404, "Leopard Armor");
+          public static Item DwarvenArmor = new Item(3397, "Dwarven Armor");
+          public static Item BlueRobe = new Item(3567, "Blue Robe");
+          public static Item RedRobe = new Item(3566, "Red Robe");
+      }
+      public static class Legs {
+          public static Item RangerLegs = new Item(8095, "Ranger Legs");
+          public static Item BlueLegs = new Item(645, "Blue Legs");
+          public static Item GlacierKilt = new Item(823, "Glacier Kilt");
+          public static Item LightningLegs = new Item(822, "Lightning Legs");
+          public static Item StuddedLegs = new Item(3362, "Studded Legs");
+          public static Item DragonScaleLegs = new Item(3363, "Dragon Scale Legs");
+          public static Item GoldenLegs = new Item(3364, "Golden Legs");
+          public static Item KnightLegs = new Item(3371, "Knight Legs");
+          public static Item BrassLegs = new Item(3372, "Brass Legs");
+          public static Item CrownLegs = new Item(3382, "Crown Legs");
+          public static Item DemonLegs = new Item(3389, "Demon Legs");
+          public static Item DwarvenLegs = new Item(3398, "Dwarven Legs");
+          public static Item ElvenLegs = new Item(3401, "Elven Legs");
+          public static Item PlateLegs = new Item(3557, "Plate Legs");
+          public static Item ChainLegs = new Item(3558, "Chain Legs");
+          public static Item LeatherLegs = new Item(3559, "Leather Legs");
+      }
+      public static class Helmet {
+          public static Item MageHat = new Item(7992, "Mage Hat");
+          public static Item DwarvenHelmet = new Item(3396, "Dwarven Helmet");
+          public static Item Helmetofthedeep = new Item(5460, "Helmet of the deep");
+          public static Item Postofficershat = new Item(3576, "Post officer's hat");
+          public static Item KrimhornHelmet = new Item(7461, "Krimhorn Helmet");
+          public static Item JesterHat = new Item(894, "Jester Hat");
+          public static Item MiningHelmet = new Item(875, "Mining Helmet");
+          public static Item CharmersTiara = new Item(3407, "Charmer's Tiara");
+          public static Item TerraHood = new Item(830, "Terra Hood");
+          public static Item GlacierMask = new Item(829, "Glacier Mask");
+          public static Item Bandana = new Item(5917, "Bandana");
+          public static Item SkullHelmet = new Item(5741, "Skull Helmet");
+          public static Item LightningHeadband = new Item(828, "Lightning Headband");
+          public static Item MagmaMonocle = new Item(827, "Magma Monocle");
+          public static Item Helmetoftheancients = new Item(3229, "Helmet of the ancients");
+          public static Item BeholderHelmet = new Item(3408, "Beholder Helmet");
+          public static Item SteelHelmet = new Item(3351, "Steel Helmet");
+          public static Item ChainHelmet = new Item(3352, "Chain Helmet");
+          public static Item IronHelmet = new Item(3353, "Iron Helmet");
+          public static Item BrassHelmet = new Item(3354, "Brass Helmet");
+          public static Item LeatherHelmet = new Item(3355, "Leather Helmet");
+          public static Item DevilHelmet = new Item(3356, "Devil Helmet");
+          public static Item GoldenHelmet = new Item(3365, "Golden Helmet");
+          public static Item VikingHelmet = new Item(3367, "Viking Helmet");
+          public static Item WingedHelmet = new Item(3368, "Winged Helmet");
+          public static Item WarriorHelmet = new Item(3369, "Warrior Helmet");
+          public static Item LegionHelmet = new Item(3374, "Legion Helmet");
+          public static Item SoldierHelmet = new Item(3375, "Soldier Helmet");
+          public static Item StuddedHelmet = new Item(3376, "Studded Helmet");
+          public static Item DarkHelmet = new Item(3384, "Dark Helmet");
+          public static Item CrownHelmet = new Item(3385, "Crown Helmet");
+          public static Item DemonHelmet = new Item(3387, "Demon Helmet");
+          public static Item HornedHelmet = new Item(3390, "Horned Helmet");
+          public static Item CrusaderHelmet = new Item(3391, "Crusader Helmet");
+          public static Item RoyalHelmet = new Item(3392, "Royal Helmet");
+          public static Item AmazonHelmet = new Item(3393, "Amazon Helmet");
+          public static Item DragonScaleHelmet = new Item(3400, "Dragon Scale Helmet");
+          public static Item TribalMask = new Item(3403, "Tribal Mask");
+          public static Item HorsemanHelmet = new Item(3405, "Horseman Helmet");
+          public static Item FeatherHeaddress = new Item(3406, "Feather Headdress");
+          public static Item FerumbrasHat = new Item(5903, "Ferumbras' Hat");
+          public static Item MagicianHat = new Item(3573, "Magician Hat");
+          public static Item MysticTurban = new Item(3574, "Mystic Turban");
+          public static Item Earmuffs = new Item(7459, "Earmuffs");
+          public static Item HelmetOrnament = new Item(3222, "Helmet Ornament");
+          public static Item LeftHorn = new Item(3225, "Left Horn");
+          public static Item HelmetAdornment = new Item(3228, "Helmet Adornment");
+      }
+      public static class Swords {
+          public static Item NightmareBlade = new Item(7418, "Nightmare Blade");
+          public static Item EmeraldSword = new Item(8102, "Emerald Sword");
+          public static Item TemplarScytheblade = new Item(3345, "Templar Scytheblade");
+          public static Item MercenarySword = new Item(7386, "Mercenary Sword");
+          public static Item MysticBlade = new Item(7384, "Mystic Blade");
+          public static Item WyvernFang = new Item(7408, "Wyvern Fang");
+          public static Item RelicSword = new Item(7383, "Relic Sword");
+          public static Item Demonragesword = new Item(7382, "Demonrage sword");
+          public static Item HauntedBlade = new Item(7407, "Haunted Blade");
+          public static Item TheAvenger = new Item(6527, "The Avenger");
+          public static Item DragonSlayer = new Item(7402, "Dragon Slayer");
+          public static Item Sword = new Item(3264, "Sword");
+          public static Item Twohandedsword = new Item(3265, "Two handed sword");
+          public static Item Dagger = new Item(3267, "Dagger");
+          public static Item Spikesword = new Item(3271, "Spikesword");
+          public static Item Rapier = new Item(3272, "Rapier");
+          public static Item Sabre = new Item(3273, "Sabre");
+          public static Item MagicLongsword = new Item(3278, "Magic Longsword");
+          public static Item FireSword = new Item(3280, "Fire Sword");
+          public static Item GiantSword = new Item(3281, "Giant Sword");
+          public static Item CarlinSword = new Item(3283, "Carlin Sword");
+          public static Item IceRapier = new Item(3284, "Ice Rapier");
+          public static Item Longsword = new Item(3285, "Longsword");
+          public static Item MagicSword = new Item(3288, "Magic Sword");
+          public static Item SilverDagger = new Item(3290, "Silver Dagger");
+          public static Item Knife = new Item(3291, "Knife");
+          public static Item CombatKnife = new Item(3292, "Combat Knife");
+          public static Item ShortSword = new Item(3294, "Short Sword");
+          public static Item BrightSword = new Item(3295, "Bright Sword");
+          public static Item WarlordSword = new Item(3296, "Warlord Sword");
+          public static Item SerpentSword = new Item(3297, "Serpent Sword");
+          public static Item PoisonDagger = new Item(3299, "Poison Dagger");
+          public static Item Katana = new Item(3300, "Katana");
+          public static Item Broadsword = new Item(3301, "Broadsword");
+          public static Item Scimitar = new Item(3307, "Scimitar");
+          public static Item Machete = new Item(3308, "Machete");
+          public static Item PharaohSword = new Item(3334, "Pharaoh Sword");
+          public static Item BoneSword = new Item(3338, "Bone Sword");
+          public static Item DjinnBlade = new Item(3339, "Djinn Blade");
+          public static Item CrystalSword = new Item(7449, "Crystal Sword");
+          public static Item BlacksteelSword = new Item(7406, "Blacksteel Sword");
+          public static Item MysticBladeEnergyenchanted = new Item(796, "Mystic BladeEnergy enchanted");
+          public static Item MysticBladeFireEnchanted = new Item(662, "Mystic BladeFire Enchanted");
+          public static Item BlacksteelSwordEnergyenchanted = new Item(797, "Blacksteel SwordEnergy enchanted");
+          public static Item BlacksteelSwordEarthEnchanted = new Item(782, "Blacksteel SwordEarth Enchanted");
+          public static Item DragonSlayerFireEnchanted = new Item(664, "Dragon SlayerFire Enchanted");
+      }
+      public static class Axes {
+          public static Item GloriousAxe = new Item(7454, "Glorious Axe");
+          public static Item SteelAxe = new Item(7773, "Steel Axe");
+          public static Item HellforgedAxe = new Item(8096, "Hellforged Axe");
+          public static Item OrnamentedAxe = new Item(7411, "Ornamented Axe");
+          public static Item Headchopper = new Item(7380, "Headchopper");
+          public static Item NobleAxe = new Item(7456, "Noble Axe");
+          public static Item DreadedCleaver = new Item(7419, "Dreaded Cleaver");
+          public static Item TitanAxe = new Item(7413, "Titan Axe");
+          public static Item RipperLance = new Item(3346, "Ripper Lance");
+          public static Item BeastslayersAxe = new Item(3344, "Beastslayers Axe");
+          public static Item WarAxe = new Item(3342, "War Axe");
+          public static Item TwinAxe = new Item(3335, "Twin Axe");
+          public static Item DwarvenAxe = new Item(3323, "Dwarven Axe");
+          public static Item ObsidianLance = new Item(3313, "Obsidian Lance");
+          public static Item Naginata = new Item(3314, "Naginata");
+          public static Item GuardianHalberd = new Item(3315, "Guardian Halberd");
+          public static Item OrcishAxe = new Item(3316, "Orcish Axe");
+          public static Item BarbarianAxe = new Item(3317, "Barbarian Axe");
+          public static Item KnightAxe = new Item(3318, "Knight Axe");
+          public static Item StonecuttersAxe = new Item(3319, "Stonecutter's Axe");
+          public static Item FireAxe = new Item(3320, "Fire Axe");
+          public static Item GoldenSickle = new Item(3306, "Golden Sickle");
+          public static Item DragonLance = new Item(3302, "Dragon Lance");
+          public static Item GreatAxe = new Item(3303, "Great Axe");
+          public static Item Sickle = new Item(3293, "Sickle");
+          public static Item BattleAxe = new Item(3266, "Battle Axe");
+          public static Item HandAxe = new Item(3268, "Hand Axe");
+          public static Item Halberd = new Item(3269, "Halberd");
+          public static Item Axe = new Item(3274, "Axe");
+          public static Item Doubleaxe = new Item(3275, "Double axe");
+          public static Item Hatchet = new Item(3276, "Hatchet");
+          public static Item WarAxeEarthEnchanted = new Item(788, "War AxeEarth Enchanted");
+          public static Item WarAxeIceEnchanted = new Item(688, "War AxeIce Enchanted");
+      }
+      public static class Clubs {
+          public static Item DaramianMace = new Item(3327, "Daramian Mace");
+          public static Item ObsidianTruncheon = new Item(8100, "Obsidian Truncheon");
+          public static Item AbyssHammer = new Item(7414, "Abyss Hammer");
+          public static Item HeavyMace = new Item(3340, "Heavy Mace");
+          public static Item SapphireHammer = new Item(7437, "Sapphire Hammer");
+          public static Item ShadowSceptre = new Item(7451, "Shadow Sceptre");
+          public static Item LunarStaff = new Item(7424, "Lunar Staff");
+          public static Item AmberStaff = new Item(7426, "Amber Staff");
+          public static Item OrcishMaul = new Item(7392, "Orcish Maul");
+          public static Item TaurusMace = new Item(7425, "Taurus Mace");
+          public static Item ChaosMace = new Item(7427, "Chaos Mace");
+          public static Item DiamondSceptre = new Item(7387, "Diamond Sceptre");
+          public static Item CranialBasher = new Item(7415, "Cranial Basher");
+          public static Item DragonboneStaff = new Item(7430, "Dragonbone Staff");
+          public static Item BananaStaff = new Item(3348, "Banana Staff");
+          public static Item LicheStaff = new Item(3343, "Liche Staff");
+          public static Item ArcaneStaff = new Item(3341, "Arcane Staff");
+          public static Item BoneClub = new Item(3337, "Bone Club");
+          public static Item StuddedClub = new Item(3336, "Studded Club");
+          public static Item CrystalMace = new Item(3333, "Crystal Mace");
+          public static Item SkullStaff = new Item(3324, "Skull Staff");
+          public static Item HammerofWrath = new Item(3332, "Hammer of Wrath");
+          public static Item MagicStaff = new Item(3321, "Magic Staff");
+          public static Item DragonHammer = new Item(3322, "Dragon Hammer");
+          public static Item ThunderHammer = new Item(3309, "Thunder Hammer");
+          public static Item IronHammer = new Item(3310, "Iron Hammer");
+          public static Item ClericalMace = new Item(3311, "Clerical Mace");
+          public static Item SilverMace = new Item(3312, "Silver Mace");
+          public static Item Crowbar = new Item(3304, "Crowbar");
+          public static Item BattleHammer = new Item(3305, "Battle Hammer");
+          public static Item Staff = new Item(3289, "Staff");
+          public static Item Mace = new Item(3286, "Mace");
+          public static Item MorningStar = new Item(3282, "Morning Star");
+          public static Item Club = new Item(3270, "Club");
+          public static Item Warhammer = new Item(3279, "War hammer");
+          public static Item FurryClub = new Item(7432, "Furry Club");
+          public static Item WarHammerenergyenchanted = new Item(810, "War Hammerenergy enchanted");
+          public static Item OrcishmaulEnergyEnchanted = new Item(809, "Orcish maulEnergy Enchanted");
+          public static Item OrcishMaulFireenchanted = new Item(673, "Orcish MaulFire enchanted");
+          public static Item CranialBasherEarthEnchanted = new Item(791, "Cranial BasherEarth Enchanted");
+          public static Item CranialBasherIceEnchanted = new Item(691, "Cranial BasherIce Enchanted");
+          public static Item CranialBasherFireEnchanted = new Item(672, "Cranial BasherFire Enchanted");
+      }
+      public static class Distance {
+          public static Item Arbalest = new Item(5803, "Arbalest");
+          public static Item ModifiedCrossbow = new Item(8021, "Modified Crossbow");
+          public static Item RoyalCrossbow = new Item(8023, "Royal Crossbow");
+          public static Item WarsingerBow = new Item(8026, "Warsinger Bow");
+          public static Item Bow = new Item(3350, "Bow");
+          public static Item Crossbow = new Item(3349, "Crossbow");
+      }
+      public static class Shield {
+          public static Item NorseShield = new Item(7460, "Norse Shield");
+          public static Item SpellbookofDarkMysteries = new Item(8090, "Spellbook of Dark Mysteries");
+          public static Item TortoiseShield = new Item(6131, "Tortoise Shield");
+          public static Item SteelShield = new Item(3409, "Steel Shield");
+          public static Item PlateShield = new Item(3410, "Plate Shield");
+          public static Item BrassShield = new Item(3411, "Brass Shield");
+          public static Item WoodenShield = new Item(3412, "Wooden Shield");
+          public static Item BattleShield = new Item(3413, "Battle Shield");
+          public static Item MastermindShield = new Item(3414, "Mastermind Shield");
+          public static Item GuardiansShield = new Item(3415, "Guardians Shield");
+          public static Item DragonShield = new Item(3416, "Dragon Shield");
+          public static Item ShieldofHonour = new Item(3417, "Shield of Honour");
+          public static Item BeholderShield = new Item(3418, "Beholder Shield");
+          public static Item CrownShield = new Item(3419, "Crown Shield");
+          public static Item DemonShield = new Item(3420, "Demon Shield");
+          public static Item DarkShield = new Item(3421, "Dark Shield");
+          public static Item GreatShield = new Item(3422, "Great Shield");
+          public static Item BlessedShield = new Item(3423, "Blessed Shield");
+          public static Item OrnamentedShield = new Item(3424, "Ornamented Shield");
+          public static Item DwarvenShield = new Item(3425, "Dwarven Shield");
+          public static Item StuddedShield = new Item(3426, "Studded Shield");
+          public static Item RoseShield = new Item(3427, "Rose Shield");
+          public static Item TowerShield = new Item(3428, "Tower Shield");
+          public static Item BlackShield = new Item(3429, "Black Shield");
+          public static Item CopperShield = new Item(3430, "Copper Shield");
+          public static Item VikingShield = new Item(3431, "Viking Shield");
+          public static Item AncientShield = new Item(3432, "Ancient Shield");
+          public static Item GriffinShield = new Item(3433, "Griffin Shield");
+          public static Item VampireShield = new Item(3434, "Vampire Shield");
+          public static Item CastleShield = new Item(3435, "Castle Shield");
+          public static Item MedusaShield = new Item(3436, "Medusa Shield");
+          public static Item AmazonShield = new Item(3437, "Amazon Shield");
+          public static Item EagleShield = new Item(3438, "Eagle Shield");
+          public static Item PhoenixShield = new Item(3439, "Phoenix Shield");
+          public static Item ScarabShield = new Item(3440, "Scarab Shield");
+          public static Item BoneShield = new Item(3441, "Bone Shield");
+          public static Item PlasmaShield = new Item(3442, "Plasma Shield");
+          public static Item TuskShield = new Item(3443, "Tusk Shield");
+          public static Item SentinelShield = new Item(3444, "Sentinel Shield");
+          public static Item SalamanderShield = new Item(3445, "Salamander Shield");
+          public static Item SpellbookofEnlightenment = new Item(8072, "Spellbook of Enlightenment");
+      }
+      public static class Ring {
+          public static Item SignetRing = new Item(349, "Signet Ring");
+          public static Item DwarvenRing = new Item(3097, "Dwarven Ring");
+          public static Item MightRing = new Item(3048, "Might Ring");
+          public static Item CrystalRing = new Item(3007, "Crystal Ring");
+          public static Item StealthRing = new Item(3049, "Stealth Ring");
+          public static Item PowerRing = new Item(3050, "Power Ring");
+          public static Item EnergyRing = new Item(3051, "Energy Ring");
+          public static Item LifeRing = new Item(3052, "Life Ring");
+          public static Item TimeRing = new Item(3053, "Time Ring");
+          public static Item AxeRing = new Item(3092, "Axe Ring");
+          public static Item RingOfHealing = new Item(3098, "Ring Of Healing");
+          public static Item RingOfTheSkies = new Item(3006, "Ring Of The Skies");
+          public static Item ClubRing = new Item(3093, "Club Ring");
+          public static Item DeathRing = new Item(6299, "Death Ring");
+      }
+      public static class Neck {
+          public static Item GlacierAmulet = new Item(815, "Glacier Amulet");
+          public static Item Kosheisancientamulet = new Item(7532, "Koshei's ancient amulet");
+          public static Item DemonboneAmulet = new Item(3019, "Demonbone Amulet");
+          public static Item CrystalNecklace = new Item(3008, "Crystal Necklace");
+          public static Item BronzeNecklace = new Item(3009, "Bronze Necklace");
+          public static Item EmeraldBangle = new Item(3010, "Emerald Bangle");
+          public static Item WolfToothChain = new Item(3012, "Wolf Tooth Chain");
+          public static Item GoldenAmulet = new Item(3013, "Golden Amulet");
+          public static Item StarAmulet = new Item(3014, "Star Amulet");
+          public static Item SilverNecklace = new Item(3015, "Silver Necklace");
+          public static Item RubyNecklace = new Item(3016, "Ruby Necklace");
+          public static Item ScarabAmulet = new Item(3018, "Scarab Amulet");
+          public static Item Starlight = new Item(3021, "Starlight");
+          public static Item AncientAmulet = new Item(3025, "Ancient Amulet");
+          public static Item StrangeTalisman = new Item(3045, "Strange Talisman");
+          public static Item SilverAmulet = new Item(3054, "Silver Amulet");
+          public static Item PlatinumAmulet = new Item(3055, "Platinum Amulet");
+          public static Item BronzeAmulet = new Item(3056, "Bronze Amulet");
+          public static Item AmuletOfLoss = new Item(3057, "Amulet Of Loss");
+          public static Item BrokenAmulet = new Item(3080, "Broken Amulet");
+          public static Item StoneSkinAmulet = new Item(3081, "Stone Skin Amulet");
+          public static Item ElvenAmulet = new Item(3082, "Elven Amulet");
+          public static Item GarlicNecklace = new Item(3083, "Garlic Necklace");
+          public static Item ProtectionAmulet = new Item(3084, "Protection Amulet");
+          public static Item DragonNecklace = new Item(3085, "Dragon Necklace");
+          public static Item TerraAmulet = new Item(814, "Terra Amulet");
+          public static Item Scarf = new Item(3572, "Scarf");
+      }
+      public static class Boots {
+          public static Item TerraBoots = new Item(813, "Terra Boots");
+          public static Item LightningBoots = new Item(820, "Lightning Boots");
+          public static Item GlacierBoots = new Item(819, "Glacier Boots");
+          public static Item PirateBoots = new Item(5461, "Pirate Boots");
+          public static Item BootsofHaste = new Item(3079, "Boots of Haste");
+          public static Item LeatherBoots = new Item(3552, "Leather Boots");
+          public static Item BunnySlippers = new Item(3553, "Bunny Slippers");
+          public static Item SteelBoots = new Item(3554, "Steel Boots");
+          public static Item GoldenBoots = new Item(3555, "Golden Boots");
+          public static Item CrocodileBoots = new Item(3556, "Crocodile Boots");
+          public static Item FurBoots = new Item(7457, "Fur Boots");
+          public static Item MagmaBoots = new Item(818, "Magma Boots");
+          public static Item SoftBoots = new Item(6529, "Soft Boots");
+          public static Item WornSoftBoots = new Item(6530, "Worn Soft Boots");
+      }
+      public static class Ammunition {
+          public static Item BurstArrow = new Item(3449, "Burst Arrow");
+          public static Item Arrow = new Item(3447, "Arrow");
+          public static Item Bolts = new Item(3446, "Bolts");
+          public static Item PoisonArrow = new Item(3448, "Poison Arrow");
+          public static Item PowerBolt = new Item(3450, "Power Bolt");
+          public static Item CrystalArrow = new Item(3239, "Crystal Arrow");
+          public static Item Spear = new Item(3277, "Spear");
+          public static Item SmallStone = new Item(1781, "Small Stone");
+          public static Item RoyalSpear = new Item(7378, "Royal Spear");
+          public static Item ThrowingKnife = new Item(3298, "Throwing Knife");
+          public static Item Snowball = new Item(2992, "Snowball");
+          public static Item CobrafangDagger = new Item(3238, "Cobrafang Dagger");
+          public static Item HuntingSpear = new Item(3347, "Hunting Spear");
+          public static Item AssassinStar = new Item(7368, "Assassin Star");
+          public static Item FlashArrow = new Item(761, "Flash Arrow");
+          public static Item EnchantedSpear = new Item(7367, "Enchanted Spear");
+          public static Item PiercingBolt = new Item(7363, "Piercing Bolt");
+          public static Item SniperArrow = new Item(7364, "Sniper Arrow");
+          public static Item EarthArrow = new Item(774, "Earth Arrow");
+          public static Item OnyxArrow = new Item(7365, "Onyx Arrow");
+          public static Item ShiverArrow = new Item(762, "Shiver Arrow");
+          public static Item FlamingArrow = new Item(763, "Flaming Arrow");
+          public static Item ThrowingStar = new Item(3287, "Throwing Star");
+      }
+      public static class Valuable {
+          public static Item GoldCoin = new Item(3031, "Gold Coin");
+          public static Item PlatinumCoin = new Item(3035, "Platinum Coin");
+          public static Item CrystalCoin = new Item(3043, "Crystal Coin");
+          public static Item ScarabCoin = new Item(3042, "Scarab Coin");
+          public static Item ChristmasToken = new Item(6526, "Christmas Token");
+          public static Item GiantShimmeringPearlBlue = new Item(281, "Giant Shimmering PearlBlue");
+          public static Item GiantShimmeringPearlBrown = new Item(282, "Giant Shimmering PearlBrown");
+          public static Item WhitePearl = new Item(3026, "White Pearl");
+          public static Item BlackPearl = new Item(3027, "Black Pearl");
+          public static Item OrihalcumPearl = new Item(5021, "Orihalcum Pearl");
+          public static Item SmallDiamond = new Item(3028, "Small Diamond");
+          public static Item SmallSapphire = new Item(3029, "Small Sapphire");
+          public static Item SmallRuby = new Item(3030, "Small Ruby");
+          public static Item SmallEmerald = new Item(3032, "Small Emerald");
+          public static Item SmallAmethyst = new Item(3033, "Small Amethyst");
+          public static Item SmallEnchantedSapphire = new Item(675, "Small Enchanted Sapphire");
+          public static Item SmallEnchantedRuby = new Item(676, "Small Enchanted Ruby");
+          public static Item SmallEnchantedAmethyst = new Item(678, "Small Enchanted Amethyst");
+          public static Item SmallEnchantedEmerald = new Item(677, "Small Enchanted Emerald");
+          public static Item Talon = new Item(3034, "Talon");
+          public static Item YellowGem = new Item(3037, "Yellow Gem");
+          public static Item VioletGem = new Item(3036, "Violet Gem");
+          public static Item RedGem = new Item(3039, "Red Gem");
+          public static Item GreenGem = new Item(3038, "Green Gem");
+          public static Item BlueGem = new Item(3041, "Blue Gem");
+      }
+      public static class Wand {
+          public static Item MagicLightWand = new Item(3046, "Magic LightWand");
+          public static Item MagicLightWandUsed = new Item(3047, "Magic LightWandUsed");
+          public static Item CrystalWand = new Item(3068, "Crystal Wand");
+          public static Item WandofInferno = new Item(3071, "Wand of Inferno");
+          public static Item WandofDecay = new Item(3072, "Wand of Decay");
+          public static Item WandofCosmicEnergy = new Item(3073, "Wand of Cosmic Energy");
+          public static Item WandofVortex = new Item(3074, "Wand of Vortex");
+          public static Item WandofDragonbreath = new Item(3075, "Wand of Dragonbreath");
+          public static Item WandofDraconia = new Item(8093, "Wand of Draconia");
+          public static Item WandofVoodoo = new Item(8094, "Wand of Voodoo");
+          public static Item SpellWand = new Item(651, "Spell Wand");
+      }
+      public static class Rod {
+          public static Item SnakebiteRod = new Item(3066, "Snakebite Rod");
+          public static Item MoonlightRod = new Item(3070, "Moonlight Rod");
+          public static Item NecroticRod = new Item(3069, "Necrotic Rod");
+          public static Item TerraRod = new Item(3065, "Terra Rod");
+          public static Item HailstormRod = new Item(3067, "Hailstorm Rod");
+          public static Item UnderworldRod = new Item(8082, "Underworld Rod");
+          public static Item SpringsproutRod = new Item(8084, "Springsprout Rod");
+          public static Item NorthwindRod = new Item(8083, "Northwind Rod");
+      }
+      public static class Container {
+          public static Item NormalBag = new Item(2853, "Normal Bag");
+          public static Item GreenBag = new Item(2857, "Green Bag");
+          public static Item YellowBag = new Item(2858, "Yellow Bag");
+          public static Item RedBag = new Item(2859, "Red Bag");
+          public static Item PurpleBag = new Item(2860, "Purple Bag");
+          public static Item BlueBag = new Item(2861, "Blue Bag");
+          public static Item GreyBag = new Item(2862, "Grey Bag");
+          public static Item GoldenBag = new Item(2863, "Golden Bag");
+          public static Item BrocadeBackpack = new Item(8860, "Brocade Backpack");
+          public static Item NormalBackpack = new Item(2854, "Normal Backpack");
+          public static Item GreenBackpack = new Item(2865, "Green Backpack");
+          public static Item YellowBackpack = new Item(2866, "Yellow Backpack");
+          public static Item RedBackpack = new Item(2867, "Red Backpack");
+          public static Item PurpleBackpack = new Item(2868, "Purple Backpack");
+          public static Item BlueBackpack = new Item(2869, "Blue Backpack");
+          public static Item GreyBackpack = new Item(2870, "Grey Backpack");
+          public static Item GoldenBackpack = new Item(2871, "Golden Backpack");
+          public static Item MoonBackpack = new Item(9604, "Moon Backpack");
+          public static Item BackpackOfHolding = new Item(3253, "Backpack Of Holding");
+          public static Item PirateBackpack = new Item(5926, "Pirate Backpack");
+          public static Item KeyRing = new Item(5801, "Key Ring");
+          public static Item Parcel = new Item(3503, "Parcel");
+          public static Item StamppedParcel = new Item(3504, "Stampped Parcel");
+          public static Item BeachBackpack = new Item(5949, "Beach Backpack");
+          public static Item CamouflageBackpack = new Item(2872, "Camouflage Backpack");
+      }
+      public static class Quest {
+          public static Item PieceofMassacresShell = new Item(6540, "Piece of Massacre's Shell");
+          public static Item SoulStone = new Item(5809, "Soul Stone");
+          public static Item NoseRing = new Item(5804, "Nose Ring");
+          public static Item Mandrake = new Item(5014, "Mandrake");
+          public static Item CockroachLeg = new Item(7882, "Cockroach Leg");
+          public static Item SniperGloves = new Item(5875, "Sniper Gloves");
+          public static Item LizardLeather = new Item(5876, "Lizard Leather");
+          public static Item GreenDragonLeather = new Item(5877, "Green Dragon Leather");
+          public static Item MinotaurLeather = new Item(5878, "Minotaur Leather");
+          public static Item SpiderSilk = new Item(5879, "Spider Silk");
+          public static Item IronOre = new Item(5880, "Iron Ore");
+          public static Item LizardScale = new Item(5881, "Lizard Scale");
+          public static Item RedDragonScale = new Item(5882, "Red Dragon Scale");
+          public static Item ApeFur = new Item(5883, "Ape Fur");
+          public static Item ChickenFeather = new Item(5890, "Chicken Feather");
+          public static Item BehemothFang = new Item(5893, "Behemoth Fang");
+          public static Item BatWing = new Item(5894, "Bat Wing");
+          public static Item FishFin = new Item(5895, "Fish Fin");
+          public static Item BearPaw = new Item(5896, "Bear Paw");
+          public static Item WolfPaw = new Item(5897, "Wolf Paw");
+          public static Item BeholderEye = new Item(5898, "Beholder Eye");
+          public static Item TurtleShells = new Item(5899, "Turtle Shells");
+          public static Item HoneyComb = new Item(5902, "Honey Comb");
+          public static Item MagicSulphur = new Item(5904, "Magic Sulphur");
+          public static Item VampireDust = new Item(5905, "Vampire Dust");
+          public static Item DemonDust = new Item(5906, "Demon Dust");
+          public static Item WhitePieceofCloth = new Item(5909, "White Piece of Cloth");
+          public static Item GreenPieceofCloth = new Item(5910, "Green Piece of Cloth");
+          public static Item RedPieceofCloth = new Item(5911, "Red Piece of Cloth");
+          public static Item BluePieceofCloth = new Item(5912, "Blue Piece of Cloth");
+          public static Item BrownPieceofCloth = new Item(5913, "Brown Piece of Cloth");
+          public static Item YellowPieceofCloth = new Item(5914, "Yellow Piece of Cloth");
+          public static Item DragonClaw = new Item(5919, "Dragon Claw");
+          public static Item GreenDragonScale = new Item(5920, "Green Dragon Scale");
+          public static Item HeavenBlossom = new Item(5921, "Heaven Blossom");
+          public static Item HolyOrchid = new Item(5922, "Holy Orchid");
+          public static Item HardenedBone = new Item(5925, "Hardened Bone");
+          public static Item BehemothClaw = new Item(5930, "Behemoth Claw");
+          public static Item DemonHorn = new Item(5954, "Demon Horn");
+          public static Item RedDragonLeather = new Item(5948, "Red Dragon Leather");
+          public static Item BastSkirt = new Item(3560, "Bast Skirt");
+          public static Item Hook = new Item(6097, "Hook");
+          public static Item EyePatch = new Item(6098, "Eye Patch");
+          public static Item PegLeg = new Item(6126, "Peg Leg");
+          public static Item VampireLordToken = new Item(8192, "Vampire Lord Token");
+          public static Item Wood = new Item(5901, "Wood");
+      }
+      public static class Tool {
+          public static Item ButterflyConservationkit = new Item(4863, "Butterfly Conservation kit");
+          public static Item BotanistsContainer = new Item(5937, "Botanist's Container");
+          public static Item Dice = new Item(5794, "Dice");
+          public static Item FirstMusicSheet = new Item(6087, "First Music Sheet");
+          public static Item SecondMusicSheet = new Item(6088, "Second Music Sheet");
+          public static Item ThirdMusicSheet = new Item(6089, "Third Music Sheet");
+          public static Item FourthMusicSheet = new Item(6070, "Fourth Music Sheet");
+          public static Item Worms = new Item(3492, "Worms");
+          public static Item FrozenStarlight = new Item(3249, "Frozen Starlight");
+          public static Item ObsidianKnife = new Item(5908, "Obsidian Knife");
+          public static Item PiggyBank = new Item(2995, "Piggy Bank");
+          public static Item Shard = new Item(7290, "Shard");
+          public static Item CeremonialAnkh = new Item(6561, "Ceremonial Ankh");
+          public static Item BlessedWoodenStake = new Item(5942, "Blessed Wooden Stake");
+          public static Item WoodenHammer = new Item(3459, "Wooden Hammer");
+          public static Item WateringCan = new Item(650, "Watering Can");
+          public static Item Firebug = new Item(5467, "Fire bug");
+          public static Item Spoon = new Item(3468, "Spoon");
+          public static Item ElvenhairRope = new Item(646, "Elvenhair Rope");
+          public static Item LockPick = new Item(7889, "Lock Pick");
+          public static Item Rope = new Item(3003, "Rope");
+          public static Item Shovel = new Item(3457, "Shovel");
+          public static Item LightShovel = new Item(5710, "Light Shovel");
+          public static Item FishingRod = new Item(3483, "Fishing Rod");
+          public static Item Scythe = new Item(3453, "Scythe");
+          public static Item Pick = new Item(3456, "Pick");
+      }
+      public static class Decoration {
+          public static Item OracleFigurine = new Item(8146, "Oracle Figurine");
+          public static Item SmallOilLamp = new Item(2933, "Small Oil Lamp");
+          public static Item VoodooDollPirate = new Item(5810, "Voodoo Doll Pirate");
+          public static Item VoodooDollDworcs = new Item(3002, "Voodoo Doll Dworcs");
+          public static Item Lifecrystal = new Item(3061, "Life crystal");
+          public static Item IceCube = new Item(7441, "Ice Cube");
+          public static Item CyclopsTrophy = new Item(7398, "Cyclops Trophy");
+          public static Item MinotaurTrophy = new Item(7401, "Minotaur Trophy");
+          public static Item DeerTrophy = new Item(7397, "Deer Trophy");
+          public static Item DragonLordTrophy = new Item(7399, "Dragon Lord Trophy");
+          public static Item LionTrophy = new Item(7400, "Lion Trophy");
+          public static Item WolfTrophy = new Item(7394, "Wolf Trophy");
+          public static Item MarlinTrophy = new Item(902, "Marlin Trophy");
+          public static Item OrcTrophy = new Item(7395, "Orc Trophy");
+          public static Item DemonTrophy = new Item(7393, "Demon Trophy");
+          public static Item DwarvenBeard = new Item(5900, "Dwarven Beard");
+          public static Item StuffedDragon = new Item(5791, "Stuffed Dragon");
+          public static Item BabySealDoll = new Item(7183, "Baby Seal Doll");
+          public static Item MysteriousVoodooSkull = new Item(5668, "Mysterious Voodoo Skull");
+          public static Item PandaTeddy = new Item(5080, "Panda Teddy");
+          public static Item CertificatefromDreamersChallenge = new Item(6498, "Certificate from Dreamer's Challenge");
+          public static Item BloodHerb = new Item(3734, "Blood Herb");
+          public static Item SkeletonDecoration = new Item(6525, "Skeleton Decoration");
+          public static Item BatDecoration = new Item(6491, "Bat Decoration");
+          public static Item PirateTapestry = new Item(5615, "Pirate Tapestry");
+          public static Item BlueRose = new Item(3659, "Blue Rose");
+          public static Item Firlefanz = new Item(896, "Firlefanz");
+          public static Item GreenBalloons = new Item(6577, "Green Balloons");
+          public static Item RedBalloons = new Item(6575, "Red Balloons");
+          public static Item GemmedLamp = new Item(3231, "Gemmed Lamp");
+          public static Item BlueJewelCase = new Item(6104, "Blue Jewel Case");
+          public static Item RedJewelCase = new Item(7527, "Red Jewel Case");
+          public static Item SantaDoll = new Item(6511, "Santa Doll");
+          public static Item ModelShip = new Item(2994, "Model Ship");
+          public static Item JesterStaff = new Item(895, "Jester Staff");
+          public static Item IceMammoth = new Item(7446, "Ice Mammoth");
+          public static Item WallPicturetheonewithgold = new Item(2640, "Wall Picturethe one with gold");
+          public static Item WallPicturetheportrait = new Item(2641, "Wall Picturethe portrait");
+          public static Item WallmirrorRound = new Item(2632, "Wall mirrorRound");
+          public static Item TearofDaraman = new Item(3233, "Tear of Daraman");
+          public static Item Spyreport = new Item(3232, "Spyreport");
+          public static Item CuckooClock = new Item(2664, "Cuckoo Clock");
+          public static Item FrostCharm = new Item(7289, "Frost Charm");
+          public static Item CrystalBall = new Item(3076, "Crystal Ball");
+          public static Item GoldenFigurine = new Item(5799, "Golden Figurine");
+          public static Item ImperorsTrident = new Item(6534, "Imperor's Trident");
+          public static Item ChristmasBranch = new Item(6489, "Christmas Branch");
+          public static Item YellowRose = new Item(3660, "Yellow Rose");
+          public static Item SilkyTapestry = new Item(9046, "Silky Tapestry");
+          public static Item DracoyleStatueEnchanted = new Item(9034, "Dracoyle StatueEnchanted");
+      }
+      public static class Potion {
+          public static Item Health = new Item(266, "Health");
+          public static Item StrongHealth = new Item(236, "Strong Health");
+          public static Item GreatHealth = new Item(239, "Great Health");
+          public static Item UltimateHealth = new Item(7643, "Ultimate Health");
+          public static Item Mana = new Item(268, "Mana");
+          public static Item StrongMana = new Item(237, "Strong Mana");
+          public static Item GreatMana = new Item(238, "Great Mana");
+          public static Item GreatSpirit = new Item(7642, "Great Spirit");
+          public static Item Bullseye = new Item(7443, "Bullseye");
+          public static Item Mastermind = new Item(7440, "Mastermind");
+          public static Item Berserk = new Item(7439, "Berserk");
+      }
+      public static class Bottle {
+          public static Item Vial = new Item(2874, "Vial");
+      }
+      public static class Misc {
+          public static Item EternalFlames = new Item(946, "Eternal Flames");
+          public static Item ToyMouse = new Item(123, "Toy Mouse");
+          public static Item SpecialFlask = new Item(133, "Special Flask");
+          public static Item Tusk = new Item(3044, "Tusk");
+          public static Item Seeds = new Item(647, "Seeds");
+          public static Item PurpleTome = new Item(2848, "Purple Tome");
+          public static Item RedTome = new Item(2852, "Red Tome");
+          public static Item GreenTome = new Item(2849, "Green Tome");
+          public static Item GoldenGobletFromsvararena = new Item(7369, "Golden GobletFrom svar arena");
+          public static Item SilverGobletFromsvararena = new Item(7370, "Silver GobletFrom svar arena");
+          public static Item BronzeGobletFromsvararena = new Item(7371, "Bronze GobletFrom svar arena");
+          public static Item DemonicEssence = new Item(6499, "Demonic Essence");
+          public static Item CatsPaw = new Item(5479, "Cat's Paw");
+          public static Item HydraEgg = new Item(4839, "Hydra Egg");
+          public static Item GoldenMug = new Item(2903, "Golden Mug");
+          public static Item Marlin = new Item(901, "Marlin");
+          public static Item SoulOrb = new Item(5944, "Soul Orb");
+          public static Item BlueSurpriseBag = new Item(6570, "Blue Surprise Bag");
+          public static Item RedSurpriseBag = new Item(6571, "Red Surprise Bag");
+          public static Item MeadHorn = new Item(7140, "Mead Horn");
+          public static Item MysteriousPackage = new Item(897, "Mysterious Package");
+          public static Item GoldfishBowlgoldfishinit = new Item(5929, "Goldfish Bowlgoldfish in it");
+          public static Item AnnihilationBear = new Item(3213, "Annihilation Bear");
+          public static Item PhoenixEgg = new Item(3215, "Phoenix Egg");
+          public static Item TechnomancerBeard = new Item(396, "Technomancer Beard");
+          public static Item ChristmasCard = new Item(6387, "Christmas Card");
+          public static Item DocumentoftheLeader = new Item(770, "Document of the Leader");
+          public static Item DocumentoftheOfficer = new Item(769, "Document of the Officer");
+          public static Item SkullofRatha = new Item(3207, "Skull of Ratha");
+          public static Item EctoplasmContainer = new Item(131, "Ectoplasm Container");
+          public static Item BlessedAnkh = new Item(3214, "Blessed Ankh");
+          public static Item Lute = new Item(2950, "Lute");
+          public static Item Inkwell = new Item(3509, "Inkwell");
+          public static Item ValentineCard = new Item(6538, "Valentine Card");
+          public static Item WarHorn = new Item(2958, "War Horn");
+          public static Item Contract = new Item(129, "Contract");
+          public static Item MapBrownbroadone = new Item(2822, "MapBrownbroad one");
+          public static Item MapSmall = new Item(2823, "MapSmall");
+      }
+      public static class Plant {
+          public static Item HoneyFlower = new Item(2984, "Honey Flower");
+          public static Item FlowerBowl = new Item(2983, "Flower Bowl");
+          public static Item FlowerBouquet = new Item(649, "Flower Bouquet");
+          public static Item Tulip = new Item(3668, "Tulip");
+          public static Item GraveFlower = new Item(3661, "Grave Flower");
+          public static Item OrangeStar = new Item(3673, "Orange Star");
+          public static Item MoonFlower = new Item(3655, "Moon Flower");
+          public static Item PurpleKissBlossom = new Item(7249, "Purple Kiss Blossom");
+      }
+      public static class Food {
+          public static Objects.Food Apple = new Objects.Food(3585, "Apple", 72);
+          public static Objects.Food Banana = new Objects.Food(3587, "Banana", 96);
+          public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 12);
+          public static Objects.Food Bread = new Objects.Food(3600, "Bread", 120);
+          public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 96);
+          public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 264);
+          public static Objects.Food Carrot = new Objects.Food(3595, "Carrot", 60);
+          public static Objects.Food Cheese = new Objects.Food(3607, "Cheese", 108);
+          public static Objects.Food Cherry = new Objects.Food(3590, "Cherry", 12);
+          public static Objects.Food Coconut = new Objects.Food(3589, "Coconut", 216);
+          public static Objects.Food Cookie = new Objects.Food(3598, "Cookie", 24);
+          public static Objects.Food Corncob = new Objects.Food(3597, "Corncob", 108);
+          public static Objects.Food DragonHam = new Objects.Food(3583, "Dragon Ham", 720);
+          public static Objects.Food Egg = new Objects.Food(3606, "Egg", 72);
+          public static Objects.Food Fish = new Objects.Food(3578, "Fish", 144);
+          public static Objects.Food Grapes = new Objects.Food(3592, "Grapes", 108);
+          public static Objects.Food GreenMushroom = new Objects.Food(3732, "Green Mushroom", 60);
+          public static Objects.Food Ham = new Objects.Food(3582, "Ham", 360);
+          public static Objects.Food Meat = new Objects.Food(3577, "Meat", 180);
+          public static Objects.Food Mellon = new Objects.Food(3593, "Mellon", 240);
+          public static Objects.Food Orange = new Objects.Food(3586, "Orange", 156);
+          public static Objects.Food Roll = new Objects.Food(3601, "Roll", 36);
+          public static Objects.Food Salmon = new Objects.Food(3579, "Salmon", 120);
+          public static Objects.Food WhiteMushroom = new Objects.Food(3723, "White Mushroom", 108);
+      }
+      public static class Rune {
+          public static Objects.Rune Blank = new Objects.Rune(3147, "Blank Rune", null, 0);
+          public static Objects.Rune AnimateDead = new Objects.Rune(3203, "Animate Dead Rune", Spells.AnimateDead, 5);
+          public static Objects.Rune Antidote = new Objects.Rune(3153, "Antidote Rune", Spells.AntidoteRune, 1);
+          public static Objects.Rune Avalanche = new Objects.Rune(3161, "Avalanche Rune", Spells.Avalanche, 3);
+          public static Objects.Rune Chameleon = new Objects.Rune(3178, "Chameleon Rune", Spells.Chameleon, 2);
+          public static Objects.Rune ConvinceCreature = new Objects.Rune(3177, "Convince Creature Rune", Spells.ConvinceCreature, 3);
+          public static Objects.Rune Desintegrate = new Objects.Rune(3197, "Desintegrate Rune", Spells.Desintegrate, 3);
+          public static Objects.Rune DestroyField = new Objects.Rune(3148, "Destroy Field Rune", Spells.DestroyField, 2);
+          public static Objects.Rune EnergyBomb = new Objects.Rune(3149, "Energy Bomb Rune", Spells.EnergyBomb, 5);
+          public static Objects.Rune EnergyField = new Objects.Rune(3164, "Energy Field Rune", Spells.EnergyField, 2);
+          public static Objects.Rune EnergyWall = new Objects.Rune(3166, "Energy Wall Rune", Spells.EnergyWall, 5);
+          public static Objects.Rune Explosion = new Objects.Rune(3200, "Explosion Rune", Spells.Explosion, 4);
+          public static Objects.Rune FireBomb = new Objects.Rune(3192, "Fire Bomb Rune", Spells.FireBomb, 4);
+          public static Objects.Rune FireField = new Objects.Rune(3188, "Fire Field Rune", Spells.FireField, 1);
+          public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall Rune", Spells.FireWall, 4);
+          public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball Rune", Spells.Fireball, 3);
+          public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball Rune", Spells.GreatFireball, 3);
+          public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile Rune", Spells.HeavyMagicMissile, 2);
+          public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle Rune", Spells.Icicle, 3);
+          public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealingRune, 2);
+          public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile Rune", Spells.LightMagicMissile, 1);
+          public static Objects.Rune MagicWall = new Objects.Rune(3180, "Magic Wall Rune", Spells.MagicWall, 5);
+          public static Objects.Rune Paralyze = new Objects.Rune(3165, "Paralyze Rune", Spells.Paralyze, 3);
+          public static Objects.Rune PoisonBomb = new Objects.Rune(3173, "Poison Bomb Rune", Spells.PoisonBomb, 2);
+          public static Objects.Rune PoisonField = new Objects.Rune(3172, "Poison Field Rune", Spells.PoisonField, 1);
+          public static Objects.Rune PoisonWall = new Objects.Rune(3176, "Poison Wall Rune", Spells.PoisonWall, 3);
+          public static Objects.Rune Soulfire = new Objects.Rune(3195, "Soulfire Rune", Spells.Soulfire, 3);
+          public static Objects.Rune Stalagmite = new Objects.Rune(3179, "Stalagmite Rune", Spells.Stalagmite, 2);
+          public static Objects.Rune StoneShower = new Objects.Rune(3175, "Stone Shower Rune", Spells.StoneShower, 3);
+          public static Objects.Rune SuddenDeath = new Objects.Rune(3155, "Sudden Death Rune", Spells.SuddenDeath, 5);
+          public static Objects.Rune Thunderstorm = new Objects.Rune(3202, "Thunderstorm Rune", Spells.Thunderstorm, 3);
+          public static Objects.Rune UltimateHealing = new Objects.Rune(3160, "Ultimate Healing Rune", Spells.UltimateHealingRune, 3);
+          public static TransformingItem EnchantedSpear = new TransformingItem(7367, "Enchanted Spear", Spells.EnchantSpear, 3, Ammunition.Spear);
+      }
+  }
 }
+

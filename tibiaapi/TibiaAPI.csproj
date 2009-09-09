@@ -96,7 +96,9 @@
     <Compile Include="Constants\CreatureLists.cs" />
     <Compile Include="Constants\Creatures.cs" />
     <Compile Include="Constants\Enums.cs" />
+    <Compile Include="Constants\ItemDataLists.cs" />
     <Compile Include="Constants\ItemLists.cs" />
+    <Compile Include="Constants\ItemsData.cs" />
     <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\TAConstants.cs" />
     <Compile Include="Constants\Tiles.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Objects\ContextMenu.cs" />
     <Compile Include="Objects\CreatureData.cs" />
     <Compile Include="Objects\Icon.cs" />
+    <Compile Include="Objects\ItemData.cs" />
     <Compile Include="Objects\Location.cs" />
     <Compile Include="Objects\Outfit.cs" />
     <Compile Include="Objects\Screen.cs" />
@@ -255,6 +258,7 @@
     <Compile Include="Util\ClientChooserBase.cs" />
     <Compile Include="Util\ClientChooserOptions.cs" />
     <Compile Include="Util\ClientChooserWPF.xaml.cs" />
+    <Compile Include="Util\ItemData.cs" />
     <Compile Include="Util\CreatureData.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Util\MapViewer.cs">

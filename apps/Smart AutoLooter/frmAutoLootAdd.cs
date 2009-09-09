@@ -33,15 +33,5 @@ namespace SmartAutoLooter
             get { return textBoxComment.Text; }
             set { textBoxComment.Text = value; }
         }
-
-        private void frmAutoLootAdd_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonOk_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

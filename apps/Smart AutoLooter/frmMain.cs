@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Tibia;
+using Tibia.Constants;
 using Tibia.Objects;
 using Tibia.Packets;
 using Tibia.Util;
@@ -25,7 +26,7 @@ namespace SmartAutoLooter
         List<LootItem> _lootItems = new List<LootItem> { };
         AutoLootWait_t _autoLootWait = AutoLootWait_t.STOP;
         byte _container;
-        static AutoResetEvent _autoLootAutoEvent = new AutoResetEvent(false); 
+        static AutoResetEvent _autoLootAutoEvent = new AutoResetEvent(false);
 
         public frmMain()
         {
@@ -117,7 +118,7 @@ namespace SmartAutoLooter
                                 if (item.GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable))
                                 {
                                     //o item é "stackable"
-                                    var lootContainerItem = lootContainer.GetItems().FirstOrDefault(lCItem => lCItem.Id == item.Id && lCItem.Count < 100 );
+                                    var lootContainerItem = lootContainer.GetItems().FirstOrDefault(lCItem => lCItem.Id == item.Id && lCItem.Count < 100);
 
                                     if (lootContainerItem != null && (lootContainerItem.Count + item.Count <= 100 || lootContainer.Amount < lootContainer.Volume))
                                     {
@@ -142,10 +143,10 @@ namespace SmartAutoLooter
                                     }
                                     else if (lootContainerItem == null && lootContainer.Amount < lootContainer.Volume)
                                     {
-                                        var iLoc=new ItemLocation();
+                                        var iLoc = new ItemLocation();
                                         iLoc.Type = Tibia.Constants.ItemLocationType.Container;
-                                        iLoc.ContainerId=lootContainer.Number;
-                                        iLoc.ContainerSlot=(byte)(lootContainer.Volume - 1);
+                                        iLoc.ContainerId = lootContainer.Number;
+                                        iLoc.ContainerSlot = (byte)(lootContainer.Volume - 1);
                                         item.Move(iLoc);
 
                                         //change others items location...
@@ -178,7 +179,7 @@ namespace SmartAutoLooter
                                         }
 
                                         //abrir um novo container...
-                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer=> newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
+                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer => newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                                         if (newContainer != null)
                                         {
@@ -222,7 +223,7 @@ namespace SmartAutoLooter
                                     else
                                     {
                                         //abrir um novo container
-                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer=>newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
+                                        var newContainer = lootContainer.GetItems().FirstOrDefault(newItemContainer => newItemContainer.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                                         if (newContainer != null)
                                         {
@@ -239,7 +240,7 @@ namespace SmartAutoLooter
 
                     //abrir bag se tiver.. no mesmo container?
 
-                    var bag = cItems.FirstOrDefault(i=>i.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
+                    var bag = cItems.FirstOrDefault(i => i.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer));
 
                     if (bag != null)
                     {
@@ -248,7 +249,7 @@ namespace SmartAutoLooter
                     }
                     else if (_autoEatFoodFromBodys)
                     {
-                        var food = cItems.FirstOrDefault(i=>Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id));
+                        var food = cItems.FirstOrDefault(i => Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id));
 
                         if (food != null)
                         {
@@ -274,7 +275,7 @@ namespace SmartAutoLooter
             {
                 TileAddThingPacket p = (TileAddThingPacket)packet;
 
-                if (p.Item != null && p.Position.DistanceTo(_client.GetPlayer().Location)<=3)
+                if (p.Item != null && p.Position.DistanceTo(_client.GetPlayer().Location) <= 3)
                 {
                     if (p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer) &&
                         p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsCorpse))
@@ -349,18 +350,6 @@ namespace SmartAutoLooter
             }
 
             return true;
-        }
-
-        private void addToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmAutoLootAdd frm = new frmAutoLootAdd();
-
-            if (frm.ShowDialog() == DialogResult.OK)
-            {
-                LootItem lootItem = new LootItem(frm.ItemId, frm.ContainerNumber, frm.Comment);
-                listBoxItems.Items.Add(lootItem);
-                _lootItems.Add(lootItem);
-            }
         }
 
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -440,6 +429,36 @@ namespace SmartAutoLooter
         {
             _lootItems.Clear();
             listBoxItems.Items.Clear();
+        }
+
+        private void idToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmAutoLootAdd frm = new frmAutoLootAdd();
+
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                LootItem lootItem = new LootItem(frm.ItemId, frm.ContainerNumber, frm.Comment);
+                listBoxItems.Items.Add(lootItem);
+                _lootItems.Add(lootItem);
+            }
+        }
+
+        private void fFilteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uxFilterInput filterInput = new uxFilterInput();
+
+            if (filterInput.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var i in ItemDataLists.AllItems)
+                {
+                    if (i.Value.ValueRatio >= filterInput.Ratio)
+                    {
+                        LootItem lootItem = new LootItem((ushort) i.Value.Id, filterInput.ContainerNumber, i.Value.Name);
+                        listBoxItems.Items.Add(lootItem);
+                        _lootItems.Add(lootItem);
+                    }
+                }
+            }
         }
 
 
