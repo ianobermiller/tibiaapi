@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using Tibia.Objects;
 
-namespace Tibia.Constants {
- public static class CreatureLists {
-     #region All Creatures
-     public static Dictionary<string, CreatureData> AllCreatures = new Dictionary<string, CreatureData> {
+namespace Tibia.Constants
+{
+    public static class CreatureLists
+    {
+        #region All Creatures
+        public static Dictionary<string, CreatureData> AllCreatures = new Dictionary<string, CreatureData> {
          { Creatures.Achad.Name, Creatures.Achad },
          { Creatures.AcidBlob.Name, Creatures.AcidBlob },
          { Creatures.AcolyteoftheCult.Name, Creatures.AcolyteoftheCult },
@@ -486,7 +488,7 @@ namespace Tibia.Constants {
          { Creatures.Zoralurk.Name, Creatures.Zoralurk },
          { Creatures.Zugurosh.Name, Creatures.Zugurosh },
      };
-     #endregion
- }
+        #endregion
+    }
 }
 
