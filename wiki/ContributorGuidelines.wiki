@@ -20,7 +20,23 @@ If you are not a member of the google code project, but would like to contribute
   * Must use proper coding conventions (table based on http://www.irritatedvowel.com/Programming/Standards.aspx):
 
 == Coding Conventions (C# and C++) ==
+  * Braces always go on the next line
+{{{
+void Foo(string bar)
+{
+    if (bar == string.Empty)
+    {
+        // do something
+    }
+    else if (bar == "foo")
+    {
+        // do something else
+    }
+}
+}}}
+  * If you are ever in doubt, look at other code; yours should match
 
+=== Naming Convention ===
 || *Type* || *Convention* || *Example* ||
 || Classes and Structs || Pascal Case || Client, !ContextMenu, !VipList||
 || Collection, Delegate, Exception, or Attribute classes || Follow class naming conventions, but add the appropriate nown to the end || !WidgetCollection, !WidgetCallbackDelegate, !InvalidTransactionException, !WebServiceAttribute ||
