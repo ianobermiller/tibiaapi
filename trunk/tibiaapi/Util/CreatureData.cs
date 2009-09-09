@@ -8,6 +8,7 @@ using System.IO;
 using Tibia.Objects;
 using System.Threading;
 using System.Globalization;
+using Tibia.Constants;
 
 namespace Tibia.Util {
     public static class CreatureData {
@@ -22,6 +23,7 @@ namespace Tibia.Util {
         public static Thread Thread;
         public static TextWriter MainTextWriter = null;
         public static TextWriter ListsTextWriter = null;
+        public static bool Reset = false;
 
         public static void CreaturesToFile() {
             if (State != DataState.Idle)
@@ -115,9 +117,12 @@ namespace Tibia.Util {
             State = DataState.Downloading;
 
             foreach (string name in names) {
+                if (File.Exists("\\pages\\" + name) && !Reset)
+                    continue;
+
                 WebClient c = new WebClient();
                 c.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadCompleted);
-                c.DownloadFileAsync(new Uri("http://tibia.wikia.com/index.php?title=" + name + "&printable=yes"), Environment.CurrentDirectory + "\\pages\\" + name);
+                c.DownloadFileAsync(new Uri("http://tibia.wikia.com/index.php?title=" + name + "&printable=yes"), "\\pages\\" + name);
             }
 
             while (State != DataState.Waiting) Thread.Sleep(100);
@@ -245,7 +250,7 @@ namespace Tibia.Util {
 
             buffer = "";
             MainTextWriter.Write("          new List<Loot>() { ");
-            loot = loot.Replace("gp", "gold coin");
+            loot = loot.Replace("gp", "Gold Coin");
 
             foreach (string i in loot.Split(',')) {
                 string s = i.Trim().Split('.')[0];
@@ -265,7 +270,13 @@ namespace Tibia.Util {
                     p = "Normal";
 
                 s = s.Split(' ')[0].Replace("?", "");
-                buffer += "new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals(\"" + n + "\", StringComparison.OrdinalIgnoreCase); }), LootPossibility." + p + ", " + max + "),";
+                uint id = 0;
+                Item item = ItemLists.AllItems.Find(delegate(Item find) { return string.Compare(find.Name, n, true) == 0; });
+
+                if (item != null)
+                    id = item.Id;
+
+                buffer += "new Loot(\"" + n + "\", " + id + ", LootPossibility." + p + ", " + max + "),";
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
