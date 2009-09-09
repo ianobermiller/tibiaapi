@@ -43,7 +43,7 @@ namespace SmartDataGenerator {
         }
 
         private void uxMain_FormClosed(object sender, FormClosedEventArgs e) {
-            if (CreatureData.Thread.IsAlive)
+            if (CreatureData.Thread != null)
                 CreatureData.Thread.Abort();
             CreatureData.MainTextWriter.Close();
             CreatureData.ListsTextWriter.Close();

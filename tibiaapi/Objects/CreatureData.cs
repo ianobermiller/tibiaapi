@@ -41,7 +41,6 @@ namespace Tibia.Objects {
 
         public DamageType GetWeakness() {
             List<DamageType> damages = new List<DamageType>();
-
             foreach (DamageType d in Enum.GetValues(typeof(DamageType)))
                 damages.Add(d);
 
@@ -119,12 +118,14 @@ namespace Tibia.Objects {
     }
 
     public struct Loot {
-        Item Item;
+        string Name;
+        uint Id;
         LootPossibility Possibility;
         int MaxAmmount;
 
-        public Loot(Item item, LootPossibility possibility, int maxAmmout) {
-            Item = item;
+        public Loot(string name, uint id, LootPossibility possibility, int maxAmmout) {
+            Name = name;
+            Id = id;
             Possibility = possibility;
             MaxAmmount = maxAmmout;
         }
