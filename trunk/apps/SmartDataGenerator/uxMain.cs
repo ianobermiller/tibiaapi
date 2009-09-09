@@ -22,7 +22,8 @@ namespace SmartDataGenerator {
             }
             else {
                 CreatureData.Thread.Abort();
-                CreatureData.TextWriter.Close();
+                CreatureData.ListsTextWriter.Close();
+                CreatureData.MainTextWriter.Close();
                 CreatureData.State = DataState.Idle;
                 uxStart.Text = "Start";
                 uxTimer.Stop();
@@ -42,8 +43,10 @@ namespace SmartDataGenerator {
         }
 
         private void uxMain_FormClosed(object sender, FormClosedEventArgs e) {
-            CreatureData.Thread.Abort();
-            CreatureData.TextWriter.Close();
+            if (CreatureData.Thread.IsAlive)
+                CreatureData.Thread.Abort();
+            CreatureData.MainTextWriter.Close();
+            CreatureData.ListsTextWriter.Close();
         }
     }
 }

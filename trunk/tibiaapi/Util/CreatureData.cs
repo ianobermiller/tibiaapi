@@ -11,15 +11,17 @@ using System.Globalization;
 
 namespace Tibia.Util {
     public static class CreatureData {
-        public static string FileName = "Creatures.cs";
+        private static List<string> DamageTypes = new List<string>();
+        private static List<string> LootPossibilities = new List<string>();
+        private static string MainFileName = "Creatures.cs";
+        private static string ListsFileName = "CreatureLists.cs";
         public static int TotalCreatures;
         public static int LoadedCreatures;
         public static int ParsedCreatures;
         public static DataState State = DataState.Idle;
-        public static TextWriter TextWriter = null;
-        public static List<string> DamageTypes = new List<string>();
-        public static List<string> LootPossibilities = new List<string>();
         public static Thread Thread;
+        public static TextWriter MainTextWriter = null;
+        public static TextWriter ListsTextWriter = null;
 
         public static void CreaturesToFile() {
             if (State != DataState.Idle)
@@ -39,20 +41,42 @@ namespace Tibia.Util {
             Directory.CreateDirectory("pages");
 
             Thread = new Thread(new ThreadStart(delegate() {
-                if (File.Exists(FileName))
-                    File.Delete(FileName);
+                if (File.Exists(MainFileName))
+                    File.Delete(MainFileName);
+                if (File.Exists(ListsFileName))
+                    File.Delete(ListsFileName);
 
-                TextWriter = new StreamWriter(File.Create(FileName)); ;
-                TextWriter.WriteLine("using System;");
-                TextWriter.WriteLine("using System.Collections.Generic;");
-                TextWriter.WriteLine("using Tibia.Objects;");
-                TextWriter.WriteLine("");
-                TextWriter.WriteLine("namespace Tibia.Constants {");
-                TextWriter.WriteLine("  public static class Creatures {");
-                ParseCreatures(GetHTML(request.GetResponse()));
-                TextWriter.WriteLine("  }");
-                TextWriter.WriteLine("}");
-                TextWriter.WriteLine("");
+                string html = GetHTML(request.GetResponse());
+
+                ListsTextWriter = new StreamWriter(File.Create(ListsFileName)); ;
+                ListsTextWriter.WriteLine("using System;");
+                ListsTextWriter.WriteLine("using System.Collections.Generic;");
+                ListsTextWriter.WriteLine("using Tibia.Objects;");
+                ListsTextWriter.WriteLine("");
+                ListsTextWriter.WriteLine("namespace Tibia.Constants {");
+                ListsTextWriter.WriteLine(" public static class CreatureLists {");
+                ListsTextWriter.WriteLine("     #region All Creatures");
+                ListsTextWriter.WriteLine("     public static Dictionary<string, CreatureData> AllCreatures = new Dictionary<string, CreatureData> {");
+
+                MainTextWriter = new StreamWriter(File.Create(MainFileName)); ;
+                MainTextWriter.WriteLine("using System;");
+                MainTextWriter.WriteLine("using System.Collections.Generic;");
+                MainTextWriter.WriteLine("using Tibia.Objects;");
+                MainTextWriter.WriteLine("");
+                MainTextWriter.WriteLine("namespace Tibia.Constants {");
+                MainTextWriter.WriteLine("  public static class Creatures {");
+
+                ParseCreatures(html);
+
+                ListsTextWriter.WriteLine("     };");
+                ListsTextWriter.WriteLine("     #endregion");
+                ListsTextWriter.WriteLine(" }");
+                ListsTextWriter.WriteLine("}");
+                ListsTextWriter.WriteLine("");
+
+                MainTextWriter.WriteLine("  }");
+                MainTextWriter.WriteLine("}");
+                MainTextWriter.WriteLine("");
 
             }));
             Thread.Start();
@@ -76,8 +100,14 @@ namespace Tibia.Util {
             List<string> names = new List<string>();
             MatchCollection namesMatched = Regex.Matches(html, @"<td><a href=""/wiki/([^<]*)"" title=""", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-            foreach (Match nameMatched in namesMatched)
-                names.Add(Regex.Replace(nameMatched.Groups[1].Value, "\\(.*\\)", "").Split('%')[0].Trim(" _".ToCharArray()).Replace(".", "").Replace("/", ""));
+            string[] removeIt = { "(Creature)", "(", ")", ".", "/", "-" };
+
+            foreach (Match nameMatched in namesMatched) {
+                string name = nameMatched.Groups[1].Value;
+                foreach (string s in removeIt)
+                    name = name.Replace(s, "");
+                names.Add(name.Split('%')[0].Trim(" _".ToCharArray()));
+            }
 
             TotalCreatures = names.Count;
             LoadedCreatures = 0;
@@ -95,10 +125,11 @@ namespace Tibia.Util {
             State = DataState.Parsing;
 
             foreach (string name in names) {
-                TextWriter.Write("      public static CreatureData " + name.Replace("_", "") + " = new CreatureData(\"" + name.Replace('_', ' ') + "\", ");
+                MainTextWriter.Write("      public static CreatureData " + name.Replace("_", "") + " = new CreatureData(\"" + name.Replace('_', ' ') + "\", ");
                 StreamReader s = new StreamReader("pages\\" + name);
                 ParseCreature(s.ReadToEnd());
-                TextWriter.WriteLine("      );");
+                ListsTextWriter.WriteLine("         { Creatures." + name.Replace("_", "") + ".Name, Creatures." + name.Replace("_", "") + " },");
+                MainTextWriter.WriteLine("      );");
                 ParsedCreatures++;
             }
 
@@ -140,19 +171,19 @@ namespace Tibia.Util {
             string loot = RegexGetGroup(html, @"Loot:$\n^(.*?)$");
             FrontAttack frontAttack = (abilities.Contains("wave") && abilities.Contains("beam")) ? FrontAttack.Both : (abilities.Contains("wave")) ? FrontAttack.Wave : (abilities.Contains("beam")) ? FrontAttack.Beam : (abilities.Contains("strike")) ? FrontAttack.Strike : FrontAttack.None;
 
-            TextWriter.Write(hitPoints.ToString() + ", ");
-            TextWriter.Write(experiencePoints.ToString() + ", ");
-            TextWriter.Write(summonMana.ToString() + ", ");
-            TextWriter.Write(convinceMana.ToString() + ", ");
-            TextWriter.Write(maxDamage.ToString() + ", ");
-            TextWriter.Write(canIllusion.ToString().ToLower() + ", ");
-            TextWriter.Write(canSeeInvisible.ToString().ToLower() + ", ");
-            TextWriter.WriteLine("FrontAttack." + frontAttack.ToString() + ", ");
+            MainTextWriter.Write(hitPoints.ToString() + ", ");
+            MainTextWriter.Write(experiencePoints.ToString() + ", ");
+            MainTextWriter.Write(summonMana.ToString() + ", ");
+            MainTextWriter.Write(convinceMana.ToString() + ", ");
+            MainTextWriter.Write(maxDamage.ToString() + ", ");
+            MainTextWriter.Write(canIllusion.ToString().ToLower() + ", ");
+            MainTextWriter.Write(canSeeInvisible.ToString().ToLower() + ", ");
+            MainTextWriter.WriteLine("FrontAttack." + frontAttack.ToString() + ", ");
 
             string buffer;
 
             buffer = "";
-            TextWriter.Write("          new List<DamageType>() { ");
+            MainTextWriter.Write("          new List<DamageType>() { ");
 
             foreach (string i in immunities.Split(',')) {
                 string s = i.Trim();
@@ -164,10 +195,10 @@ namespace Tibia.Util {
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
-            TextWriter.WriteLine(buffer + "},");
+            MainTextWriter.WriteLine(buffer + "},");
 
             buffer = "";
-            TextWriter.Write("          new List<DamageModifier>() { ");
+            MainTextWriter.Write("          new List<DamageModifier>() { ");
 
             foreach (string i in strenghts.Split(',')) {
                 string s = i.Trim();
@@ -181,10 +212,10 @@ namespace Tibia.Util {
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
-            TextWriter.WriteLine(buffer + "},");
+            MainTextWriter.WriteLine(buffer + "},");
 
             buffer = "";
-            TextWriter.Write("          new List<DamageModifier>() { ");
+            MainTextWriter.Write("          new List<DamageModifier>() { ");
 
             foreach (string i in weakness.Split(',')) {
                 string s = i.Trim();
@@ -198,10 +229,10 @@ namespace Tibia.Util {
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
-            TextWriter.WriteLine(buffer + " },");
+            MainTextWriter.WriteLine(buffer + " },");
 
             buffer = "";
-            TextWriter.Write("          new List<string>() { ");
+            MainTextWriter.Write("          new List<string>() { ");
 
             foreach (string i in sounds.Split(';')) {
                 if (string.Compare(i, "none", true) == 0)
@@ -210,10 +241,10 @@ namespace Tibia.Util {
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
-            TextWriter.WriteLine(buffer + "},");
+            MainTextWriter.WriteLine(buffer + "},");
 
             buffer = "";
-            TextWriter.Write("          new List<Loot>() { ");
+            MainTextWriter.Write("          new List<Loot>() { ");
             loot = loot.Replace("gp", "gold coin");
 
             foreach (string i in loot.Split(',')) {
@@ -238,7 +269,7 @@ namespace Tibia.Util {
             }
 
             buffer = buffer.Trim(',').Replace(",", ", ");
-            TextWriter.WriteLine(buffer + "}");
+            MainTextWriter.WriteLine(buffer + "}");
         }
     }
 

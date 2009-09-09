@@ -93,6 +93,7 @@
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Clientless\GameServerConnection.cs" />
     <Compile Include="Clientless\LoginServerConnection.cs" />
+    <Compile Include="Constants\CreatureLists.cs" />
     <Compile Include="Constants\Creatures.cs" />
     <Compile Include="Constants\Enums.cs" />
     <Compile Include="Constants\ItemLists.cs" />

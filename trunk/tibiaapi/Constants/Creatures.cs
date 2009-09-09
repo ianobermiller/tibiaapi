@@ -291,12 +291,12 @@ namespace Tibia.Constants {
           new List<string>() { },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bag",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Fish",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Brass Legs",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Chain Armor",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("White Pearl",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
       );
-      public static CreatureData BloodCrab = new CreatureData("Blood Crab", 290, 160, 0, 0, 110, false, false, FrontAttack.None, 
-          new List<DamageType>() { DamageType.Ice, DamageType.Earth, DamageType.Drown},
-          new List<DamageModifier>() { new DamageModifier(DamageType.Physical,  20)},
-          new List<DamageModifier>() { new DamageModifier(DamageType.Fire,  10), new DamageModifier(DamageType.Energy,  5) },
-          new List<string>() { },
-          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bag",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Fish",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Brass Legs",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Chain Armor",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("White Pearl",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
+      public static CreatureData BloodCrabUnderwater = new CreatureData("Blood Crab Underwater", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
+          new List<DamageType>() { },
+          new List<DamageModifier>() { },
+          new List<DamageModifier>() {  },
+          new List<string>() { "",  },
+          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
       public static CreatureData Bloodpaw = new CreatureData("Bloodpaw", 100, 50, 0, 0, 40, false, false, FrontAttack.None, 
           new List<DamageType>() { },
@@ -382,21 +382,21 @@ namespace Tibia.Constants {
           new List<string>() { },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  6), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Cherries",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  3)}
       );
-      public static CreatureData Butterfly = new CreatureData("Butterfly", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
+      public static CreatureData ButterflyBlue = new CreatureData("Butterfly Blue", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
           new List<DamageModifier>() { },
           new List<DamageModifier>() {  },
           new List<string>() { "",  },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
-      public static CreatureData Butterfly = new CreatureData("Butterfly", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
+      public static CreatureData ButterflyPurple = new CreatureData("Butterfly Purple", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
           new List<DamageModifier>() { },
           new List<DamageModifier>() {  },
           new List<string>() { "",  },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
-      public static CreatureData Butterfly = new CreatureData("Butterfly", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
+      public static CreatureData ButterflyRed = new CreatureData("Butterfly Red", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
           new List<DamageModifier>() { },
           new List<DamageModifier>() {  },
@@ -1621,12 +1621,12 @@ namespace Tibia.Constants {
           new List<string>() { "Ungh! Ungh!",  "Hugah!",  "Huaauaauaauaa!",  },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  40), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Banana",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  11), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Protection Amulet",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Power Ring",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Club Ring",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Plate Armor",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Health Potion",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Ape Fur",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
       );
-      public static CreatureData Kongra = new CreatureData("Kongra", 340, 115, 0, 0, 60, false, false, FrontAttack.None, 
+      public static CreatureData KongraAntiBotter = new CreatureData("Kongra AntiBotter", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
-          new List<DamageModifier>() { new DamageModifier(DamageType.Fire,  20), new DamageModifier(DamageType.Energy,  5), new DamageModifier(DamageType.Earth,  10)},
-          new List<DamageModifier>() { new DamageModifier(DamageType.Death,  5), new DamageModifier(DamageType.Ice,  15) },
-          new List<string>() { "Ungh! Ungh!",  "Hugah!",  "Huaauaauaauaa!",  },
-          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  40), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Banana",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  11), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Protection Amulet",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Power Ring",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Club Ring",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Plate Armor",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Health Potion",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Ape Fur",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
+          new List<DamageModifier>() { },
+          new List<DamageModifier>() {  },
+          new List<string>() { "",  },
+          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
       public static CreatureData KosheitheDeathless = new CreatureData("Koshei the Deathless", 0, 0, 0, 0, 0, false, true, FrontAttack.None, 
           new List<DamageType>() { DamageType.Death, DamageType.Earth},
@@ -1894,12 +1894,12 @@ namespace Tibia.Constants {
           new List<string>() { "Ugh! Ugh! Ugh!",  "Holy banana!",  "Chakka! Chakka!",  },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  62), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bananas",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  12), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Oranges",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  5), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Magic Light W",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Mana Potion",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("W",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("of Decay",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Small Amethyst",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Ape Fur",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Banana Staff",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.VeryRare,  0)}
       );
-      public static CreatureData Merlkin = new CreatureData("Merlkin", 235, 145, 0, 0, 170, false, true, FrontAttack.None, 
+      public static CreatureData MerlkinAntiBotter = new CreatureData("Merlkin AntiBotter", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
-          new List<DamageModifier>() { new DamageModifier(DamageType.Holy,  10), new DamageModifier(DamageType.Fire,  20), new DamageModifier(DamageType.Energy,  10)},
-          new List<DamageModifier>() { new DamageModifier(DamageType.Death,  5), new DamageModifier(DamageType.Ice,  15) },
-          new List<string>() { "Ugh! Ugh! Ugh!",  "Holy banana!",  "Chakka! Chakka!",  },
-          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  62), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bananas",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  12), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Oranges",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  5), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Magic Light W",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Mana Potion",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("W",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("of Decay",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Small Amethyst",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Ape Fur",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Banana Staff",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.VeryRare,  0)}
+          new List<DamageModifier>() { },
+          new List<DamageModifier>() {  },
+          new List<string>() { "",  },
+          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
       public static CreatureData Mimic = new CreatureData("Mimic", 30, 0, 0, 0, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { DamageType.Physical, DamageType.Holy, DamageType.Death, DamageType.Fire, DamageType.Energy, DamageType.Ice, DamageType.Earth, DamageType.Drown},
@@ -3049,12 +3049,12 @@ namespace Tibia.Constants {
           new List<string>() { },
           new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  30), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bag",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Battle Hammer",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Plate Shield",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Fish",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Hams",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  2), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Tortoise Eggs",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  3), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Tortoise Shield",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Turtle Shell",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
       );
-      public static CreatureData Tortoise = new CreatureData("Tortoise", 185, 90, 0, 0, 50, false, false, FrontAttack.None, 
+      public static CreatureData TortoiseAntiBotter = new CreatureData("Tortoise AntiBotter", 0, 0, -1, -1, 0, false, false, FrontAttack.None, 
           new List<DamageType>() { },
-          new List<DamageModifier>() { new DamageModifier(DamageType.Physical,  35), new DamageModifier(DamageType.Ice,  20), new DamageModifier(DamageType.Earth,  20)},
-          new List<DamageModifier>() { new DamageModifier(DamageType.Fire,  10) },
-          new List<string>() { },
-          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("gold coin",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  30), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Bag",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Battle Hammer",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Plate Shield",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Fish",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Hams",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  2), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Tortoise Eggs",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.SemiRare,  3), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Tortoise Shield",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0), new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("Turtle Shell",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Rare,  0)}
+          new List<DamageModifier>() { },
+          new List<DamageModifier>() {  },
+          new List<string>() { "",  },
+          new List<Loot>() { new Loot(ItemLists.AllItems.Find(delegate(Item i) { return i.Name.Equals("",  StringComparison.OrdinalIgnoreCase); }),  LootPossibility.Normal,  0)}
       );
       public static CreatureData Troll = new CreatureData("Troll", 50, 20, 0, 0, 25, false, false, FrontAttack.None, 
           new List<DamageType>() { },
