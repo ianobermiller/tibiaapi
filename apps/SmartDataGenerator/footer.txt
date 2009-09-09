@@ -1,0 +1,54 @@
+﻿		#region Rings
+        public static Dictionary<uint, Item> Rings = new Dictionary<uint, Item>
+		{
+			{ Items.Ring.AxeRing.Id, Items.Ring.AxeRing },
+			{ Items.Ring.ClubRing.Id, Items.Ring.ClubRing },
+			{ Items.Ring.CrystalRing.Id, Items.Ring.CrystalRing },
+			{ Items.Ring.DwarvenRing.Id, Items.Ring.DwarvenRing },
+			{ Items.Ring.EnergyRing.Id, Items.Ring.EnergyRing },
+			{ Items.Ring.LifeRing.Id, Items.Ring.LifeRing },
+			{ Items.Ring.MightRing.Id, Items.Ring.MightRing },
+			{ Items.Ring.PowerRing.Id, Items.Ring.PowerRing },
+			{ Items.Ring.RingOfHealing.Id, Items.Ring.RingOfHealing },
+			{ Items.Ring.RingOfTheSkies.Id, Items.Ring.RingOfTheSkies },
+			{ Items.Ring.StealthRing.Id, Items.Ring.StealthRing },
+			{ Items.Ring.TimeRing.Id, Items.Ring.TimeRing },
+        };
+        #endregion
+
+        #region Runes
+        public static Dictionary<uint, Rune> Runes = new Dictionary<uint, Rune>
+        {
+			{ Items.Rune.AnimateDead.Id, Items.Rune.AnimateDead },
+			{ Items.Rune.Antidote.Id, Items.Rune.Antidote },
+			{ Items.Rune.Avalanche.Id, Items.Rune.Avalanche },
+			{ Items.Rune.Chameleon.Id, Items.Rune.Chameleon },
+			{ Items.Rune.ConvinceCreature.Id, Items.Rune.ConvinceCreature },
+			{ Items.Rune.Desintegrate.Id, Items.Rune.Desintegrate },
+			{ Items.Rune.DestroyField.Id, Items.Rune.DestroyField },
+			{ Items.Rune.EnergyBomb.Id, Items.Rune.EnergyBomb },
+			{ Items.Rune.EnergyField.Id, Items.Rune.EnergyField },
+			{ Items.Rune.EnergyWall.Id, Items.Rune.EnergyWall },
+			{ Items.Rune.Explosion.Id, Items.Rune.Explosion },
+			{ Items.Rune.FireBomb.Id, Items.Rune.FireBomb },
+			{ Items.Rune.FireField.Id, Items.Rune.FireField },
+			{ Items.Rune.FireWall.Id, Items.Rune.FireWall },
+			{ Items.Rune.Fireball.Id, Items.Rune.Fireball },
+			{ Items.Rune.GreatFireball.Id, Items.Rune.GreatFireball },
+			{ Items.Rune.HeavyMagicMissile.Id, Items.Rune.HeavyMagicMissile },
+			{ Items.Rune.Icicle.Id, Items.Rune.Icicle },
+			{ Items.Rune.IntenseHealing.Id, Items.Rune.IntenseHealing },
+			{ Items.Rune.LightMagicMissile.Id, Items.Rune.LightMagicMissile },
+			{ Items.Rune.MagicWall.Id, Items.Rune.MagicWall },
+			{ Items.Rune.Paralyze.Id, Items.Rune.Paralyze },
+			{ Items.Rune.PoisonBomb.Id, Items.Rune.PoisonBomb },
+			{ Items.Rune.PoisonField.Id, Items.Rune.PoisonField },
+			{ Items.Rune.PoisonWall.Id, Items.Rune.PoisonWall },
+			{ Items.Rune.Soulfire.Id, Items.Rune.Soulfire },
+			{ Items.Rune.Stalagmite.Id, Items.Rune.Stalagmite },
+			{ Items.Rune.StoneShower.Id, Items.Rune.StoneShower },
+			{ Items.Rune.SuddenDeath.Id, Items.Rune.SuddenDeath },
+			{ Items.Rune.Thunderstorm.Id, Items.Rune.Thunderstorm },
+			{ Items.Rune.UltimateHealing.Id, Items.Rune.UltimateHealing },
+        };
+        #endregion

@@ -31,18 +31,18 @@
             this.uxStart = new System.Windows.Forms.Button();
             this.uxMessage = new System.Windows.Forms.Label();
             this.uxProgress = new System.Windows.Forms.ProgressBar();
-            this.uxItemID = new System.Windows.Forms.GroupBox();
-            this.uxItems = new System.Windows.Forms.TextBox();
-            this.uxLoadItemID = new System.Windows.Forms.Button();
             this.uxItemData = new System.Windows.Forms.GroupBox();
             this.uxItemStart = new System.Windows.Forms.Button();
             this.uxItemMessage = new System.Windows.Forms.Label();
             this.uxItemProgress = new System.Windows.Forms.ProgressBar();
+            this.uxItemID = new System.Windows.Forms.GroupBox();
+            this.uxItems = new System.Windows.Forms.TextBox();
+            this.uxLoadItemID = new System.Windows.Forms.Button();
             this.uxItemTimer = new System.Windows.Forms.Timer(this.components);
             this.uxFlow.SuspendLayout();
             this.uxCreatureData.SuspendLayout();
-            this.uxItemID.SuspendLayout();
             this.uxItemData.SuspendLayout();
+            this.uxItemID.SuspendLayout();
             this.SuspendLayout();
             // 
             // uxTimer
@@ -102,37 +102,6 @@
             this.uxProgress.Size = new System.Drawing.Size(305, 19);
             this.uxProgress.TabIndex = 9;
             // 
-            // uxItemID
-            // 
-            this.uxItemID.Controls.Add(this.uxItems);
-            this.uxItemID.Controls.Add(this.uxLoadItemID);
-            this.uxItemID.Location = new System.Drawing.Point(3, 215);
-            this.uxItemID.Name = "uxItemID";
-            this.uxItemID.Size = new System.Drawing.Size(320, 212);
-            this.uxItemID.TabIndex = 13;
-            this.uxItemID.TabStop = false;
-            this.uxItemID.Text = "Item ID";
-            // 
-            // uxItems
-            // 
-            this.uxItems.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxItems.Location = new System.Drawing.Point(6, 19);
-            this.uxItems.Multiline = true;
-            this.uxItems.Name = "uxItems";
-            this.uxItems.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.uxItems.Size = new System.Drawing.Size(305, 153);
-            this.uxItems.TabIndex = 13;
-            this.uxItems.Text = resources.GetString("uxItems.Text");
-            // 
-            // uxLoadItemID
-            // 
-            this.uxLoadItemID.Location = new System.Drawing.Point(6, 178);
-            this.uxLoadItemID.Name = "uxLoadItemID";
-            this.uxLoadItemID.Size = new System.Drawing.Size(305, 24);
-            this.uxLoadItemID.TabIndex = 11;
-            this.uxLoadItemID.Text = "Load";
-            this.uxLoadItemID.UseVisualStyleBackColor = true;
-            // 
             // uxItemData
             // 
             this.uxItemData.Controls.Add(this.uxItemStart);
@@ -172,6 +141,38 @@
             this.uxItemProgress.Size = new System.Drawing.Size(305, 19);
             this.uxItemProgress.TabIndex = 9;
             // 
+            // uxItemID
+            // 
+            this.uxItemID.Controls.Add(this.uxItems);
+            this.uxItemID.Controls.Add(this.uxLoadItemID);
+            this.uxItemID.Location = new System.Drawing.Point(3, 215);
+            this.uxItemID.Name = "uxItemID";
+            this.uxItemID.Size = new System.Drawing.Size(320, 212);
+            this.uxItemID.TabIndex = 13;
+            this.uxItemID.TabStop = false;
+            this.uxItemID.Text = "Item ID";
+            // 
+            // uxItems
+            // 
+            this.uxItems.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uxItems.Location = new System.Drawing.Point(6, 19);
+            this.uxItems.Multiline = true;
+            this.uxItems.Name = "uxItems";
+            this.uxItems.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.uxItems.Size = new System.Drawing.Size(305, 153);
+            this.uxItems.TabIndex = 13;
+            this.uxItems.Text = resources.GetString("uxItems.Text");
+            // 
+            // uxLoadItemID
+            // 
+            this.uxLoadItemID.Location = new System.Drawing.Point(6, 178);
+            this.uxLoadItemID.Name = "uxLoadItemID";
+            this.uxLoadItemID.Size = new System.Drawing.Size(305, 24);
+            this.uxLoadItemID.TabIndex = 11;
+            this.uxLoadItemID.Text = "Load";
+            this.uxLoadItemID.UseVisualStyleBackColor = true;
+            this.uxLoadItemID.Click += new System.EventHandler(this.uxLoadItemID_Click);
+            // 
             // uxItemTimer
             // 
             this.uxItemTimer.Tick += new System.EventHandler(this.uxItemTimer_Tick);
@@ -194,9 +195,9 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.uxMain_FormClosed);
             this.uxFlow.ResumeLayout(false);
             this.uxCreatureData.ResumeLayout(false);
+            this.uxItemData.ResumeLayout(false);
             this.uxItemID.ResumeLayout(false);
             this.uxItemID.PerformLayout();
-            this.uxItemData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

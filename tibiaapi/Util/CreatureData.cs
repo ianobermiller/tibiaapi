@@ -302,7 +302,7 @@ namespace Tibia.Util
 
                 s = s.Split(' ')[0].Replace("?", "");
                 uint id = 0;
-                Item item = ItemLists.Ammunitions.Find(delegate(Item find) { return string.Compare(find.Name, n, true) == 0; });
+                Item item = ItemLists.AllItems.Find(delegate(Item find) { return string.Compare(find.Name, n, true) == 0; });
 
                 if (item != null)
                     id = item.Id;

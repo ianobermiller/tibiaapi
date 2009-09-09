@@ -78,7 +78,7 @@ namespace SmartAutoLooter
 
                 bool lootContainer = isLootContainer(p.Id);
 
-                if (lootContainer && !Tibia.Constants.ItemLists.Backpacks.ContainsKey(p.ItemId))
+                if (lootContainer && !Tibia.Constants.ItemLists.Container.ContainsKey(p.ItemId))
                     Scheduler.AddTask(new Action(autoLoot), null, 200);
                 else if (!lootContainer)
                 {
@@ -101,7 +101,7 @@ namespace SmartAutoLooter
 
             foreach (Tibia.Objects.Container c in containers)
             {
-                if (isLootContainer(c.Number) && !Tibia.Constants.ItemLists.Backpacks.ContainsKey((uint)c.Id))
+                if (isLootContainer(c.Number) && !Tibia.Constants.ItemLists.Container.ContainsKey((uint)c.Id))
                 {
                     var cItems = c.GetItems();
 
@@ -249,7 +249,7 @@ namespace SmartAutoLooter
                     }
                     else if (_autoEatFoodFromBodys)
                     {
-                        var food = cItems.FirstOrDefault(i => Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id));
+                        var food = cItems.FirstOrDefault(i => Tibia.Constants.ItemLists.Food.ContainsKey(i.Id));
 
                         if (food != null)
                         {
