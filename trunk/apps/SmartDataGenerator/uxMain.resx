@@ -482,6 +482,8 @@ Fur Boots 7457
 Magma Boots 818
 Soft Boots 6529
 Worn Soft Boots 6530
+Worn Firewalker Boots 9020
+Firewalker Boots 9018
 
 Ammunition
 
@@ -536,6 +538,8 @@ Violet Gem 3036
 Red Gem 3039
 Green Gem 3038
 Blue Gem 3041
+Small Topaz 9057
+Gold Ingot 9058
 
 Wand
 
@@ -550,9 +554,6 @@ Wand of Dragonbreath 3075
 Wand of Draconia 8093
 Wand of Voodoo 8094
 Spell Wand 651
-
-Rod
-
 Snakebite Rod 3066
 Moonlight Rod 3070
 Necrotic Rod 3069
@@ -589,6 +590,10 @@ Parcel 3503
 Stampped Parcel 3504
 Camouflage Backpack 2872
 Beach Backpack 5949
+Demon Backpack 9601
+Orange Backpack 9602
+Orange Bag 9603
+Crown Backpack 9605
 
 Quest
 
@@ -638,6 +643,7 @@ Eye Patch 6098
 Peg Leg 6126
 Vampire Lord Token 8192
 Wood 5901
+Egg Of The Many 9606
 
 Tool
 
@@ -720,6 +726,11 @@ Christmas Branch 6489
 Yellow Rose 3660
 Silky Tapestry 9046
 Dracoyle Statue(Enchanted) 9034
+Crystal Pedestal1 9063
+Crystal Pedestal1 9064
+Crystal Pedestal1 9065
+Crystal Pedestal1 9066
+Crystal Of Power 9067
 
 Potion
 
