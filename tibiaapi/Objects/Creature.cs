@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using Tibia.Packets;
 
-namespace Tibia.Objects {
+namespace Tibia.Objects
+{
     /// <summary>
     /// Creature object.
     /// </summary>
-    public class Creature {
+    public class Creature
+    {
         protected Client client;
         protected uint address;
 
@@ -15,7 +17,8 @@ namespace Tibia.Objects {
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="address">The address.</param>
-        public Creature(Client client, uint address) {
+        public Creature(Client client, uint address)
+        {
             this.client = client;
             this.address = address;
         }
@@ -24,14 +27,16 @@ namespace Tibia.Objects {
         /// Check if a player (creature) is in your party.
         /// </summary>
         /// <returns>True if the player is a member or leader of your party. False otherwise.</returns>
-        public bool InParty() {
+        public bool InParty()
+        {
             Constants.Party party = Party;
             return (party != Constants.Party.None
                 && party != Constants.Party.Invitee
                 && party != Constants.Party.Inviter);
         }
 
-        private static Location AdjustLocation(Location loc, int xDiff, int yDiff) {
+        private static Location AdjustLocation(Location loc, int xDiff, int yDiff)
+        {
             int xNew = loc.X - xDiff;
             int yNew = loc.Y - yDiff;
 
@@ -53,7 +58,8 @@ namespace Tibia.Objects {
         /// Check if have a path to the creature.
         /// </summary>
         /// <returns></returns>
-        public bool IsReachable() {
+        public bool IsReachable()
+        {
             var tileList = client.Map.GetTilesOnSameFloor();
             var playerTile = tileList.GetTileWithPlayer(Client);
             var creatureTile = tileList.GetTileWithCreature(Id);
@@ -72,15 +78,18 @@ namespace Tibia.Objects {
             playerTile.MemoryLocation = AdjustLocation(playerTile.MemoryLocation, xDiff, yDiff);
             creatureTile.MemoryLocation = AdjustLocation(creatureTile.MemoryLocation, xDiff, yDiff);
 
-            foreach (Tile tile in tileList) {
+            foreach (Tile tile in tileList)
+            {
                 tile.MemoryLocation = AdjustLocation(tile.MemoryLocation, xDiff, yDiff);
 
                 if (tile.Ground.GetFlag(Addresses.DatItem.Flag.Blocking) || tile.Ground.GetFlag(Addresses.DatItem.Flag.BlocksPath) ||
                     tile.Items.Any(i => i.GetFlag(Addresses.DatItem.Flag.Blocking) || i.GetFlag(Addresses.DatItem.Flag.BlocksPath) || client.PathFinder.ModifiedItems.ContainsKey(i.Id)) ||
-                    creatures.Any(c => tile.Objects.Any(o => o.Data == c.Id && o.Data != playerId && o.Data != this.Id))) {
+                    creatures.Any(c => tile.Objects.Any(o => o.Data == c.Id && o.Data != playerId && o.Data != this.Id)))
+                {
                     client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 0;
                 }
-                else {
+                else
+                {
                     client.PathFinder.Grid[tile.MemoryLocation.X, tile.MemoryLocation.Y] = 1;
                 }
             }
@@ -92,11 +101,13 @@ namespace Tibia.Objects {
         /// Check if the current creature is actually yourself.
         /// </summary>
         /// <returns>True if it's yourself, false otherwise</returns>
-        public bool IsSelf() {
+        public bool IsSelf()
+        {
             return (Id == client.Memory.ReadInt32(Addresses.Player.Id));
         }
 
-        public void Approach() {
+        public void Approach()
+        {
             Player p = client.GetPlayer();
             p.GoTo = Location;
         }
@@ -105,7 +116,8 @@ namespace Tibia.Objects {
         /// Check if the creature is attacking the player.
         /// </summary>
         /// <returns></returns>
-        public bool IsAttacking() {
+        public bool IsAttacking()
+        {
             return BlackSquare != 0;
         }
 
@@ -114,7 +126,8 @@ namespace Tibia.Objects {
         /// Sends a packet to the server and sets the red square around the creature.
         /// </summary>
         /// <returns></returns>
-        public bool Attack() {
+        public bool Attack()
+        {
             client.Memory.WriteInt32(Addresses.Player.TargetID, Id);
             return Packets.Outgoing.AttackPacket.Send(client, (uint)Id);
         }
@@ -125,7 +138,8 @@ namespace Tibia.Objects {
         /// shift-clicking or left-right clicking a creature.
         /// </summary>
         /// <returns></returns>
-        public bool Look() {
+        public bool Look()
+        {
             return Packets.Outgoing.LookAtPacket.Send(client, Location, 0x63, 1);
         }
 
@@ -133,7 +147,8 @@ namespace Tibia.Objects {
         /// Follow the creature / player.
         /// </summary>
         /// <returns></returns>
-        public bool Follow() {
+        public bool Follow()
+        {
             client.Memory.WriteInt32(Addresses.Player.GreenSquare, Id);
             return Packets.Outgoing.FollowPacket.Send(client, (uint)Id);
         }
@@ -142,158 +157,195 @@ namespace Tibia.Objects {
         /// Gets the distance between player and creature / player.
         /// </summary>
         /// <returns></returns>
-        public double DistanceTo(Location l) {
+        public double DistanceTo(Location l)
+        {
             return Location.DistanceTo(l);
         }
 
-        public uint Address {
+        public uint Address
+        {
             get { return address; }
             set { address = value; }
         }
 
         #region Get/Set Methods
 
-        public Client Client {
+        public Client Client
+        {
             get { return client; }
         }
 
-        public int Id {
+        public int Id
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceId); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceId, value); }
         }
 
-        public CreatureData Data {
-            get {
+        public CreatureData Data
+        {
+            get
+            {
                 if (Constants.CreatureLists.AllCreatures.ContainsKey(Name))
+                {
                     return Constants.CreatureLists.AllCreatures[Name];
+                }
                 else
+                {
                     return null;
+                }
             }
         }
 
-        public Constants.CreatureType Type {
+        public Constants.CreatureType Type
+        {
             get { return (Constants.CreatureType)client.Memory.ReadByte(address + Addresses.Creature.DistanceType); }
             set { client.Memory.WriteByte(address + Addresses.Creature.DistanceType, (byte)value); }
         }
 
-        public string Name {
+        public string Name
+        {
             get { return client.Memory.ReadString(address + Addresses.Creature.DistanceName); }
             set { client.Memory.WriteString(address + Addresses.Creature.DistanceName, value); }
         }
 
-        public int X {
+        public int X
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceX); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceX, value); }
         }
 
-        public int Y {
+        public int Y
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceY); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceY, value); }
         }
 
-        public int Z {
+        public int Z
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceZ); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceZ, value); }
         }
 
-        public Location Location {
+        public Location Location
+        {
             get { return new Location(X, Y, Z); }
         }
 
-        public int ScreenOffsetHoriz {
+        public int ScreenOffsetHoriz
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceScreenOffsetHoriz); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceScreenOffsetHoriz, value); }
         }
 
-        public int ScreenOffsetVert {
+        public int ScreenOffsetVert
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceScreenOffsetVert); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceScreenOffsetVert, value); }
         }
 
-        public bool IsWalking {
+        public bool IsWalking
+        {
             get { return Convert.ToBoolean(client.Memory.ReadByte(address + Addresses.Creature.DistanceIsWalking)); }
             set { client.Memory.WriteByte(address + Addresses.Creature.DistanceIsWalking, Convert.ToByte(value)); }
         }
 
-        public int WalkSpeed {
+        public int WalkSpeed
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceWalkSpeed); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceWalkSpeed, value); }
         }
 
-        public Constants.Direction Direction {
+        public Constants.Direction Direction
+        {
             get { return (Constants.Direction)client.Memory.ReadInt32(address + Addresses.Creature.DistanceDirection); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceDirection, (int)value); }
         }
 
-        public bool IsVisible {
+        public bool IsVisible
+        {
             get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Creature.DistanceIsVisible)); }
             set { client.Memory.WriteByte(address + Addresses.Creature.DistanceIsVisible, Convert.ToByte(value)); }
         }
 
-        public int Light {
+        public int Light
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceLight); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceLight, value); }
         }
 
-        public int LightColor {
+        public int LightColor
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceLightColor); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceLightColor, value); }
         }
 
-        public int HPBar {
+        public int HPBar
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceHPBar); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceHPBar, value); }
         }
 
-        public int BlackSquare {
+        public int BlackSquare
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceBlackSquare); }
         }
 
-        public Constants.Skull Skull {
+        public Constants.Skull Skull
+        {
             get { return (Constants.Skull)client.Memory.ReadInt32(address + Addresses.Creature.DistanceSkull); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceSkull, (int)value); }
         }
-        public Constants.Party Party {
+        public Constants.Party Party
+        {
             get { return (Constants.Party)client.Memory.ReadInt32(address + Addresses.Creature.DistanceParty); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceParty, (int)value); }
         }
 
-        public Constants.OutfitType OutfitType {
+        public Constants.OutfitType OutfitType
+        {
             get { return (Constants.OutfitType)client.Memory.ReadInt32(address + Addresses.Creature.DistanceOutfit); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceOutfit, (int)value); }
         }
 
-        public int Color_Head {
+        public int Color_Head
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorHead); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorHead, value); }
         }
 
-        public int Color_Body {
+        public int Color_Body
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorBody); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorBody, value); }
         }
 
-        public int Color_Legs {
+        public int Color_Legs
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorLegs); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorLegs, value); }
         }
 
-        public int Color_Feet {
+        public int Color_Feet
+        {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorFeet); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorFeet, value); }
         }
 
-        public Constants.OutfitAddon Addon {
+        public Constants.OutfitAddon Addon
+        {
             get { return (Constants.OutfitAddon)client.Memory.ReadInt32(address + Addresses.Creature.DistanceAddon); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceAddon, (int)value); }
         }
 
-        public Outfit Outfit {
-            get {
+        public Outfit Outfit
+        {
+            get
+            {
                 return new Outfit(this, (ushort)OutfitType, (byte)Color_Head, (byte)Color_Body,
                     (byte)Color_Legs, (byte)Color_Feet, (byte)Addon);
             }
-            set {
+            set
+            {
                 OutfitType = (Constants.OutfitType)value.LookType;
                 Color_Head = (int)value.Head;
                 Color_Body = (int)value.Body;
@@ -305,7 +357,8 @@ namespace Tibia.Objects {
 
         #endregion
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return string.Format("{0}: {1}%", Name, HPBar.ToString());
         }
     }

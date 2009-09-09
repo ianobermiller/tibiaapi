@@ -24,7 +24,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
-        public Item(uint id, string name) 
+        public Item(uint id, string name)
             : this(null, id, 0, name) { }
 
         public Item(Client client, uint id)
@@ -86,7 +86,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            return Packets.Outgoing.ItemUseOnPacket.Send(client, location.ToLocation(), (ushort)id, 0, onItem.Location.ToLocation(), (ushort)onItem.Id, 0); 
+            return Packets.Outgoing.ItemUseOnPacket.Send(client, location.ToLocation(), (ushort)id, 0, onItem.Location.ToLocation(), (ushort)onItem.Id, 0);
         }
 
         /// <summary>
@@ -106,10 +106,10 @@ namespace Tibia.Objects
         public bool UseOnSelf()
         {
             uint playerId = client.Memory.ReadUInt32(Addresses.Player.Id);
-            
+
             byte stack = 0;
 
-            if (id == Constants.Items.Bottle.Vial.Id) 
+            if (id == Constants.Items.Bottle.Vial.Id)
                 stack = count;
 
             return Packets.Outgoing.ItemUseBattlelistPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, playerId);
@@ -171,6 +171,23 @@ namespace Tibia.Objects
             get { return name; }
             set { name = value; }
         }
+
+        public ItemData Data
+        {
+            get
+            {
+                if (Constants.ItemLists.AllItems.ContainsKey(Id))
+                {
+                    Name = Constants.ItemLists.AllItems[Id].Name;
+                    return Constants.ItemDataLists.AllItems[Name];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the amount stacked of this item.
         /// </summary>
@@ -208,8 +225,8 @@ namespace Tibia.Objects
         {
             get
             {
-                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);                
-                return client.Memory.ReadUInt32(baseAddr + 8) + (0x4C + Addresses.DatItem.CanLookAt/10) * (id - 100);
+                uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
+                return client.Memory.ReadUInt32(baseAddr + 8) + (0x4C + Addresses.DatItem.CanLookAt / 10) * (id - 100);
             }
         }
 
@@ -296,7 +313,7 @@ namespace Tibia.Objects
                 uint address = client.Memory.ReadUInt32(DatAddress + Addresses.DatItem.Sprite);
                 for (int i = 0; i < count; i++)
                 {
-                    client.Memory.WriteUInt16(address + i * 2,value[i]);
+                    client.Memory.WriteUInt16(address + i * 2, value[i]);
                 }
 
             }
@@ -655,7 +672,7 @@ namespace Tibia.Objects
                     bytes[00] = GroundLocation.X.Low();
                     bytes[01] = GroundLocation.X.High();
                     bytes[02] = GroundLocation.Y.Low();
-                    bytes[03] = GroundLocation.Y.High(); 
+                    bytes[03] = GroundLocation.Y.High();
                     bytes[04] = (byte)GroundLocation.Z;
                     break;
             }
