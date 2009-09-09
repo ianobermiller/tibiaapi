@@ -305,6 +305,7 @@ namespace Tibia.Constants {
           public static Item RingOfTheSkies = new Item(3006, "Ring Of The Skies");
           public static Item ClubRing = new Item(3093, "Club Ring");
           public static Item DeathRing = new Item(6299, "Death Ring");
+          public static Item SwordRing = new Item(3091, "Sword Ring");
       }
       public static class Neck {
           public static Item GlacierAmulet = new Item(815, "Glacier Amulet");

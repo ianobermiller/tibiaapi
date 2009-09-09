@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using Tibia.Objects;
 
-namespace Tibia.Constants {
- public static class ItemDataLists {
-     #region All Items
-     public static Dictionary<string, ItemData> AllItems = new Dictionary<string, ItemData> {
+namespace Tibia.Constants
+{
+    public static class ItemDataLists
+    {
+        #region All Items
+        public static Dictionary<string, ItemData> AllItems = new Dictionary<string, ItemData> {
          { ItemsData.FrozenPlate.Name, ItemsData.FrozenPlate },
          { ItemsData.RangersCloak.Name, ItemsData.RangersCloak },
          { ItemsData.LavosArmor.Name, ItemsData.LavosArmor },
@@ -654,7 +656,7 @@ namespace Tibia.Constants {
          { ItemsData.ThunderstormRune.Name, ItemsData.ThunderstormRune },
          { ItemsData.UltimateHealingRune.Name, ItemsData.UltimateHealingRune },
      };
-     #endregion
- }
+        #endregion
+    }
 }
 
