@@ -16,6 +16,7 @@ namespace Tibia.Util
     {
         private static string MainFileName = "ItemsData.cs";
         private static string ListsFileName = "ItemDataLists.cs";
+        private static List<string> names;
         public static int Total;
         public static int Loaded;
         public static int Parsed;
@@ -47,6 +48,7 @@ namespace Tibia.Util
                     File.Delete(ListsFileName);
                 }
 
+                names = new List<string>();
                 ListsTextWriter = new StreamWriter(File.Create(ListsFileName)); ;
                 ListsTextWriter.WriteLine("using System;");
                 ListsTextWriter.WriteLine("using System.Collections.Generic;");
@@ -96,6 +98,12 @@ namespace Tibia.Util
 
                 foreach (var i in ItemLists.AllItems)
                 {
+                    if (names.Contains(i.Value.Name.Replace(" ", "").Replace("'", "")))
+                    {
+                        continue;
+                    }
+
+                    names.Add(i.Value.Name.Replace(" ", "").Replace("'", ""));
                     MainTextWriter.Write("      public static ItemData " + i.Value.Name.Replace(" ", "").Replace("'", "") + " = new ItemData(\"" + i.Value.Name.Replace('_', ' ') + "\", ");
                     MainTextWriter.Write(i.Value.Id + ", ");
                     StreamReader s = new StreamReader("pages\\" + i.Value.Name.Replace(' ', '_'));

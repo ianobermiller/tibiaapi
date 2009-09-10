@@ -101,6 +101,7 @@
     <Compile Include="Constants\ItemsData.cs" />
     <Compile Include="Constants\Spells.cs" />
     <Compile Include="Constants\TAConstants.cs" />
+    <Compile Include="Constants\TileLists.cs" />
     <Compile Include="Constants\Tiles.cs" />
     <Compile Include="Exceptions\Misc.cs" />
     <Compile Include="Exceptions\Version.cs" />

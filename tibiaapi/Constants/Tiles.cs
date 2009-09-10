@@ -5,140 +5,116 @@ using Tibia.Objects;
 
 namespace Tibia.Constants
 {
-    /// <summary>
-    /// Contains tile ids.
-    /// </summary>
     public static class Tiles
     {
-        /// <summary>
-        /// Hole tiles which are closed
-        /// </summary>
-        public static class ClosedHoles
-        {
-            public static uint ClosedHole = 593;
-            public static uint ClosedHole2 = 579;
-            public static uint ClosedHole3 = 592;
-
-            public static List<uint> GetList()
-            {
-                List<uint> list = new List<uint>(3);
-                list.Add(ClosedHole);
-                list.Add(ClosedHole2);
-                list.Add(ClosedHole3);
-                return list;
-            }
-        }
-
-        /// <summary>
-        /// Tiles which lead you down
-        /// </summary>
-        public static class Down
-        {
-            public static uint Down1 = 370;
-            public static uint Down2 = 409;
-            public static uint Down3 = 428;
-            public static uint Down4 = 7478;
-            public static uint Down5 = 7522;
-            public static uint Down6 = 868;
-            public static uint Down7 = 7476;
-            public static uint GrassHole = 293;
-            public static uint GrassHole2 = 293;
-            public static uint HoleOpen = 580;
-            public static uint HoleOpen2 = 383;
-            public static uint PitFall = 294;
-            public static uint RampDown = 459;
-            public static uint SewerGate = 430; //Requires use
-            public static uint StairsDown = 410;
-            public static uint StairsDown2 = 411;
-            public static uint StairsDown3 = 429;
-            public static uint StairsDown4 = 432;
-            public static uint StairsDown5 = 433;
-            public static uint TrapDoor = 369;
-            public static uint TrapDoor2 = 408;
-
-            public static List<uint> GetList()
-            {
-                List<uint> list = new List<uint>(17);
-                list.Add(Down1 = 370);
-                list.Add(Down2 = 409);
-                list.Add(Down3 = 428);
-                list.Add(Down4 = 7478);
-                list.Add(Down5 = 7522);
-                list.Add(Down6 = 868);
-                list.Add(Down7 = 7476);
-                list.Add(GrassHole = 293);
-                list.Add(GrassHole2 = 293);
-                list.Add(HoleOpen = 580);
-                list.Add(HoleOpen2 = 383);
-                list.Add(PitFall = 294);
-                list.Add(RampDown = 459);
-                list.Add(SewerGate = 430); //Requires use
-                list.Add(StairsDown = 410);
-                list.Add(StairsDown2 = 411);
-                list.Add(StairsDown3 = 429);
-                list.Add(StairsDown4 = 432);
-                list.Add(StairsDown5 = 433);
-                list.Add(TrapDoor = 369);
-                list.Add(TrapDoor2 = 408);
-                return list;
-            }
-        }
-
-        /// <summary>
-        /// Tiles which lead you up
-        /// </summary>
         public static class Up
         {
-            public static uint RopeHoleUp = 384;  // Requires use of rope
-            public static uint LadderUp = 1929; // Requires use
-            public static uint RampUp = 1960;
-            public static uint StairsLeft = 1978;
-            public static uint StairsNorth = 1977;
-            public static uint StairsUp = 1958;
-            public static uint StairsUp2 = 1928;
-            public static uint RampLeft = 1952;
-            public static uint RampNorth = 1956;
-            public static uint RampRight = 1950;
-            public static uint RampSouth = 1954;
-            public static uint RampNorth2 = 1964;
-            public static uint RampSouth2 = 1966;
-            public static uint RampLeft2 = 1962;
-            public static uint PyramidNW = 2196;
-            public static uint PyramidNE = 2198;
-            public static uint PyramidSE = 2192;
-            public static uint PyramidSW = 2194;
-            public static uint StairsNorth2 = 6915;
-            public static uint StairsRight2 = 6911;
-            public static uint StairsLeft2 = 6909;
-
-            public static List<uint> GetList()
-            {
-                List<uint> list = new List<uint>(3);
-                list.Add(RopeHoleUp = 384);
-                list.Add(LadderUp = 1929);
-                list.Add(RampUp = 1960);
-                list.Add(StairsLeft = 1978);
-                list.Add(StairsNorth = 1977);
-                list.Add(StairsUp = 1958);
-                list.Add(StairsUp2 = 1928);
-                list.Add(RampLeft = 1952);
-                list.Add(RampNorth = 1956);
-                list.Add(RampRight = 1950);
-                list.Add(RampSouth = 1954);
-                list.Add(RampNorth2 = 1964);
-                list.Add(RampSouth2 = 1966);
-                list.Add(RampLeft2 = 1962);
-                list.Add(PyramidNW = 2196);
-                list.Add(PyramidNE = 2198);
-                list.Add(PyramidSE = 2192);
-                list.Add(PyramidSW = 2194);
-                list.Add(StairsNorth2 = 6915);
-                list.Add(StairsRight2 = 6911);
-                list.Add(StairsLeft2 = 6909);
-                return list;
-            }
+            public static uint Stairs = 1947;
+            public static uint Ramp = 1950;
+            public static uint Ramp1 = 1952;
+            public static uint Ramp2 = 1954;
+            public static uint Ramp3 = 1956;
+            public static uint Stairs1 = 1958;
+            public static uint Ramp4 = 1960;
+            public static uint Ramp5 = 1962;
+            public static uint Ramp6 = 1964;
+            public static uint Ramp7 = 1966;
+            public static uint Ramp8 = 2192;
+            public static uint Ramp9 = 2194;
+            public static uint Ramp10 = 2196;
+            public static uint Ramp11 = 2198;
+            public static uint Stairs2 = 5257;
+            public static uint Stairs3 = 5259;
+            public static uint IceRamp = 6909;
+            public static uint IceRamp1 = 6911;
+            public static uint IceRamp2 = 6913;
+            public static uint IceRamp3 = 6915;
+            public static uint StoneStairs = 855;
+            public static uint StoneStairs1 = 856;
+            public static uint CaveEntrance = 7181;
+            public static uint CorkscrewStairs = 8657;
         }
-
+        public static class Down
+        {
+            public static uint Pitfall = 294;
+            public static uint Trapdoor = 369;
+            public static uint Trapdoor1 = 370;
+            public static uint Hole = 385;
+            public static uint Hole1 = 394;
+            public static uint Trapdoor2 = 411;
+            public static uint Trapdoor3 = 412;
+            public static uint Stairs4 = 413;
+            public static uint Stairs5 = 414;
+            public static uint Stairs6 = 428;
+            public static uint Trapdoor4 = 432;
+            public static uint Ladder = 433;
+            public static uint Trapdoor5 = 434;
+            public static uint Stairs7 = 437;
+            public static uint Stairs8 = 438;
+            public static uint Stairs9 = 469;
+            public static uint OpenTrapdoor = 476;
+            public static uint Hole2 = 594;
+            public static uint Hole3 = 595;
+            public static uint Hole4 = 601;
+            public static uint Hole5 = 600;
+            public static uint Hole6 = 604;
+            public static uint Hole7 = 605;
+            public static uint Hole8 = 607;
+            public static uint Hole9 = 609;
+            public static uint Hole10 = 610;
+            public static uint Hole11 = 615;
+            public static uint Trapdoor6 = 1156;
+            public static uint StoneStairway = 566;
+            public static uint StoneStairway1 = 567;
+            public static uint Stairs10 = 4823;
+            public static uint Stairs11 = 859;
+            public static uint Stairs12 = 4825;
+            public static uint Trapdoor7 = 5081;
+            public static uint Trapdoor8 = 5691;
+            public static uint Hole12 = 5731;
+            public static uint Ladder1 = 5763;
+            public static uint Hole13 = 6127;
+            public static uint Hole14 = 6128;
+            public static uint Hole15 = 6129;
+            public static uint Hole16 = 6130;
+            public static uint Hole17 = 6173;
+            public static uint Hole18 = 6917;
+            public static uint Hole19 = 6918;
+            public static uint Hole20 = 6919;
+            public static uint Hole21 = 6920;
+            public static uint Hole22 = 6921;
+            public static uint Hole23 = 6922;
+            public static uint Hole24 = 6923;
+            public static uint Hole25 = 6924;
+            public static uint TrapDoor = 7053;
+            public static uint Coffin = 166;
+            public static uint Coffin1 = 167;
+            public static uint Hole26 = 868;
+            public static uint Trapdoor9 = 4824;
+            public static uint Hole27 = 7755;
+            public static uint CorkscrewStairs1 = 8658;
+            public static uint OpenTrapdoor1 = 8709;
+        }
+        public static class UpUse
+        {
+            public static uint Ladder2 = 1948;
+        }
+        public static class Rope
+        {
+            public static uint RopeSpot = 386;
+            public static uint StoneTile = 421;
+        }
+        public static class DownUse
+        {
+            public static uint SewerGrate = 435;
+        }
+        public static class Shovel
+        {
+            public static uint LooseStonePile = 593;
+            public static uint LooseStonePile1 = 606;
+            public static uint LooseIcePile = 608;
+            public static uint BurriedHole = 867;
+        }
         /// <summary>
         /// Water tiles given as ranges
         /// </summary>
@@ -196,3 +172,4 @@ namespace Tibia.Constants
         }
     }
 }
+
