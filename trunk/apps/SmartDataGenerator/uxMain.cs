@@ -134,7 +134,7 @@ namespace SmartDataGenerator
                     {
                         category = "UpUse";
                     }
-                    else if (info.Name.Contains("Rope Spot") || serverId == 418)
+                    else if ((new ushort[] { 384, 418, 8278, 8592 }).Contains(serverId))
                     {
                         category = "Rope";
                     }
@@ -142,7 +142,7 @@ namespace SmartDataGenerator
                     {
                         category = "DownUse";
                     }
-                    else if (info.Name.Contains("Loose") || info.Name.Contains("Burried") || serverId == 8579)
+                    else if ((new ushort[] { 468, 481, 483, 7932, 8579 }).Contains(serverId))
                     {
                         category = "Shovel";
                     }
