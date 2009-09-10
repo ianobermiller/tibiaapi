@@ -151,7 +151,17 @@ namespace Tibia.Util
             double weight;
             double.TryParse(Regex.Replace(RegexGetGroup(html, @"Weight:$\n^(.*?)$"), "\\s[a-z]+\\.", "", RegexOptions.IgnoreCase), NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-US"), out weight);
             int lootValue;
-            int.TryParse(RegexGetGroup(html, @"Loot value:$\n^(.*?)$").Split('-')[0].Trim().Replace(",", ""), out lootValue);
+            string value = RegexGetGroup(html, @"Loot value:$\n^(.*?)$").Replace(",", "");
+
+            if (value.Contains("backpack"))
+            {
+                lootValue = 0;
+            }
+            else
+            {
+                int.TryParse(Regex.Match(value, "[0-9]+").Value, out lootValue);
+            }
+
             string droppedBy = RegexGetGroup(html, @"Dropped by:$\n^(.*?)$").Trim('.');
             MainTextWriter.Write(enchantable.ToString().ToLower() + ", ");
             MainTextWriter.Write(weight.ToString(CultureInfo.CreateSpecificCulture("en-US")) + ", ");
