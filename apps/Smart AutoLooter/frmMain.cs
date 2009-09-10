@@ -249,7 +249,7 @@ namespace SmartAutoLooter
                     }
                     else if (_autoEatFoodFromBodys)
                     {
-                        var food = cItems.FirstOrDefault(i => Tibia.Constants.ItemLists.Food.ContainsKey(i.Id));
+                        var food = cItems.FirstOrDefault(i => Tibia.Constants.ItemLists.Foods.ContainsKey(i.Id));
 
                         if (food != null)
                         {

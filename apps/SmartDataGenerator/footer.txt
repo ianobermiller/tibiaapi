@@ -1,20 +1,33 @@
-﻿		#region Rings
-        public static Dictionary<uint, Item> Rings = new Dictionary<uint, Item>
-		{
-			{ Items.Ring.AxeRing.Id, Items.Ring.AxeRing },
-			{ Items.Ring.ClubRing.Id, Items.Ring.ClubRing },
-			{ Items.Ring.CrystalRing.Id, Items.Ring.CrystalRing },
-			{ Items.Ring.DwarvenRing.Id, Items.Ring.DwarvenRing },
-			{ Items.Ring.EnergyRing.Id, Items.Ring.EnergyRing },
-			{ Items.Ring.LifeRing.Id, Items.Ring.LifeRing },
-			{ Items.Ring.MightRing.Id, Items.Ring.MightRing },
-			{ Items.Ring.PowerRing.Id, Items.Ring.PowerRing },
-			{ Items.Ring.RingOfHealing.Id, Items.Ring.RingOfHealing },
-			{ Items.Ring.RingOfTheSkies.Id, Items.Ring.RingOfTheSkies },
-			{ Items.Ring.StealthRing.Id, Items.Ring.StealthRing },
-			{ Items.Ring.TimeRing.Id, Items.Ring.TimeRing },
+﻿		#region Foods
+        public static Dictionary<uint, Objects.Food> Foods = new Dictionary<uint, Objects.Food>
+        {
+			{ Items.Food.Apple.Id, Items.Food.Apple }, 
+			{ Items.Food.Banana.Id, Items.Food.Banana }, 
+			{ Items.Food.Blueberry.Id, Items.Food.Blueberry }, 
+			{ Items.Food.Bread.Id, Items.Food.Bread }, 
+			{ Items.Food.BrownBread.Id, Items.Food.BrownBread }, 
+			{ Items.Food.BrownMushroom.Id, Items.Food.BrownMushroom }, 
+			{ Items.Food.Carrot.Id, Items.Food.Carrot }, 
+			{ Items.Food.Cheese.Id, Items.Food.Cheese }, 
+			{ Items.Food.Cherry.Id, Items.Food.Cherry }, 
+			{ Items.Food.Coconut.Id, Items.Food.Coconut }, 
+			{ Items.Food.Cookie.Id, Items.Food.Cookie }, 
+			{ Items.Food.Corncob.Id, Items.Food.Corncob }, 
+			{ Items.Food.DragonHam.Id, Items.Food.DragonHam }, 
+			{ Items.Food.Egg.Id, Items.Food.Egg }, 
+			{ Items.Food.Fish.Id, Items.Food.Fish }, 
+			{ Items.Food.Grapes.Id, Items.Food.Grapes }, 
+			{ Items.Food.GreenMushroom.Id, Items.Food.GreenMushroom }, 
+			{ Items.Food.Ham.Id, Items.Food.Ham }, 
+			{ Items.Food.Meat.Id, Items.Food.Meat }, 
+			{ Items.Food.Mellon.Id, Items.Food.Mellon }, 
+			{ Items.Food.Orange.Id, Items.Food.Orange }, 
+			{ Items.Food.Roll.Id, Items.Food.Roll }, 
+			{ Items.Food.Salmon.Id, Items.Food.Salmon }, 
+			{ Items.Food.WhiteMushroom.Id, Items.Food.WhiteMushroom },
         };
         #endregion
+
 
         #region Runes
         public static Dictionary<uint, Rune> Runes = new Dictionary<uint, Rune>

@@ -55,7 +55,7 @@ namespace SmartRunemaker
 
         private void EatFood()
         {
-            Item food = client.Inventory.GetItems().FirstOrDefault(i => i.IsInList(Tibia.Constants.ItemLists.Food.Values));
+            Item food = client.Inventory.GetItems().FirstOrDefault(i => i.IsInList(Tibia.Constants.ItemLists.Foods.Values));
 
             if (food != null)
                 food.Use();
