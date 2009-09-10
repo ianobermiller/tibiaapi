@@ -91,7 +91,7 @@ namespace SmartDataGenerator
                 clientId = BitConverter.ToUInt16(ReadAndUnescape(2), 0);
             }
 
-            if (clientId > 0 && !ServerToClientDictionary.ContainsKey(clientId))
+            if (clientId > 0 && !ServerToClientDictionary.ContainsKey(serverId))
             {
                 ServerToClientDictionary.Add(serverId, clientId);
             }
