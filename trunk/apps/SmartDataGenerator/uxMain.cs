@@ -16,7 +16,7 @@ namespace SmartDataGenerator
 {
     public partial class uxMain : Form
     {
-        private static string[] removeIt = { "(", ")", "-" };
+        private static string[] removeIt = { "(", ")", "-", "+" };
 
         public uxMain()
         {
@@ -248,9 +248,14 @@ namespace SmartDataGenerator
                     if (regionOpen)
                     {
                         writer.WriteLine("}");
+
+                        if (!runeRegion)
+                        {
+                            writerList[region].WriteLine("};");
+                            writerList[region].WriteLine("#endregion");
+                        }
+                        
                         runeRegion = false;
-                        writerList[region].WriteLine("};");
-                        writerList[region].WriteLine("#endregion");
                     }
 
                     if (string.Compare(match.Value, "rune", true) == 0 || string.Compare(match.Value, "food", true) == 0)
@@ -262,11 +267,15 @@ namespace SmartDataGenerator
                     writer.WriteLine("public static class " + match.Value + " {");
                     regionOpen = true;
                     region = match.Value;
-                    writerList.Add(region, new StreamWriter(region.Replace(" ", "") + ".cs"));
-                    writerList[region].WriteLine("");
-                    writerList[region].WriteLine("#region " + region);
-                    writerList[region].WriteLine("public static Dictionary<uint, Item> " + region.Replace(" ", "") + " = new Dictionary<uint, Item>");
-                    writerList[region].WriteLine("{");
+
+                    if (!runeRegion)
+                    {
+                        writerList.Add(region, new StreamWriter(region.Replace(" ", "") + ".cs"));
+                        writerList[region].WriteLine("");
+                        writerList[region].WriteLine("#region " + region);
+                        writerList[region].WriteLine("public static Dictionary<uint, Item> " + region.Replace(" ", "") + " = new Dictionary<uint, Item>");
+                        writerList[region].WriteLine("{");
+                    }
                     continue;
                 }
 
@@ -289,8 +298,14 @@ namespace SmartDataGenerator
             if (regionOpen)
             {
                 writer.WriteLine("}");
-                writerList[region].WriteLine("};");
-                writerList[region].WriteLine("#endregion");
+
+                if (!runeRegion)
+                {
+                    writerList[region].WriteLine("};");
+                    writerList[region].WriteLine("#endregion");
+                }
+
+                runeRegion = false;
             }
 
             #endregion
