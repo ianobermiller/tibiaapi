@@ -130,6 +130,23 @@ namespace SmartDataGenerator
                     ItemInfo info = new ItemInfo(ItemsReader.ServerToClientDictionary[serverId], CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.Attributes["name"].Value));
                     string category = "Others";
 
+                    if (info.Name.Contains("Ladder"))
+                    {
+                        category = "UpUse";
+                    }
+                    else if (info.Name.Contains("Rope Spot") || serverId == 418)
+                    {
+                        category = "Rope";
+                    }
+                    else if (info.Name.Contains("Sewer"))
+                    {
+                        category = "DownUse";
+                    }
+                    else if (info.Name.Contains("Loose") || info.Name.Contains("Burried") || serverId == 8579)
+                    {
+                        category = "Shovel";
+                    }
+
                     for (int j = 0; j < item.ChildNodes.Count; j++)
                     {
                         XmlNode c = item.ChildNodes[j];
@@ -162,6 +179,17 @@ namespace SmartDataGenerator
                         {
                             category = "Corpse";
                         }
+                        else if (c.Attributes["key"] != null && c.Attributes["key"].Value == "floorchange")
+                        {
+                            if (c.Attributes["value"].Value == "down")
+                            {
+                                category = "Down";
+                            }
+                            else
+                            {
+                                category = "Up";
+                            }
+                        }
                     }
 
                     if (!itemsToAdd.ContainsKey(category))
@@ -176,12 +204,17 @@ namespace SmartDataGenerator
             #endregion
 
             StreamWriter writer = new StreamWriter(File.Create("Items.cs"));
+            StreamWriter tileWriter = new StreamWriter(File.Create("Tiles.cs"));
+            StreamWriter tileWriterLists = new StreamWriter(File.Create("TileLists.cs"));
             Dictionary<string, StreamWriter> writerList = new Dictionary<string, StreamWriter>();
             List<uint> ids = new List<uint>();
             List<string> names = new List<string>();
             bool regionOpen = false;
             bool runeRegion = false;
             string region = "";
+
+            #region Headers
+
             writer.WriteLine("using System;");
             writer.WriteLine("using Tibia.Objects;");
             writer.WriteLine("");
@@ -192,6 +225,8 @@ namespace SmartDataGenerator
             writerList["All Items"].WriteLine("#region All Items");
             writerList["All Items"].WriteLine("public static Dictionary<uint, Item> AllItems = new Dictionary<uint, Item>");
             writerList["All Items"].WriteLine("{");
+
+            #endregion
 
             #region From Input
 
@@ -286,6 +321,89 @@ namespace SmartDataGenerator
 
             #endregion
 
+            #region Tiles
+
+            tileWriter.WriteLine("using System;");
+            tileWriter.WriteLine("using System.Collections.Generic;");
+            tileWriter.WriteLine("using System.Reflection;");
+            tileWriter.WriteLine("using Tibia.Objects;");
+            tileWriter.WriteLine("");
+            tileWriter.WriteLine("namespace Tibia.Constants");
+            tileWriter.WriteLine("{");
+            tileWriter.WriteLine("public static class Tiles");
+            tileWriter.WriteLine("{");
+
+            tileWriterLists.WriteLine("using System;");
+            tileWriterLists.WriteLine("using System.Collections.Generic;");
+            tileWriterLists.WriteLine("using System.Reflection;");
+            tileWriterLists.WriteLine("using Tibia.Objects;");
+            tileWriterLists.WriteLine("");
+            tileWriterLists.WriteLine("namespace Tibia.Constants");
+            tileWriterLists.WriteLine("{");
+            tileWriterLists.WriteLine("public static class TileLists");
+            tileWriterLists.WriteLine("{");
+
+            foreach (string r in new string[] { "Up", "Down", "UpUse", "Rope", "DownUse", "Shovel" })
+            {
+                if (itemsToAdd.ContainsKey(r))
+                {
+                    tileWriter.WriteLine("public static class " + r);
+                    tileWriter.WriteLine("{");
+                    tileWriterLists.WriteLine("");
+                    tileWriterLists.WriteLine("#region " + r);
+                    tileWriterLists.WriteLine("public static List<uint> " + r.Replace(" ", "") + " = new List<uint>");
+                    tileWriterLists.WriteLine("{");
+
+                    foreach (ItemInfo info in itemsToAdd[r])
+                    {
+                        string name = info.Name;
+
+                        foreach (string s in removeIt)
+                        {
+                            name = name.Replace(s, "");
+                        }
+
+                        string n = name.Replace(" ", "").Replace("'", "");
+
+                        byte mod = 0;
+
+                        while (names.Contains(n + ((mod > 0) ? mod.ToString() : "")))
+                        {
+                            mod++;
+                        }
+
+                        n += (mod > 0) ? mod.ToString() : "";
+                        names.Add(n);
+                        tileWriter.WriteLine("public static uint " + n + " = " + info.Id + ";");
+                        tileWriterLists.WriteLine("Tiles." + r + "." + n + ", ");
+                    }
+
+                    tileWriterLists.WriteLine("};");
+                    tileWriterLists.WriteLine("#endregion");
+                    tileWriter.WriteLine("}");
+                }
+            }
+
+            StreamReader footer = new StreamReader("footertiles.txt");
+            tileWriter.Write(footer.ReadToEnd());
+            footer.Close();
+
+            tileWriter.WriteLine("");
+            tileWriter.WriteLine("}");
+            tileWriter.WriteLine("}");
+            tileWriter.WriteLine("");
+
+            tileWriterLists.WriteLine("}");
+            tileWriterLists.WriteLine("}");
+            tileWriterLists.WriteLine("");
+
+            tileWriter.Close();
+            tileWriterLists.Close();
+
+            #endregion
+
+            #region Save Lists
+
             writerList["All Items"].WriteLine("};");
             writerList["All Items"].WriteLine("#endregion");
 
@@ -304,7 +422,7 @@ namespace SmartDataGenerator
             writerLists.WriteLine("{");
             writerLists.WriteLine("public static class ItemLists");
             writerLists.WriteLine("{");
-            
+
             foreach (var s in writerList)
             {
                 string fileName = s.Key.Replace(" ", "") + ".cs";
@@ -317,7 +435,7 @@ namespace SmartDataGenerator
 
             writerLists.WriteLine("");
 
-            StreamReader footer = new StreamReader("footer.txt");
+            footer = new StreamReader("footer.txt");
             writerLists.Write(footer.ReadToEnd());
             footer.Close();
 
@@ -326,6 +444,8 @@ namespace SmartDataGenerator
             writerLists.WriteLine("}");
             writerLists.WriteLine("");
             writerLists.Close();
+
+            #endregion
         }
 
         private void uxItemStart_Click(object sender, EventArgs e)

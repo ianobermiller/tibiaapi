@@ -102,6 +102,9 @@
     <Content Include="footer.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="footertiles.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="items.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
