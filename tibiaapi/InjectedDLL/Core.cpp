@@ -1164,11 +1164,12 @@ void ParseRemoveAllIcons()
 void ParseAddSkin(BYTE *Buffer, int position)
 {
 	Skin skin;
+	skin.SkinId = Packet::ReadDWord(Buffer, &position);
 	skin.X = Packet::ReadWord(Buffer, &position);
 	skin.Y = Packet::ReadWord(Buffer, &position);
 	skin.Width = Packet::ReadWord(Buffer, &position);
 	skin.Height = Packet::ReadWord(Buffer, &position);
-	skin.SkinId = Packet::ReadDWord(Buffer, &position);
+	skin.GUIId = Packet::ReadWord(Buffer, &position);
 
 	EnterCriticalSection(&DrawSkinCriticalSection);
 	Skins.push_back(skin);
@@ -1192,22 +1193,24 @@ void ParseRemoveSkin(BYTE *Buffer, int position)
 void ParseUpdateSkin(BYTE *Buffer, int position)
 {
 	Skin skin;
+	skin.SkinId = Packet::ReadDWord(Buffer, &position);
 	skin.X = Packet::ReadWord(Buffer, &position);
 	skin.Y = Packet::ReadWord(Buffer, &position);
 	skin.Width = Packet::ReadWord(Buffer, &position);
 	skin.Height = Packet::ReadWord(Buffer, &position);
-	skin.SkinId = Packet::ReadDWord(Buffer, &position);
+	skin.GUIId = Packet::ReadWord(Buffer, &position);
 
 	EnterCriticalSection(&DrawSkinCriticalSection);
 	list<Skin>::iterator msIT;
 	for(msIT = Skins.begin(); msIT != Skins.end(); ++msIT)
 		if(msIT->SkinId == skin.SkinId)
 		{
+			msIT->SkinId = skin.SkinId;
 			msIT->X = skin.X;
 			msIT->Y = skin.Y;
 			msIT->Width = skin.Width;
 			msIT->Height = skin.Height;
-			msIT->SkinId = skin.SkinId;
+			msIT->GUIId = skin.GUIId;
 			break;
 		}
 	LeaveCriticalSection(&DrawSkinCriticalSection);
