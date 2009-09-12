@@ -30,7 +30,11 @@ enum PipePacketType : unsigned char
 	PipePacketType_UpdateIcon = 0x13,
 	PipePacketType_RemoveIcon = 0x14,
 	PipePacketType_OnClickIcon = 0x15,
-	PipePacketType_RemoveAllIcons = 0x16
+	PipePacketType_RemoveAllIcons = 0x16,
+	PipePacketType_AddSkin = 0x17,
+	PipePacketType_RemoveSkin = 0x18,
+	PipePacketType_UpdateSkin = 0x19,
+	PipePacketType_RemoveAllSkins = 0x20
 
 };
 
@@ -56,6 +60,13 @@ typedef void _DrawItem(int surface,
 					   int textFont,int textRed,int textGreen,int textBlue,int textAlign,
 					   int textForce);
 static _DrawItem *DrawItem = 0;
+
+typedef void _DrawSkin(int surface,
+					   int x, int y,
+					   int width, int height,
+					   int skinId,
+					   int dX, int dY);
+static _DrawSkin *DrawSkin = 0;
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
 void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
@@ -99,6 +110,10 @@ void ParseAddIcon(BYTE *Buffer, int position);
 void ParseUpdateIcon(BYTE *Buffer, int position);
 void ParseRemoveIcon(BYTE *Buffer, int position);
 void ParseRemoveAllIcons();
+void ParseAddSkin(BYTE *Buffer, int position);
+void ParseRemoveSkin(BYTE *Buffer, int position);
+void ParseUpdateSkin(BYTE *Buffer, int position);
+void ParseRemoveAllSkins();
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd,LPARAM lParam);
 LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

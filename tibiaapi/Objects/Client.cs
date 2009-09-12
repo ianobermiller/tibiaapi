@@ -44,6 +44,7 @@ namespace Tibia.Objects
         private DllHelper dll;
         private InputHelper input;
         private Icon icon;
+        private Skin skin;
 
         #endregion
 
@@ -104,6 +105,7 @@ namespace Tibia.Objects
             input = new InputHelper(this);
 
             icon = new Icon(this);
+            skin = new Skin(this);
 
             // Save the start time (it isn't changing)
             startTime = Memory.ReadInt32(Addresses.Client.StartTime);
@@ -602,6 +604,11 @@ namespace Tibia.Objects
         public Icon Icon
         {
             get { return icon; }
+        }
+
+        public Skin Skin
+        {
+            get { return skin; }
         }
 
         public Util.AStarPathFinder PathFinder

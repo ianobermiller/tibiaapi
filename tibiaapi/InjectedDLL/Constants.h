@@ -44,6 +44,7 @@ extern CRITICAL_SECTION ContextMenuCriticalSection;
 extern CRITICAL_SECTION OnClickCriticalSection;
 extern CRITICAL_SECTION EventTriggerCriticalSection;
 extern CRITICAL_SECTION DrawItemCriticalSection;
+extern CRITICAL_SECTION DrawSkinCriticalSection;
 
 
 enum PipeConstantType : BYTE
@@ -64,7 +65,8 @@ enum PipeConstantType : BYTE
 		Send=0x0E,
 		EventTriggered = 0x0F,
 		LookContextMenu = 0x10,
-		DrawItemFunc = 0x11
+		DrawItemFunc = 0x11,
+		DrawSkinFunc = 0x12
 };
 
 /* Structures */
@@ -114,6 +116,15 @@ struct Icon
 	int cR;
 	int cG;
 	int cB;
+};
+
+struct Skin
+{
+	int X;
+	int Y;
+	int Width;
+	int Height;
+	int SkinId;
 };
 
 #endif

@@ -60,6 +60,8 @@ DWORD OrigRecvAddress = 0;
 SOCKET sock = 0;
 //icon
 list<Icon> Icons;
+//skin
+list<Skin> Skins;
 
 //Asynchronisation variables
 //CHANDLE pipe;						//Holds the Pipe handle (CHandle is from ATL library)
@@ -186,6 +188,19 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 	    iIT->TextFont, iIT->cR, iIT->cG, iIT->cB, 0x2,
 	    0);
 	LeaveCriticalSection(&DrawItemCriticalSection);
+
+
+
+	EnterCriticalSection(&DrawSkinCriticalSection);
+
+	list<Skin>::iterator sIT;
+	for(sIT = Skins.begin(); sIT != Skins.end(); ++sIT)
+		DrawSkin(0x1,
+		sIT->X, sIT->Y,
+		sIT->Width, sIT->Height,
+		sIT->SkinId,
+		0, 0);
+	LeaveCriticalSection(&DrawSkinCriticalSection);
 	
 
 	
@@ -614,6 +629,7 @@ void UnloadSelf()
 	DeleteCriticalSection(&OnClickCriticalSection);
 	DeleteCriticalSection(&EventTriggerCriticalSection);
 	DeleteCriticalSection(&DrawItemCriticalSection);
+	DeleteCriticalSection(&DrawSkinCriticalSection);
 
 	#if _DEBUG
 		MessageBoxA(0, "Uninjecting self...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
@@ -694,6 +710,18 @@ inline void PipeOnRead()
 		case PipePacketType_RemoveAllIcons:
 			ParseRemoveAllIcons();
 			break;
+		case PipePacketType_AddSkin:
+			ParseAddSkin(Buffer, position);
+			break;
+		case PipePacketType_RemoveSkin:
+			ParseRemoveSkin(Buffer, position);
+			break;
+		case PipePacketType_UpdateSkin:
+			ParseUpdateSkin(Buffer, position);
+			break;
+		case PipePacketType_RemoveAllSkins:
+			ParseRemoveAllSkins();
+			break;
 		default:
 			#if _DEBUG
 				MessageBoxA(0, "Unknown PacketType!", "Error!", MB_ICONERROR);
@@ -710,7 +738,7 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
 		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger || !Consts::ptrLookContextMenu/* ||
-		!PrintText || !DrawItem || !EventTrigger || !OrigSend || !OrigRecv*/) 
+		!PrintText || !DrawItem || !DrawSkin || !EventTrigger || !OrigSend || !OrigRecv*/) 
 	{
 		#if _DEBUG
 			MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
@@ -793,6 +821,8 @@ void ParseSetConstant(BYTE *Buffer, int position)
 		break;
 	case DrawItemFunc:		
 		DrawItem = (_DrawItem*)value;
+	case DrawSkinFunc:
+		DrawSkin = (_DrawSkin*)value;
 	default:
 		break;
 	};
@@ -1130,6 +1160,68 @@ void ParseRemoveAllIcons()
 	LeaveCriticalSection(&DrawItemCriticalSection);
 
 }
+
+void ParseAddSkin(BYTE *Buffer, int position)
+{
+	Skin skin;
+	skin.X = Packet::ReadWord(Buffer, &position);
+	skin.Y = Packet::ReadWord(Buffer, &position);
+	skin.Width = Packet::ReadWord(Buffer, &position);
+	skin.Height = Packet::ReadWord(Buffer, &position);
+	skin.SkinId = Packet::ReadDWord(Buffer, &position);
+
+	EnterCriticalSection(&DrawSkinCriticalSection);
+	Skins.push_back(skin);
+	LeaveCriticalSection(&DrawSkinCriticalSection);
+}
+
+void ParseRemoveSkin(BYTE *Buffer, int position)
+{
+	int skinId = Packet::ReadDWord(Buffer, &position);
+
+	EnterCriticalSection(&DrawSkinCriticalSection);
+	list<Skin>::iterator osIT;
+	for(osIT = Skins.begin(); osIT != Skins.end(); ++osIT)
+		if(osIT->SkinId == skinId)
+		{
+			osIT = Skins.erase(osIT);
+		}
+	LeaveCriticalSection(&DrawSkinCriticalSection);
+}
+
+void ParseUpdateSkin(BYTE *Buffer, int position)
+{
+	Skin skin;
+	skin.X = Packet::ReadWord(Buffer, &position);
+	skin.Y = Packet::ReadWord(Buffer, &position);
+	skin.Width = Packet::ReadWord(Buffer, &position);
+	skin.Height = Packet::ReadWord(Buffer, &position);
+	skin.SkinId = Packet::ReadDWord(Buffer, &position);
+
+	EnterCriticalSection(&DrawSkinCriticalSection);
+	list<Skin>::iterator msIT;
+	for(msIT = Skins.begin(); msIT != Skins.end(); ++msIT)
+		if(msIT->SkinId == skin.SkinId)
+		{
+			msIT->X = skin.X;
+			msIT->Y = skin.Y;
+			msIT->Width = skin.Width;
+			msIT->Height = skin.Height;
+			msIT->SkinId = skin.SkinId;
+			break;
+		}
+	LeaveCriticalSection(&DrawSkinCriticalSection);
+}
+
+void ParseRemoveAllSkins()
+{
+	EnterCriticalSection(&DrawSkinCriticalSection);
+
+	Skins.clear();
+
+	LeaveCriticalSection(&DrawSkinCriticalSection);
+}
+
 void PipeThreadProc(HMODULE Module)
 {
 	//Connect to Pipe
@@ -1259,6 +1351,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			InitializeCriticalSection(&OnClickCriticalSection);
 			InitializeCriticalSection(&EventTriggerCriticalSection);
 			InitializeCriticalSection(&DrawItemCriticalSection);
+			InitializeCriticalSection(&DrawSkinCriticalSection);
 
 			PipeConnected = false;
 			//Start new thread for Pipe
@@ -1275,6 +1368,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			DeleteCriticalSection(&OnClickCriticalSection);
 			DeleteCriticalSection(&EventTriggerCriticalSection);
 			DeleteCriticalSection(&DrawItemCriticalSection);
+			DeleteCriticalSection(&DrawSkinCriticalSection);
 			
 			fUnicode ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc) : 
 						SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
