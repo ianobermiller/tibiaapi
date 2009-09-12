@@ -120,11 +120,12 @@ struct Icon
 
 struct Skin
 {
+	int SkinId;
 	int X;
 	int Y;
 	int Width;
 	int Height;
-	int SkinId;
+	int GUIId;
 };
 
 #endif
