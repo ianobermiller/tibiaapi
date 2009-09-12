@@ -198,7 +198,7 @@ void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, i
 		DrawSkin(0x1,
 		sIT->X, sIT->Y,
 		sIT->Width, sIT->Height,
-		sIT->SkinId,
+		sIT->GUIId,
 		0, 0);
 	LeaveCriticalSection(&DrawSkinCriticalSection);
 	
