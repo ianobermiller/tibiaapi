@@ -199,7 +199,11 @@ namespace Tibia.Packets
         UpdateIcon           = 0x13,
         RemoveIcon           = 0x14,
         OnClickIcon          = 0x15,
-        RemoveAllIcons       = 0x16
+        RemoveAllIcons       = 0x16,
+        AddSkin              = 0x17,
+        RemoveSkin           = 0x18,
+        UpdateSkin           = 0x19,
+        RemoveAllSkins       = 0x20
     }
 
     public enum PipeConstantType : byte
@@ -220,7 +224,8 @@ namespace Tibia.Packets
         Send                 =0x0E,
         EventTrigger         =0x0F,
         LookContextMenu = 0x10,
-        DrawItemFunc = 0x11
+        DrawItemFunc = 0x11,
+        DrawSkinFunc = 0x12
     }
     
     /// <summary>

@@ -119,6 +119,9 @@ namespace Tibia.Objects
                 //image drawing
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawItemFunc, Tibia.Addresses.DrawItem.DrawItemFunc);
 
+                //skin drawing
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawSkinFunc, Tibia.Addresses.DrawSkin.DrawSkinFunc);
+
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();

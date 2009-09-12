@@ -45,5 +45,6 @@ CRITICAL_SECTION ContextMenuCriticalSection;
 CRITICAL_SECTION OnClickCriticalSection;
 CRITICAL_SECTION EventTriggerCriticalSection;
 CRITICAL_SECTION DrawItemCriticalSection;
+CRITICAL_SECTION DrawSkinCriticalSection;
 
 
