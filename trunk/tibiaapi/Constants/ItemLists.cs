@@ -627,17 +627,17 @@ namespace Tibia.Constants
 { Items.Decoration.CrystalPedestal12.Id, Items.Decoration.CrystalPedestal12 }, 
 { Items.Decoration.CrystalPedestal13.Id, Items.Decoration.CrystalPedestal13 }, 
 { Items.Decoration.CrystalOfPower.Id, Items.Decoration.CrystalOfPower }, 
-{ Items.Potion.Health.Id, Items.Potion.Health }, 
-{ Items.Potion.StrongHealth.Id, Items.Potion.StrongHealth }, 
-{ Items.Potion.GreatHealth.Id, Items.Potion.GreatHealth }, 
-{ Items.Potion.UltimateHealth.Id, Items.Potion.UltimateHealth }, 
-{ Items.Potion.Mana.Id, Items.Potion.Mana }, 
-{ Items.Potion.StrongMana.Id, Items.Potion.StrongMana }, 
-{ Items.Potion.GreatMana.Id, Items.Potion.GreatMana }, 
-{ Items.Potion.GreatSpirit.Id, Items.Potion.GreatSpirit }, 
-{ Items.Potion.Bullseye.Id, Items.Potion.Bullseye }, 
-{ Items.Potion.Mastermind.Id, Items.Potion.Mastermind }, 
-{ Items.Potion.Berserk.Id, Items.Potion.Berserk }, 
+{ Items.Potion.HealthPotion.Id, Items.Potion.HealthPotion }, 
+{ Items.Potion.StrongHealthPotion.Id, Items.Potion.StrongHealthPotion }, 
+{ Items.Potion.GreatHealthPotion.Id, Items.Potion.GreatHealthPotion }, 
+{ Items.Potion.UltimateHealthPotion.Id, Items.Potion.UltimateHealthPotion }, 
+{ Items.Potion.ManaPotion.Id, Items.Potion.ManaPotion }, 
+{ Items.Potion.StrongManaPotion.Id, Items.Potion.StrongManaPotion }, 
+{ Items.Potion.GreatManaPotion.Id, Items.Potion.GreatManaPotion }, 
+{ Items.Potion.GreatSpiritPotion.Id, Items.Potion.GreatSpiritPotion }, 
+{ Items.Potion.BullseyePotion.Id, Items.Potion.BullseyePotion }, 
+{ Items.Potion.MastermindPotion.Id, Items.Potion.MastermindPotion }, 
+{ Items.Potion.BerserkPotion.Id, Items.Potion.BerserkPotion }, 
 { Items.Bottle.Vial.Id, Items.Bottle.Vial }, 
 { Items.Misc.EternalFlames.Id, Items.Misc.EternalFlames }, 
 { Items.Misc.ToyMouse.Id, Items.Misc.ToyMouse }, 
@@ -2173,17 +2173,17 @@ namespace Tibia.Constants
         #region Potion
         public static Dictionary<uint, Item> Potion = new Dictionary<uint, Item>
 {
-{ Items.Potion.Health.Id, Items.Potion.Health }, 
-{ Items.Potion.StrongHealth.Id, Items.Potion.StrongHealth }, 
-{ Items.Potion.GreatHealth.Id, Items.Potion.GreatHealth }, 
-{ Items.Potion.UltimateHealth.Id, Items.Potion.UltimateHealth }, 
-{ Items.Potion.Mana.Id, Items.Potion.Mana }, 
-{ Items.Potion.StrongMana.Id, Items.Potion.StrongMana }, 
-{ Items.Potion.GreatMana.Id, Items.Potion.GreatMana }, 
-{ Items.Potion.GreatSpirit.Id, Items.Potion.GreatSpirit }, 
-{ Items.Potion.Bullseye.Id, Items.Potion.Bullseye }, 
-{ Items.Potion.Mastermind.Id, Items.Potion.Mastermind }, 
-{ Items.Potion.Berserk.Id, Items.Potion.Berserk }, 
+{ Items.Potion.HealthPotion.Id, Items.Potion.HealthPotion }, 
+{ Items.Potion.StrongHealthPotion.Id, Items.Potion.StrongHealthPotion }, 
+{ Items.Potion.GreatHealthPotion.Id, Items.Potion.GreatHealthPotion }, 
+{ Items.Potion.UltimateHealthPotion.Id, Items.Potion.UltimateHealthPotion }, 
+{ Items.Potion.ManaPotion.Id, Items.Potion.ManaPotion }, 
+{ Items.Potion.StrongManaPotion.Id, Items.Potion.StrongManaPotion }, 
+{ Items.Potion.GreatManaPotion.Id, Items.Potion.GreatManaPotion }, 
+{ Items.Potion.GreatSpiritPotion.Id, Items.Potion.GreatSpiritPotion }, 
+{ Items.Potion.BullseyePotion.Id, Items.Potion.BullseyePotion }, 
+{ Items.Potion.MastermindPotion.Id, Items.Potion.MastermindPotion }, 
+{ Items.Potion.BerserkPotion.Id, Items.Potion.BerserkPotion }, 
 };
         #endregion
 
@@ -3044,7 +3044,6 @@ namespace Tibia.Constants
 			{ Items.Food.WhiteMushroom.Id, Items.Food.WhiteMushroom },
         };
         #endregion
-
 
         #region Runes
         public static Dictionary<uint, Rune> Runes = new Dictionary<uint, Rune>

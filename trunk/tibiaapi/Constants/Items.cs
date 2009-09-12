@@ -698,17 +698,17 @@ namespace Tibia.Constants
 
         public static class Potion
         {
-            public static Item Health = new Item(266, "Health");
-            public static Item StrongHealth = new Item(236, "Strong Health");
-            public static Item GreatHealth = new Item(239, "Great Health");
-            public static Item UltimateHealth = new Item(7643, "Ultimate Health");
-            public static Item Mana = new Item(268, "Mana");
-            public static Item StrongMana = new Item(237, "Strong Mana");
-            public static Item GreatMana = new Item(238, "Great Mana");
-            public static Item GreatSpirit = new Item(7642, "Great Spirit");
-            public static Item Bullseye = new Item(7443, "Bullseye");
-            public static Item Mastermind = new Item(7440, "Mastermind");
-            public static Item Berserk = new Item(7439, "Berserk");
+            public static Item HealthPotion = new Item(266, "Health Potion");
+            public static Item StrongHealthPotion = new Item(236, "Strong Health Potion");
+            public static Item GreatHealthPotion = new Item(239, "Great Health Potion");
+            public static Item UltimateHealthPotion = new Item(7643, "Ultimate Health Potion");
+            public static Item ManaPotion = new Item(268, "Mana Potion");
+            public static Item StrongManaPotion = new Item(237, "Strong Mana Potion");
+            public static Item GreatManaPotion = new Item(238, "Great Mana Potion");
+            public static Item GreatSpiritPotion = new Item(7642, "Great Spirit Potion");
+            public static Item BullseyePotion = new Item(7443, "Bullseye Potion");
+            public static Item MastermindPotion = new Item(7440, "Mastermind Potion");
+            public static Item BerserkPotion = new Item(7439, "Berserk Potion");
         }
 
         public static class Bottle
