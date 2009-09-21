@@ -19,6 +19,7 @@ namespace Tibia.Util
         }
 
         // Thanks to OpiF at http://otfans.net/showthread.php?t=102065
+        // and to Thomac at http://otfans.net/showthread.php?t=141982
         public static Image GetSpriteImage(string file, int spriteId)
         {
             if (spriteId < 2 || spriteId > 28722)
@@ -26,45 +27,34 @@ namespace Tibia.Util
 
             int size = 32;
             Bitmap bitmap = new Bitmap(size, size);
-            using (FileStream fs = File.OpenRead(file))
+
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(file)))
             {
-                byte[] array = new byte[4];
+                ushort currentPixel = 0;
+                long targetOffset;
 
-                fs.Seek(6 + (spriteId - 1) * 4, SeekOrigin.Begin);
+                reader.BaseStream.Seek(6 + (spriteId - 1) * 4, SeekOrigin.Begin);
+                reader.BaseStream.Seek(reader.ReadUInt32() + 3, SeekOrigin.Begin);
 
-                fs.Read(array, 0, 4);
-                uint address = BitConverter.ToUInt32(array, 0);
+                targetOffset = reader.BaseStream.Position + reader.ReadUInt16();
 
-                fs.Seek(address + 3, SeekOrigin.Begin);
-
-                fs.Read(array, 0, 2);
-                ushort datasize = BitConverter.ToUInt16(array, 0);
-
-                int counter = 0;
-                int read = 0;
-                while (read < datasize)
+                while (reader.BaseStream.Position < targetOffset)
                 {
-                    fs.Read(array, 0, 2);
-                    ushort transparentPixels = BitConverter.ToUInt16(array, 0);
-
-                    fs.Read(array, 0, 2);
-                    ushort coloredPixels = BitConverter.ToUInt16(array, 0);
-
-                    read += 4;
-                    counter += transparentPixels;
-
+                    ushort transparentPixels = reader.ReadUInt16();
+                    ushort coloredPixels = reader.ReadUInt16();
+                    currentPixel += transparentPixels;
                     for (int i = 0; i < coloredPixels; i++)
                     {
-                        fs.Read(array, 0, 3);
-                        bitmap.SetPixel(counter % size,
-                            counter / size,
-                            Color.FromArgb(array[0], array[1], array[2]));
-                        counter++;
+                        bitmap.SetPixel(
+                            currentPixel % size,
+                            currentPixel / size,
+                            Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte())
+                        );
+                        currentPixel++;
                     }
-
-                    read += 3 * coloredPixels;
                 }
             }
+
             return bitmap;
         }
     }
