@@ -60,6 +60,7 @@ namespace Tibia.Addresses
             HasAutoMapColor = 268435456,
             HasHelpLens = 536870912,
             Unknown = 1073741824,
+            IgnoreStackpos = 2147483648
         }
 
         public enum Help
