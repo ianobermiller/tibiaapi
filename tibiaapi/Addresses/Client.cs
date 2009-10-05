@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x78BF34; //8.50
+        public static uint XTeaKey = 0x78CEF4; //8.52
 
         /// <summary>
         /// Address of the socket struct
@@ -65,7 +65,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x78F598; //8.50
+        public static uint Status = 0x790558; //8.52
 
         /// <summary>
         /// Safe mode (don't attack other players)
@@ -173,12 +173,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x78F54C; // 8.50
+        public static uint LoginCharList = 0x79050C; // 8.52
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to
         /// </summary>
-        public static uint LoginCharListLength = 0x78F550; // 8.50
+        public static uint LoginCharListLength = 0x790510; // 8.52
 
         /* Character List Format
         
@@ -194,7 +194,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x78F548; // 8.50
+        public static uint LoginSelectedChar = 0x790508; // 8.52
 
         //This format is for the character list that is stored at 0x76450D (8.40).
         //This format is also how it comes in the packet.
@@ -219,8 +219,8 @@ namespace Tibia.Addresses
         /// it, it points to the game window rect 
         /// struct.
         /// </summary>
-        public static uint GameWindowRectPointer = 0x63E8D4; //8.50
-        public static uint GameWindowBar = 0x641C40; //8.50
+        public static uint GameWindowRectPointer = 0x63F894; //8.52
+        public static uint GameWindowBar = 0x7923D4; //8.52
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
@@ -234,7 +234,7 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x78BF54; //8.50
+        public static uint DatPointer = 0x78CF14; //8.52
 
         public static uint EventTriggerPointer = 0x519770; //8.50
         public static uint DialogPointer = 0x641C3C; //8.50

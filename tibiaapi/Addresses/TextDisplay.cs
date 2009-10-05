@@ -5,30 +5,30 @@
         /// <summary>
         /// PrintName function call to overwrite
         /// </summary>
-        public static uint PrintName = 0x4F0221; // 8.50
+        public static uint PrintName = 0x4F02B1; // 8.52
 
 
         /// <summary>
         /// PrintFPS function call to overwrite
         /// </summary>
-        public static uint PrintFPS = 0x459728; // 8.50
+        public static uint PrintFPS = 0x4597C8; // 8.52
 
 
         /// <summary>
         /// Offset, if user wants to show FPS
         /// </summary>
-        public static uint ShowFPS = 0x630B74; // 8.50
+        public static uint ShowFPS = 0x630B34; // 8.52
 
         /// <summary>
         /// PrintText function address
         /// </summary
-        public static uint PrintTextFunc = 0x4B0000; // 8.50
+        public static uint PrintTextFunc = 0x4B0090; // 8.52
 
 
         /// <summary>
         /// Conditional check to show FPS
         /// </summary>
-        public static uint NopFPS = 0x459664; // 8.50
+        public static uint NopFPS = 0x459704; // 8.52
 
     }
 }
