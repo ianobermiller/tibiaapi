@@ -62,8 +62,8 @@ namespace Tibia.Addresses
         public static uint DistanceSlotCount = 4;
 
 
-        public static uint CurrentTileToGo = 0x632ED8; // 8.50
-        public static uint TilesToGo = 0x632EDC; // 8.50
+        public static uint CurrentTileToGo = 0x633E98; // 8.52
+        public static uint TilesToGo = 0x633E9C; // 8.52
 
 
         public static uint RedSquare = 0x633E60; // 8.52

@@ -39,7 +39,7 @@ namespace Tibia
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 250;
 
-                    //Client.StartTime = 0x7913F8;
+                    Client.StartTime = 0x7923C0;
                     Client.XTeaKey = 0x78CEF4;
                     //Client.SocketStruct = 0x78BF08;
                     //Client.RecvPointer = 0x5B05DC;
@@ -47,27 +47,27 @@ namespace Tibia
                     //Client.FrameRatePointer = 0x7900DC;
                     Client.FrameRateCurrentOffset = 0x60;
                     Client.FrameRateLimitOffset = 0x58;
-                    //Client.MultiClient = 0x506794;
+                    Client.MultiClient = 0x5067E4;
                     Client.Status = 0x790558;
-                    //Client.SafeMode = 0x78C35C;
+                    Client.SafeMode = 0x78D31C;
                     Client.FollowMode = Client.SafeMode + 4;
                     Client.AttackMode = Client.FollowMode + 4;
-                    //Client.ActionState = 0x78F5F8;
-                    //Client.LastMSGText = 0x791668;
+                    Client.ActionState = 0x7905B8;
+                    Client.LastMSGText = 0x792630;
                     Client.LastMSGAuthor = Client.LastMSGText - 0x28;
-                    //Client.StatusbarText = 0x791418;
+                    Client.StatusbarText = 0x7923E0;
                     Client.StatusbarTime = Client.StatusbarText - 4;
-                    //Client.ClickId = 0x78F634;
+                    Client.ClickId = 0x7905F8;
                     Client.ClickCount = Client.ClickId + 4;
                     Client.ClickZ = Client.ClickId - 0x68;
                     Client.SeeId = Client.ClickId + 12;
                     Client.SeeCount = Client.SeeId + 4;
                     Client.SeeZ = Client.SeeId - 0x68;
-                    //Client.ClickContextMenuItemId = 0x78F640;
-                    //Client.ClickContextMenuItemGroundId = 0x78F64C;
-                    //Client.ClickContextMenuCreatureId = 0x78F59C;
+                    Client.ClickContextMenuItemId = 0x790604;
+                    Client.ClickContextMenuItemGroundId = 0x790608;
+                    Client.ClickContextMenuCreatureId = 0x790600;
                     Client.SeeText = 0;
-                    //Client.LoginServerStart = 0x786E70;
+                    Client.LoginServerStart = 0x787E30;
                     Client.StepLoginServer = 112;
                     Client.DistancePort = 100;
                     Client.MaxLoginServers = 10;
@@ -88,7 +88,7 @@ namespace Tibia
                     //Client.LastRcvPacket = 0x7876E8;
                     //Client.DecryptCall = 0x45B845;
                     Client.LoginAccountNum = 0;
-                    //Client.LoginPassword = 0x78F554;
+                    Client.LoginPassword = 0x790514;
                     Client.LoginAccount = Client.LoginPassword + 32;
                     Client.LoginPatch = 0;
                     Client.LoginPatch2 = 0;
@@ -163,13 +163,13 @@ namespace Tibia
                     DatItem.Automap = 72;
                     DatItem.LensHelp = 76;
 
-                    //Hotkey.SendAutomaticallyStart = 0x78C558;
+                    Hotkey.SendAutomaticallyStart = 0x78D518;
                     Hotkey.SendAutomaticallyStep = 0x01;
-                    //Hotkey.TextStart = 0x78C580;
+                    Hotkey.TextStart = 0x78D540;
                     Hotkey.TextStep = 0x100;
-                    //Hotkey.ObjectStart = 0x78C4C8;
+                    Hotkey.ObjectStart = 0x78D48C;
                     Hotkey.ObjectStep = 0x04;
-                    //Hotkey.ObjectUseTypeStart = 0x78C3A8;
+                    Hotkey.ObjectUseTypeStart = 0x78D36C;
                     Hotkey.ObjectUseTypeStep = 0x04;
                     Hotkey.MaxHotkeys = 36;
 
@@ -197,8 +197,8 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x63F894;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
-                    //Map.RevealInvisible1 = 0x45F6F3;
-                    //Map.RevealInvisible2 = 0x4EC505;
+                    Map.RevealInvisible1 = 0x45F7A3;
+                    Map.RevealInvisible2 = 0x4EC595;
                     Map.FullLightNop = 0x4E5A59;
                     Map.FullLightAdr = 0x4E5A5C;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -246,8 +246,8 @@ namespace Tibia
                     Player.SlotAmmo = Player.SlotHead + 108;
                     Player.MaxSlots = 11;
                     Player.DistanceSlotCount = 4;
-                    //Player.CurrentTileToGo = 0x632ED8;
-                    //Player.TilesToGo = 0x632EDC;
+                    Player.CurrentTileToGo = 0x633E98;
+                    Player.TilesToGo = 0x633E9C;
                     Player.GoToX = Player.Exp + 80;
                     Player.GoToY = Player.GoToX - 4;
                     Player.GoToZ = Player.GoToX - 8;
