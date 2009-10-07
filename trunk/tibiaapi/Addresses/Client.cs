@@ -9,7 +9,7 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x7913F8; //8.50
+        public static uint StartTime = 0x7923C0; //8.52
 
         /// <summary>
         /// Address to the XTea encryption key.
@@ -50,7 +50,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x506794; //8.50
+        public static uint MultiClient = 0x5067E4; //8.52
 
         /// <summary>
         /// Value to be written to the multiclient address(JMP).
@@ -70,7 +70,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x78C35C; //8.50
+        public static uint SafeMode = 0x78D31C; //8.52
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
@@ -84,7 +84,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x78F5F8; //8.50
+        public static uint ActionState = 0x7905B8; //8.52
 
         /// <summary>
         /// Action state freezer
@@ -95,7 +95,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel(innacurate?).
         /// </summary>
-        public static uint LastMSGText = 0x791668; //8.50
+        public static uint LastMSGText = 0x792630; //8.52
 
         /// <summary>
         /// The last player to send a message to the default channel(innacurate?).
@@ -105,7 +105,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint StatusbarText = 0x791418; //8.50
+        public static uint StatusbarText = 0x7923E0; //8.52
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
@@ -114,7 +114,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint ClickId = 0x78F634; // 8.50
+        public static uint ClickId = 0x7905F8; // 8.52
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
@@ -127,17 +127,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Used for showing item id functions.
         /// </summary>
-        public static uint ClickContextMenuItemId = 0x78F640; //8.50
+        public static uint ClickContextMenuItemId = 0x790604; //8.52
 
         /// <summary>
         /// Used for showing item id functions
         /// </summary>
-        public static uint ClickContextMenuItemGroundId = 0x78F64C; //8.50
+        public static uint ClickContextMenuItemGroundId = 0x790608; //8.52
 
         /// <summary>
         /// Used for searching the last right-clicked creature
         /// </summary>
-        public static uint ClickContextMenuCreatureId = 0x78F59C; //8.50
+        public static uint ClickContextMenuCreatureId = 0x790600; //8.52
 
         /// <summary>
         /// The id of the last item seen (looked at).
@@ -159,7 +159,7 @@ namespace Tibia.Addresses
         public static uint SeeText = 0; //8.50 
         
         // Login Server addresses
-        public static uint LoginServerStart = 0x786E70; //8.50
+        public static uint LoginServerStart = 0x787E30; //8.52
         public static uint StepLoginServer = 112;
         public static uint DistancePort = 100;
         public static uint MaxLoginServers = 10;
@@ -257,7 +257,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x78F554; //8.50
+        public static uint LoginPassword = 0x790514; //8.52
         public static uint LoginAccount = LoginPassword + 32;
         public static uint LoginAccountNum = 0; // deprecated
 
