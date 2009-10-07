@@ -13,7 +13,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Step between tiles on the map.
         /// </summary>
-        public static uint StepTile = 172;
+        public static uint StepTile = 168;
 
         /// <summary>
         /// Step between objects on a tile.
