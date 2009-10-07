@@ -19,23 +19,23 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address of the socket struct
         /// </summary>
-        public static uint SocketStruct = 0x78BF08; //8.50
+        public static uint SocketStruct = 0x78CEC8; //8.52
 
         /// <summary>
         /// Pointer to the WS2_32.Recv function
         /// </summary>
-        public static uint RecvPointer = 0x5B05DC; //8.50
+        public static uint RecvPointer = 0x5B15DC; //8.52
 
         /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
-        public static uint SendPointer = 0x5B0608; //8.50
+        public static uint SendPointer = 0x5B1608; //8.52
 
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x7900DC; //8.50
+        public static uint FrameRatePointer = 0x7910A4; //8.52
 
         /// <summary>
         /// FPS limit offset
@@ -89,7 +89,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state freezer
         /// </summary>
-        public static uint ActionStateFreezer = 0x517814; //8.50
+        public static uint ActionStateFreezer = 0x517864; //8.52
         public static byte[] ActionStateOriginal = new byte[] { 0xA3, 0x00, 0x00, 0x00, 0x00, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
         public static byte[] ActionStateFreezed = new byte[] { 0xC7, 0x05, 0x00 , 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xC3 };
         /// <summary>
@@ -167,7 +167,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5B0610; //8.50
+        public static uint RSA = 0x5B1610; //8.52
 
 		  
         /// <summary>
@@ -236,8 +236,8 @@ namespace Tibia.Addresses
 
         public static uint DatPointer = 0x78CF14; //8.52
 
-        public static uint EventTriggerPointer = 0x519770; //8.50
-        public static uint DialogPointer = 0x641C3C; //8.50
+        public static uint EventTriggerPointer = 0x5197D0; //8.52
+        public static uint DialogPointer = 0x642BFC; //8.52
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
@@ -247,12 +247,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        public static uint LastRcvPacket = 0x7876E8; //8.50
+        public static uint LastRcvPacket = 0x7886A8; //8.52
 
         /// <summary>
         /// Call to decrypt packet
         /// </summary>
-        public static uint DecryptCall = 0x45B845; //8.50
+        public static uint DecryptCall = 0x45B8E5; //8.52
 
         /// <summary>
         /// Auto login stuff
@@ -271,17 +271,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// The function that tibia calls to parse packets
         /// </summary>
-        public static uint ParserFunc = 0x45B810;
+        public static uint ParserFunc = 0x45B8B0; //8.52
 
         /// <summary>
         /// The address of the call to get next packet command
         /// </summary>
-        public static uint GetNextPacketCall = 0x45B845;
+        public static uint GetNextPacketCall = 0x45B8E5; //8.52
         
         /// <summary>
         /// The address of the received "stream". It is laid as pointer to buffer, dwSize, dwSize
         /// </summary>
-        public static uint RecvStream = 0x78BF24;
+        public static uint RecvStream = 0x78CEE4; //8.52
 
 
     }

@@ -7,6 +7,6 @@ namespace Tibia.Addresses
 {
     public class DrawSkin
     {
-        public static uint DrawSkinFunc = 0x4B4860;
+        public static uint DrawSkinFunc = 0x4B48E0;//8.52
     }
 }
