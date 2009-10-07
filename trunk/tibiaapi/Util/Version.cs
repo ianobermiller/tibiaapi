@@ -174,7 +174,7 @@ namespace Tibia
                     Hotkey.MaxHotkeys = 36;
 
                     Map.MapPointer = 0x647750;
-                    Map.StepTile = 172;
+                    Map.StepTile = 168;
                     Map.StepTileObject = 12;
                     Map.DistanceTileObjectCount = 0;
                     Map.DistanceTileObjects = 4;
@@ -423,7 +423,7 @@ namespace Tibia
                     Hotkey.MaxHotkeys = 36;
 
                     Map.MapPointer = 0x646790;
-                    Map.StepTile = 172;
+                    Map.StepTile = 168;
                     Map.StepTileObject = 12;
                     Map.DistanceTileObjectCount = 0;
                     Map.DistanceTileObjects = 4;
@@ -672,7 +672,7 @@ namespace Tibia
                     Hotkey.MaxHotkeys = 36;
 
                     Map.MapPointer = 0x645650;
-                    Map.StepTile = 172;
+                    Map.StepTile = 168;
                     Map.StepTileObject = 12;
                     Map.DistanceTileObjectCount = 0;
                     Map.DistanceTileObjects = 4;
