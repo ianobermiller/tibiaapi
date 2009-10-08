@@ -34,8 +34,8 @@ namespace Tibia
                 #region 8.52 Addresses
 
                 case "8.52":
-                    BattleList.Start = 0x633EF4;
-                    BattleList.End = 0x633EF4 + 0xA0 * 250;
+                    BattleList.Start = 0x633EF0;
+                    BattleList.End = 0x633EF0 + 0xA0 * 250;
                     BattleList.StepCreatures = 0xA0;
                     BattleList.MaxCreatures = 250;
 
