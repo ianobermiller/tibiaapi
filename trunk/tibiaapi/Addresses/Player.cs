@@ -66,7 +66,7 @@ namespace Tibia.Addresses
         public static uint TilesToGo = 0x633E9C; // 8.52
 
 
-        public static uint RedSquare = 0x633E60; // 8.52
+        public static uint RedSquare = 0x633E5C; // 8.52
         public static uint GreenSquare = RedSquare - 4;
         public static uint WhiteSquare = GreenSquare - 8;
 

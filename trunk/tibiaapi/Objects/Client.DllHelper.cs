@@ -122,6 +122,10 @@ namespace Tibia.Objects
                 //skin drawing
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawSkinFunc, Tibia.Addresses.DrawSkin.DrawSkinFunc);
 
+                //ongetnextpacket
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnGetNextPacketFunc, Tibia.Addresses.Client.GetNextPacketCall);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.RecvStream, Tibia.Addresses.Client.RecvStream);
+
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();

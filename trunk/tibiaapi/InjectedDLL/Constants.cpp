@@ -27,6 +27,9 @@ namespace Consts {
 
 	/* Event Trigger Stuff */
 	DWORD ptrEventTrigger = 0;
+
+	DWORD ptrOnGetNextPacket = 0;
+	DWORD ptrRecvStream = 0;
 }
 
 /* DLL Injection Related Stuff */
