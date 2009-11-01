@@ -75,6 +75,11 @@ BOOL fUnicode;
 HWND hwndTibia=0;
 WNDPROC oldWndProc;
 
+#define ADDR_RECV_STREAM		0x78CEE4 //8.52
+typedef int TF_GETNEXTPACKET();
+TF_GETNEXTPACKET *TfGetNextPacket = NULL;
+TPacketStream * pRecvStream = (TPacketStream*)ADDR_RECV_STREAM;
+
 LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if(msg == WM_LBUTTONDOWN)
@@ -104,6 +109,904 @@ LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return fUnicode ? CallWindowProcW(oldWndProc, hwnd, msg, wParam, lParam) : 
 					CallWindowProcA(oldWndProc, hwnd, msg, wParam, lParam);
+}
+
+int OnGetNextPacket()
+{
+    int iCmd = TfGetNextPacket();
+    if(iCmd != -1)
+    {
+        LPBYTE pBuffer = (LPBYTE)pRecvStream->pBuffer + pRecvStream->dwPos - 1;
+		int pPos = 0;
+		BYTE count = 0;
+		BYTE itemCount = 0;
+		BYTE cap = 0;
+		BYTE speechType = 0;
+		WORD strlen = 0;
+		WORD lookType = 0;
+		WORD thingId = 0;
+		PacketCommandType type = (PacketCommandType)(pBuffer[pPos]);
+		Packet* packet = new Packet();
+		packet->AddByte(0x21);
+
+		switch(type)
+		{
+		case SelfAppear:
+			packet->AddByte(pBuffer[pPos]);
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		//case GMAction:
+		//case ErrorMessage:
+		};
+		switch(type)
+		{
+		case FyiMessage:
+			packet->AddByte(pBuffer[pPos]);
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case WaitingList:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case Ping:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case Death:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case CanReportBugs:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		//case MapDescription:
+		};
+		//switch(type)
+		//{
+		//case MoveNorth:
+		//case MoveEast:
+		//case MoveSouth:
+		//};
+		switch(type)
+		{
+		//case MoveWest:
+		//case TileUpdate:
+		case TileAddThing:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			thingId = ((WORD)pBuffer[pPos]);
+			packet->AddWord(thingId);
+			pPos += 2;
+			if (thingId == 0x0061 || thingId == 0x0062)
+			{
+				if (thingId == 0x0062)
+				{
+					packet->AddDWord(((DWORD)pBuffer[pPos]));
+					pPos += 4;
+				}
+				else if (thingId == 0x0061)
+				{
+					packet->AddDWord(((DWORD)pBuffer[pPos]));
+					pPos += 4;
+					packet->AddDWord(((DWORD)pBuffer[pPos]));
+					pPos += 4;
+					strlen = ((WORD)pBuffer[pPos]);
+					packet->AddWord(strlen);
+					pPos += 2;
+					for (WORD i = 0; i < strlen; i++)
+					{
+						packet->AddByte((pBuffer[pPos]));
+						pPos += 1;
+					}
+				}
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				lookType = ((WORD)pBuffer[pPos]);
+				packet->AddWord(lookType);
+				pPos += 2;
+				if (lookType != 0)
+				{
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+				}
+				else
+				{
+					packet->AddWord(((WORD)pBuffer[pPos]));
+					pPos += 2;
+				}
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			else if (thingId == 0x0063)
+			{
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+				pPos += 4;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			else
+				packet->AddByte((pBuffer[pPos]));
+		break;
+		};
+		switch(type)
+		{
+		case TileTransformThing:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			thingId = ((WORD)pBuffer[pPos]);
+			packet->AddWord(thingId);
+			pPos += 2;
+			if (thingId == 0x0061 || thingId == 0x0062 || thingId == 0x0063)
+			{
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+				pPos += 4;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			else
+				packet->AddByte((pBuffer[pPos]));
+			break;
+		case TileRemoveThing:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case CreatureMove:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case ContainerOpen:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			packet->AddByte(((pBuffer[pPos]) + strlen));
+			pPos += 1;
+			packet->AddByte(((pBuffer[pPos]) + strlen));
+			pPos += 1;
+			itemCount = ((pBuffer[pPos]) + strlen);
+			packet->AddByte(itemCount);
+			pPos += 1;
+			for (int j = 0; j < itemCount; j++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+			}
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case ContainerClose:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case ContainerAddItem:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case ContainerUpdateItem:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case ContainerRemoveItem:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case InventorySetSlot:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case InventoryResetSlot:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case ShopWindowOpen:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			cap = (pBuffer[pPos]);
+			packet->AddByte(cap);
+			pPos += 1;
+			for (int i = 0; i < cap; i++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				strlen = ((WORD)pBuffer[pPos]);
+				packet->AddWord(strlen);
+				pPos += 2;
+				for (WORD j = 0; j < strlen; j++)
+				{
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+				}
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+				pPos += 4;
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+				pPos += 4;
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+			}
+			break;
+		case ShopSaleGoldCount:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			count = (pBuffer[pPos]);
+			packet->AddByte(count);
+			pPos += 1;
+			for (int i = 0; i < count; i ++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case ShopWindowClose:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case SafeTradeRequestAck:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			count = (pBuffer[pPos]);
+			packet->AddByte(count);
+			pPos += 1;
+			for (int i = 0; i < count; i ++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case SafeTradeRequestNoAck:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			count = (pBuffer[pPos]);
+			packet->AddByte(count);
+			pPos += 1;
+			for (int i = 0; i < count; i ++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case SafeTradeClose:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case WorldLight:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case MagicEffect:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			break;
+		};
+		switch(type)
+		{
+		case AnimatedText:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case Projectile:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case CreatureSquare:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case CreatureHealth:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case CreatureLight:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case CreatureOutfit:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			lookType = ((WORD)pBuffer[pPos]);
+			packet->AddWord(lookType);
+			pPos += 2;
+			if (lookType != 0)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+			}
+			break;
+		};
+		switch(type)
+		{
+		case CreatureSpeed:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			break;
+		case CreatureSkull:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		//case CreatureShield:
+		};
+		switch(type)
+		{
+		case ItemTextWindow:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD j = 0; j < strlen; j++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD x = 0; x < strlen; x++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		//case HouseTextWindow:
+		case PlayerStatus:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case PlayerSkillsUpdate:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case PlayerFlags:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			break;
+		case CancelTarget:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		case CreatureSpeech:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			speechType = (pBuffer[pPos]);
+			packet->AddByte(speechType);
+			pPos += 1;
+			if (speechType == 0x05)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			else if (speechType == 0x08)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+			}
+			else if (speechType == 0x09)
+			{
+				packet->AddDWord(((DWORD)pBuffer[pPos]));
+				pPos += 4;
+			}
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD j = 0; j < strlen; j++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case ChannelList:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			count = (pBuffer[pPos]);
+			packet->AddByte(count);
+			pPos += 1;
+			for (int i = 0; i < count; i++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				strlen = ((WORD)pBuffer[pPos]);
+				packet->AddWord(strlen);
+				pPos += 2;
+				for (WORD i = 0; i < strlen; i++)
+				{
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+				}
+			}
+			break;
+		case ChannelOpen:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case ChannelOpenPrivate:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case RuleViolationOpen:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer));
+			break;
+		case RuleViolationRemove:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case RuleViolationCancel:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case RuleViolationLock:
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case PrivateChannelCreate:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			pPos += 2;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case ChannelClosePrivate:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddWord(((WORD)pBuffer[pPos]));
+			break;
+		case TextMessage:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		case PlayerWalkCancel:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		};
+		switch(type)
+		{
+		//case FloorChangeUp:
+		//case FloorChangeDown:
+		case OutfitWindow:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			lookType = ((WORD)pBuffer[pPos]);
+			packet->AddWord(lookType);
+			pPos += 2;
+			if (lookType != 0)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+				packet->AddByte((pBuffer[pPos]));
+			}
+			count = (pBuffer[pPos]);
+			packet->AddByte(count);
+			pPos += 1;
+			for (int i = 0; i < count; i++)
+			{
+				packet->AddWord(((WORD)pBuffer[pPos]));
+				pPos += 2;
+				strlen = ((WORD)pBuffer[pPos]);
+				packet->AddWord(strlen);
+				pPos += 2;
+				for (WORD i = 0; i < strlen; i++)
+				{
+					packet->AddByte((pBuffer[pPos]));
+					pPos += 1;
+				}
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			break;
+		};
+		switch(type)
+		{
+		case VipState:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			pPos += 4;
+			strlen = ((WORD)pBuffer[pPos]);
+			packet->AddWord(strlen);
+			pPos += 2;
+			for (WORD i = 0; i < strlen; i++)
+			{
+				packet->AddByte((pBuffer[pPos]));
+				pPos += 1;
+			}
+			packet->AddByte((pBuffer[pPos]));
+			break;
+		case VipLogin:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			break;
+		case VipLogout:
+			packet->AddByte((pBuffer[pPos]));
+			pPos += 1;
+			packet->AddDWord(((DWORD)pBuffer[pPos]));
+			break;
+		};
+		//switch(type)
+		//{
+		//case QuestList:
+		//case QuestPartList:
+		//case ShowTutorial:
+		//};
+		//switch(type)
+		//{
+		//case AddMapMarker:
+		//};
+
+		if (packet->GetSize() > 1)
+			WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+    }
+    return iCmd;
 }
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
@@ -405,7 +1308,8 @@ void EnableHooks()
 	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 
-	//recv/send
+	/*
+	recv/send
 	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"send");
 	OrigSend=(PSEND)OrigSendAddress;
 	funcAddress = (DWORD)&MySend;
@@ -419,12 +1323,12 @@ void EnableHooks()
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::ptrRecv, &funcAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+	*/
 
 	OldNopFPS = Nop(Consts::ptrNopFPS, 6); //Showing the FPS all the time..
 
-	EventTrigger = (_EventTrigger*)Consts::ptrEventTrigger;
+	HookOnGetNextPacket(Consts::ptrOnGetNextPacket, (DWORD)&OnGetNextPacket, (LPDWORD)&TfGetNextPacket);
 
-	
 	//subclassing tibia's main window procedure
 	oldWndProc = (WNDPROC) ((fUnicode) ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc) : 
 											SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc));
@@ -464,7 +1368,8 @@ void DisableHooks()
 	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect); //Restore access
 
-	//recv/send
+	/*
+	recv/send
 	#if _DEBUG
 		MessageBoxA(0, "Removing send/recv hooks...", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
 	#endif
@@ -475,14 +1380,44 @@ void DisableHooks()
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::ptrRecv, &OrigRecvAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
+	*/
 
-	EventTrigger = 0;
+	UnhookOnGetNextPacket(Consts::ptrOnGetNextPacket, (LPDWORD)TfGetNextPacket);
 
-	
 	fUnicode ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc) : 
 			SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 
 	HooksEnabled = false;
+}
+
+void HookOnGetNextPacket(DWORD dwCallAddress, DWORD dwNewAddress, LPDWORD pOldAddress)
+{
+	DWORD dwOldProtect, dwNewProtect, dwOldCall, dwNewCall;
+	BYTE call[5] = {0xE8, 0x00, 0x00, 0x00, 0x00};
+
+	dwNewCall = dwNewAddress - dwCallAddress - 5;
+	memcpy(&call[1], &dwNewCall, 4);
+
+	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwCallAddress), 5, PAGE_READWRITE, &dwOldProtect);
+	if(pOldAddress)
+	{
+		memcpy(&dwOldCall, (LPVOID)(dwCallAddress+1), 4);
+		*pOldAddress = dwCallAddress + dwOldCall + 5;
+	}
+	memcpy((LPVOID)(dwCallAddress), &call, 5);
+	VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwCallAddress), 5, dwOldProtect, &dwNewProtect);
+}
+
+void UnhookOnGetNextPacket(DWORD dwCallAddress, LPDWORD dwOldCall)
+{
+    DWORD dwOldProtect, dwNewProtect;
+    BYTE call[5] = {0xE8, 0x00, 0x00, 0x00, 0x00};
+
+    memcpy(&call[1], &dwOldCall, 4);
+
+    VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwCallAddress), 5, PAGE_READWRITE, &dwOldProtect);
+    memcpy((LPVOID)(dwCallAddress), &call, 5);
+    VirtualProtectEx(GetCurrentProcess(), (LPVOID)(dwCallAddress), 5, dwOldProtect, &dwNewProtect);
 }
 
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction)
@@ -737,7 +1672,8 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
-		!Consts::ptrRecv || !Consts::ptrSend || !Consts::ptrEventTrigger || !Consts::ptrLookContextMenu/* ||
+		/*!Consts::ptrRecv || !Consts::ptrSend || */!Consts::ptrEventTrigger || !Consts::ptrLookContextMenu || 
+		!Consts::ptrOnGetNextPacket || !Consts::ptrRecvStream/* ||
 		!PrintText || !DrawItem || !DrawSkin || !EventTrigger || !OrigSend || !OrigRecv*/) 
 	{
 		#if _DEBUG
@@ -821,8 +1757,16 @@ void ParseSetConstant(BYTE *Buffer, int position)
 		break;
 	case DrawItemFunc:		
 		DrawItem = (_DrawItem*)value;
+		break;
 	case DrawSkinFunc:
 		DrawSkin = (_DrawSkin*)value;
+		break;
+	case OnGetNextPacketFunc:
+		Consts::ptrOnGetNextPacket = value;
+		break;
+	case RecvStream:
+		//pRecvStream = (TPacketStream*)value;
+		break;
 	default:
 		break;
 	};

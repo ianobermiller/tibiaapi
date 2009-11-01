@@ -62,6 +62,11 @@ namespace Tibia.Packets
         ///  Called when data is sent.
         /// </summary>
         public event PipeListener OnSend;
+
+        /// <summary>
+        /// Called when a packet from the OnGetNextPacketCall hook is received.
+        /// </summary>
+        public event PipeListener OnPacketRecv;
         #endregion
 
         /// <summary>
@@ -140,8 +145,12 @@ namespace Tibia.Packets
                         OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
                     break;
                 case PipePacketType.OnClickIcon:
-                    if( OnIconClick !=null)
-                        OnIconClick.BeginInvoke(new NetworkMessage(client, received, length),null,null);
+                    if (OnIconClick != null)
+                        OnIconClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                case PipePacketType.OnGetNextPacket:
+                    if (OnPacketRecv != null)
+                        OnPacketRecv.BeginInvoke(new NetworkMessage(client, received, length), null, null);
                     break;
                 default:
                     break;

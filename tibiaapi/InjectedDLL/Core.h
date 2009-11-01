@@ -34,9 +34,11 @@ enum PipePacketType : unsigned char
 	PipePacketType_AddSkin = 0x17,
 	PipePacketType_RemoveSkin = 0x18,
 	PipePacketType_UpdateSkin = 0x19,
-	PipePacketType_RemoveAllSkins = 0x20
+	PipePacketType_RemoveAllSkins = 0x20,
+	PipePacketType_OnGetNextPacket = 0x21
 
 };
+//int OnGetNextPacket();
 
 typedef void _EventTrigger(int type, void* maw, void* mow);
 static _EventTrigger *EventTrigger = 0;
@@ -80,6 +82,8 @@ int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags);
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags);
 
 void DisableHooks();
+void HookOnGetNextPacket(DWORD dwCallAddress, DWORD dwNewAddress, LPDWORD pOldAddress);
+void UnhookOnGetNextPacket(DWORD dwCallAddress, LPDWORD dwOldCall);
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction);
 void UnhookCall(DWORD dwAddress, DWORD dwOldCall);
 BYTE* Nop(DWORD dwAddress, int size);
@@ -114,6 +118,7 @@ void ParseAddSkin(BYTE *Buffer, int position);
 void ParseRemoveSkin(BYTE *Buffer, int position);
 void ParseUpdateSkin(BYTE *Buffer, int position);
 void ParseRemoveAllSkins();
+void ParsePacketBuffer(LPBYTE pBuffer);
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd,LPARAM lParam);
 LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
