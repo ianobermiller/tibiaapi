@@ -1673,7 +1673,7 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 		!Consts::ptrCopyNameContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrSetOutfitContextMenu
 		|| !Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu ||
 		/*!Consts::ptrRecv || !Consts::ptrSend || */!Consts::ptrEventTrigger || !Consts::ptrLookContextMenu || 
-		!Consts::ptrOnGetNextPacket || !Consts::ptrRecvStream/* ||
+		!Consts::ptrOnGetNextPacket/* || !Consts::ptrRecvStream ||
 		!PrintText || !DrawItem || !DrawSkin || !EventTrigger || !OrigSend || !OrigRecv*/) 
 	{
 		#if _DEBUG
