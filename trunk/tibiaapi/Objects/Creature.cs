@@ -295,10 +295,17 @@ namespace Tibia.Objects
             get { return (Constants.Skull)client.Memory.ReadInt32(address + Addresses.Creature.DistanceSkull); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceSkull, (int)value); }
         }
+
         public Constants.Party Party
         {
             get { return (Constants.Party)client.Memory.ReadInt32(address + Addresses.Creature.DistanceParty); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceParty, (int)value); }
+        }
+
+        public Constants.WarIcon WarIcon
+        {
+            get { return (Constants.WarIcon)client.Memory.ReadInt32(address + Addresses.Creature.DistanceWarIcon); }
+            set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceWarIcon, (int)value); }
         }
 
         public Constants.OutfitType OutfitType

@@ -466,6 +466,7 @@ namespace Tibia.Packets
         public ushort Speed { get; set; }
         public Constants.Skull Skull { get; set; }
         public PartyShield PartyShield { get; set; }
+        public Constants.WarIcon WarIcon { get; set; }
         public uint RemoveId { get; set; }
         public Objects.Location Location { get; set; }
         public Objects.Client Client { get; set; }

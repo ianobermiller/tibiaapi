@@ -35,7 +35,7 @@ namespace Tibia.Packets.Incoming
                 Position = msg.GetLocation();
                 Stack = msg.GetByte();
                 ThingId = msg.GetUInt16();
-
+                
                 if (ThingId == 0x0061 || ThingId == 0x0062)
                 {
                     Creature = new PacketCreature(Client);
@@ -64,6 +64,8 @@ namespace Tibia.Packets.Incoming
                     Creature.Speed = msg.GetUInt16();
                     Creature.Skull = (Constants.Skull)msg.GetByte();
                     Creature.PartyShield = (PartyShield)msg.GetByte();
+                    //if (client.version >= 853)
+                    Creature.WarIcon = (Constants.WarIcon)msg.GetByte();
 
                 }
                 else if (ThingId == 0x0063)
@@ -120,6 +122,8 @@ namespace Tibia.Packets.Incoming
                 msg.AddUInt16(Creature.Speed);
                 msg.AddByte((byte)Creature.Skull);
                 msg.AddByte((byte)Creature.PartyShield);
+                //if (client.version >= 853)
+                msg.AddByte((byte)Creature.WarIcon);
             }
             else if (ThingId == 0x0063)
             {
