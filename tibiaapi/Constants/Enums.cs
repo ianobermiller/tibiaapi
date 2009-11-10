@@ -549,6 +549,14 @@ namespace Tibia.Constants
         NPC = 0x40
     }
 
+    public enum WarIcon
+    {
+        None = 0,
+        Blue = 1,
+        Green = 2,
+        Red = 3
+    }
+
     #endregion
 
     #region Spells

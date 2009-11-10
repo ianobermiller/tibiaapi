@@ -38,7 +38,6 @@ enum PipePacketType : unsigned char
 	PipePacketType_OnGetNextPacket = 0x21
 
 };
-//int OnGetNextPacket();
 
 typedef void _EventTrigger(int type, void* maw, void* mow);
 static _EventTrigger *EventTrigger = 0;
