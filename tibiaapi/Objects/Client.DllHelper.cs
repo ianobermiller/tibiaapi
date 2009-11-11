@@ -109,11 +109,9 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.LookContextMenu, Tibia.Addresses.ContextMenus.AddLookContextMenu);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, Tibia.Addresses.ContextMenus.OnClickContextMenuVf);
 
-                /*
                 //winsock recv/send
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
-                */
 
                 //event triggering
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, Tibia.Addresses.Client.EventTriggerPointer);
@@ -126,7 +124,7 @@ namespace Tibia.Objects
 
                 //ongetnextpacket
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnGetNextPacketFunc, Tibia.Addresses.Client.GetNextPacketCall);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.RecvStream, Tibia.Addresses.Client.RecvStream);
+                //Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.RecvStream, Tibia.Addresses.Client.RecvStream);
 
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
