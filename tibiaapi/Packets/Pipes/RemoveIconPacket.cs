@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
@@ -10,8 +9,7 @@ namespace Tibia.Packets.Pipes
     {
         public uint IconId { get; set; }
 
-
-        public RemoveIconPacket(Client client)
+        public RemoveIconPacket(Objects.Client client)
             : base(client)
         {
             Type = PipePacketType.RemoveIcon;
@@ -30,7 +28,7 @@ namespace Tibia.Packets.Pipes
 
         public override byte[] ToByteArray()
         {
-            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client,5);
+            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 5);
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(IconId);
@@ -40,12 +38,11 @@ namespace Tibia.Packets.Pipes
 
         public static bool Send(Objects.Client client, uint iconId)
         {
-            AddIconPacket p = new AddIconPacket(client);
+            RemoveIconPacket p = new RemoveIconPacket(client);
 
             p.IconId = iconId;
 
             return p.Send();
         }
-
     }
 }

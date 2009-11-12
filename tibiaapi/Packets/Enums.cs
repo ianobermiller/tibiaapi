@@ -203,8 +203,7 @@ namespace Tibia.Packets
         AddSkin              = 0x17,
         RemoveSkin           = 0x18,
         UpdateSkin           = 0x19,
-        RemoveAllSkins       = 0x20,
-        OnGetNextPacket      = 0x21
+        RemoveAllSkins       = 0x20
     }
 
     public enum PipeConstantType : byte
@@ -226,9 +225,7 @@ namespace Tibia.Packets
         EventTrigger         =0x0F,
         LookContextMenu = 0x10,
         DrawItemFunc = 0x11,
-        DrawSkinFunc = 0x12,
-        OnGetNextPacketFunc = 0x13,
-        RecvStream = 0x14
+        DrawSkinFunc = 0x12
     }
     
     /// <summary>

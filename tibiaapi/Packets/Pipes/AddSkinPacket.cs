@@ -38,7 +38,7 @@ namespace Tibia.Packets.Pipes
 
         public override byte[] ToByteArray()
         {
-            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client,21);
+            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 15);
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(SkinId);

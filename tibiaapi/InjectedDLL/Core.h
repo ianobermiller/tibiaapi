@@ -34,9 +34,7 @@ enum PipePacketType : unsigned char
 	PipePacketType_AddSkin = 0x17,
 	PipePacketType_RemoveSkin = 0x18,
 	PipePacketType_UpdateSkin = 0x19,
-	PipePacketType_RemoveAllSkins = 0x20,
-	PipePacketType_OnGetNextPacket = 0x21
-
+	PipePacketType_RemoveAllSkins = 0x20
 };
 
 typedef void _EventTrigger(int type, void* maw, void* mow);
@@ -62,11 +60,7 @@ typedef void _DrawItem(int surface,
 					   int textForce);
 static _DrawItem *DrawItem = 0;
 
-typedef void _DrawSkin(int surface,
-					   int x, int y,
-					   int width, int height,
-					   int skinId,
-					   int dX, int dY);
+typedef void _DrawSkin(int surface, int x, int y, int width, int height, int skinId, int dX, int dY);
 static _DrawSkin *DrawSkin = 0;
 
 void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, char* lpText, int nAlign);
@@ -79,10 +73,9 @@ void __stdcall MyLookContextMenu (int eventId, const char* text, const char* sho
 void __stdcall MyOnClickContextMenu (int eventId);
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags);
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags);
+bool case_insensitive_compare(std::string a, std::string b);
 
 void DisableHooks();
-void HookOnGetNextPacket(DWORD dwCallAddress, DWORD dwNewAddress, LPDWORD pOldAddress);
-void UnhookOnGetNextPacket(DWORD dwCallAddress, LPDWORD dwOldCall);
 DWORD HookCall(DWORD dwAddress, DWORD dwFunction);
 void UnhookCall(DWORD dwAddress, DWORD dwOldCall);
 BYTE* Nop(DWORD dwAddress, int size);
@@ -117,10 +110,8 @@ void ParseAddSkin(BYTE *Buffer, int position);
 void ParseRemoveSkin(BYTE *Buffer, int position);
 void ParseUpdateSkin(BYTE *Buffer, int position);
 void ParseRemoveAllSkins();
-void ParsePacketBuffer(LPBYTE pBuffer);
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd,LPARAM lParam);
 LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 //LRESULT CALLBACK MouseHookProc(int nCode,WPARAM wParam, LPARAM lParam);
-
 #endif
