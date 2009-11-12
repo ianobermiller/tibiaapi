@@ -29,6 +29,7 @@ namespace Tibia.Objects
             if (skinIds.Contains(skinId))
                 return false;
 
+            skinIds.Add(skinId);
             return Packets.Pipes.AddSkinPacket.Send(client, skinId, posX, posY, width, height, guiId);
         }
 
@@ -57,6 +58,7 @@ namespace Tibia.Objects
             if (!skinIds.Contains(skinId))
                 return false;
 
+            skinIds.Remove(skinId);
             return Packets.Pipes.RemoveSkinPacket.Send(client, skinId);
         }
 

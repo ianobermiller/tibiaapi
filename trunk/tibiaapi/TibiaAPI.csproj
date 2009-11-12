@@ -12,7 +12,7 @@
     <AssemblyName>TibiaAPI</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>

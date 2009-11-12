@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
@@ -10,8 +9,7 @@ namespace Tibia.Packets.Pipes
     {
         public uint SkinId { get; set; }
 
-
-        public RemoveSkinPacket(Client client)
+        public RemoveSkinPacket(Objects.Client client)
             : base(client)
         {
             Type = PipePacketType.RemoveSkin;
@@ -40,12 +38,11 @@ namespace Tibia.Packets.Pipes
 
         public static bool Send(Objects.Client client, uint skinId)
         {
-            AddSkinPacket p = new AddSkinPacket(client);
+            RemoveSkinPacket p = new RemoveSkinPacket(client);
 
             p.SkinId = skinId;
 
             return p.Send();
         }
-
     }
 }

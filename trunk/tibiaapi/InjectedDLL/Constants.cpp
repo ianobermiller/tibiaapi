@@ -27,9 +27,6 @@ namespace Consts {
 
 	/* Event Trigger Stuff */
 	DWORD ptrEventTrigger = 0;
-
-	DWORD ptrOnGetNextPacket = 0;
-	DWORD ptrRecvStream = 0;
 }
 
 /* DLL Injection Related Stuff */
@@ -49,5 +46,3 @@ CRITICAL_SECTION OnClickCriticalSection;
 CRITICAL_SECTION EventTriggerCriticalSection;
 CRITICAL_SECTION DrawItemCriticalSection;
 CRITICAL_SECTION DrawSkinCriticalSection;
-
-

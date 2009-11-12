@@ -39,7 +39,6 @@ namespace Tibia.Packets
 
             client.Dll.Pipe.OnSocketRecv += new Pipe.PipeListener(Pipe_OnSocketRecv);
             client.Dll.Pipe.OnSocketSend += new Pipe.PipeListener(Pipe_OnSocketSend);
-            client.Dll.Pipe.OnPacketRecv += new Pipe.PipeListener(Pipe_OnPacketRecv);
 
             if (client.LoggedIn)
             {
@@ -48,24 +47,6 @@ namespace Tibia.Packets
             else
             {
                 protocol = Protocol.None;
-            }
-        }
-
-        private void Pipe_OnPacketRecv(Tibia.Packets.NetworkMessage msg)
-        {
-            int length = msg.GetUInt16();
-            if (msg.GetByte() == (byte)Packets.PipePacketType.OnGetNextPacket)
-            {
-                byte[] buf = new byte[msg.Data.Length - 3];
-                Array.Copy(msg.Data, 3, buf, 0, buf.Length);
-                try
-                {
-                    ParsePacketFromServer(client, new NetworkMessage(client, buf), clientSendMsg);
-                }
-                catch (Exception ex)
-                {
-                    WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
-                }
             }
         }
 

@@ -19,24 +19,26 @@ namespace Tibia.Packets.Pipes
                 return false;
 
             Type = PipePacketType.UpdateSkin;
+            SkinId = msg.GetUInt32();
             PosX = msg.GetUInt16();
             PosY = msg.GetUInt16();
             Width = msg.GetUInt16();
             Height = msg.GetUInt16();
-            SkinId = msg.GetUInt32();
+            GUIId = msg.GetUInt16();
 
             return true;
         }
 
-        public static new bool Send(Objects.Client client, uint skinId, ushort posX, ushort posY, ushort width, ushort height)
+        public static new bool Send(Objects.Client client, uint skinId, ushort posX, ushort posY, ushort width, ushort height, ushort guiID)
         {
             UpdateSkinPacket p = new UpdateSkinPacket(client);
 
+            p.SkinId = skinId;
             p.PosX = posX;
             p.PosY = posY;
             p.Width = width;
             p.Height = height;
-            p.SkinId = skinId;
+            p.GUIId = guiID;
 
             return p.Send();
         }

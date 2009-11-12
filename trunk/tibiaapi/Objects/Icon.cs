@@ -41,6 +41,7 @@ namespace Tibia.Objects
             if (iconIds.Contains(iconId) || color == null)
                 return false;
 
+            iconIds.Add(iconId);
             return Packets.Pipes.AddIconPacket.Send(client,iconId, posX, posY, size, itemId, itemCount, font, color);
         }
 
@@ -69,6 +70,7 @@ namespace Tibia.Objects
             if (!iconIds.Contains(iconId))
                 return false;
 
+            iconIds.Remove(iconId);
             return Packets.Pipes.RemoveIconPacket.Send(client, iconId);
         }
 
