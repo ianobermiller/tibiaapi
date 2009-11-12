@@ -51,7 +51,6 @@ namespace Tibia.Packets.Pipes
             msg.AddUInt16(Size);
             msg.AddUInt16(ItemId);
             msg.AddUInt16(ItemCount);
-            msg.AddUInt16(ItemId);
             msg.AddByte(Convert.ToByte(Font));
             msg.AddByte(Color.R);
             msg.AddByte(Color.G);
