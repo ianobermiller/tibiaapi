@@ -249,14 +249,14 @@ namespace Tibia.Packets
     public enum ChatChannel : ushort
     {
         Guild = 0x00,
-        Gamemaster = 0x01,
+        Party = 0x01,
+        //?Gamemaster = 0x01,
         Tutor = 0x02,
         RuleReport = 0x03,
-        Game = 0x04,
-        Trade = 0x05,
-        RealLife = 0x06,
+        Game = 0x05,
+        Trade = 0x06,
         TradeRook = 0x07,
-        Party = 0x08,
+        RealLife = 0x08,
         Help = 0x09,
         OwnPrivate = 0x0E,
         Custom = 0xA0,
@@ -271,6 +271,7 @@ namespace Tibia.Packets
         Custom9 = 0xA9,
         Private = 0xFFFF,
         None = 0xAAAA
+
     }
 
     #endregion
