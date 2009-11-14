@@ -25,8 +25,36 @@ namespace Tibia.Objects
                 new LoginServer("tibia05.cipsoft.com")
             };
 
+            public enum State
+            {
+                LoggedIn,
+                Minimized,
+                InBattle,
+                DialogsCleaned,
+                ResetSelectedCharValue,
+                ResetSelectedCharCount,
+                ClickEnterButton,
+                LoginDialogOpened,
+                LoginDialogDidntOpen,
+                InputAccName,
+                InputPassword,
+                PressTab,
+                PressEnter,
+                CharListReceived,
+                CharListNotReceived,
+                ConnectingDialogGone,
+                ConnectingDialogNotGone,
+                Motd,
+                SelectedCharFound,
+                GoToNextChar,
+                SelectedCharNotFound
+            }
+
             private Client client;
             private LoginServer openTibiaServer = null;
+
+            public delegate void LoginProgressReporter(State state);
+            public LoginProgressReporter Report;
 
             internal LoginHelper(Client client) 
             {
@@ -83,70 +111,135 @@ namespace Tibia.Objects
                 get { return openTibiaServer; }
                 set { openTibiaServer = value; }
             }
-
+           
             public bool Login(string login, string password, string charName)
             {
                 //if the player is logged or the window is minimazed return false.
-                if (client.LoggedIn || client.Window.IsMinimized)
+                if (client.Window.IsMinimized)
+                {
+                    if (Report != null)
+                        Report.Invoke(State.Minimized);
                     return false;
-
-                //sure the screen is clean, no dialog open
-                client.Input.SendKey(Keys.Escape);
-                client.Input.SendKey(Keys.Escape);
-
-                //reset the selected char value..
-                client.Memory.WriteUInt32(Tibia.Addresses.Client.LoginSelectedChar, 0);
-                //reset the char count value..
-                client.Memory.WriteInt32(Tibia.Addresses.Client.LoginCharListLength, 0);
-
-                //click the enter the game button
-                client.Input.Click(120, client.Window.Size.Height - 250);
-
-                //wait the dialog open
-                int waitTime = 2000;
-                while (!client.IsDialogOpen && client.DialogCaption != "Enter Game")
-                {
-                    Thread.Sleep(100);
-                    waitTime -= 100;
-                    if (waitTime <= 0)
-                        return false;
                 }
-
-                //now we have to send the login and the password
-                client.Input.SendString(login);
-                //press tab
-                client.Input.SendKey(Keys.Tab);
-                //put the pass
-                client.Input.SendString(password);
-                //press entrer..
-                client.Input.SendKey(Keys.Enter);
-
-                //wait for the charlist dialog
-                waitTime = 4000;
-                while (CharListCount == 0)
+                else if (client.LoggedIn)
                 {
-                    Thread.Sleep(100);
-                    waitTime -= 100;
-                    if (waitTime <= 0)
+                    if (client.GetPlayer().HasFlag(Tibia.Constants.Flag.InBattle))
+                    {
+                        if (Report != null)
+                            Report.Invoke(State.InBattle);
                         return false;
+                    }
+                    //send CTRL+G, or however it is done
+                    //TO DO
+                    /*
+                    client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.Control, 0);
+                    client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.G, 0);
+                    client.Input.SendMessage(Hooks.WM_CHAR, (int)Keys.G, 0);
+                    client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.G, 0);
+                    client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.Control, 0);
+                    Thread.Sleep(300);*/
+                    return false;
                 }
-
-                waitTime = 1000;
-                while (client.DialogCaption == "Connecting")
+                else
                 {
-                    Thread.Sleep(100);
-                    waitTime -= 100;
-                    if (waitTime <= 0)
-                        return false;
-                }
+                    //assure the screen is clean, no dialog open
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+                    if (Report != null)
+                        Report.Invoke(State.DialogsCleaned);
 
-                Thread.Sleep(100);
+                    //reset the selected char value..
+                    client.Memory.WriteUInt32(Tibia.Addresses.Client.LoginSelectedChar, 0);
+                    if (Report != null)
+                        Report.Invoke(State.ResetSelectedCharValue);
 
-                // Check if there is a message of the day
-                if (client.DialogCaption != "Select Character")
-                {
+                    //reset the char count value..
+                    client.Memory.WriteInt32(Tibia.Addresses.Client.LoginCharListLength, 0);
+                    if (Report != null)
+                        Report.Invoke(State.ResetSelectedCharCount);
+
+                    //click the enter the game button
+                    client.Input.Click(120, client.Window.Size.Height - 250);
+                    if (Report != null)
+                        Report.Invoke(State.ClickEnterButton);
+
+                    //wait the dialog open
+                    int waitTime = 2000;
+                    while (!client.IsDialogOpen && client.DialogCaption != "Enter Game")
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.LoginDialogDidntOpen);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.LoginDialogOpened);
+
+                    //now we have to send the login and the password
+                    client.Input.SendString(login);
+                    if (Report != null)
+                        Report.Invoke(State.InputAccName);
+
+                    //press tab
+                    client.Input.SendKey(Keys.Tab);
+                    if (Report != null)
+                        Report.Invoke(State.PressTab);
+
+                    //put the pass
+                    client.Input.SendString(password);
+                    if (Report != null)
+                        Report.Invoke(State.InputPassword);
+
+                    //press enter..
                     client.Input.SendKey(Keys.Enter);
+                    if (Report != null)
+                        Report.Invoke(State.PressEnter);
+
+                    //wait for the charlist dialog
+                    waitTime = 4000;
+                    while (CharListCount == 0)
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.CharListNotReceived);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.CharListReceived);
+
+                    waitTime = 1000;
+                    while (client.DialogCaption == "Connecting")
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.ConnectingDialogNotGone);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.ConnectingDialogGone);
+
                     Thread.Sleep(100);
+
+                    // Check if there is a message of the day
+                    if (client.DialogCaption != "Select Character")
+                    {
+                        client.Input.SendKey(Keys.Enter);
+                        Thread.Sleep(100);
+                        if (Report != null)
+                            Report.Invoke(State.Motd);
+                    }
                 }
 
                 //now we loop at the charlist to find the selected char..
@@ -160,14 +253,20 @@ namespace Tibia.Objects
                         //we found the char
                         //lets press the entrer key
                         client.Input.SendKey(Keys.Enter);
+                        if (Report != null)
+                            Report.Invoke(State.SelectedCharFound);
                         return true;
                     }
 
                     //move to the next char
                     client.Input.SendKey(Keys.Down);
+                    if (Report != null)
+                        Report.Invoke(State.GoToNextChar);
                 }
 
                 //char not found.
+                if (Report != null)
+                    Report.Invoke(State.SelectedCharNotFound);
                 return false;
             }
 
@@ -341,6 +440,7 @@ namespace Tibia.Objects
                 get { return client.Memory.ReadInt32(Addresses.Client.LoginSelectedChar); }
                 set { client.Memory.WriteInt32(Addresses.Client.LoginSelectedChar, value); }
             }
+
         }
     }
 }
