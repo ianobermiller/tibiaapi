@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
-using System.Diagnostics;
-using Tibia.Packets;
-using Tibia.Objects;
-using System.Windows.Forms;
 using System.Net;
-
+using System.Net.Sockets;
+using System.Windows.Forms;
+using Tibia.Constants;
+using Tibia.Objects;
 
 namespace Tibia.Packets
 {

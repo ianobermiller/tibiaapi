@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Tibia.Objects;
+using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
@@ -195,8 +196,11 @@ namespace Tibia.Packets.Incoming
                 c.Skull = (Constants.Skull)msg.GetByte();
                 outMsg.AddByte((byte)c.Skull);
 
-                c.PartyShield = (PartyShield)msg.GetByte();
+                c.PartyShield = (Constants.PartyShield)msg.GetByte();
                 outMsg.AddByte((byte)c.PartyShield);
+
+                c.WarIcon = (Constants.WarIcon)msg.GetByte();
+                outMsg.AddByte((byte)c.WarIcon);
 
                 creatures.Add(c);
 
@@ -351,7 +355,9 @@ namespace Tibia.Packets.Incoming
 
                         msg.AddByte((byte)c.Skull);
 
-                        msg.AddByte((byte)c.Party);
+                        msg.AddByte((byte)c.PartyShield);
+
+                        msg.AddByte((byte)c.WarIcon);
                     }
                     else if (o.Id <= 9999)
                     {
@@ -372,6 +378,30 @@ namespace Tibia.Packets.Incoming
                     }
                 }
 	        }
+        }
+    }
+
+    public class PacketCreature
+    {
+        public PacketCreatureType Type { get; set; }
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public byte Health { get; set; }
+        public byte Direction { get; set; }
+        public Objects.Outfit Outfit { get; set; }
+        public byte LightLevel { get; set; }
+        public byte LightColor { get; set; }
+        public ushort Speed { get; set; }
+        public Skull Skull { get; set; }
+        public PartyShield PartyShield { get; set; }
+        public WarIcon WarIcon { get; set; }
+        public uint RemoveId { get; set; }
+        public Objects.Location Location { get; set; }
+        public Objects.Client Client { get; set; }
+
+        public PacketCreature(Objects.Client client)
+        {
+            Client = client;
         }
     }
 }

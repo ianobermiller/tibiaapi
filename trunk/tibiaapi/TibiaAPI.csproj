@@ -235,7 +235,6 @@
     <Compile Include="Packets\Outgoing\TurnPacket.cs" />
     <Compile Include="Packets\Outgoing\VipAddPacket.cs" />
     <Compile Include="Packets\Outgoing\VipRemovePacket.cs" />
-    <Compile Include="Packets\Enums.cs" />
     <Compile Include="Packets\PipePacket.cs" />
     <Compile Include="Packets\Pipes\AddContextMenuPacket.cs" />
     <Compile Include="Packets\Pipes\DisplayCreatureTextPacket.cs" />
@@ -318,7 +317,6 @@
     <Compile Include="Website\WhoIsOnline.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LICENSE" />
     <None Include="TibiaAPI.pfx" />
   </ItemGroup>
   <ItemGroup>

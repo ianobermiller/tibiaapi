@@ -2,12 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
+    public class AvalibleOutfit
+    {
+        public ushort Id { get; set; }
+        public string Name { get; set; }
+        public byte Addons { get; set; }
+
+        public AvalibleOutfit() { }
+    }
+
     public class OutfitWindowPacket : IncomingPacket
     {
-
         public List<AvalibleOutfit> OutfitList { get; set; }
         public Objects.Outfit Default { get; set; }
 

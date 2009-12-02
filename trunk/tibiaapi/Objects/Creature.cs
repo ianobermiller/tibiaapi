@@ -29,10 +29,10 @@ namespace Tibia.Objects
         /// <returns>True if the player is a member or leader of your party. False otherwise.</returns>
         public bool InParty()
         {
-            Constants.Party party = Party;
-            return (party != Constants.Party.None
-                && party != Constants.Party.Invitee
-                && party != Constants.Party.Inviter);
+            Constants.PartyShield party = PartyShield;
+            return (party != Constants.PartyShield.None
+                && party != Constants.PartyShield.Invitee
+                && party != Constants.PartyShield.Inviter);
         }
 
         private static Location AdjustLocation(Location loc, int xDiff, int yDiff)
@@ -296,9 +296,9 @@ namespace Tibia.Objects
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceSkull, (int)value); }
         }
 
-        public Constants.Party Party
+        public Constants.PartyShield PartyShield
         {
-            get { return (Constants.Party)client.Memory.ReadInt32(address + Addresses.Creature.DistanceParty); }
+            get { return (Constants.PartyShield)client.Memory.ReadInt32(address + Addresses.Creature.DistanceParty); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceParty, (int)value); }
         }
 
@@ -314,25 +314,25 @@ namespace Tibia.Objects
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceOutfit, (int)value); }
         }
 
-        public int Color_Head
+        public int HeadColor
         {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorHead); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorHead, value); }
         }
 
-        public int Color_Body
+        public int BodyColor
         {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorBody); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorBody, value); }
         }
 
-        public int Color_Legs
+        public int LegsColor
         {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorLegs); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorLegs, value); }
         }
 
-        public int Color_Feet
+        public int FeetColor
         {
             get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceColorFeet); }
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceColorFeet, value); }
@@ -348,16 +348,16 @@ namespace Tibia.Objects
         {
             get
             {
-                return new Outfit(this, (ushort)OutfitType, (byte)Color_Head, (byte)Color_Body,
-                    (byte)Color_Legs, (byte)Color_Feet, (byte)Addon);
+                return new Outfit(this, (ushort)OutfitType, (byte)HeadColor, (byte)BodyColor,
+                    (byte)LegsColor, (byte)FeetColor, (byte)Addon);
             }
             set
             {
                 OutfitType = (Constants.OutfitType)value.LookType;
-                Color_Head = (int)value.Head;
-                Color_Body = (int)value.Body;
-                Color_Legs = (int)value.Legs;
-                Color_Feet = (int)value.Feet;
+                HeadColor = (int)value.Head;
+                BodyColor = (int)value.Body;
+                LegsColor = (int)value.Legs;
+                FeetColor = (int)value.Feet;
                 Addon = (Constants.OutfitAddon)value.Addons;
             }
         }
