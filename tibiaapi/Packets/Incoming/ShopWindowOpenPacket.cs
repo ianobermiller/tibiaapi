@@ -2,12 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
+    public class ShopInfo
+    {
+        public ushort ItemId { get; set; }
+        public byte SubType { get; set; }
+        public uint BuyPrice { get; set; }
+        public uint SellPrice { get; set; }
+        public string ItemName { get; set; }
+        public uint Weight { get; set; }
+
+        public ShopInfo() { }
+
+        public ShopInfo(ushort itemId, byte subType, uint buyPrice, uint sellPrice)
+        {
+            ItemId = itemId;
+            SubType = subType;
+            BuyPrice = buyPrice;
+            SellPrice = sellPrice;
+        }
+    }
+
     public class ShopWindowOpenPacket : IncomingPacket
     {
-
         public List<ShopInfo> ShopList { get; set; }
 
         public ShopWindowOpenPacket(Objects.Client c)

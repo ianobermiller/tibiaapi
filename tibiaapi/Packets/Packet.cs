@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
+using Tibia.Constants;
 using Tibia.Util;
+using Tibia.Constants;
 
 namespace Tibia.Packets
 {

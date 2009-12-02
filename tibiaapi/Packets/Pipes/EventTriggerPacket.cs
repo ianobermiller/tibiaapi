@@ -1,5 +1,6 @@
 ﻿using System;
 using Tibia.Objects;
+using Tibia.Constants;
 
 namespace Tibia.Packets.Pipes
 {

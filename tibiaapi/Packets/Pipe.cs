@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO.Pipes;
+using Tibia.Constants;
 using Tibia.Objects;
 
 namespace Tibia.Packets

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Tibia;
-using Tibia.Packets;
+using Tibia.Constants;
 using Tibia.Objects;
 
 namespace Tibia.Packets
@@ -53,7 +48,7 @@ namespace Tibia.Packets
         private void Pipe_OnSocketRecv(Tibia.Packets.NetworkMessage msg)
         {
             int length = msg.GetUInt16();
-            if (msg.GetByte() == (byte)Packets.PipePacketType.HookReceivedPacket)
+            if (msg.GetByte() == (byte)PipePacketType.HookReceivedPacket)
             {
                 byte[] buf = new byte[msg.Data.Length - 3];
                 Array.Copy(msg.Data, 3, buf, 0, buf.Length);
@@ -64,7 +59,7 @@ namespace Tibia.Packets
         private void Pipe_OnSocketSend(Tibia.Packets.NetworkMessage msg)
         {
             int length = msg.GetUInt16();
-            if (msg.GetByte() == (byte)Packets.PipePacketType.HookSentPacket)
+            if (msg.GetByte() == (byte)PipePacketType.HookSentPacket)
             {
                 byte[] buf = new byte[msg.Data.Length - 3];
                 Array.Copy(msg.Data, 3, buf, 0, buf.Length);

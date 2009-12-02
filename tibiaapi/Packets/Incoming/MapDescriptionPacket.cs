@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Tibia.Constants;
 using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
@@ -111,7 +110,9 @@ namespace Tibia.Packets.Incoming
 
                                 msg.AddByte((byte)c.Skull);
 
-                                msg.AddByte((byte)c.Party);
+                                msg.AddByte((byte)c.PartyShield);
+
+                                msg.AddByte((byte)c.WarIcon);
                             }
                             else
                             {

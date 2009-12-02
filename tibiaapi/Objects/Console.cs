@@ -1,5 +1,6 @@
 using System;
 using Tibia.Packets;
+using Tibia.Constants;
 
 namespace Tibia.Objects
 {
@@ -43,8 +44,8 @@ namespace Tibia.Objects
     {
         public string Text;
         public string Recipient;
-        public Packets.ChatChannel Channel;
-        public Packets.SpeechType Type;
+        public ChatChannel Channel;
+        public SpeechType Type;
 
         /// <summary>
         /// Create a default message.
@@ -54,8 +55,8 @@ namespace Tibia.Objects
         {
             this.Text = text;
             this.Recipient = "";
-            this.Channel = Packets.ChatChannel.None;
-            this.Type = Packets.SpeechType.Say;
+            this.Channel = ChatChannel.None;
+            this.Type = SpeechType.Say;
         }
 
         /// <summary>
@@ -67,8 +68,8 @@ namespace Tibia.Objects
         {
             ChatMessage cm = new ChatMessage(text);
             cm.Recipient = recipient;
-            cm.Channel = Packets.ChatChannel.None;
-            cm.Type = Packets.SpeechType.Private;
+            cm.Channel = ChatChannel.None;
+            cm.Type = SpeechType.Private;
             return cm;
         }
 
@@ -77,12 +78,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public static ChatMessage CreateChannelMessage(string text, Packets.ChatChannel channel)
+        public static ChatMessage CreateChannelMessage(string text, ChatChannel channel)
         {
             ChatMessage cm = new ChatMessage(text);
             cm.Recipient = "";
             cm.Channel = channel;
-            cm.Type = Packets.SpeechType.ChannelYellow;
+            cm.Type = SpeechType.ChannelYellow;
             return cm;
         }
 
@@ -91,11 +92,11 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public static ChatMessage CreateNormalMessage(string text, Packets.SpeechType type)
+        public static ChatMessage CreateNormalMessage(string text, SpeechType type)
         {
             ChatMessage cm = new ChatMessage(text);
             cm.Recipient = "";
-            cm.Channel = Packets.ChatChannel.None;
+            cm.Channel = ChatChannel.None;
             cm.Type = type;
             return cm;
         }

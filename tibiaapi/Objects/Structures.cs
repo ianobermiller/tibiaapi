@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using Tibia.Constants;
 
 namespace Tibia.Objects
 {
@@ -37,10 +38,10 @@ namespace Tibia.Objects
 
     public struct Channel
     {
-        public Packets.ChatChannel Id;
+        public ChatChannel Id;
         public string Name;
 
-        public Channel(Packets.ChatChannel id, string name)
+        public Channel(ChatChannel id, string name)
         {
             Id = id;
             Name = name;
