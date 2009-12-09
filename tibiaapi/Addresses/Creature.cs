@@ -28,7 +28,7 @@ namespace Tibia.Addresses
 
         public static uint DistanceSkull = 148;
         public static uint DistanceParty = 152;
-        public static uint DistanceWarIcon = 156;
+        public static uint DistanceWarIcon = 160;
 
         public static uint DistanceOutfit = 96;
         public static uint DistanceColorHead = 100;
