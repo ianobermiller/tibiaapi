@@ -202,6 +202,9 @@ namespace Tibia.Packets.Incoming
                 c.WarIcon = (Constants.WarIcon)msg.GetByte();
                 outMsg.AddByte((byte)c.WarIcon);
 
+                c.IsBlocking = (bool)msg.GetByte();
+                outMsg.AddByte((byte)c.IsBlocking);
+
                 creatures.Add(c);
 
                 return true;
@@ -358,6 +361,8 @@ namespace Tibia.Packets.Incoming
                         msg.AddByte((byte)c.PartyShield);
 
                         msg.AddByte((byte)c.WarIcon);
+
+                        msg.AddByte((byte)c.IsBlocking);
                     }
                     else if (o.Id <= 9999)
                     {
@@ -395,6 +400,7 @@ namespace Tibia.Packets.Incoming
         public Skull Skull { get; set; }
         public PartyShield PartyShield { get; set; }
         public WarIcon WarIcon { get; set; }
+        public bool IsBlocking { get; set; }
         public uint RemoveId { get; set; }
         public Objects.Location Location { get; set; }
         public Objects.Client Client { get; set; }

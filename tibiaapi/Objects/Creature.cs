@@ -308,6 +308,12 @@ namespace Tibia.Objects
             set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceWarIcon, (int)value); }
         }
 
+        public bool IsBlocking
+        {
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Creature.DistanceIsBlocking); }
+            set { client.Memory.WriteByte(address + Addresses.Creature.DistanceIsBlocking, Convert.ToByte(value); }
+        }
+
         public Constants.OutfitType OutfitType
         {
             get { return (Constants.OutfitType)client.Memory.ReadInt32(address + Addresses.Creature.DistanceOutfit); }
