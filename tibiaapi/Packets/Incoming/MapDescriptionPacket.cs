@@ -114,7 +114,7 @@ namespace Tibia.Packets.Incoming
 
                                 msg.AddByte((byte)c.WarIcon);
 
-                                msg.AddByte((byte)c.IsBlocking);
+                                msg.AddByte(Convert.ToByte(c.IsBlocking));
                             }
                             else
                             {
