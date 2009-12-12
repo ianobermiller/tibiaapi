@@ -310,8 +310,8 @@ namespace Tibia.Objects
 
         public bool IsBlocking
         {
-            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Creature.DistanceIsBlocking); }
-            set { client.Memory.WriteByte(address + Addresses.Creature.DistanceIsBlocking, Convert.ToByte(value); }
+            get { return Convert.ToBoolean(client.Memory.ReadInt32(address + Addresses.Creature.DistanceIsBlocking)); }
+            set { client.Memory.WriteByte(address + Addresses.Creature.DistanceIsBlocking, Convert.ToByte(value)); }
         }
 
         public Constants.OutfitType OutfitType

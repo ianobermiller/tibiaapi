@@ -1,7 +1,6 @@
 ﻿using System;
 using Tibia.Constants;
 using Tibia.Util;
-using Tibia.Constants;
 
 namespace Tibia.Packets
 {
