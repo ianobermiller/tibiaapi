@@ -147,6 +147,12 @@ namespace Tibia.Packets
 
         #region Constructor
 
+        public Proxy(Client client)
+            : this(client, client.Login.RSA == Constants.RSAKey.OpenTibia)
+        {
+
+        }
+
         public Proxy(Client client, bool isOtServer)
         {
             try
@@ -182,7 +188,7 @@ namespace Tibia.Packets
 
             loginServers = client.Login.Servers;
 
-            if (loginServers[0].Server == "localhost")
+            if (loginServers[0].Server == "localhost" && !isOtServer)
                 loginServers = client.Login.DefaultServers;
 
             if (loginServerPort == 0)
