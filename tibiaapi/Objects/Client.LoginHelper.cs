@@ -323,20 +323,9 @@ namespace Tibia.Objects
             /// <param name="ip"></param>
             /// <param name="port"></param>
             /// <returns></returns>
-            public bool SetServer(string ip, short port)
+            public void SetServer(string ip, short port)
             {
-                bool result = true;
-                long pointer = Addresses.Client.LoginServerStart;
-
-                ip += (char)0;
-
-                for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
-                {
-                    result &= client.Memory.WriteString(pointer, ip);
-                    result &= client.Memory.WriteInt32(pointer + Addresses.Client.DistancePort, port);
-                    pointer += Addresses.Client.StepLoginServer;
-                }
-                return result;
+                Servers = new LoginServer[] { new LoginServer(ip, port) };
             }
 
             /// <summary>
@@ -345,13 +334,11 @@ namespace Tibia.Objects
             /// <param name="ip"></param>
             /// <param name="port"></param>
             /// <returns></returns>
-            public bool SetOT(string ip, short port)
+            public void SetOT(string ip, short port)
             {
                 client.Login.OpenTibiaServer = new LoginServer(ip, port);
-                bool result = SetServer(ip, port);
+                SetServer(ip, port);
                 RSA = Constants.RSAKey.OpenTibia;
-
-                return result;
             }
 
             /// <summary>
@@ -359,9 +346,9 @@ namespace Tibia.Objects
             /// </summary>
             /// <param name="ls"></param>
             /// <returns></returns>
-            public bool SetOT(LoginServer ls)
+            public void SetOT(LoginServer ls)
             {
-                return SetOT(ls.Server, ls.Port);
+                SetOT(ls.Server, ls.Port);
             }
 
             public void SetCharListServer(byte[] ipAddress, ushort port)
