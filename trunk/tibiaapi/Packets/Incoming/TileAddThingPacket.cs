@@ -65,10 +65,14 @@ namespace Tibia.Packets.Incoming
                     Creature.Speed = msg.GetUInt16();
                     Creature.Skull = (Constants.Skull)msg.GetByte();
                     Creature.PartyShield = (PartyShield)msg.GetByte();
+
                     //if (Client.Version >= "8.53")
+                    //{
+                    if (ThingId == 0x0061)
                         Creature.WarIcon = (Constants.WarIcon)msg.GetByte();
-                    //if (Client.Version >= "8.54" && ThingId == 0x0061)
-                        Creature.IsBlocking = msg.GetByte() == 0x01;               
+
+                    Creature.IsBlocking = msg.GetByte().Equals(0x01);
+                    //}
                 }
                 else if (ThingId == 0x0063)
                 {

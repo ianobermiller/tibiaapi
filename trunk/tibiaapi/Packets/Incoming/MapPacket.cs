@@ -199,11 +199,11 @@ namespace Tibia.Packets.Incoming
                 c.PartyShield = (Constants.PartyShield)msg.GetByte();
                 outMsg.AddByte((byte)c.PartyShield);
 
+                //if version >= 8.53
+                //{
                 c.WarIcon = (Constants.WarIcon)msg.GetByte();
                 outMsg.AddByte((byte)c.WarIcon);
-
-                c.IsBlocking = msg.GetByte() == 0x01;
-                outMsg.AddByte(Convert.ToByte(c.IsBlocking));
+                //}
 
                 creatures.Add(c);
 
@@ -360,9 +360,8 @@ namespace Tibia.Packets.Incoming
 
                         msg.AddByte((byte)c.PartyShield);
 
+                        //if version >= 8.53
                         msg.AddByte((byte)c.WarIcon);
-
-                        msg.AddByte(Convert.ToByte(c.IsBlocking));
                     }
                     else if (o.Id <= 9999)
                     {

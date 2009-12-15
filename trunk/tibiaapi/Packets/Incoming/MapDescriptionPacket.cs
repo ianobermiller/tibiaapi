@@ -112,9 +112,8 @@ namespace Tibia.Packets.Incoming
 
                                 msg.AddByte((byte)c.PartyShield);
 
+                                //if (version >= 8.53)
                                 msg.AddByte((byte)c.WarIcon);
-
-                                msg.AddByte(Convert.ToByte(c.IsBlocking));
                             }
                             else
                             {
