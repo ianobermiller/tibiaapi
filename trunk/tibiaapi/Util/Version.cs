@@ -276,7 +276,7 @@ namespace Tibia
                     TextDisplay.PrintTextFunc = 0x4B0550;
                     TextDisplay.NopFPS = 0x459A04;
 
-                    Vip.Start = 0x633C34;
+                    Vip.Start = 0x633C30;
                     Vip.StepPlayers = 0x2C;
                     Vip.MaxPlayers = 200;
                     Vip.DistanceId = 0;
@@ -531,11 +531,11 @@ namespace Tibia
 
                     TextDisplay.PrintName = 0x4F0743;
                     TextDisplay.PrintFPS = 0x459918;
-                    TextDisplay.ShowFPS = 0x632BB4;
+                    TextDisplay.ShowFPS = 0x633BB4;
                     TextDisplay.PrintTextFunc = 0x4B0330;
                     TextDisplay.NopFPS = 0x459854;
 
-                    Vip.Start = 0x633C34;
+                    Vip.Start = 0x633C30;
                     Vip.StepPlayers = 0x2C;
                     Vip.MaxPlayers = 200;
                     Vip.DistanceId = 0;
@@ -792,7 +792,7 @@ namespace Tibia
                     TextDisplay.PrintTextFunc = 0x4B0090;
                     TextDisplay.NopFPS = 0x459704;
 
-                    Vip.Start = 0x631BB4;
+                    Vip.Start = 0x631BB0;
                     Vip.StepPlayers = 0x2C;
                     Vip.MaxPlayers = 200;
                     Vip.DistanceId = 0;
