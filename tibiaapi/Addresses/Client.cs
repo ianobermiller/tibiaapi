@@ -137,7 +137,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Used for searching the last right-clicked creature
         /// </summary>
-        public static uint ClickContextMenuCreatureId = 0x792EF8; //8.54
+        public static uint ClickContextMenuCreatureId = 0x792E54; //8.54
 
         /// <summary>
         /// The id of the last item seen (looked at).
