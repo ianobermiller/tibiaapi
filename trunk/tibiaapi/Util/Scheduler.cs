@@ -8,9 +8,11 @@ namespace Tibia.Util
 {
     public static class Scheduler
     {
+        private static Object addEventLock = new Object();
+
         public static void AddTask(Delegate ev, object[] paramArray, int time)
         {
-            lock ("addEvent")
+            lock (addEventLock)
             {
                 Action<Delegate, object[], int> myDelegate = new Action<Delegate, object[], int>(AddTaskDelay);
                 myDelegate.BeginInvoke(ev, paramArray, time, null, null);

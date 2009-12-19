@@ -129,7 +129,8 @@ namespace Tibia.Packets.Incoming
                 msg.AddByte((byte)Creature.Skull);
                 msg.AddByte((byte)Creature.PartyShield);
                 //if (client.version >= 853)
-                msg.AddByte((byte)Creature.WarIcon);
+                if (ThingId == 0x0061)
+                    msg.AddByte((byte)Creature.WarIcon);
             }
             else if (ThingId == 0x0063)
             {
