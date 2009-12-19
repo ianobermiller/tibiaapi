@@ -1,4 +1,4 @@
-#define UseHookProxy
+//#define UseHookProxy
 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ using Tibia.Objects;
 using Tibia.Util;
 using Tibia.Packets;
 using System.IO;
+using Tibia.Constants;
 
 namespace SmartPacketAnalyzer
 {
@@ -60,14 +61,14 @@ namespace SmartPacketAnalyzer
                 InitializeProxy();
             }
 
-            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.IncomingPacketType)))
+            foreach (byte t in Enum.GetValues(typeof(IncomingPacketType)))
             {
-                incomingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.IncomingPacketType), t));
+                incomingPacketTypeNames.Add(t, Enum.GetName(typeof(IncomingPacketType), t));
             }
 
-            foreach (byte t in Enum.GetValues(typeof(Tibia.Packets.OutgoingPacketType)))
+            foreach (byte t in Enum.GetValues(typeof(OutgoingPacketType)))
             {
-                outgoingPacketTypeNames.Add(t, Enum.GetName(typeof(Tibia.Packets.OutgoingPacketType), t));
+                outgoingPacketTypeNames.Add(t, Enum.GetName(typeof(OutgoingPacketType), t));
             }
 
             uxTypes.Items.Add("(Any)");

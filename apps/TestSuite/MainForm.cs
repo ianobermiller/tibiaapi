@@ -12,6 +12,7 @@ using Tibia.Packets;
 using Tibia.Packets.Incoming;
 using Tibia.Packets.Outgoing;
 using Tibia.Util;
+using Tibia.Constants;
 
 namespace TestSuite
 {
