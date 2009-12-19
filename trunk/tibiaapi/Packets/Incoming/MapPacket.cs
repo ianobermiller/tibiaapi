@@ -201,8 +201,14 @@ namespace Tibia.Packets.Incoming
 
                 //if version >= 8.53
                 //{
-                c.WarIcon = (Constants.WarIcon)msg.GetByte();
-                outMsg.AddByte((byte)c.WarIcon);
+                if (thingId == 0x0061)
+                {
+                    c.WarIcon = (Constants.WarIcon)msg.GetByte();
+                    outMsg.AddByte((byte)c.WarIcon);
+                }
+
+                c.IsBlocking = msg.GetByte().Equals(0x01);
+                outMsg.AddByte(Convert.ToByte(c.IsBlocking));
                 //}
 
                 creatures.Add(c);
@@ -228,7 +234,16 @@ namespace Tibia.Packets.Incoming
             else
             {
                 //item
-                Item item = new Item(Client, thingId, 0, "", ItemLocation.FromLocation(pos, (byte)n));
+                UInt16 itemId;
+                if (thingId == (sizeof(UInt32) -1))
+                {
+                    itemId = msg.GetUInt16();
+                    outMsg.AddUInt16(itemId);
+                }
+                else
+                    itemId = thingId;
+
+                Item item = new Item(Client, itemId, 0, "", ItemLocation.FromLocation(pos, (byte)n));
 
                 if (item.HasExtraByte)
                 {
