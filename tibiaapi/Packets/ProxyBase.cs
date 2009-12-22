@@ -150,7 +150,13 @@ namespace Tibia.Packets
         {
             NetworkMessage inMsg = new NetworkMessage(packet);
             NetworkMessage outMsg = new NetworkMessage();
-            return ParsePacketFromServer(client, inMsg, outMsg);
+            while (inMsg.Position < packet.Length)
+            {
+                if (!ParsePacketFromServer(client, inMsg, outMsg))
+                    return false;
+                outMsg.Reset();
+            }
+            return true;
         }
 
         protected bool ParsePacketFromServer(Client client, NetworkMessage msg, NetworkMessage outMsg)
@@ -158,7 +164,7 @@ namespace Tibia.Packets
             bool packetKnown = true;
             IncomingPacket packet = null;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
-            //System.Console.WriteLine(type.ToString());
+            
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:
