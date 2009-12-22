@@ -63,7 +63,6 @@ namespace SmartIPChanger
             this.ClientSize = new System.Drawing.Size(307, 30);
             this.Controls.Add(this.uxServer);
             this.Controls.Add(this.uxGo);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Smart IPChanger";
             this.Load += new System.EventHandler(this.uxForm_Load);
