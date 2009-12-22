@@ -5,10 +5,10 @@ using Tibia.Objects;
 
 namespace Tibia.Constants
 {
-    public static class ItemLists
-    {
-        #region All Items
-        public static Dictionary<uint, Item> AllItems = new Dictionary<uint, Item>
+public static class ItemLists
+{
+#region All Items
+public static Dictionary<uint, Item> AllItems = new Dictionary<uint, Item>
 {
 { Items.Armor.FrozenPlate.Id, Items.Armor.FrozenPlate }, 
 { Items.Armor.RangersCloak.Id, Items.Armor.RangersCloak }, 
@@ -1443,10 +1443,10 @@ namespace Tibia.Constants
 { Items.Corpse.SlainMedusa1.Id, Items.Corpse.SlainMedusa1 }, 
 { Items.Corpse.SlainMedusa2.Id, Items.Corpse.SlainMedusa2 }, 
 };
-        #endregion
+#endregion
 
-        #region Armor
-        public static Dictionary<uint, Item> Armor = new Dictionary<uint, Item>
+#region Armor
+public static Dictionary<uint, Item> Armor = new Dictionary<uint, Item>
 {
 { Items.Armor.FrozenPlate.Id, Items.Armor.FrozenPlate }, 
 { Items.Armor.RangersCloak.Id, Items.Armor.RangersCloak }, 
@@ -1488,10 +1488,10 @@ namespace Tibia.Constants
 { Items.Armor.BlueRobe.Id, Items.Armor.BlueRobe }, 
 { Items.Armor.RedRobe.Id, Items.Armor.RedRobe }, 
 };
-        #endregion
+#endregion
 
-        #region Legs
-        public static Dictionary<uint, Item> Legs = new Dictionary<uint, Item>
+#region Legs
+public static Dictionary<uint, Item> Legs = new Dictionary<uint, Item>
 {
 { Items.Legs.RangerLegs.Id, Items.Legs.RangerLegs }, 
 { Items.Legs.BlueLegs.Id, Items.Legs.BlueLegs }, 
@@ -1521,10 +1521,10 @@ namespace Tibia.Constants
 { Items.Legs.LeafLegs.Id, Items.Legs.LeafLegs }, 
 { Items.Legs.TrousersOfTheAncients.Id, Items.Legs.TrousersOfTheAncients }, 
 };
-        #endregion
+#endregion
 
-        #region Helmet
-        public static Dictionary<uint, Item> Helmet = new Dictionary<uint, Item>
+#region Helmet
+public static Dictionary<uint, Item> Helmet = new Dictionary<uint, Item>
 {
 { Items.Helmet.MageHat.Id, Items.Helmet.MageHat }, 
 { Items.Helmet.DwarvenHelmet.Id, Items.Helmet.DwarvenHelmet }, 
@@ -1574,10 +1574,10 @@ namespace Tibia.Constants
 { Items.Helmet.LeftHorn.Id, Items.Helmet.LeftHorn }, 
 { Items.Helmet.HelmetAdornment.Id, Items.Helmet.HelmetAdornment }, 
 };
-        #endregion
+#endregion
 
-        #region Swords
-        public static Dictionary<uint, Item> Swords = new Dictionary<uint, Item>
+#region Swords
+public static Dictionary<uint, Item> Swords = new Dictionary<uint, Item>
 {
 { Items.Swords.NightmareBlade.Id, Items.Swords.NightmareBlade }, 
 { Items.Swords.EmeraldSword.Id, Items.Swords.EmeraldSword }, 
@@ -1626,10 +1626,10 @@ namespace Tibia.Constants
 { Items.Swords.BlacksteelSwordEarthEnchanted.Id, Items.Swords.BlacksteelSwordEarthEnchanted }, 
 { Items.Swords.DragonSlayerFireEnchanted.Id, Items.Swords.DragonSlayerFireEnchanted }, 
 };
-        #endregion
+#endregion
 
-        #region Axes
-        public static Dictionary<uint, Item> Axes = new Dictionary<uint, Item>
+#region Axes
+public static Dictionary<uint, Item> Axes = new Dictionary<uint, Item>
 {
 { Items.Axes.GloriousAxe.Id, Items.Axes.GloriousAxe }, 
 { Items.Axes.SteelAxe.Id, Items.Axes.SteelAxe }, 
@@ -1665,10 +1665,10 @@ namespace Tibia.Constants
 { Items.Axes.WarAxeEarthEnchanted.Id, Items.Axes.WarAxeEarthEnchanted }, 
 { Items.Axes.WarAxeIceEnchanted.Id, Items.Axes.WarAxeIceEnchanted }, 
 };
-        #endregion
+#endregion
 
-        #region Clubs
-        public static Dictionary<uint, Item> Clubs = new Dictionary<uint, Item>
+#region Clubs
+public static Dictionary<uint, Item> Clubs = new Dictionary<uint, Item>
 {
 { Items.Clubs.DaramianMace.Id, Items.Clubs.DaramianMace }, 
 { Items.Clubs.ObsidianTruncheon.Id, Items.Clubs.ObsidianTruncheon }, 
@@ -1713,10 +1713,10 @@ namespace Tibia.Constants
 { Items.Clubs.CranialBasherIceEnchanted.Id, Items.Clubs.CranialBasherIceEnchanted }, 
 { Items.Clubs.CranialBasherFireEnchanted.Id, Items.Clubs.CranialBasherFireEnchanted }, 
 };
-        #endregion
+#endregion
 
-        #region Distance
-        public static Dictionary<uint, Item> Distance = new Dictionary<uint, Item>
+#region Distance
+public static Dictionary<uint, Item> Distance = new Dictionary<uint, Item>
 {
 { Items.Distance.Arbalest.Id, Items.Distance.Arbalest }, 
 { Items.Distance.ModifiedCrossbow.Id, Items.Distance.ModifiedCrossbow }, 
@@ -1743,10 +1743,10 @@ namespace Tibia.Constants
 { Items.Distance.SilkweaverBow.Id, Items.Distance.SilkweaverBow }, 
 { Items.Distance.ElethrielsElementalBow.Id, Items.Distance.ElethrielsElementalBow }, 
 };
-        #endregion
+#endregion
 
-        #region Shield
-        public static Dictionary<uint, Item> Shield = new Dictionary<uint, Item>
+#region Shield
+public static Dictionary<uint, Item> Shield = new Dictionary<uint, Item>
 {
 { Items.Shield.NorseShield.Id, Items.Shield.NorseShield }, 
 { Items.Shield.SpellbookofDarkMysteries.Id, Items.Shield.SpellbookofDarkMysteries }, 
@@ -1806,10 +1806,10 @@ namespace Tibia.Constants
 { Items.Shield.ShieldOfCare.Id, Items.Shield.ShieldOfCare }, 
 { Items.Shield.TheShieldNevermourn.Id, Items.Shield.TheShieldNevermourn }, 
 };
-        #endregion
+#endregion
 
-        #region Ring
-        public static Dictionary<uint, Item> Ring = new Dictionary<uint, Item>
+#region Ring
+public static Dictionary<uint, Item> Ring = new Dictionary<uint, Item>
 {
 { Items.Ring.SignetRing.Id, Items.Ring.SignetRing }, 
 { Items.Ring.DwarvenRing.Id, Items.Ring.DwarvenRing }, 
@@ -1843,10 +1843,10 @@ namespace Tibia.Constants
 { Items.Ring.RingOfTheCount.Id, Items.Ring.RingOfTheCount }, 
 { Items.Ring.EngravedWeddingRing.Id, Items.Ring.EngravedWeddingRing }, 
 };
-        #endregion
+#endregion
 
-        #region Neck
-        public static Dictionary<uint, Item> Neck = new Dictionary<uint, Item>
+#region Neck
+public static Dictionary<uint, Item> Neck = new Dictionary<uint, Item>
 {
 { Items.Neck.GlacierAmulet.Id, Items.Neck.GlacierAmulet }, 
 { Items.Neck.Kosheisancientamulet.Id, Items.Neck.Kosheisancientamulet }, 
@@ -1880,10 +1880,10 @@ namespace Tibia.Constants
 { Items.Neck.LightningPendant.Id, Items.Neck.LightningPendant }, 
 { Items.Neck.MagmaAmulet.Id, Items.Neck.MagmaAmulet }, 
 };
-        #endregion
+#endregion
 
-        #region Boots
-        public static Dictionary<uint, Item> Boots = new Dictionary<uint, Item>
+#region Boots
+public static Dictionary<uint, Item> Boots = new Dictionary<uint, Item>
 {
 { Items.Boots.TerraBoots.Id, Items.Boots.TerraBoots }, 
 { Items.Boots.LightningBoots.Id, Items.Boots.LightningBoots }, 
@@ -1908,10 +1908,10 @@ namespace Tibia.Constants
 { Items.Boots.FirewalkerBoots1.Id, Items.Boots.FirewalkerBoots1 }, 
 { Items.Boots.WornFirewalkerBoots1.Id, Items.Boots.WornFirewalkerBoots1 }, 
 };
-        #endregion
+#endregion
 
-        #region Ammunition
-        public static Dictionary<uint, Item> Ammunition = new Dictionary<uint, Item>
+#region Ammunition
+public static Dictionary<uint, Item> Ammunition = new Dictionary<uint, Item>
 {
 { Items.Ammunition.BurstArrow.Id, Items.Ammunition.BurstArrow }, 
 { Items.Ammunition.Arrow.Id, Items.Ammunition.Arrow }, 
@@ -1929,10 +1929,10 @@ namespace Tibia.Constants
 { Items.Ammunition.FlamingArrow.Id, Items.Ammunition.FlamingArrow }, 
 { Items.Ammunition.InfernalBolt.Id, Items.Ammunition.InfernalBolt }, 
 };
-        #endregion
+#endregion
 
-        #region Valuable
-        public static Dictionary<uint, Item> Valuable = new Dictionary<uint, Item>
+#region Valuable
+public static Dictionary<uint, Item> Valuable = new Dictionary<uint, Item>
 {
 { Items.Valuable.GoldCoin.Id, Items.Valuable.GoldCoin }, 
 { Items.Valuable.PlatinumCoin.Id, Items.Valuable.PlatinumCoin }, 
@@ -1962,10 +1962,10 @@ namespace Tibia.Constants
 { Items.Valuable.SmallTopaz.Id, Items.Valuable.SmallTopaz }, 
 { Items.Valuable.GoldIngot.Id, Items.Valuable.GoldIngot }, 
 };
-        #endregion
+#endregion
 
-        #region Wand
-        public static Dictionary<uint, Item> Wand = new Dictionary<uint, Item>
+#region Wand
+public static Dictionary<uint, Item> Wand = new Dictionary<uint, Item>
 {
 { Items.Wand.MagicLightWand.Id, Items.Wand.MagicLightWand }, 
 { Items.Wand.MagicLightWandUsed.Id, Items.Wand.MagicLightWandUsed }, 
@@ -1988,10 +1988,10 @@ namespace Tibia.Constants
 { Items.Wand.NorthwindRod.Id, Items.Wand.NorthwindRod }, 
 { Items.Wand.WandOfStarstorm.Id, Items.Wand.WandOfStarstorm }, 
 };
-        #endregion
+#endregion
 
-        #region Container
-        public static Dictionary<uint, Item> Container = new Dictionary<uint, Item>
+#region Container
+public static Dictionary<uint, Item> Container = new Dictionary<uint, Item>
 {
 { Items.Container.NormalBag.Id, Items.Container.NormalBag }, 
 { Items.Container.GreenBag.Id, Items.Container.GreenBag }, 
@@ -2023,10 +2023,10 @@ namespace Tibia.Constants
 { Items.Container.OrangeBag.Id, Items.Container.OrangeBag }, 
 { Items.Container.CrownBackpack.Id, Items.Container.CrownBackpack }, 
 };
-        #endregion
+#endregion
 
-        #region Quest
-        public static Dictionary<uint, Item> Quest = new Dictionary<uint, Item>
+#region Quest
+public static Dictionary<uint, Item> Quest = new Dictionary<uint, Item>
 {
 { Items.Quest.PieceofMassacresShell.Id, Items.Quest.PieceofMassacresShell }, 
 { Items.Quest.SoulStone.Id, Items.Quest.SoulStone }, 
@@ -2075,10 +2075,10 @@ namespace Tibia.Constants
 { Items.Quest.Wood.Id, Items.Quest.Wood }, 
 { Items.Quest.EggOfTheMany.Id, Items.Quest.EggOfTheMany }, 
 };
-        #endregion
+#endregion
 
-        #region Tool
-        public static Dictionary<uint, Item> Tool = new Dictionary<uint, Item>
+#region Tool
+public static Dictionary<uint, Item> Tool = new Dictionary<uint, Item>
 {
 { Items.Tool.ButterflyConservationkit.Id, Items.Tool.ButterflyConservationkit }, 
 { Items.Tool.BotanistsContainer.Id, Items.Tool.BotanistsContainer }, 
@@ -2107,10 +2107,10 @@ namespace Tibia.Constants
 { Items.Tool.Scythe.Id, Items.Tool.Scythe }, 
 { Items.Tool.Pick.Id, Items.Tool.Pick }, 
 };
-        #endregion
+#endregion
 
-        #region Decoration
-        public static Dictionary<uint, Item> Decoration = new Dictionary<uint, Item>
+#region Decoration
+public static Dictionary<uint, Item> Decoration = new Dictionary<uint, Item>
 {
 { Items.Decoration.OracleFigurine.Id, Items.Decoration.OracleFigurine }, 
 { Items.Decoration.SmallOilLamp.Id, Items.Decoration.SmallOilLamp }, 
@@ -2168,10 +2168,10 @@ namespace Tibia.Constants
 { Items.Decoration.CrystalPedestal13.Id, Items.Decoration.CrystalPedestal13 }, 
 { Items.Decoration.CrystalOfPower.Id, Items.Decoration.CrystalOfPower }, 
 };
-        #endregion
+#endregion
 
-        #region Potion
-        public static Dictionary<uint, Item> Potion = new Dictionary<uint, Item>
+#region Potion
+public static Dictionary<uint, Item> Potion = new Dictionary<uint, Item>
 {
 { Items.Potion.HealthPotion.Id, Items.Potion.HealthPotion }, 
 { Items.Potion.StrongHealthPotion.Id, Items.Potion.StrongHealthPotion }, 
@@ -2185,17 +2185,17 @@ namespace Tibia.Constants
 { Items.Potion.MastermindPotion.Id, Items.Potion.MastermindPotion }, 
 { Items.Potion.BerserkPotion.Id, Items.Potion.BerserkPotion }, 
 };
-        #endregion
+#endregion
 
-        #region Bottle
-        public static Dictionary<uint, Item> Bottle = new Dictionary<uint, Item>
+#region Bottle
+public static Dictionary<uint, Item> Bottle = new Dictionary<uint, Item>
 {
 { Items.Bottle.Vial.Id, Items.Bottle.Vial }, 
 };
-        #endregion
+#endregion
 
-        #region Misc
-        public static Dictionary<uint, Item> Misc = new Dictionary<uint, Item>
+#region Misc
+public static Dictionary<uint, Item> Misc = new Dictionary<uint, Item>
 {
 { Items.Misc.EternalFlames.Id, Items.Misc.EternalFlames }, 
 { Items.Misc.ToyMouse.Id, Items.Misc.ToyMouse }, 
@@ -2236,10 +2236,10 @@ namespace Tibia.Constants
 { Items.Misc.MapBrownbroadone.Id, Items.Misc.MapBrownbroadone }, 
 { Items.Misc.MapSmall.Id, Items.Misc.MapSmall }, 
 };
-        #endregion
+#endregion
 
-        #region Plant
-        public static Dictionary<uint, Item> Plant = new Dictionary<uint, Item>
+#region Plant
+public static Dictionary<uint, Item> Plant = new Dictionary<uint, Item>
 {
 { Items.Plant.HoneyFlower.Id, Items.Plant.HoneyFlower }, 
 { Items.Plant.FlowerBowl.Id, Items.Plant.FlowerBowl }, 
@@ -2250,10 +2250,10 @@ namespace Tibia.Constants
 { Items.Plant.MoonFlower.Id, Items.Plant.MoonFlower }, 
 { Items.Plant.PurpleKissBlossom.Id, Items.Plant.PurpleKissBlossom }, 
 };
-        #endregion
+#endregion
 
-        #region Corpse
-        public static Dictionary<uint, Item> Corpse = new Dictionary<uint, Item>
+#region Corpse
+public static Dictionary<uint, Item> Corpse = new Dictionary<uint, Item>
 {
 { Items.Corpse.DeadTroll.Id, Items.Corpse.DeadTroll }, 
 { Items.Corpse.DeadSpider.Id, Items.Corpse.DeadSpider }, 
@@ -3013,9 +3013,9 @@ namespace Tibia.Constants
 { Items.Corpse.SlainMedusa1.Id, Items.Corpse.SlainMedusa1 }, 
 { Items.Corpse.SlainMedusa2.Id, Items.Corpse.SlainMedusa2 }, 
 };
-        #endregion
+#endregion
 
-        #region Foods
+		#region Foods
         public static Dictionary<uint, Objects.Food> Foods = new Dictionary<uint, Objects.Food>
         {
 			{ Items.Food.Apple.Id, Items.Food.Apple }, 
@@ -3044,6 +3044,7 @@ namespace Tibia.Constants
 			{ Items.Food.WhiteMushroom.Id, Items.Food.WhiteMushroom },
         };
         #endregion
+
 
         #region Runes
         public static Dictionary<uint, Rune> Runes = new Dictionary<uint, Rune>
@@ -3081,6 +3082,6 @@ namespace Tibia.Constants
 			{ Items.Rune.UltimateHealing.Id, Items.Rune.UltimateHealing },
         };
         #endregion
-    }
+}
 }
 
