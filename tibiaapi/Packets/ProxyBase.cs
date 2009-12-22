@@ -145,7 +145,14 @@ namespace Tibia.Packets
         public event OutgoingPacketListener ReceivedVipRemoveOutgoingPacket;
         #endregion
 
-        #region ClientPacket
+        #region ServerPacket
+        public bool ParseServerPacket(Client client, byte[] packet)
+        {
+            NetworkMessage inMsg = new NetworkMessage(packet);
+            NetworkMessage outMsg = new NetworkMessage();
+            return ParsePacketFromServer(client, inMsg, outMsg);
+        }
+
         protected bool ParsePacketFromServer(Client client, NetworkMessage msg, NetworkMessage outMsg)
         {
             bool packetKnown = true;
