@@ -29,7 +29,7 @@ namespace Tibia.Addresses
 
         public enum Flag : uint
         {
-            WalkSpeed = 1,
+            IsGround = 1,
             TopOrder1 = 2,
             TopOrder2 = 4,
             TopOrder3 = 8,

@@ -2,8 +2,10 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using System.Linq;
 using Tibia.Constants;
 using Tibia.Objects;
+using Tibia.Util;
 
 namespace Tibia.Packets
 {
@@ -1395,7 +1397,7 @@ namespace Tibia.Packets
                 lock (debugLock)
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(System.IO.Path.Combine(Application.StartupPath, "proxy_log.txt"), true);
-                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " >> " + msg + "\n");
+                    sw.WriteLine(System.DateTime.Now.ToShortDateString() + " " + System.DateTime.Now.ToLongTimeString() + " " + msg + "\nLast received packet types: " + GetLastReceivedPacketTypesString());
                     sw.Close();
                 }
             }
@@ -1403,6 +1405,24 @@ namespace Tibia.Packets
             {
             }
         }
+
+        protected FixedCollector<byte> lastReceivedPacketTypes = new FixedCollector<byte>(10);
+
+        public string GetLastReceivedPacketTypesString()
+        {
+            return String.Join(", ", lastReceivedPacketTypes.Select(delegate(byte b)
+            {
+                if (Enum.IsDefined(typeof(IncomingPacketType), b))
+                {
+                    return ((IncomingPacketType)b).ToString();
+                }
+                else
+                {
+                    return b.ToString("X2");
+                }
+            }).ToArray());
+        }
+
         #endregion
 
     }

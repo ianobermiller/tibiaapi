@@ -211,6 +211,15 @@ namespace Tibia.Objects
         }
 
         /// <summary>
+        /// Get the client's version as a number
+        /// </summary>
+        /// <returns></returns>
+        public ushort VersionNumber
+        {
+            get { return Tibia.Version.StringToVersion(process.MainModule.FileVersionInfo.FileVersion); }
+        }
+
+        /// <summary>
         /// Gets the dialog pointer
         /// </summary>
         public uint DialogPointer

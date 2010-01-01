@@ -53,7 +53,7 @@ namespace Tibia.Packets
         {
             buffer = new byte[bufferSize];
             Client = client;
-            position = 8;
+            position = GetPacketHeaderSize() + 2;
         }
 
         public NetworkMessage(Objects.Client client, int size)
@@ -61,7 +61,7 @@ namespace Tibia.Packets
             bufferSize = size;
             buffer = new byte[bufferSize];
             Client = client;
-            position = 8;
+            position = GetPacketHeaderSize() + 2;
         }
 
         public NetworkMessage(Objects.Client client, byte[] data)
@@ -134,6 +134,14 @@ namespace Tibia.Packets
         public void InsertPacketHeader()
         {
             AddPacketHeader((ushort)(length - 2));
+        }
+
+        public int GetPacketHeaderSize()
+        {
+            if (Client.VersionNumber >= 831)
+                return 6; // 4 bytes for Adler checksum
+            else
+                return 2;
         }
 
         #endregion
@@ -321,8 +329,8 @@ namespace Tibia.Packets
 
         public void Reset()
         {
-            position = 8;
-            length = 8;
+            position = (GetPacketHeaderSize() + 2);
+            length = (GetPacketHeaderSize() + 2);
         }
 
         public bool PrepareToSend()
@@ -335,7 +343,10 @@ namespace Tibia.Packets
             if (!XteaEncrypt(XteaKey))
                 return false;
 
-            AddAdler32();
+            if (Client.VersionNumber >= 831)
+            {
+                AddAdler32();
+            }
             InsertPacketHeader();
 
             return true;
@@ -351,18 +362,18 @@ namespace Tibia.Packets
             if (!XteaDecrypt(XteaKey))
                 return false;
 
-            position = 6;
+            position = GetPacketHeaderSize();
             return true;
         }
 
         public void InsetLogicalPacketHeader()
         {
-            Array.Copy(BitConverter.GetBytes((ushort)length - 8), 0, buffer, 6, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)length - (GetPacketHeaderSize() + 2)), 0, buffer, GetPacketHeaderSize(), 2);
         }
 
         public void UpdateLogicalPacketHeader()
         {
-            Array.Copy(BitConverter.GetBytes((ushort)(length - 8)), 0, buffer, 6, 2);
+            Array.Copy(BitConverter.GetBytes((ushort)(length - (GetPacketHeaderSize() + 2))), 0, buffer, GetPacketHeaderSize(), 2);
         }
 
         #endregion
@@ -390,7 +401,7 @@ namespace Tibia.Packets
 
         public bool CheckAdler32()
         {
-            if (AdlerChecksum.Generate(ref buffer, 6, length) != GetAdler32())
+            if (Client.VersionNumber >= 831 && AdlerChecksum.Generate(ref buffer, 6, length) != GetAdler32())
                 return false;
 
             return true;
@@ -417,7 +428,7 @@ namespace Tibia.Packets
 
         public bool XteaDecrypt(uint[] key)
         {
-            return Xtea.XteaDecrypt(ref buffer, ref length, 6, key);
+            return Xtea.XteaDecrypt(ref buffer, ref length, GetPacketHeaderSize(), key);
         }
 
         public bool XteaEncrypt()
@@ -427,7 +438,7 @@ namespace Tibia.Packets
 
         public bool XteaEncrypt(uint[] key)
         {
-            return Xtea.XteaEncrypt(ref buffer, ref length, 6, key);
+            return Xtea.XteaEncrypt(ref buffer, ref length, GetPacketHeaderSize(), key);
         }
 
         #endregion
