@@ -433,6 +433,23 @@ namespace Tibia.Objects
             set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.LensHelp, (int)value); }
         }
 
+        public byte TopOrder
+        {
+            get
+            {
+                if (GetFlag(Tibia.Addresses.DatItem.Flag.IsGround))
+                    return 0;
+                else if (GetFlag(Tibia.Addresses.DatItem.Flag.TopOrder1))
+                    return 1;
+                else if (GetFlag(Tibia.Addresses.DatItem.Flag.TopOrder2))
+                    return 2;
+                else if (GetFlag(Tibia.Addresses.DatItem.Flag.TopOrder3))
+                    return 3;
+                else
+                    return 5;
+            }
+        }
+
         #endregion
 
         #region Composite Properties

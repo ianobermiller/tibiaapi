@@ -2650,7 +2650,6 @@ namespace Tibia
                 #endregion
 
                 #region 8.10 & 8.11 Addresses
-
                 case "8.10":
                 case "8.11":
                     BattleList.Start = 0x613BD0;
@@ -2688,7 +2687,8 @@ namespace Tibia
                     Client.DistancePort = 100;
                     Client.MaxLoginServers = 10;
                     Client.RSA = 0x597610;
-                    Client.LoginCharList = 0x76C288;
+                    Client.LoginCharList = 0x76C28C;
+                    Client.LoginCharListLength = 0x76C290;
                     Client.GameWindowRectPointer = 0x12D624;
                     Client.DatPointer = 0x768C9C;
                     Client.DialogPointer = 0x61E984;

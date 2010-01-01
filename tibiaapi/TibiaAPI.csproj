@@ -265,6 +265,7 @@
     <Compile Include="Util\ClientChooserBase.cs" />
     <Compile Include="Util\ClientChooserOptions.cs" />
     <Compile Include="Util\ClientChooserWPF.xaml.cs" />
+    <Compile Include="Util\FixedCollector.cs" />
     <Compile Include="Util\ItemData.cs" />
     <Compile Include="Util\CreatureData.cs" />
     <Compile Include="Util\Extensions.cs" />

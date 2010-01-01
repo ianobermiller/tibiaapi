@@ -199,17 +199,17 @@ namespace Tibia.Packets.Incoming
                 c.PartyShield = (Constants.PartyShield)msg.GetByte();
                 outMsg.AddByte((byte)c.PartyShield);
 
-                //if version >= 8.53
-                //{
-                if (thingId == 0x0061)
+                if (Client.VersionNumber >= 853)
                 {
-                    c.WarIcon = (Constants.WarIcon)msg.GetByte();
-                    outMsg.AddByte((byte)c.WarIcon);
-                }
+                    if (thingId == 0x0061)
+                    {
+                        c.WarIcon = (Constants.WarIcon)msg.GetByte();
+                        outMsg.AddByte((byte)c.WarIcon);
+                    }
 
-                c.IsBlocking = msg.GetByte().Equals(0x01);
-                outMsg.AddByte(Convert.ToByte(c.IsBlocking));
-                //}
+                    c.IsBlocking = msg.GetByte().Equals(0x01);
+                    outMsg.AddByte(Convert.ToByte(c.IsBlocking));
+                }
 
                 creatures.Add(c);
 
@@ -235,7 +235,7 @@ namespace Tibia.Packets.Incoming
             {
                 //item
                 UInt16 itemId;
-                if (thingId == (sizeof(UInt32) -1))
+                if (thingId == UInt16.MaxValue)
                 {
                     itemId = msg.GetUInt16();
                     outMsg.AddUInt16(itemId);
@@ -251,7 +251,7 @@ namespace Tibia.Packets.Incoming
                     outMsg.AddByte(item.Count);
                 }
 
-                if (n == 0) // first item is ground
+                if (n == 0)
                     tile.Ground = item;
                 else
                     tile.Items.Add(item);
@@ -375,8 +375,11 @@ namespace Tibia.Packets.Incoming
 
                         msg.AddByte((byte)c.PartyShield);
 
-                        //if version >= 8.53
-                        msg.AddByte((byte)c.WarIcon);
+                        if (Client.VersionNumber >= 853)
+                        {
+                            msg.AddByte((byte)c.WarIcon);
+                            msg.AddByte(Convert.ToByte(c.IsBlocking));
+                        }
                     }
                     else if (o.Id <= 9999)
                     {
