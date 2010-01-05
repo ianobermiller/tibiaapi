@@ -150,8 +150,8 @@ namespace Tibia.Packets
         #region ServerPacket
         public bool ParseServerPacket(Client client, byte[] packet)
         {
-            NetworkMessage inMsg = new NetworkMessage(packet);
-            NetworkMessage outMsg = new NetworkMessage();
+            NetworkMessage inMsg = new NetworkMessage(client, packet);
+            NetworkMessage outMsg = new NetworkMessage(client);
             while (inMsg.Position < packet.Length)
             {
                 if (!ParsePacketFromServer(client, inMsg, outMsg))
