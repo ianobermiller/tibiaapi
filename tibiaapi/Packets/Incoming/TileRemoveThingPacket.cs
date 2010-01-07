@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.TileRemoveThing;
 
-            try
-            {
-                Position = msg.GetLocation();
-                StackPosition = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Position = msg.GetLocation();
+            StackPosition = msg.GetByte();
 
             return true;
         }

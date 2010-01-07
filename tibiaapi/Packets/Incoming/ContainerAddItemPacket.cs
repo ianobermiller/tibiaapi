@@ -25,20 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ContainerAddItem;
 
-            try
-            {
-                Container = msg.GetByte();
-                Item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
-
-                if (Item.HasExtraByte)
-                    Item.Count = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
-
+            Container = msg.GetByte();
+            Item = msg.GetItem();
 
             return true;
         }
@@ -47,10 +35,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
             msg.AddByte(Container);
-            msg.AddUInt16((ushort)Item.Id);
-
-            if (Item.HasExtraByte)
-                msg.AddByte(Item.Count);
+            msg.AddItem(Item);
         }
 
     }

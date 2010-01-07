@@ -26,27 +26,19 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ShopSaleGoldCount;
 
-            try
+            Cash = msg.GetUInt32();
+            byte count = msg.GetByte();
+
+            ItemList = new List<ShopInfo> { };
+
+            for (int i = 0; i < count; i++)
             {
-                Cash = msg.GetUInt32();
-                byte count = msg.GetByte();
+                ShopInfo item = new ShopInfo();
 
-                ItemList = new List<ShopInfo> { };
+                item.ItemId = msg.GetUInt16();
+                item.SubType = msg.GetByte();
 
-                for (int i = 0; i < count; i++)
-                {
-                    ShopInfo item = new ShopInfo();
-
-                    item.ItemId = msg.GetUInt16();
-                    item.SubType = msg.GetByte();
-
-                    ItemList.Add(item);
-                }
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
+                ItemList.Add(item);
             }
 
             return true;

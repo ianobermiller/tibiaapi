@@ -25,15 +25,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.FyiMessage;
 
-            try
-            {
-                Message = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Message = msg.GetString();
 
             return true;
         }

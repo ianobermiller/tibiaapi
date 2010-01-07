@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureSkull;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                CreatureSkull = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            CreatureSkull = msg.GetByte();
 
             return true;
         }

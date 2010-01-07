@@ -4,10 +4,10 @@ namespace Tibia.Packets.Outgoing
 {
     public class ItemUseOnPacket : OutgoingPacket
     {
-        public Objects.Location FromPosition { get; set; }
+        public Objects.Location FromLocation { get; set; }
         public ushort FromSpriteId { get; set; }
         public byte FromStackPosition { get; set; }
-        public Objects.Location ToPosition { get; set; }
+        public Objects.Location ToLocation { get; set; }
         public ushort ToSpriteId { get; set; }
         public byte ToStackPosition { get; set; }
 
@@ -26,10 +26,10 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.ItemUseOn;
 
-            FromPosition = msg.GetLocation();
+            FromLocation = msg.GetLocation();
             FromSpriteId = msg.GetUInt16();
             FromStackPosition = msg.GetByte();
-            ToPosition = msg.GetLocation();
+            ToLocation = msg.GetLocation();
             ToSpriteId = msg.GetUInt16();
             ToStackPosition = msg.GetByte();
 
@@ -39,22 +39,22 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(FromPosition);
+            msg.AddLocation(FromLocation);
             msg.AddUInt16(FromSpriteId);
             msg.AddByte(FromStackPosition);
-            msg.AddLocation(ToPosition);
+            msg.AddLocation(ToLocation);
             msg.AddUInt16(ToSpriteId);
             msg.AddByte(ToStackPosition);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort fromSpriteId, byte fromStackPostion, Objects.Location toPosition, ushort toSpriteId, byte toStackPosition)
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort fromSpriteId, byte fromStackPostion, Objects.Location toLocation, ushort toSpriteId, byte toStackPosition)
         {
             ItemUseOnPacket p = new ItemUseOnPacket(client);
 
-            p.FromPosition = fromPosition;
+            p.FromLocation = fromLocation;
             p.FromSpriteId = fromSpriteId;
             p.FromStackPosition = fromStackPostion;
-            p.ToPosition = toPosition;
+            p.ToLocation = toLocation;
             p.ToSpriteId = toSpriteId;
             p.ToStackPosition = toStackPosition;
 

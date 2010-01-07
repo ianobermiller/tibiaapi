@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureOutfit;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                Outfit = msg.GetOutfit();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            Outfit = msg.GetOutfit();
 
             return true;
         }

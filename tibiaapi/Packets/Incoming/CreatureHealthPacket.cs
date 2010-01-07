@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureHealth;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                Health = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            Health = msg.GetByte();
 
             return true;
         }

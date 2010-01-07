@@ -24,18 +24,9 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.MapDescription;
             outMsg.AddByte((byte)Type);
 
-            try
-            {
-                Client.playerLocation = msg.GetLocation();
-                outMsg.AddLocation(Client.playerLocation);
-                SetMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
-            }
-            catch (Exception)
-            {
-                msg.Position = msgPosition;
-                outMsg.Position = outMsgPosition;
-                return false;
-            }
+            Client.playerLocation = msg.GetLocation();
+            outMsg.AddLocation(Client.playerLocation);
+            SetMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
 
             return true;   
         }

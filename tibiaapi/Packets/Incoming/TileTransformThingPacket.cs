@@ -29,30 +29,22 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.TileTransformThing;
 
-            try
+            Position = msg.GetLocation();
+            StackPosition = msg.GetByte();
+            ThingId = msg.GetUInt16();
+
+            if (ThingId == 0x0061 || ThingId == 0x0062 || ThingId == 0x0063)
             {
-                Position = msg.GetLocation();
-                StackPosition = msg.GetByte();
-                ThingId = msg.GetUInt16();
-
-                if (ThingId == 0x0061 || ThingId == 0x0062 || ThingId == 0x0063)
-                {
-                    CreatureId = msg.GetUInt32();
-                    CreatureDirection = msg.GetByte();
-                }
-                else
-                {
-                    Item = new Tibia.Objects.Item(Client, ThingId, 0);
-                    Item.Location = Tibia.Objects.ItemLocation.FromLocation(Position);
-
-                    if (Item.HasExtraByte)
-                        Item.Count = msg.GetByte();
-                }
+                CreatureId = msg.GetUInt32();
+                CreatureDirection = msg.GetByte();
             }
-            catch (Exception)
+            else
             {
-                msg.Position = position;
-                return false;
+                Item = new Tibia.Objects.Item(Client, ThingId, 0);
+                Item.Location = Tibia.Objects.ItemLocation.FromLocation(Position);
+
+                if (Item.HasExtraByte)
+                    Item.Count = msg.GetByte();
             }
 
             return true;

@@ -25,16 +25,7 @@ namespace Tibia.Packets.Incoming
 
             Client.playerLocation.X++;
 
-            try
-            {
-                SetMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14, outMsg);
-            }
-            catch (Exception)
-            {
-                msg.Position = msgPosition;
-                outMsg.Position = outMsgPosition;
-                return false;
-            }
+            SetMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14, outMsg);
 
             return true;
         }

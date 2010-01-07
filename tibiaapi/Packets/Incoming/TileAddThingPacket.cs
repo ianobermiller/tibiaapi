@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
 {
     public class TileAddThingPacket : IncomingPacket
     {
-        public Objects.Location Position { get; set; }
+        public Objects.Location Location { get; set; }
         public Objects.Item Item { get; set; }
         public PacketCreature Creature { get; set; }
         public ushort ThingId { get; set; }
@@ -23,78 +23,68 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            int position = msg.Position;
-
             if (msg.GetByte() != (byte)IncomingPacketType.TileAddThing)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.TileAddThing;
 
-            try
+            Location = msg.GetLocation();
+            Stack = msg.GetByte();
+            ThingId = msg.GetUInt16();
+            
+            if (ThingId == 0x0061 || ThingId == 0x0062)
             {
-                Position = msg.GetLocation();
-                Stack = msg.GetByte();
-                ThingId = msg.GetUInt16();
-                
-                if (ThingId == 0x0061 || ThingId == 0x0062)
+                Creature = new PacketCreature(Client);
+
+                if (ThingId == 0x0062)
                 {
-                    Creature = new PacketCreature(Client);
-
-                    if (ThingId == 0x0062)
-                    {
-                        Creature.Type = PacketCreatureType.Known;
-                        Creature.Id = msg.GetUInt32();
-                    }
-                    else if (ThingId == 0x0061)
-                    {
-                        Creature.Type = PacketCreatureType.Unknown;
-                        Creature.RemoveId = msg.GetUInt32();
-                        Creature.Id = msg.GetUInt32();
-                        Creature.Name = msg.GetString();
-                    }
-
-                    Creature.Health = msg.GetByte();
-                    Creature.Direction = msg.GetByte();
-
-                    Creature.Outfit = msg.GetOutfit();
-
-                    Creature.LightLevel = msg.GetByte();
-                    Creature.LightColor = msg.GetByte();
-
-                    Creature.Speed = msg.GetUInt16();
-                    Creature.Skull = (Constants.Skull)msg.GetByte();
-                    Creature.PartyShield = (PartyShield)msg.GetByte();
-
-                    
-                    if (Client.VersionNumber >= 853)
-                    {
-                        if (ThingId == 0x0061)
-                            Creature.WarIcon = (Constants.WarIcon)msg.GetByte();
-
-                        Creature.IsBlocking = msg.GetByte().Equals(0x01);
-                    }
-                }
-                else if (ThingId == 0x0063)
-                {
-                    Creature = new PacketCreature(Client);
-                    Creature.Type = PacketCreatureType.Turn;
+                    Creature.Type = PacketCreatureType.Known;
                     Creature.Id = msg.GetUInt32();
-                    Creature.Direction = msg.GetByte();
                 }
-                else
+                else if (ThingId == 0x0061)
                 {
-                    Item = new Tibia.Objects.Item(Client, ThingId);
-                    Item.Location = Tibia.Objects.ItemLocation.FromLocation(Position);
+                    Creature.Type = PacketCreatureType.Unknown;
+                    Creature.RemoveId = msg.GetUInt32();
+                    Creature.Id = msg.GetUInt32();
+                    Creature.Name = msg.GetString();
+                }
 
-                    if (Item.HasExtraByte)
-                        Item.Count = msg.GetByte();
+                Creature.Health = msg.GetByte();
+                Creature.Direction = msg.GetByte();
+
+                Creature.Outfit = msg.GetOutfit();
+
+                Creature.LightLevel = msg.GetByte();
+                Creature.LightColor = msg.GetByte();
+
+                Creature.Speed = msg.GetUInt16();
+                Creature.Skull = (Constants.Skull)msg.GetByte();
+                Creature.PartyShield = (PartyShield)msg.GetByte();
+
+                
+                if (Client.VersionNumber >= 853)
+                {
+                    if (ThingId == 0x0061)
+                        Creature.WarIcon = (Constants.WarIcon)msg.GetByte();
+
+                    Creature.IsBlocking = msg.GetByte().Equals(0x01);
                 }
             }
-            catch (Exception)
+            else if (ThingId == 0x0063)
             {
-                msg.Position = position;
-                return false;
+                Creature = new PacketCreature(Client);
+                Creature.Type = PacketCreatureType.Turn;
+                Creature.Id = msg.GetUInt32();
+                Creature.Direction = msg.GetByte();
+            }
+            else
+            {
+                Item = new Tibia.Objects.Item(Client, ThingId);
+                Item.Location = Tibia.Objects.ItemLocation.FromLocation(Location);
+
+                if (Item.HasExtraByte)
+                    Item.Count = msg.GetByte();
             }
 
             return true;
@@ -104,7 +94,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(Position);
+            msg.AddLocation(Location);
             msg.AddByte(Stack);
             msg.AddUInt16(ThingId);
 

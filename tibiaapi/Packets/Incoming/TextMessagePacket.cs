@@ -28,16 +28,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.TextMessage;
 
-            try
-            {
-                Color = (StatusMessage)msg.GetByte();
-                Message = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Color = (StatusMessage)msg.GetByte();
+            Message = msg.GetString();
 
             return true;
         }

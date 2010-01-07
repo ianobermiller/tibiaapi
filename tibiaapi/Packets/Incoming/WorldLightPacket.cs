@@ -26,16 +26,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.WorldLight;
 
-            try
-            {
-                LightLevel = msg.GetByte();
-                LightColor = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            LightLevel = msg.GetByte();
+            LightColor = msg.GetByte();
 
             return true;
         }

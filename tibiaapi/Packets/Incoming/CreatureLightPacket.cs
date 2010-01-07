@@ -26,17 +26,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureLight;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                LightLevel = msg.GetByte();
-                LightColor = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            LightLevel = msg.GetByte();
+            LightColor = msg.GetByte();
 
             return true;
         }

@@ -4,7 +4,7 @@ namespace Tibia.Packets.Outgoing
 {
     public class TileUpdatePacket : OutgoingPacket
     {
-        public Objects.Location Position { get; set; }
+        public Objects.Location Location { get; set; }
 
         public TileUpdatePacket(Objects.Client c)
             : base(c)
@@ -21,7 +21,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.TileUpdate;
 
-            Position = msg.GetLocation();
+            Location = msg.GetLocation();
 
             return true;
         }
@@ -29,13 +29,13 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(Position);
+            msg.AddLocation(Location);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location position)
+        public static bool Send(Objects.Client client, Objects.Location location)
         {
             TileUpdatePacket p = new TileUpdatePacket(client);
-            p.Position = position;
+            p.Location = location;
             return p.Send();
         }
     }

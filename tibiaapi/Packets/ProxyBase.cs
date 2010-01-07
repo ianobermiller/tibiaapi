@@ -1401,7 +1401,7 @@ namespace Tibia.Packets
                     sw.Close();
                 }
             }
-            catch (Exception)
+            catch
             {
             }
         }

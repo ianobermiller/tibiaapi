@@ -28,16 +28,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureSquare;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                Color = (SquareColor)msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            Color = (SquareColor)msg.GetByte();
 
             return true;
         }

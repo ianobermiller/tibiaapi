@@ -28,16 +28,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ChannelOpen;
 
-            try
-            {
-                ChannelId = (ChatChannel)msg.GetUInt16();
-                ChannelName = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            ChannelId = (ChatChannel)msg.GetUInt16();
+            ChannelName = msg.GetString();
 
             return true;
         }

@@ -5,7 +5,7 @@ namespace Tibia.Packets.Outgoing
     public class LookAtPacket : OutgoingPacket
     {
 
-        public Objects.Location Position { get; set; }
+        public Objects.Location Location { get; set; }
         public ushort SpriteId { get; set; }
         public byte StackPosition { get; set; }
 
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.LookAt;
 
-            Position = msg.GetLocation();
+            Location = msg.GetLocation();
             SpriteId = msg.GetUInt16();
             StackPosition = msg.GetByte();
 
@@ -35,7 +35,7 @@ namespace Tibia.Packets.Outgoing
         {
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(Position);
+            msg.AddLocation(Location);
             msg.AddUInt16(SpriteId);
             msg.AddByte(StackPosition);
         }
@@ -43,7 +43,7 @@ namespace Tibia.Packets.Outgoing
         public static bool Send(Objects.Client client, Objects.Location position, ushort spriteId, byte stackPosition)
         {
             LookAtPacket p = new LookAtPacket(client);
-            p.Position = position;
+            p.Location = position;
             p.SpriteId = spriteId;
             p.StackPosition = stackPosition;
             return p.Send();

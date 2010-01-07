@@ -4,7 +4,7 @@ namespace Tibia.Packets.Outgoing
 {
     public class ItemUseBattlelistPacket : OutgoingPacket
     {
-        public Objects.Location FromPosition { get; set; }
+        public Objects.Location FromLocation { get; set; }
         public ushort SpriteId { get; set; }
         public byte FromStackPosition { get; set; }
         public uint CreatureId { get; set; }
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.ItemUseBattlelist;
 
-            FromPosition = msg.GetLocation();
+            FromLocation = msg.GetLocation();
             SpriteId = msg.GetUInt16();
             FromStackPosition = msg.GetByte();
             CreatureId = msg.GetUInt32();
@@ -35,17 +35,17 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(FromPosition);
+            msg.AddLocation(FromLocation);
             msg.AddUInt16(SpriteId);
             msg.AddByte(FromStackPosition);
             msg.AddUInt32(CreatureId);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStack,uint creatureId)
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort spriteId, byte fromStack,uint creatureId)
         {
             ItemUseBattlelistPacket p = new ItemUseBattlelistPacket(client);
 
-            p.FromPosition = fromPosition;
+            p.FromLocation = fromLocation;
             p.SpriteId = spriteId;
             p.FromStackPosition = fromStack;
             p.CreatureId = creatureId;

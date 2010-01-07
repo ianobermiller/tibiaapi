@@ -24,15 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.InventoryResetSlot;
 
-            try
-            {
-                Slot = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Slot = msg.GetByte();
 
             return true;
         }

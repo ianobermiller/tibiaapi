@@ -24,15 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.RuleViolationOpen;
 
-            try
-            {
-                ChannelId = msg.GetUInt16();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            ChannelId = msg.GetUInt16();
 
             return true;
         }

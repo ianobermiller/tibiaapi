@@ -37,28 +37,20 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.OutfitWindow;
 
-            try
+            Default = msg.GetOutfit();
+
+            byte count = msg.GetByte();
+            OutfitList = new List<AvalibleOutfit> { };
+
+            for (int i = 0; i < count; i++)
             {
-                Default = msg.GetOutfit();
+                AvalibleOutfit outfit = new AvalibleOutfit();
 
-                byte count = msg.GetByte();
-                OutfitList = new List<AvalibleOutfit> { };
+                outfit.Id = msg.GetUInt16();
+                outfit.Name = msg.GetString();
+                outfit.Addons = msg.GetByte();
 
-                for (int i = 0; i < count; i++)
-                {
-                    AvalibleOutfit outfit = new AvalibleOutfit();
-
-                    outfit.Id = msg.GetUInt16();
-                    outfit.Name = msg.GetString();
-                    outfit.Addons = msg.GetByte();
-
-                    OutfitList.Add(outfit);
-                }
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
+                OutfitList.Add(outfit);
             }
 
             return true;

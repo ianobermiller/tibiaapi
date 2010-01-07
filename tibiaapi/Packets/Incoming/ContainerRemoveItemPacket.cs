@@ -25,17 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ContainerRemoveItem;
 
-            try
-            {
-                Container = msg.GetByte();
-                Slot = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
-
+            Container = msg.GetByte();
+            Slot = msg.GetByte();
 
             return true;
         }

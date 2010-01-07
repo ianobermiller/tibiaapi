@@ -26,17 +26,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.SelfAppear;
 
-            try
-            {
-                YourId = msg.GetUInt32();
-                Unknown = msg.GetUInt16(); // Related to client-side drawing speed
-                CanReportBug = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            YourId = msg.GetUInt32();
+            Unknown = msg.GetUInt16(); // Related to client-side drawing speed
+            CanReportBug = msg.GetByte();
 
             return true;
         }
