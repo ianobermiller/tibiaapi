@@ -6,8 +6,8 @@ namespace Tibia.Packets.Incoming
     public class CreatureMovePacket : IncomingPacket
     {
         public byte FromStackPosition { get; set; }
-        public Objects.Location FromPosition { get; set; }
-        public Objects.Location ToPosition { get; set; }
+        public Objects.Location FromLocation { get; set; }
+        public Objects.Location ToLocation { get; set; }
 
         public CreatureMovePacket(Objects.Client c)
             : base(c)
@@ -26,17 +26,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureMove;
 
-            try
-            {
-                FromPosition = msg.GetLocation();
-                FromStackPosition = msg.GetByte();
-                ToPosition = msg.GetLocation();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            FromLocation = msg.GetLocation();
+            FromStackPosition = msg.GetByte();
+            ToLocation = msg.GetLocation();
 
             return true;
         }
@@ -44,9 +36,9 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(FromPosition);
+            msg.AddLocation(FromLocation);
             msg.AddByte(FromStackPosition);
-            msg.AddLocation(ToPosition);
+            msg.AddLocation(ToLocation);
         }
     }
 }

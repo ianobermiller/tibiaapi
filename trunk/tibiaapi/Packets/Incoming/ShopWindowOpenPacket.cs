@@ -47,28 +47,20 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ShopWindowOpen;
 
-            try
-            {
-                byte cap = msg.GetByte();
-                ShopList = new List<ShopInfo> { };
+            byte cap = msg.GetByte();
+            ShopList = new List<ShopInfo> { };
 
-                for (int i = 0; i < cap; i++)
-                {
-                    ShopInfo item = new ShopInfo();
-
-                    item.ItemId = msg.GetUInt16();
-                    item.SubType = msg.GetByte();
-                    item.ItemName = msg.GetString();
-                    item.Weight = msg.GetUInt32();
-                    item.BuyPrice = msg.GetUInt32();
-                    item.SellPrice = msg.GetUInt32();
-                    ShopList.Add(item);
-                }
-            }
-            catch (Exception)
+            for (int i = 0; i < cap; i++)
             {
-                msg.Position = position;
-                return false;
+                ShopInfo item = new ShopInfo();
+
+                item.ItemId = msg.GetUInt16();
+                item.SubType = msg.GetByte();
+                item.ItemName = msg.GetString();
+                item.Weight = msg.GetUInt32();
+                item.BuyPrice = msg.GetUInt32();
+                item.SellPrice = msg.GetUInt32();
+                ShopList.Add(item);
             }
 
             return true;

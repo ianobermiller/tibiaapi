@@ -29,20 +29,12 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ItemTextWindow;
 
-            try
-            {
-                WindowId = msg.GetUInt32();
-                ItemId = msg.GetUInt16();
-                MaxLength = msg.GetUInt16();
-                Text = msg.GetString();
-                Author = msg.GetString();
-                Date = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            WindowId = msg.GetUInt32();
+            ItemId = msg.GetUInt16();
+            MaxLength = msg.GetUInt16();
+            Text = msg.GetString();
+            Author = msg.GetString();
+            Date = msg.GetString();
 
             return true;
         }

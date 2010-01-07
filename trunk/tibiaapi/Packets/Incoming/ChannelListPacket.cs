@@ -27,21 +27,13 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ChannelList;
 
-            try
-            {
-                byte count = msg.GetByte();
-                Channels = new List<Tibia.Objects.Channel> { };
+            byte count = msg.GetByte();
+            Channels = new List<Tibia.Objects.Channel> { };
 
-                for (int i = 0; i < count; i++)
-                {
-                    ushort id = msg.GetUInt16();
-                    Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
-                }
-            }
-            catch (Exception)
+            for (int i = 0; i < count; i++)
             {
-                msg.Position = position;
-                return false;
+                ushort id = msg.GetUInt16();
+                Channels.Add(new Tibia.Objects.Channel((ChatChannel)id, msg.GetString()));
             }
 
             return true;

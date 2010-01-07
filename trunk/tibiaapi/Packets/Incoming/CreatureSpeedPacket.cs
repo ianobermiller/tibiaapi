@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureSpeed;
 
-            try
-            {
-                CreatureId = msg.GetUInt32();
-                Speed = msg.GetUInt16();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            CreatureId = msg.GetUInt32();
+            Speed = msg.GetUInt16();
 
             return true;
         }

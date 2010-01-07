@@ -13,8 +13,6 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
         {
-            int msgPosition = msg.Position, outMsgPosition = outMsg.Position;
-
             if (msg.GetByte() != (byte)IncomingPacketType.TileUpdate)
                 return false;
 
@@ -22,35 +20,19 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.TileUpdate;
             outMsg.AddByte((byte)Type);
 
-            try
+            Objects.Location pos = msg.GetLocation();
+            outMsg.AddLocation(pos);
+
+            ushort thingId = msg.PeekUInt16();
+
+            if (thingId == 0xFF01)
             {
-                Objects.Location pos = msg.GetLocation();
-                outMsg.AddLocation(pos);
-
-                ushort thingId = msg.PeekUInt16();
-
-                if (thingId == 0xFF01)
-                {
-                    outMsg.AddUInt16(msg.GetUInt16());
-                    //if (!tile)
-                    //{
-                    //    RAISE_PROTOCOL_ERROR("Tile Update - !tile");
-                    //}
-                }
-                else
-                {
-                    if (!SetTileDescription(msg, pos, outMsg))
-                    {
-                        //RAISE_PROTOCOL_ERROR("Tile Update - SetTileDescription");
-                    }
-                    outMsg.AddUInt16(msg.GetUInt16());
-                }
+                outMsg.AddUInt16(msg.GetUInt16());
             }
-            catch (Exception)
+            else
             {
-                msg.Position = msgPosition;
-                outMsg.Position = outMsgPosition;
-                return false;
+                SetTileDescription(msg, pos, outMsg);
+                outMsg.AddUInt16(msg.GetUInt16());
             }
 
             return true;

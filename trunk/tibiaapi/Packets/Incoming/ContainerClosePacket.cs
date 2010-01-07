@@ -24,16 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ContainerClose;
 
-            try
-            {
-                Id = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = postion;
-                return false;
-            }
-
+            Id = msg.GetByte();
 
             return true;
         }

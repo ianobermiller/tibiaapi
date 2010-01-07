@@ -9,7 +9,7 @@ namespace Tibia.Packets.Incoming
     public class CreatureSpeechPacket : IncomingPacket
     {
         public SpeechType SpeechType { get; set; }
-        public uint UnknowSpeak { get; set; }
+        public uint Unknown { get; set; }
         public ChatChannel ChannelId { get; set; }
         public string SenderName { get; set; }
         public ushort SenderLevel { get; set; }
@@ -34,45 +34,36 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureSpeech;
 
-            try
+            Unknown = msg.GetUInt32();
+            SenderName = msg.GetString();
+            SenderLevel = msg.GetUInt16();
+            SpeechType = (SpeechType)msg.GetByte();
+
+            switch (SpeechType)
             {
-                UnknowSpeak = msg.GetUInt32();
-                SenderName = msg.GetString();
-                SenderLevel = msg.GetUInt16();
-                SpeechType = (SpeechType)msg.GetByte();
-
-
-                switch (SpeechType)
-                {
-                    case SpeechType.Say:
-                    case SpeechType.Whisper:
-                    case SpeechType.Yell:
-                    case SpeechType.MonsterSay:
-                    case SpeechType.MonsterYell:
-                    case SpeechType.PrivateNPCToPlayer:
-                        Position = msg.GetLocation();
-                        break;
-                    case SpeechType.ChannelRed:
-                    case SpeechType.ChannelRedAnonymous:
-                    case SpeechType.ChannelOrange:
-                    case SpeechType.ChannelYellow:
-                    case SpeechType.ChannelWhite:
-                        ChannelId = (ChatChannel)msg.GetUInt16();
-                        break;
-                    case SpeechType.RuleViolationReport:
-                        Time = msg.GetUInt32();
-                        break;
-                    default:
-                        break;
-                }
-
-                Message = msg.GetString();
+                case SpeechType.Say:
+                case SpeechType.Whisper:
+                case SpeechType.Yell:
+                case SpeechType.MonsterSay:
+                case SpeechType.MonsterYell:
+                case SpeechType.PrivateNPCToPlayer:
+                    Position = msg.GetLocation();
+                    break;
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelRedAnonymous:
+                case SpeechType.ChannelOrange:
+                case SpeechType.ChannelYellow:
+                case SpeechType.ChannelWhite:
+                    ChannelId = (ChatChannel)msg.GetUInt16();
+                    break;
+                case SpeechType.RuleViolationReport:
+                    Time = msg.GetUInt32();
+                    break;
+                default:
+                    break;
             }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+
+            Message = msg.GetString();
 
             return true;
         }
@@ -147,7 +138,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
 
-            msg.AddUInt32(UnknowSpeak);
+            msg.AddUInt32(Unknown);
             msg.AddString(SenderName);
             msg.AddUInt16(SenderLevel);
             msg.AddByte((byte)SpeechType);

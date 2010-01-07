@@ -26,17 +26,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.PrivateChannelCreate;
 
-
-            try
-            {
-                ChannelId = msg.GetUInt16();
-                Name = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            ChannelId = msg.GetUInt16();
+            Name = msg.GetString();
 
             return true;
         }

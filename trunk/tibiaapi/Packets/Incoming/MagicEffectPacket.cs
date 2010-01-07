@@ -25,16 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.MagicEffect;
 
-            try
-            {
-                Position = msg.GetLocation();
-                Effect = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Position = msg.GetLocation();
+            Effect = msg.GetByte();
 
             return true;
         }

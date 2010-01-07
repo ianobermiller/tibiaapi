@@ -30,17 +30,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.Projectile;
 
-            try
-            {
-                FromPosition = msg.GetLocation();
-                ToPosition = msg.GetLocation();
-                Effect = (ProjectileType)msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            FromPosition = msg.GetLocation();
+            ToPosition = msg.GetLocation();
+            Effect = (ProjectileType)msg.GetByte();
 
             return true;
         }

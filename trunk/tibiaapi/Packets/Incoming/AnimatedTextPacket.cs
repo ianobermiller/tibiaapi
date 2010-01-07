@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
 {
     public class AnimatedTextPacket : IncomingPacket
     {
-        public Objects.Location Position { get; set; }
+        public Objects.Location Location { get; set; }
         public string Message { get; set; }
         public TextColor Color { get; set; }
 
@@ -29,17 +29,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.AnimatedText;
 
-            try
-            {
-                Position = msg.GetLocation();
-                Color = (TextColor)msg.GetByte();
-                Message = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Location = msg.GetLocation();
+            Color = (TextColor)msg.GetByte();
+            Message = msg.GetString();
 
             return true;
         }
@@ -47,7 +39,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(Position);
+            msg.AddLocation(Location);
             msg.AddByte((byte)Color);
             msg.AddString(Message);
         }
@@ -56,7 +48,7 @@ namespace Tibia.Packets.Incoming
         {
             AnimatedTextPacket p = new AnimatedTextPacket(client);
             p.Message = message;
-            p.Position = position;
+            p.Location = position;
             p.Color = color;
             return p.Send();
         }

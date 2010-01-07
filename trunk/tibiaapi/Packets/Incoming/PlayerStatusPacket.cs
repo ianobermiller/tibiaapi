@@ -35,32 +35,24 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.PlayerStatus;
 
-            try
-            {
-                Health = msg.GetUInt16();
-                MaxHealth = msg.GetUInt16();
-                Capacity = msg.GetUInt32();
+            Health = msg.GetUInt16();
+            MaxHealth = msg.GetUInt16();
+            Capacity = msg.GetUInt32();
 
-                Experience = msg.GetUInt32();
+            Experience = msg.GetUInt32();
 
-                Level = msg.GetUInt16();
+            Level = msg.GetUInt16();
 
-                LevelPercent = msg.GetByte();
+            LevelPercent = msg.GetByte();
 
-                Mana = msg.GetUInt16();
-                MaxMana = msg.GetUInt16();
+            Mana = msg.GetUInt16();
+            MaxMana = msg.GetUInt16();
 
-                MagicLevel = msg.GetByte();
-                MagicLevelPercent = msg.GetByte();
-                Soul = msg.GetByte();
+            MagicLevel = msg.GetByte();
+            MagicLevelPercent = msg.GetByte();
+            Soul = msg.GetByte();
 
-                Stamina = msg.GetUInt16();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Stamina = msg.GetUInt16();
 
             return true;
         }

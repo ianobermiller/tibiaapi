@@ -2888,7 +2888,7 @@ namespace Tibia
                     Client.SocketStruct = 0x763780;
                     Client.SendPointer = 0x593600;
                     //Client.FrameRate = 0x7661F4; 
-                    Client.MultiClient = 0x4EFB71;//not verified
+                    Client.MultiClient = 0x4EFB71; //not verified
                     Client.Status = 0x766DF8;
                     Client.FollowMode = 0x763BD0;
                     Client.AttackMode = 0x763BD4;
@@ -2913,6 +2913,7 @@ namespace Tibia
                     Client.LoginCharList = 0x766DBC;
                     Client.LoginSelectedChar = 0x766DB8;
                     Client.DialogPointer = 0x6198B4;
+                    Client.DatPointer = 0x7637CC;
 
                     Container.Start = 0x617000;
                     Container.End = 0x618EC0;

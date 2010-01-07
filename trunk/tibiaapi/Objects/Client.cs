@@ -22,6 +22,9 @@ namespace Tibia.Objects
     {
         #region Variables
 
+        private string cachedVersion = null;
+        private ushort cachedVersionNumber = 0;
+
         private Process process;
         private IntPtr processHandle;
 
@@ -207,7 +210,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public string Version
         {
-            get { return process.MainModule.FileVersionInfo.FileVersion; }
+            get
+            {
+                if (cachedVersion == null)
+                {
+                    cachedVersion = process.MainModule.FileVersionInfo.FileVersion;
+                }
+                return cachedVersion;
+            }
         }
 
         /// <summary>
@@ -216,7 +226,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public ushort VersionNumber
         {
-            get { return Tibia.Version.StringToVersion(process.MainModule.FileVersionInfo.FileVersion); }
+            get
+            {
+                if (cachedVersionNumber == 0)
+                {
+                    cachedVersionNumber = Tibia.Version.StringToVersion(Version);
+                }
+                return cachedVersionNumber;
+            }
         }
 
         /// <summary>

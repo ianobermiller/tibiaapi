@@ -40,13 +40,6 @@ namespace Tibia.Packets.Incoming
 
                 return true;
             }
-            catch (Exception)
-            {
-                msg.Position = msgPosition;
-                outMsg.Position = outMsgPosition;
-
-                return false;
-            }
             finally
             {
                 Client.playerLocation.X++;

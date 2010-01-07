@@ -24,15 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.PlayerWalkCancel;
 
-            try
-            {
-                Direction = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Direction = msg.GetByte();
 
             return true;
         }

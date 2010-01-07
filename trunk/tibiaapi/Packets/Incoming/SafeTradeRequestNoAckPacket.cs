@@ -27,27 +27,16 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.SafeTradeRequestNoAck;
 
-            try
+            Name = msg.GetString();
+            Count = msg.GetByte();
+
+            Items = new List<Tibia.Objects.Item>(Count);
+
+            for (int i = 0; i < Count; i++)
             {
-                Name = msg.GetString();
-                Count = msg.GetByte();
+                Objects.Item item = msg.GetItem();
 
-                Items = new List<Tibia.Objects.Item>(Count);
-
-                for (int i = 0; i < Count; i++)
-                {
-                    Objects.Item item = new Tibia.Objects.Item(Client, msg.GetUInt16(), 0);
-
-                    if (item.HasExtraByte)
-                        item.Count = msg.GetByte();
-
-                    Items.Add(item);
-                }
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
+                Items.Add(item);
             }
 
             return true;
@@ -62,10 +51,7 @@ namespace Tibia.Packets.Incoming
 
             foreach (Objects.Item i in Items)
             {
-                msg.AddUInt16((ushort)i.Id);
-
-                if (i.HasExtraByte)
-                    msg.AddByte(i.Count);
+                msg.AddItem(i);
             }
         }
     }

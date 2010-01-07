@@ -17,24 +17,14 @@ namespace Tibia.Packets.Incoming
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            int position = msg.Position;
-
             if (msg.GetByte() != (byte)IncomingPacketType.WaitingList)
                 return false;
 
             Destination = destination;
             Type = IncomingPacketType.WaitingList;
 
-            try
-            {
-                Message = msg.GetString();
-                Time = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Message = msg.GetString();
+            Time = msg.GetByte();
 
             return true;
         }

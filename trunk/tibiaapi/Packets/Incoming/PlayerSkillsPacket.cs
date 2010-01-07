@@ -38,28 +38,20 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.PlayerSkillsUpdate;
 
-            try
-            {
-                Fist = msg.GetByte();
-                FistPercent = msg.GetByte();
-                Club = msg.GetByte();
-                ClubPercent = msg.GetByte();
-                Sword = msg.GetByte();
-                SwordPercent = msg.GetByte();
-                Axe = msg.GetByte();
-                AxePercent = msg.GetByte();
-                Distance = msg.GetByte();
-                DistancePercent = msg.GetByte();
-                Shield = msg.GetByte();
-                ShieldPercent = msg.GetByte();
-                Fish = msg.GetByte();
-                FishPercent = msg.GetByte();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Fist = msg.GetByte();
+            FistPercent = msg.GetByte();
+            Club = msg.GetByte();
+            ClubPercent = msg.GetByte();
+            Sword = msg.GetByte();
+            SwordPercent = msg.GetByte();
+            Axe = msg.GetByte();
+            AxePercent = msg.GetByte();
+            Distance = msg.GetByte();
+            DistancePercent = msg.GetByte();
+            Shield = msg.GetByte();
+            ShieldPercent = msg.GetByte();
+            Fish = msg.GetByte();
+            FishPercent = msg.GetByte();
 
             return true;
         }

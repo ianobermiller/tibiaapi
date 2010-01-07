@@ -25,15 +25,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.PlayerFlags;
 
-            try
-            {
-                Flag = msg.GetUInt16();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Flag = msg.GetUInt16();
 
             return true;
         }

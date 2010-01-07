@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Tibia.Util;
+using Tibia.Objects;
 
 namespace Tibia.Packets
 {
@@ -218,6 +219,16 @@ namespace Tibia.Packets
                 return new Tibia.Objects.Outfit(looktype, GetUInt16());
         }
 
+        public Item GetItem()
+        {
+            Item item = new Item(Client, GetUInt16(), 0);
+
+            if (item.HasExtraByte)
+                item.Count = GetByte();
+
+            return item;
+        }
+
         #endregion
 
         #region Add
@@ -279,6 +290,14 @@ namespace Tibia.Packets
         private void AddPacketHeader(ushort value)
         {
             Array.Copy(BitConverter.GetBytes(value), 0, buffer, 0, 2);
+        }
+
+        public void AddItem(Item item)
+        {
+            AddUInt16((ushort)item.Id);
+
+            if (item.HasExtraByte)
+                AddByte(item.Count);
         }
 
         #endregion

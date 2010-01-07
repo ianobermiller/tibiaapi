@@ -4,10 +4,10 @@ namespace Tibia.Packets.Outgoing
 {
     public class ItemMovePacket : OutgoingPacket
     {
-        public Objects.Location FromPosition { get; set; }
+        public Objects.Location FromLocation { get; set; }
         public ushort SpriteId { get; set; }
         public byte FromStackPosition { get; set; }
-        public Objects.Location ToPosition { get; set; }
+        public Objects.Location ToLocation { get; set; }
         public byte Count { get; set; }
 
         public ItemMovePacket(Objects.Client c)
@@ -25,10 +25,10 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.ItemMove;
 
-            FromPosition = msg.GetLocation();
+            FromLocation = msg.GetLocation();
             SpriteId = msg.GetUInt16();
             FromStackPosition = msg.GetByte();
-            ToPosition = msg.GetLocation();
+            ToLocation = msg.GetLocation();
             Count = msg.GetByte();
 
             return true;
@@ -38,21 +38,21 @@ namespace Tibia.Packets.Outgoing
         {
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(FromPosition);
+            msg.AddLocation(FromLocation);
             msg.AddUInt16(SpriteId);
             msg.AddByte(FromStackPosition);
-            msg.AddLocation(ToPosition);
+            msg.AddLocation(ToLocation);
             msg.AddByte(Count);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStackPostion, Objects.Location toPosition, byte count)
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort spriteId, byte fromStackPostion, Objects.Location toLocation, byte count)
         {
             ItemMovePacket p = new ItemMovePacket(client);
 
-            p.FromPosition = fromPosition;
+            p.FromLocation = fromLocation;
             p.SpriteId = spriteId;
             p.FromStackPosition = fromStackPostion;
-            p.ToPosition = toPosition;
+            p.ToLocation = toLocation;
             p.Count = count;
 
             return p.Send();

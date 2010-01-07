@@ -4,7 +4,7 @@ namespace Tibia.Packets.Outgoing
 {
     public class ItemUsePacket : OutgoingPacket
     {
-        public Objects.Location FromPosition { get; set; }
+        public Objects.Location FromLocation { get; set; }
         public ushort SpriteId { get; set; }
         public byte FromStackPosition { get; set; }
         public byte Index { get; set; }
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.ItemUse;
 
-            FromPosition = msg.GetLocation();
+            FromLocation = msg.GetLocation();
             SpriteId = msg.GetUInt16();
             FromStackPosition = msg.GetByte();
             Index = msg.GetByte();
@@ -36,7 +36,7 @@ namespace Tibia.Packets.Outgoing
         {
             msg.AddByte((byte)Type);
 
-            msg.AddLocation(FromPosition);
+            msg.AddLocation(FromLocation);
             msg.AddUInt16(SpriteId);
             msg.AddByte(FromStackPosition);
             msg.AddByte(Index);
@@ -45,7 +45,7 @@ namespace Tibia.Packets.Outgoing
         public static bool Send(Objects.Client client, Objects.Location fromPosition, ushort spriteId, byte fromStack, byte index)
         {
             ItemUsePacket p = new ItemUsePacket(client);
-            p.FromPosition = fromPosition;
+            p.FromLocation = fromPosition;
             p.SpriteId = spriteId;
             p.FromStackPosition = fromStack;
             p.Index = index;

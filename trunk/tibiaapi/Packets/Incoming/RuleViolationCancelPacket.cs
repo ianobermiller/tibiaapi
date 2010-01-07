@@ -24,15 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.RuleViolationCancel;
 
-            try
-            {
-                Name = msg.GetString();
-            }
-            catch (Exception)
-            {
-                msg.Position = position;
-                return false;
-            }
+            Name = msg.GetString();
 
             return true;
         }
