@@ -262,6 +262,18 @@ namespace Tibia.Packets
                 loginClientTcp.Stop();
                 worldClientTcp.Stop();
 
+                if (Version.CurrentVersion >= 854)
+                {
+                    int type = (int)ar.AsyncState;
+                    //we have to connect to the world server now.. and send w8 for response..
+                    if (type == 1)
+                    {
+                        serverTcp = new TcpClient(BitConverter.GetBytes(charList[client.Login.SelectedChar].WorldIP).ToIPString(), charList[client.Login.SelectedChar].WorldPort);
+                        serverStream = serverTcp.GetStream();
+                        serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
+                    }
+                }
+
                 clientStream = new NetworkStream(clientSocket);
                 clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
@@ -356,14 +368,13 @@ namespace Tibia.Packets
                         break;
                 }
             }
-            catch (ObjectDisposedException ex) { WriteDebug(ex.ToString()); }
+            catch (ObjectDisposedException ex) { /*We don't have to log this exception. */ }
             catch (System.IO.IOException ex) { WriteDebug(ex.ToString()); }
             catch (Exception ex)
             {
                 WriteDebug(ex.ToString());
                 if (clientData != null)
                     SendToServer(clientData);
-                //Restart();
             }
         }
 
@@ -481,10 +492,13 @@ namespace Tibia.Packets
 
                         int index = GetSelectedIndex(characterName);
 
-                        serverTcp = new TcpClient(BitConverter.GetBytes(charList[index].WorldIP).ToIPString(), charList[index].WorldPort);
-                        serverStream = serverTcp.GetStream();
-                        serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
+                        if (Version.CurrentVersion < 854)
+                        {
+                            serverTcp = new TcpClient(BitConverter.GetBytes(charList[index].WorldIP).ToIPString(), charList[index].WorldPort);
+                            serverStream = serverTcp.GetStream();
+                        }
 
+                        serverStream.Write(clientRecvMsg.GetBuffer(), 0, clientRecvMsg.Length);
                         serverStream.BeginRead(serverRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ServerReadCallBack), null);
                         clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
 
