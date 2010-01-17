@@ -173,7 +173,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x792E0F; // 8.54
+        public static uint LoginCharList = 0x792E04; // 8.54 When we get this address it return 0x792E0F, i don't known why, maybe a convertion problem?
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to

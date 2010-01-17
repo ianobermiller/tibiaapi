@@ -103,6 +103,17 @@ namespace Tibia.Packets
 
         #region Public Functions
 
+        public void Shutdown()
+        {
+            if (loginServers != null)
+                client.Login.Servers = loginServers;
+            if (charList != null)
+                client.Login.SetCharListServer(charList);
+
+            client.Login.RSA = Constants.RSAKey.RealTibia;
+            Stop();
+        }
+
         public void CheckState()
         {
             if ((DateTime.Now - lastInteraction).TotalSeconds >= 30)
@@ -277,6 +288,7 @@ namespace Tibia.Packets
                 clientStream = new NetworkStream(clientSocket);
                 clientStream.BeginRead(clientRecvMsg.GetBuffer(), 0, 2, new AsyncCallback(ClientReadCallBack), null);
             }
+            catch (ObjectDisposedException) { /*We don't have to log this exception. */ }
             catch (Exception ex)
             {
                 WriteDebug(ex.ToString());
@@ -368,7 +380,7 @@ namespace Tibia.Packets
                         break;
                 }
             }
-            catch (ObjectDisposedException ex) { /*We don't have to log this exception. */ }
+            catch (ObjectDisposedException) { /*We don't have to log this exception. */ }
             catch (System.IO.IOException ex) { WriteDebug(ex.ToString()); }
             catch (Exception ex)
             {
@@ -624,9 +636,9 @@ namespace Tibia.Packets
             {
                 if (serverRecvMsg.CheckAdler32() && serverRecvMsg.PrepareToRead())
                 {
-                    ushort x = serverRecvMsg.GetUInt16();
+                    int msgSize = serverRecvMsg.GetUInt16() + 6;
 
-                    while (serverRecvMsg.Position < serverRecvMsg.Length)
+                    while (serverRecvMsg.Position < msgSize)
                     {
                         byte cmd = serverRecvMsg.GetByte();
 

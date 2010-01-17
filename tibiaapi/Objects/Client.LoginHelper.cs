@@ -354,7 +354,7 @@ namespace Tibia.Objects
             public void SetCharListServer(byte[] ipAddress, ushort port)
             {
                 byte count = CharListCount;
-                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharList);
+                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListLength - 4);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -375,7 +375,7 @@ namespace Tibia.Objects
                 if (count != charList.Length)
                     return false;
 
-                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharList);
+                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListLength - 4);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -397,7 +397,7 @@ namespace Tibia.Objects
                 {
                     CharacterLoginInfo[] charList = new CharacterLoginInfo[CharListCount];
 
-                    uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharList);
+                    uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListLength - 4);
 
                     for (int i = 0; i < charList.Length; i++)
                     {
