@@ -72,7 +72,7 @@ namespace Tibia
                     Client.DistancePort = 100;
                     Client.MaxLoginServers = 10;
                     Client.RSA = 0x5B2610;
-                    Client.LoginCharList = 0x792E0F;
+                    Client.LoginCharList = 0x792E04;
                     Client.LoginCharListLength = 0x792E08;
                     Client.LoginSelectedChar = 0x792E00;
                     Client.GameWindowRectPointer = 0x64218C;
