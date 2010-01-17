@@ -41,7 +41,7 @@ namespace Tibia.Packets.Outgoing
             msg.AddUInt32(CreatureId);
         }
 
-        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort spriteId, byte fromStack,uint creatureId)
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort spriteId, byte fromStack, uint creatureId)
         {
             ItemUseBattlelistPacket p = new ItemUseBattlelistPacket(client);
 
