@@ -677,6 +677,7 @@ public static Item CrystalOfPower = new Item(9067, "Crystal Of Power");
 }
 
 public static class Potion {
+public static Item SmallHealthPotion = new Item(7876, "Small Health Potion");
 public static Item HealthPotion = new Item(266, "Health Potion");
 public static Item StrongHealthPotion = new Item(236, "Strong Health Potion");
 public static Item GreatHealthPotion = new Item(239, "Great Health Potion");
