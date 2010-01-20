@@ -2173,6 +2173,7 @@ public static Dictionary<uint, Item> Decoration = new Dictionary<uint, Item>
 #region Potion
 public static Dictionary<uint, Item> Potion = new Dictionary<uint, Item>
 {
+{ Items.Potion.SmallHealthPotion.Id, Items.Potion.SmallHealthPotion },
 { Items.Potion.HealthPotion.Id, Items.Potion.HealthPotion }, 
 { Items.Potion.StrongHealthPotion.Id, Items.Potion.StrongHealthPotion }, 
 { Items.Potion.GreatHealthPotion.Id, Items.Potion.GreatHealthPotion }, 
