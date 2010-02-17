@@ -59,7 +59,7 @@ namespace TestSuite
         {
             AnimatedTextPacket p = new AnimatedTextPacket(client);
             p.Message = "Testing";
-            p.Position = client.PlayerLocation;
+            p.Location = client.PlayerLocation;
             p.Color = TextColor.Platinum;
             MarkButton((Button)sender, p.Send(Packet.SendMethod.Proxy));
         }

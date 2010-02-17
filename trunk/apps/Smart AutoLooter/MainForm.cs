@@ -17,7 +17,7 @@ using System.Threading;
 
 namespace SmartAutoLooter
 {
-    public partial class frmMain : Form
+    public partial class MainForm : Form
     {
         Client _client;
         bool _autoLoot;
@@ -28,7 +28,7 @@ namespace SmartAutoLooter
         byte _container;
         static AutoResetEvent _autoLootAutoEvent = new AutoResetEvent(false);
 
-        public frmMain()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -275,7 +275,7 @@ namespace SmartAutoLooter
             {
                 TileAddThingPacket p = (TileAddThingPacket)packet;
 
-                if (p.Item != null && p.Position.DistanceTo(_client.GetPlayer().Location) <= 3)
+                if (p.Item != null && p.Location.DistanceTo(_client.GetPlayer().Location) <= 3)
                 {
                     if (p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsContainer) &&
                         p.Item.GetFlag(Tibia.Addresses.DatItem.Flag.IsCorpse))
@@ -433,7 +433,7 @@ namespace SmartAutoLooter
 
         private void idToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAutoLootAdd frm = new frmAutoLootAdd();
+            AddAutoLootForm frm = new AddAutoLootForm();
 
             if (frm.ShowDialog() == DialogResult.OK)
             {

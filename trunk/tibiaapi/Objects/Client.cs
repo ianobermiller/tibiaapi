@@ -1,15 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Linq;
-using Tibia.Packets;
-using System.IO;
+using System.Diagnostics;
 using System.Drawing;
-using Tibia.Constants;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Tibia.Objects
 {

@@ -1,6 +1,6 @@
 ﻿namespace SmartAutoLooter
 {
-    partial class frmMain
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

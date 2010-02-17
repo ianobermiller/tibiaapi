@@ -1,6 +1,6 @@
 ﻿namespace SmartAutoLooter
 {
-    partial class frmAutoLootAdd
+    partial class AddAutoLootForm
     {
         /// <summary>
         /// Required designer variable.
