@@ -52,26 +52,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmAutoLootAdd.cs">
+    <Compile Include="AddAutoLootForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAutoLootAdd.designer.cs">
-      <DependentUpon>frmAutoLootAdd.cs</DependentUpon>
+    <Compile Include="AddAutoLootForm.designer.cs">
+      <DependentUpon>AddAutoLootForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmAutoLootAdd.resx">
-      <DependentUpon>frmAutoLootAdd.cs</DependentUpon>
+    <EmbeddedResource Include="AddAutoLootForm.resx">
+      <DependentUpon>AddAutoLootForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

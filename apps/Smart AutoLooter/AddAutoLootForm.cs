@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace SmartAutoLooter
 {
-    public partial class frmAutoLootAdd : Form
+    public partial class AddAutoLootForm : Form
     {
-        public frmAutoLootAdd()
+        public AddAutoLootForm()
         {
             InitializeComponent();
         }
