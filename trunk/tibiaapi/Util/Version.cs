@@ -94,7 +94,7 @@ namespace Tibia
                     Client.LoginPatch2 = 0;
                     Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
                     Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
-                    Client.ParserFunc = 0x45BA00;
+                    Client.ParserFunc = 0x45BBB0;
                     Client.GetNextPacketCall = 0x45BBE5;
                     Client.RecvStream = 0x78F7DC;
 

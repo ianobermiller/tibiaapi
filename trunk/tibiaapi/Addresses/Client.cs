@@ -271,7 +271,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The function that tibia calls to parse packets
         /// </summary>
-        public static uint ParserFunc = 0x45BA00; //8.54
+        public static uint ParserFunc = 0x45BBB0; //8.54
 
         /// <summary>
         /// The address of the call to get next packet command
