@@ -15,6 +15,9 @@ namespace Tibia.Packets
         private NetworkMessage clientRecvMsg;
         private NetworkMessage clientSendMsg;
 
+        private int fullPacketSize;
+        private int partialPacketSize;
+
         public HookProxy(Client client)
         {
             this.client = client;
@@ -22,7 +25,7 @@ namespace Tibia.Packets
             serverSendMsg = new NetworkMessage(client);
             clientRecvMsg = new NetworkMessage(client);
             clientSendMsg = new NetworkMessage(client);
-            
+
             if (client.Dll.Pipe == null)
             {
                 client.Dll.InitializePipe();
@@ -66,9 +69,44 @@ namespace Tibia.Packets
 
         public void ProcessFromServer(byte[] buffer)
         {
-            int length = (int)BitConverter.ToUInt16(buffer, 0);
-            Array.Copy(buffer, serverRecvMsg.GetBuffer(), length);
-            serverRecvMsg.Length = length;
+            int length = (int)BitConverter.ToUInt16(buffer, 0) + 2;
+
+            if (length > buffer.Length)
+            {
+                // Packet is split into multiple chunks
+                if (partialPacketSize == 0)
+                {
+                    // This is the first chunk
+                    fullPacketSize = length;
+                    Array.Copy(buffer, serverRecvMsg.GetBuffer(), buffer.Length);
+                    partialPacketSize = buffer.Length;
+                    return;
+                }
+                else
+                {
+                    // This is a subsequent chunk
+                    Array.Copy(buffer, 0, serverRecvMsg.GetBuffer(), partialPacketSize, buffer.Length);
+                    partialPacketSize += buffer.Length;
+
+                    if (partialPacketSize < fullPacketSize)
+                    {
+                        // Packet is still incomplete
+                        return;
+                    }
+                    else
+                    {
+                        // Packet is complete
+                        serverRecvMsg.Length = fullPacketSize;
+                    }
+                }
+            }
+            else
+            {
+                fullPacketSize = 0;
+                partialPacketSize = 0;
+                Array.Copy(buffer, serverRecvMsg.GetBuffer(), length);
+                serverRecvMsg.Length = length;
+            }
 
             OnReceivedDataFromServer(serverRecvMsg.Data);
 
