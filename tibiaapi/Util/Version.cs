@@ -40,14 +40,14 @@ namespace Tibia
                     BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
                     Client.StartTime = 0x7DDCB8;
-                    Client.XTeaKey = 0x796DD4;
+                    Client.XTeaKey = Client.RecvStream + 0x10;
                     Client.SocketStruct = 0x796DB8;
                     Client.RecvPointer = 0x5B75DC;
                     Client.SendPointer = 0x5B7608;
                     Client.FrameRatePointer = 0x79AF9C;
                     Client.FrameRateCurrentOffset = 0x60;
                     Client.FrameRateLimitOffset = 0x58;
-                    Client.MultiClient = 0x50B8C8;
+                    Client.MultiClient = 0x50B874;
                     Client.Status = 0x79A450;
                     Client.SafeMode = 0x79720C;
                     Client.FollowMode = Client.SafeMode + 4;
@@ -273,7 +273,7 @@ namespace Tibia
                     TextDisplay.PrintName = 0x4F5133;
                     TextDisplay.PrintFPS = 0x45A058;
                     TextDisplay.ShowFPS = 0x63AF94;
-                    TextDisplay.PrintTextFunc = 0x44D49C;
+                    TextDisplay.PrintTextFunc = 0x4B4130;
                     TextDisplay.NopFPS = 0x459F94;
 
                     Vip.Start = 0x63B010;

@@ -14,7 +14,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x796DD4; //8.55
+        public static uint XTeaKey = RecvStream + 0x10; //8.55
 
         /// <summary>
         /// Address of the socket struct
@@ -50,7 +50,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x50B8C8; //8.55
+        public static uint MultiClient = 0x50B874; //8.55
 
         /// <summary>
         /// Value to be written to the multiclient address(JMP).
