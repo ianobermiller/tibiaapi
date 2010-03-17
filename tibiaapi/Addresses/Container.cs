@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the container list in memory.
         /// </summary>
-        public static uint Start = 0x642C40; //8.54
+        public static uint Start = 0x64A238; //8.55
 
         /// <summary>
         /// Distance between the containers.
