@@ -201,7 +201,7 @@ namespace Tibia
                     Map.NameSpy2 = 0x4F2123;
                     Map.NameSpy1Default = 19061;
                     Map.NameSpy2Default = 16501;
-                    Map.LevelSpy1 = 0x4F40BD;
+                    Map.LevelSpy1 = 0x4F3FCA;
                     Map.LevelSpy2 = 0x4F40CF;
                     Map.LevelSpy3 = 0x4F4150;
                     Map.LevelSpyPtr = 0x649784;
