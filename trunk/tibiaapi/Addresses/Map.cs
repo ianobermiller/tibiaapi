@@ -109,7 +109,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4F40BD;  // 8.55
+        public static uint LevelSpy1 = 0x4F3FCA;  // 8.55
 
 
         /// <summary>
