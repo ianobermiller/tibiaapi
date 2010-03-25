@@ -40,7 +40,7 @@ namespace Tibia
                     BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
                     Client.StartTime = 0x7DDCB8;
-                    Client.XTeaKey = Client.RecvStream + 0x10;
+                    Client.XTeaKey = 0x796DE4;
                     Client.SocketStruct = 0x796DB8;
                     Client.RecvPointer = 0x5B75DC;
                     Client.SendPointer = 0x5B7608;
