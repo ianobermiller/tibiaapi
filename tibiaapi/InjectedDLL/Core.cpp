@@ -1156,7 +1156,6 @@ void ParseUpdateIcon(BYTE *Buffer, int position)
 void ParseRemoveIcon(BYTE *Buffer, int position)
 {
 	int iconId = Packet::ReadDWord(Buffer, &position);
-	MessageBoxA(0, "test", "test", NULL);
 	EnterCriticalSection(&DrawItemCriticalSection);
 	list<Icon>::iterator oiIT;
 	for(oiIT = Icons.begin(); oiIT != Icons.end(); ++oiIT)		
