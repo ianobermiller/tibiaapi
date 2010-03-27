@@ -12,7 +12,7 @@ namespace Tibia.Objects
         #endregion
 
         #region Constructor
-        internal Hotkey(Client client, byte number)
+        public Hotkey(Client client, byte number)
         {
             if (number < 0 || number > Addresses.Hotkey.MaxHotkeys)
                 throw new ArgumentOutOfRangeException("number", "Hotkey number must be between 0 and Addresses.Hotkey.MaxHotkeys.");
