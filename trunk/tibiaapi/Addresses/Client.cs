@@ -9,33 +9,33 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x7DDCB8; //8.55
+        public static uint StartTime = 0x7E0788; //8.57
 
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x796DE4; //8.55 : RecvStream + 0x10
+        public static uint XTeaKey = 0x7998B4; //8.57 : RecvStream + 0x10
 
         /// <summary>
         /// Address of the socket struct
         /// </summary>
-        public static uint SocketStruct = 0x796DB8; //8.55
+        public static uint SocketStruct = 0x799888; //8.57
 
         /// <summary>
         /// Pointer to the WS2_32.Recv function
         /// </summary>
-        public static uint RecvPointer = 0x5B75DC; //8.55
+        public static uint RecvPointer = 0x5B85E4; //8.57
 
         /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
-        public static uint SendPointer = 0x5B7608; //8.55
+        public static uint SendPointer = 0x5B8610; //8.57
 
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x79AF9C; //8.55
+        public static uint FrameRatePointer = 0x79DA6C; //8.57
 
         /// <summary>
         /// FPS limit offset
@@ -50,7 +50,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x50B874; //8.55
+        public static uint MultiClient = 0x50BB24; //8.57
 
         /// <summary>
         /// Value to be written to the multiclient address(JMP).
@@ -65,12 +65,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x79A450; //8.55
+        public static uint Status = 0x79CF20; //8.57
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x79720C; //8.55
+        public static uint SafeMode = 0x799CDC; //8.57
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
@@ -84,18 +84,18 @@ namespace Tibia.Addresses
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x79A4B0; //8.55
+        public static uint ActionState = 0x79CF80; //8.57
 
         /// <summary>
         /// Action state freezer
         /// </summary>
-        public static uint ActionStateFreezer = 0x51CBB4; //8.55
+        public static uint ActionStateFreezer = 0x51D074; //8.57
         public static byte[] ActionStateOriginal = new byte[] { 0xA3, 0x00, 0x00, 0x00, 0x00, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
         public static byte[] ActionStateFreezed = new byte[] { 0xC7, 0x05, 0x00 , 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xC3 };
         /// <summary>
         /// The text of the last message sent to the default channel(innacurate?).
         /// </summary>
-        public static uint LastMSGText = 0x7DDF28; //8.55
+        public static uint LastMSGText = 0x7E094F8; //8.57
 
         /// <summary>
         /// The last player to send a message to the default channel(innacurate?).
@@ -105,7 +105,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint StatusbarText = 0x7DDCD8; //8.55
+        public static uint StatusbarText = 0x7E07A8; //8.57
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
@@ -114,7 +114,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint ClickId = 0x79A4F0; // 8.55
+        public static uint ClickId = 0x79CFC0; // 8.57
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
@@ -127,17 +127,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Used for showing item id functions.
         /// </summary>
-        public static uint ClickContextMenuItemId = 0x79A4FC; //8.55
+        public static uint ClickContextMenuItemId = 0x79CFCC; //8.57
 
         /// <summary>
         /// Used for showing item id functions
         /// </summary>
-        public static uint ClickContextMenuItemGroundId = 0x79A500; //8.55
+        public static uint ClickContextMenuItemGroundId = 0x79CFD0; //8.57
 
         /// <summary>
         /// Used for searching the last right-clicked creature
         /// </summary>
-        public static uint ClickContextMenuCreatureId = 0x79A4F8; //8.55
+        public static uint ClickContextMenuCreatureId = 0x79CFC8; //8.57
 
         /// <summary>
         /// The id of the last item seen (looked at).
@@ -159,7 +159,7 @@ namespace Tibia.Addresses
         public static uint SeeText = 0; //8.50 
         
         // Login Server addresses
-        public static uint LoginServerStart = 0x791D20; //8.55
+        public static uint LoginServerStart = 0x7947F0; //8.57
         public static uint StepLoginServer = 112;
         public static uint DistancePort = 100;
         public static uint MaxLoginServers = 10;
@@ -167,18 +167,18 @@ namespace Tibia.Addresses
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5B7610; //8.55
+        public static uint RSA = 0x5B8980; //8.57
 
 		  
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x79A404; //8.55
+        public static uint LoginCharList = 0x79CED4; //8.57
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to
         /// </summary>
-        public static uint LoginCharListLength = 0x79A408; // 8.55
+        public static uint LoginCharListLength = 0x79CED8; // 8.57
 
         /* Character List Format
         
@@ -194,7 +194,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = 0x79A400; // 8.55
+        public static uint LoginSelectedChar = 0x79CED0; // 8.57
 
         //This format is for the character list that is stored at 0x76450D (8.40).
         //This format is also how it comes in the packet.
@@ -219,8 +219,8 @@ namespace Tibia.Addresses
         /// it, it points to the game window rect 
         /// struct.
         /// </summary>
-        public static uint GameWindowRectPointer = 0x649784; //8.55
-        public static uint GameWindowBar = 0x7DDCCC; //8.55
+        public static uint GameWindowRectPointer = 0x64C254; //8.57
+        public static uint GameWindowBar = 0x7E079C; //8.57
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
@@ -234,10 +234,10 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x796E04; //8.55
+        public static uint DatPointer = 0x7998D4; //8.57
 
-        public static uint EventTriggerPointer = 0x51EC50; //8.55
-        public static uint DialogPointer = 0x64CAEC; //8.55
+        public static uint EventTriggerPointer = 0x51F4D0; //8.57
+        public static uint DialogPointer = 0x64F5BC; //8.57
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
@@ -247,17 +247,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        public static uint LastRcvPacket = 0x792598; //8.55
+        public static uint LastRcvPacket = 0x795068; //8.57
 
         /// <summary>
         /// Call to decrypt packet
         /// </summary>
-        public static uint DecryptCall = 0x45C1B5; //8.55
+        public static uint DecryptCall = 0x45C345; //8.57 : Same as GetNextPacketCall
 
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = 0x79A40C; //8.55
+        public static uint LoginPassword = 0x79CEDC; //8.57
         public static uint LoginAccount = LoginPassword + 32;
         public static uint LoginAccountNum = 0; // deprecated
 
@@ -271,17 +271,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// The function that tibia calls to parse packets
         /// </summary>
-        public static uint ParserFunc = 0x45C180; //8.55
+        public static uint ParserFunc = 0x45C310; //8.57
 
         /// <summary>
         /// The address of the call to get next packet command
         /// </summary>
-        public static uint GetNextPacketCall = 0x45C1B5; //8.55
+        public static uint GetNextPacketCall = 0x45C345; //8.57 : Same as DecryptCall
         
         /// <summary>
         /// The address of the received "stream". It is laid as pointer to buffer, dwSize, dwSize
         /// </summary>
-        public static uint RecvStream = 0x796DD4; //8.55
+        public static uint RecvStream = 0x7998A4; //8.57
 
 
     }

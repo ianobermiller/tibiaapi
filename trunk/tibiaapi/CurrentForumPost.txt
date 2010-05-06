@@ -3,9 +3,7 @@
 =================================================
 
 [SIZE=3][COLOR=Orange]About this Release[/COLOR][/SIZE][LIST]
-[*]We have added a very advanced feature, thanks to the TT+ team, and that is displaying text directly on the client through the use of an injected dynamic link library (DLL). Please check out the Screen object and the Smart Team Marker sample program for usage.
-[*]The rest of this release is mostly bug fixes and update to the newest version.
-[*]ATTENTION: We will be freezing the method signatures for the v3.0 release, which means our goal of using a new TibiaAPI dll to update existing programs will finally be realized!
+[*]Updated to support Tibia client 8.57
 [/LIST]
 
 [SIZE=3][COLOR=Orange]About TibiaAPI[/COLOR][/SIZE][LIST]
@@ -22,7 +20,7 @@
 
 [SIZE=3][COLOR=DarkOrange]Downloads [/COLOR][/SIZE][[URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Complete Listing[/COLOR][/URL]]
 [LIST]
-[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.3_07-17-08.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.3 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio, the latest Packet.dll (Stiju), and the TibiaAPI Injected DLL
+[*][URL="http://tibiaapi.googlecode.com/files/TibiaAPI_v2.9.4_05-06-10.zip"][COLOR=DeepSkyBlue]TibiaAPI v2.9.4 DLL[/COLOR][/URL] - Inside you will find a readme for use with Visual Studio.
 [*]You can find many examples at the [URL="http://code.google.com/p/tibiaapi/downloads/list"][COLOR=DeepSkyBlue]Google Code download page[/COLOR][/URL].
 [/LIST]
 
@@ -33,8 +31,7 @@
 
 [SIZE=3][COLOR=DarkOrange]Upcoming[/COLOR][/SIZE]
 [LIST]
-[*]Auto-Login wrappers
-[*]Added context menu items
+[*]?
 [/LIST]
 
 [SIZE=3][COLOR=DarkOrange]Change Log[/COLOR][/SIZE]

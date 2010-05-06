@@ -7,8 +7,8 @@ namespace Tibia
 {
     public class Version
     {
-        public static ushort CurrentVersion = 855;
-        public static string CurrentVersionString = "8.55";
+        public static ushort CurrentVersion = 857;
+        public static string CurrentVersionString = "8.57";
 
         public static string VersionToString(ushort version)
         {
@@ -31,6 +31,263 @@ namespace Tibia
             CurrentVersionString = version;
             switch (version)
             {
+                #region 8.57 Addresses
+
+                case "8.57":
+                    BattleList.Start = 0x63FEF0;
+                    BattleList.StepCreatures = 0xA8;
+                    BattleList.MaxCreatures = 250;
+                    BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
+
+                    Client.StartTime = 0x7E0788;
+                    Client.XTeaKey = 0x7998B4;
+                    Client.SocketStruct = 0x799888;
+                    Client.RecvPointer = 0x5B85E4;
+                    Client.SendPointer = 0x5B8610;
+                    Client.FrameRatePointer = 0x79DA6C;
+                    Client.FrameRateCurrentOffset = 0x60;
+                    Client.FrameRateLimitOffset = 0x58;
+                    Client.MultiClient = 0x50BB24;
+                    Client.Status = 0x79CF20;
+                    Client.SafeMode = 0x799CDC;
+                    Client.FollowMode = Client.SafeMode + 4;
+                    Client.AttackMode = Client.FollowMode + 4;
+                    Client.ActionState = 0x79CF80;
+                    Client.ActionStateFreezer = 0x51D074;
+                    Client.LastMSGText = 0x7E094F8;
+                    Client.LastMSGAuthor = Client.LastMSGText - 0x28;
+                    Client.StatusbarText = 0x7E07A8;
+                    Client.StatusbarTime = Client.StatusbarText - 4;
+                    Client.ClickId = 0x79CFC0;
+                    Client.ClickCount = Client.ClickId + 4;
+                    Client.ClickZ = Client.ClickId - 0x68;
+                    Client.SeeId = Client.ClickId + 12;
+                    Client.SeeCount = Client.SeeId + 4;
+                    Client.SeeZ = Client.SeeId - 0x68;
+                    Client.ClickContextMenuItemId = 0x79CFCC;
+                    Client.ClickContextMenuItemGroundId = 0x79CFD0;
+                    Client.ClickContextMenuCreatureId = 0x79CFC8;
+                    Client.LoginServerStart = 0x7947F0;
+                    Client.StepLoginServer = 112;
+                    Client.DistancePort = 100;
+                    Client.MaxLoginServers = 10;
+                    Client.RSA = 0x5B8980;
+                    Client.LoginCharList = 0x79CED4;
+                    Client.LoginCharListLength = 0x79CED8;
+                    Client.LoginSelectedChar = 0x79CED0;
+                    Client.GameWindowRectPointer = 0x64C254;
+                    Client.GameWindowBar = 0x7E079C;
+                    Client.DatPointer = 0x7998D4;
+                    Client.EventTriggerPointer = 0x51F4D0;
+                    Client.DialogPointer = 0x64F5BC;
+                    Client.DialogLeft = 0x14;
+                    Client.DialogTop = 0x18;
+                    Client.DialogWidth = 0x1C;
+                    Client.DialogHeight = 0x20;
+                    Client.DialogCaption = 0x50;
+                    Client.LastRcvPacket = 0x795068;
+                    Client.DecryptCall = 0x45C345;
+                    Client.LoginAccountNum = 0;
+                    Client.LoginPassword = 0x79CEDC;
+                    Client.LoginAccount = Client.LoginPassword + 32;
+                    Client.LoginPatch = 0;
+                    Client.LoginPatch2 = 0;
+                    Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
+                    Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+                    Client.ParserFunc = 0x45C310;
+                    Client.GetNextPacketCall = 0x45C345;
+                    Client.RecvStream = 0x7998A4;
+
+                    Container.Start = 0x64CD08;
+                    Container.StepContainer = 492;
+                    Container.StepSlot = 12;
+                    Container.MaxContainers = 16;
+                    Container.MaxStack = 100;
+                    Container.DistanceIsOpen = 0;
+                    Container.DistanceId = 4;
+                    Container.DistanceName = 16;
+                    Container.DistanceVolume = 48;
+                    Container.DistanceAmount = 56;
+                    Container.DistanceItemId = 60;
+                    Container.DistanceItemCount = 64;
+                    Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
+
+                    ContextMenus.AddContextMenuPtr = 0x4522E0;
+                    ContextMenus.OnClickContextMenuPtr = 0x44E910;
+                    ContextMenus.OnClickContextMenuVf = 0x5BD9C0;
+                    ContextMenus.AddSetOutfitContextMenu = 0x453243;
+                    ContextMenus.AddPartyActionContextMenu = 0x45366C;
+                    ContextMenus.AddCopyNameContextMenu = 0x453750;
+                    ContextMenus.AddTradeWithContextMenu = 0x452E89;
+                    ContextMenus.AddLookContextMenu = 0x452D3F;
+
+                    Creature.DistanceId = 0;
+                    Creature.DistanceType = 3;
+                    Creature.DistanceName = 4;
+                    Creature.DistanceX = 36;
+                    Creature.DistanceY = 40;
+                    Creature.DistanceZ = 44;
+                    Creature.DistanceScreenOffsetHoriz = 48;
+                    Creature.DistanceScreenOffsetVert = 52;
+                    Creature.DistanceIsWalking = 76;
+                    Creature.DistanceWalkSpeed = 140;
+                    Creature.DistanceDirection = 80;
+                    Creature.DistanceIsVisible = 144;
+                    Creature.DistanceBlackSquare = 132;
+                    Creature.DistanceLight = 120;
+                    Creature.DistanceLightColor = 124;
+                    Creature.DistanceHPBar = 136;
+                    Creature.DistanceSkull = 148;
+                    Creature.DistanceParty = 152;
+                    Creature.DistanceWarIcon = 160;
+                    Creature.DistanceIsBlocking = 164;
+                    Creature.DistanceOutfit = 96;
+                    Creature.DistanceColorHead = 100;
+                    Creature.DistanceColorBody = 104;
+                    Creature.DistanceColorLegs = 108;
+                    Creature.DistanceColorFeet = 112;
+                    Creature.DistanceAddon = 116;
+
+                    DatItem.Width = 0;
+                    DatItem.Height = 4;
+                    DatItem.Unknown1 = 8;
+                    DatItem.Layers = 12;
+                    DatItem.PatternX = 16;
+                    DatItem.PatternY = 20;
+                    DatItem.PatternDepth = 24;
+                    DatItem.Phase = 28;
+                    DatItem.Sprite = 32;
+                    DatItem.Flags = 36;
+                    DatItem.CanLookAt = 40;
+                    DatItem.WalkSpeed = 44;
+                    DatItem.TextLimit = 48;
+                    DatItem.LightRadius = 52;
+                    DatItem.LightColor = 56;
+                    DatItem.ShiftX = 60;
+                    DatItem.ShiftY = 64;
+                    DatItem.WalkHeight = 68;
+                    DatItem.Automap = 72;
+                    DatItem.LensHelp = 76;
+
+                    DrawItem.DrawItemFunc = 0x4B5770;
+
+                    DrawSkin.DrawSkinFunc = 0x4B9560;
+
+                    Hotkey.SendAutomaticallyStart = 0x799ED8;
+                    Hotkey.SendAutomaticallyStep = 0x01;
+                    Hotkey.TextStart = 0x799F00;
+                    Hotkey.TextStep = 0x100;
+                    Hotkey.ObjectStart = 0x799E48;
+                    Hotkey.ObjectStep = 0x04;
+                    Hotkey.ObjectUseTypeStart = 0x799D28;
+                    Hotkey.ObjectUseTypeStep = 0x04;
+                    Hotkey.MaxHotkeys = 36;
+
+                    Map.MapPointer = 0x654110;
+                    Map.StepTile = 168;
+                    Map.StepTileObject = 12;
+                    Map.DistanceTileObjectCount = 0;
+                    Map.DistanceTileObjects = 4;
+                    Map.DistanceObjectId = 0;
+                    Map.DistanceObjectData = 4;
+                    Map.DistanceObjectDataEx = 8;
+                    Map.MaxTileObjects = 10;
+                    Map.MaxX = 18;
+                    Map.MaxY = 14;
+                    Map.MaxZ = 8;
+                    Map.MaxTiles = 2016;
+                    Map.ZAxisDefault = 7;
+                    Map.NameSpy1 = 0x4F2689;
+                    Map.NameSpy2 = 0x4F2693;
+                    Map.NameSpy1Default = 19061;
+                    Map.NameSpy2Default = 16501;
+                    Map.LevelSpy1 = 0x4F453A;
+                    Map.LevelSpy2 = 0x4F463F;
+                    Map.LevelSpy3 = 0x4F46C0;
+                    Map.LevelSpyPtr = 0x64C254;
+                    Map.LevelSpyAdd1 = 28;
+                    Map.LevelSpyAdd2 = 0x2A88;
+                    Map.FullLightNop = 0x4EAE29;
+                    Map.FullLightAdr = 0x4EAE2C;
+                    Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
+                    Map.FullLightNopEdited = new byte[] { 0x90, 0x90 };
+                    Map.FullLightAdrDefault = 0x80;
+                    Map.FullLightAdrEdited = 0xFF;
+
+                    Player.Exp = 0x63FE84;
+                    Player.Flags = Player.Exp - 108;
+                    Player.Id = Player.Exp + 12;
+                    Player.HP = Player.Exp + 8;
+                    Player.HPMax = Player.Exp + 4;
+                    Player.Level = Player.Exp - 4;
+                    Player.MagicLevel = Player.Exp - 8;
+                    Player.LevelPercent = Player.Exp - 12;
+                    Player.MagicLevelPercent = Player.Exp - 16;
+                    Player.Mana = Player.Exp - 20;
+                    Player.ManaMax = Player.Exp - 24;
+                    Player.Soul = Player.Exp - 28;
+                    Player.Stamina = Player.Exp - 32;
+                    Player.Cap = Player.Exp - 36;
+                    Player.FistPercent = 0x63FE1C;
+                    Player.ClubPercent = Player.FistPercent + 4;
+                    Player.SwordPercent = Player.FistPercent + 8;
+                    Player.AxePercent = Player.FistPercent + 12;
+                    Player.DistancePercent = Player.FistPercent + 16;
+                    Player.ShieldingPercent = Player.FistPercent + 20;
+                    Player.FishingPercent = Player.FistPercent + 24;
+                    Player.Fist = Player.FistPercent + 28;
+                    Player.Club = Player.FistPercent + 32;
+                    Player.Sword = Player.FistPercent + 36;
+                    Player.Axe = Player.FistPercent + 40;
+                    Player.Distance = Player.FistPercent + 44;
+                    Player.Shielding = Player.FistPercent + 48;
+                    Player.Fishing = Player.FistPercent + 52;
+                    Player.SlotHead = 0x64CC90;
+                    Player.SlotNeck = Player.SlotHead + 12;
+                    Player.SlotBackpack = Player.SlotHead + 24;
+                    Player.SlotArmor = Player.SlotHead + 36;
+                    Player.SlotRight = Player.SlotHead + 48;
+                    Player.SlotLeft = Player.SlotHead + 60;
+                    Player.SlotLegs = Player.SlotHead + 72;
+                    Player.SlotFeet = Player.SlotHead + 84;
+                    Player.SlotRing = Player.SlotHead + 96;
+                    Player.SlotAmmo = Player.SlotHead + 108;
+                    Player.MaxSlots = 11;
+                    Player.DistanceSlotCount = 4;
+                    Player.CurrentTileToGo = 0x63FE98;
+                    Player.TilesToGo = 0x63FE9C;
+                    Player.GoToX = Player.Exp + 80;
+                    Player.GoToY = Player.GoToX - 4;
+                    Player.GoToZ = Player.GoToX - 8;
+                    Player.RedSquare = 0x63FE5C;
+                    Player.GreenSquare = Player.RedSquare - 4;
+                    Player.WhiteSquare = Player.GreenSquare - 8;
+                    Player.AccessN = 0;
+                    Player.AccessS = 0;
+                    Player.TargetID = Player.RedSquare;
+                    Player.TargetBListID = Player.TargetID - 8;
+                    Player.TargetBListType = Player.TargetID - 5;
+                    Player.TargetType = Player.TargetID + 3;
+                    Player.Z = 0x64F5F8;
+
+                    TextDisplay.PrintName = 0x4F56A3;
+                    TextDisplay.PrintFPS = 0x45A1F8;
+                    TextDisplay.ShowFPS = 0x63DB34;
+                    TextDisplay.PrintTextFunc = 0x4B4BB0;
+                    TextDisplay.NopFPS = 0x45A134;
+
+                    Vip.Start = 0x63DBB0;
+                    Vip.StepPlayers = 0x2C;
+                    Vip.MaxPlayers = 200;
+                    Vip.DistanceId = 0;
+                    Vip.DistanceName = 4;
+                    Vip.DistanceStatus = 34;
+                    Vip.DistanceIcon = 40;
+                    Vip.End = Vip.Start + (Vip.StepPlayers * Vip.MaxPlayers);
+                    break;
+
+                #endregion
+
                 #region 8.55 Addresses
 
                 case "8.55":
