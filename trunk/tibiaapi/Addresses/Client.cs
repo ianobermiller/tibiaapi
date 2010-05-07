@@ -131,13 +131,14 @@ namespace Tibia.Addresses
 
         /// <summary>
         /// Used for showing item id functions
+        /// Deprecated on 8.5x due to player stacking?
         /// </summary>
-        public static uint ClickContextMenuItemGroundId = 0x79CFD0; //8.57
+        public static uint ClickContextMenuItemGroundId = 0; //8.57
 
         /// <summary>
         /// Used for searching the last right-clicked creature
         /// </summary>
-        public static uint ClickContextMenuCreatureId = 0x79CFC8; //8.57
+        public static uint ClickContextMenuCreatureId = 0x79CFD0; //8.57
 
         /// <summary>
         /// The id of the last item seen (looked at).
