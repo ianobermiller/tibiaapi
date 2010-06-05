@@ -226,7 +226,7 @@ namespace Tibia.Objects
             get
             {
                 uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
-                return client.Memory.ReadUInt32(baseAddr + 8) + (0x4C + Addresses.DatItem.CanLookAt / 10) * (id - 100);
+                return client.Memory.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
             }
         }
 
