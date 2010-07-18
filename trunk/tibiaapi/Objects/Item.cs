@@ -462,7 +462,6 @@ namespace Tibia.Objects
             get
             {
                 return GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable) ||
-                       GetFlag(Tibia.Addresses.DatItem.Flag.IsRune) ||
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash) ||
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsFluidContainer);
             }

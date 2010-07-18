@@ -31,7 +31,7 @@ namespace Tibia.Packets.Incoming
             }
             else
             {
-                SetTileDescription(msg, pos, outMsg);
+                ParseTileDescription(msg, pos, outMsg);
                 outMsg.AddUInt16(msg.GetUInt16());
             }
 

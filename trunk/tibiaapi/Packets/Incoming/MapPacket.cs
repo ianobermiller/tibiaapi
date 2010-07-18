@@ -32,7 +32,7 @@ namespace Tibia.Packets.Incoming
 
         public override abstract bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg);
 
-        protected bool SetMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height, NetworkMessage outMsg)
+        protected bool ParseMapDescription(NetworkMessage msg, int x, int y, int z, int width, int height, NetworkMessage outMsg)
         {
             int startz, endz, zstep;
             //calculate map limits
@@ -52,14 +52,14 @@ namespace Tibia.Packets.Incoming
             for (int nz = startz; nz != endz + zstep; nz += zstep)
             {
                 //pare each floor
-                if (!SetFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
+                if (!ParseFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
                     return false;
             }
 
             return true;
         }
 
-        protected bool SetFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset, NetworkMessage outMsg)
+        protected bool ParseFloorDescription(NetworkMessage msg, int x, int y, int z, int width, int height, int offset, NetworkMessage outMsg)
         {
             ushort skipTiles;
 
@@ -84,7 +84,7 @@ namespace Tibia.Packets.Incoming
                             //real tile so read tile
                             Objects.Location pos = new Tibia.Objects.Location(x + nx + offset, y + ny + offset, z);
 
-                            if (!SetTileDescription(msg, pos, outMsg))
+                            if (!ParseTileDescription(msg, pos, outMsg))
                             {
                                 return false;
                             }
@@ -105,7 +105,7 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        protected bool SetTileDescription(NetworkMessage msg, Objects.Location pos, NetworkMessage outMsg)
+        protected bool ParseTileDescription(NetworkMessage msg, Objects.Location pos, NetworkMessage outMsg)
         {
             int n = 0;
             bool ret = true;
@@ -128,7 +128,7 @@ namespace Tibia.Packets.Incoming
                         break;
                     }
                     //read tile things: items and creatures
-                    InternalGetThing(msg, pos, tile, n, outMsg);
+                    ParseThing(msg, pos, tile, n, outMsg);
                 }
 
                 n++;
@@ -138,7 +138,7 @@ namespace Tibia.Packets.Incoming
             return ret;
         }
 
-        protected bool InternalGetThing(NetworkMessage msg, Location pos, Tile tile, int n, NetworkMessage outMsg)
+        protected bool ParseThing(NetworkMessage msg, Location pos, Tile tile, int n, NetworkMessage outMsg)
         {
             //get thing type
             ushort thingId = msg.GetUInt16();
