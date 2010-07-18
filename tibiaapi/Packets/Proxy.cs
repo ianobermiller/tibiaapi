@@ -18,6 +18,8 @@ namespace Tibia.Packets
     {
         #region Vars
 
+        private bool breakWhenInDebugger = false;
+
         private static byte[] localHostBytes = new byte[] { 127, 0, 0, 1 };
         private static Random random = new Random();
 
@@ -178,6 +180,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
             }
         }
@@ -256,6 +262,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
             }
         }
@@ -268,6 +278,7 @@ namespace Tibia.Packets
                     return;
 
                 accepting = false;
+
                 clientSocket = loginClientTcp.EndAcceptSocket(ar);
 
                 loginClientTcp.Stop();
@@ -291,6 +302,10 @@ namespace Tibia.Packets
             catch (ObjectDisposedException) { /*We don't have to log this exception. */ }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 Restart();
             }
@@ -384,6 +399,10 @@ namespace Tibia.Packets
             catch (System.IO.IOException ex) { WriteDebug(ex.ToString()); }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 if (clientData != null)
                     SendToServer(clientData);
@@ -522,6 +541,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 Restart();
             }
@@ -620,6 +643,10 @@ namespace Tibia.Packets
             catch (ObjectDisposedException) { }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
 
                 if (serverData != null)
@@ -694,6 +721,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 Restart();
             }
@@ -741,6 +772,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
             }
         }
@@ -776,6 +811,10 @@ namespace Tibia.Packets
             }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
             }
         }
@@ -803,6 +842,10 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 Restart();
             }
@@ -837,6 +880,10 @@ namespace Tibia.Packets
             catch (ObjectDisposedException) { }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
             }
         }
@@ -864,6 +911,10 @@ namespace Tibia.Packets
             catch (System.IO.IOException) { Restart(); }
             catch (Exception ex)
             {
+                if(breakWhenInDebugger && Debugger.IsAttached)
+                {
+                    throw;
+                }
                 WriteDebug(ex.ToString());
                 Restart();
             }

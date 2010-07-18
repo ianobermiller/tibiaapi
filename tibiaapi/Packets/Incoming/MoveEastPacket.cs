@@ -25,9 +25,7 @@ namespace Tibia.Packets.Incoming
 
             Client.playerLocation.X++;
 
-            SetMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14, outMsg);
-
-            return true;
+            return ParseMapDescription(msg, Client.playerLocation.X + 9, Client.playerLocation.Y - 6, Client.playerLocation.Z, 1, 14, outMsg);
         }
     }
 }
