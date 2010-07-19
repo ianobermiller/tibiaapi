@@ -28,7 +28,7 @@ namespace Tibia.Objects
         {
             if (playerTile == null || playerTile.Location != client.PlayerLocation)
             {
-                int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+                uint playerId = client.Player.Id;
                 
                 playerTile = GetTiles(false, false).FirstOrDefault(
                     t => t.Objects.Any(
@@ -173,7 +173,7 @@ namespace Tibia.Objects
             tempPtr = client.Memory.ReadInt32(tempPtr);
             tempPtr += (int)Addresses.Map.LevelSpyAdd2;
 
-            playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
+            playerZ = (int)client.Player.Z;
 
             if (playerZ <= 7)
             {

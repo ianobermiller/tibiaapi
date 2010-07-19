@@ -63,705 +63,91 @@ namespace Tibia.Addresses
             IgnoreStackpos
         }
 
-        public static Dictionary<int, Dictionary<Flag, uint>> flagDictionary = new Dictionary<int, Dictionary<Flag, uint>>()
-        {
-            #region 8.60 Flags
-            {
-                860,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsWritable, 256 },
-                    { Flag.IsReadable, 512 },
-                    { Flag.IsFluidContainer, 1024 },
-                    { Flag.IsSplash, 2048 },
-                    { Flag.Blocking, 4096 },
-                    { Flag.IsImmovable, 8192 },
-                    { Flag.BlocksMissiles, 16384 },
-                    { Flag.BlocksPath, 32768 },
-                    { Flag.IsPickupable, 65536 },
-                    { Flag.IsHangable, 131072 },
-                    { Flag.IsHangableHorizontal, 262144 },
-                    { Flag.IsHangableVertical, 524288 },
-                    { Flag.IsRotatable, 1048576 },
-                    { Flag.IsLightSource, 2097152 },
-                    { Flag.Floorchange, 4194304 },
-                    { Flag.IsShifted, 8388608 },
-                    { Flag.HasHeight, 16777216 },
-                    { Flag.IsLayer, 33554432 },
-                    { Flag.IsIdleAnimation, 67108864 },
-                    { Flag.HasAutoMapColor, 134217728 },
-                    { Flag.HasHelpLens, 268435456 },
-                    { Flag.Unknown, 536870912 },
-                    { Flag.IgnoreStackpos, 1073741824 }
-                }
-            },
-            #endregion
-
-            #region 8.57 Flags
-            {
-                857,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.55 Flags
-            {
-                855,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.54 Flags
-            {
-                854,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.53 Flags
-            {
-                853,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.52 Flags
-            {
-                852,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.50 Flags
-            {
-                850,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.42 Flags
-            {
-                842,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.41 Flags
-            {
-                841,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.40 Flags
-            {
-                840,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.31 Flags
-            {
-                831,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.22 Flags
-            {
-                822,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.21 Flags
-            {
-                821,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.20 Flags
-            {
-                820,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.11 Flags
-            {
-                811,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.10 Flags
-            {
-                810,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
-            #region 8.00 Flags
-            {
-                800,
-                new Dictionary<Flag, uint>()
-                { 
-                    { Flag.IsGround, 1 },
-                    { Flag.TopOrder1, 2 },
-                    { Flag.TopOrder2, 4 },
-                    { Flag.TopOrder3, 8 },
-                    { Flag.IsContainer, 16 },
-                    { Flag.IsStackable, 32 },
-                    { Flag.IsCorpse, 64 },
-                    { Flag.IsUsable, 128 },
-                    { Flag.IsRune, 256 },
-                    { Flag.IsWritable, 512 },
-                    { Flag.IsReadable, 1024 },
-                    { Flag.IsFluidContainer, 2048 },
-                    { Flag.IsSplash, 4096 },
-                    { Flag.Blocking, 8192 },
-                    { Flag.IsImmovable, 16384 },
-                    { Flag.BlocksMissiles, 32768 },
-                    { Flag.BlocksPath, 65536 },
-                    { Flag.IsPickupable, 131072 },
-                    { Flag.IsHangable, 262144 },
-                    { Flag.IsHangableHorizontal, 524288 },
-                    { Flag.IsHangableVertical, 1048576 },
-                    { Flag.IsRotatable, 2097152 },
-                    { Flag.IsLightSource, 4194304 },
-                    { Flag.Floorchange, 8388608 },
-                    { Flag.IsShifted, 16777216 },
-                    { Flag.HasHeight, 33554432 },
-                    { Flag.IsLayer, 67108864 },
-                    { Flag.IsIdleAnimation, 134217728 },
-                    { Flag.HasAutoMapColor, 268435456 },
-                    { Flag.HasHelpLens, 536870912 },
-                    { Flag.Unknown, 1073741824 },
-                    { Flag.IgnoreStackpos, 2147483648 }
-                }
-            },
-            #endregion
-
+        private static readonly Dictionary<Flag, uint> flagOffsets860 = new Dictionary<Flag, uint>()
+        { 
+            { Flag.IsGround, 1 },
+            { Flag.TopOrder1, 2 },
+            { Flag.TopOrder2, 4 },
+            { Flag.TopOrder3, 8 },
+            { Flag.IsContainer, 16 },
+            { Flag.IsStackable, 32 },
+            { Flag.IsCorpse, 64 },
+            { Flag.IsUsable, 128 },
+            { Flag.IsWritable, 256 },
+            { Flag.IsReadable, 512 },
+            { Flag.IsFluidContainer, 1024 },
+            { Flag.IsSplash, 2048 },
+            { Flag.Blocking, 4096 },
+            { Flag.IsImmovable, 8192 },
+            { Flag.BlocksMissiles, 16384 },
+            { Flag.BlocksPath, 32768 },
+            { Flag.IsPickupable, 65536 },
+            { Flag.IsHangable, 131072 },
+            { Flag.IsHangableHorizontal, 262144 },
+            { Flag.IsHangableVertical, 524288 },
+            { Flag.IsRotatable, 1048576 },
+            { Flag.IsLightSource, 2097152 },
+            { Flag.Floorchange, 4194304 },
+            { Flag.IsShifted, 8388608 },
+            { Flag.HasHeight, 16777216 },
+            { Flag.IsLayer, 33554432 },
+            { Flag.IsIdleAnimation, 67108864 },
+            { Flag.HasAutoMapColor, 134217728 },
+            { Flag.HasHelpLens, 268435456 },
+            { Flag.Unknown, 536870912 },
+            { Flag.IgnoreStackpos, 1073741824 }
         };
+
+        private static readonly Dictionary<Flag, uint> flagOffsetsPre860 = new Dictionary<Flag, uint>()
+        { 
+            { Flag.IsGround, 1 },
+            { Flag.TopOrder1, 2 },
+            { Flag.TopOrder2, 4 },
+            { Flag.TopOrder3, 8 },
+            { Flag.IsContainer, 16 },
+            { Flag.IsStackable, 32 },
+            { Flag.IsCorpse, 64 },
+            { Flag.IsUsable, 128 },
+            { Flag.IsRune, 256 },
+            { Flag.IsWritable, 512 },
+            { Flag.IsReadable, 1024 },
+            { Flag.IsFluidContainer, 2048 },
+            { Flag.IsSplash, 4096 },
+            { Flag.Blocking, 8192 },
+            { Flag.IsImmovable, 16384 },
+            { Flag.BlocksMissiles, 32768 },
+            { Flag.BlocksPath, 65536 },
+            { Flag.IsPickupable, 131072 },
+            { Flag.IsHangable, 262144 },
+            { Flag.IsHangableHorizontal, 524288 },
+            { Flag.IsHangableVertical, 1048576 },
+            { Flag.IsRotatable, 2097152 },
+            { Flag.IsLightSource, 4194304 },
+            { Flag.Floorchange, 8388608 },
+            { Flag.IsShifted, 16777216 },
+            { Flag.HasHeight, 33554432 },
+            { Flag.IsLayer, 67108864 },
+            { Flag.IsIdleAnimation, 134217728 },
+            { Flag.HasAutoMapColor, 268435456 },
+            { Flag.HasHelpLens, 536870912 },
+            { Flag.Unknown, 1073741824 },
+            { Flag.IgnoreStackpos, 2147483648 }
+        };
+
+        public static uint GetFlagOffset(uint version, Flag flag)
+        {
+            uint offset;
+            if (version >= 860)
+            {
+                // offset is set to zero if flag does not exist
+                flagOffsets860.TryGetValue(flag, out offset);
+            }
+            else
+            {
+                flagOffsetsPre860.TryGetValue(flag, out offset);
+            }
+            return offset;
+        }
 
         public enum Help
         {

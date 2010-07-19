@@ -105,7 +105,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseOnSelf()
         {
-            uint playerId = client.Memory.ReadUInt32(Addresses.Player.Id);
+            uint playerId = client.Player.Id;
 
             byte stack = 0;
 
@@ -462,6 +462,7 @@ namespace Tibia.Objects
             get
             {
                 return GetFlag(Tibia.Addresses.DatItem.Flag.IsStackable) ||
+                       GetFlag(Tibia.Addresses.DatItem.Flag.IsRune) || // unused in 8.60, always returns false
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsSplash) ||
                        GetFlag(Tibia.Addresses.DatItem.Flag.IsFluidContainer);
             }
@@ -473,15 +474,15 @@ namespace Tibia.Objects
 
         public bool GetFlag(Addresses.DatItem.Flag flag)
         {
-            return (Flags & (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag]) == (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
+            return (Flags & Addresses.DatItem.GetFlagOffset(client.VersionNumber, flag)) != 0;
         }
 
         public void SetFlag(Addresses.DatItem.Flag flag, bool enable)
         {
             if (enable)
-                Flags |= (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
+                Flags |= Addresses.DatItem.GetFlagOffset(client.VersionNumber, flag);
             else
-                Flags &= ~(uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
+                Flags &= ~Addresses.DatItem.GetFlagOffset(client.VersionNumber, flag);
         }
 
         #endregion

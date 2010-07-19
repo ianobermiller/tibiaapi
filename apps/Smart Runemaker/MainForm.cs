@@ -136,7 +136,7 @@ namespace SmartRunemaker
         {
             if (client.LoggedIn)
             {
-                if (player.Mana == player.Mana_Max)
+                if (player.Mana == player.ManaMax)
                     MakeRune();
             }
         }
