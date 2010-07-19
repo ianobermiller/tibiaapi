@@ -284,6 +284,9 @@ namespace Tibia.Addresses
         /// </summary>
         public static uint RecvStream = 0x7998AC; //8.60
 
-
+        /// <summary>
+        /// Used to hold the number of followed/attacked creatures
+        /// </summary>
+        public static uint AttackCount = 0x63DA40; //8.60
     }
 }

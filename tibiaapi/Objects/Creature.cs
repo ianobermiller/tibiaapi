@@ -129,7 +129,16 @@ namespace Tibia.Objects
         public bool Attack()
         {
             client.Memory.WriteInt32(Addresses.Player.TargetID, Id);
-            return Packets.Outgoing.AttackPacket.Send(client, (uint)Id);
+
+            if (Client.VersionNumber >= 860)
+            {
+                int count = client.Memory.ReadInt32(Addresses.Client.AttackCount) + 1;
+                return Packets.Outgoing.AttackPacket.Send(client, (uint)Id, (uint)count);
+            }
+            else
+            {
+                return Packets.Outgoing.AttackPacket.Send(client, (uint)Id, (uint)0);
+            }
         }
 
         /// <summary>
@@ -150,7 +159,16 @@ namespace Tibia.Objects
         public bool Follow()
         {
             client.Memory.WriteInt32(Addresses.Player.GreenSquare, Id);
-            return Packets.Outgoing.FollowPacket.Send(client, (uint)Id);
+
+            if (Client.VersionNumber >= 860)
+            {
+                int count = client.Memory.ReadInt32(Addresses.Client.AttackCount) + 1;
+                return Packets.Outgoing.FollowPacket.Send(client, (uint)Id, (uint)count);
+            }
+            else
+            {
+                return Packets.Outgoing.FollowPacket.Send(client, (uint)Id, (uint)0);
+            }
         }
 
         /// <summary>
