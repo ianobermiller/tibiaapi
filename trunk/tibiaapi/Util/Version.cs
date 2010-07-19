@@ -97,6 +97,7 @@ namespace Tibia
                     Client.ParserFunc = 0x45C370;
                     Client.GetNextPacketCall = 0x45C3A5;
                     Client.RecvStream = 0x7998AC;
+                    Client.AttackCount = 0x63DA40;
 
                     Container.Start = 0x64CD10;
                     Container.StepContainer = 492;
@@ -202,13 +203,13 @@ namespace Tibia
                     Map.NameSpy1Default = 19061;
                     Map.NameSpy2Default = 16501;
                     Map.LevelSpy1 = 0x4F46BA;
-                    Map.LevelSpy2 = 0x4F46BF;
+                    Map.LevelSpy2 = 0x4F47BF;
                     Map.LevelSpy3 = 0x4F4840;
                     Map.LevelSpyPtr = 0x64C25C;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
                     Map.FullLightNop = 0x4EAFA9;
-                    Map.FullLightAdr = 0x4EAEAC;
+                    Map.FullLightAdr = 0x4EAFAC;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
                     Map.FullLightNopEdited = new byte[] { 0x90, 0x90 };
                     Map.FullLightAdrDefault = 0x80;

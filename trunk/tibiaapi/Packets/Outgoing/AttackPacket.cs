@@ -5,6 +5,7 @@ namespace Tibia.Packets.Outgoing
     public class AttackPacket : OutgoingPacket
     {
         public uint CreatureId { get; set; }
+        public uint Count { get; set; }
 
         public AttackPacket(Objects.Client c)
             : base(c)
@@ -23,6 +24,11 @@ namespace Tibia.Packets.Outgoing
 
             CreatureId = msg.GetUInt32();
 
+            if (Client.VersionNumber >= 860)
+            {
+                Count = msg.GetUInt32();
+            }
+
             return true;
         }
 
@@ -31,12 +37,22 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(CreatureId);
+
+            if (Client.VersionNumber >= 860)
+            {
+                msg.AddUInt32(Count);
+            }
         }
 
-        public static bool Send(Objects.Client client, uint creatureId)
+        public static bool Send(Objects.Client client, uint creatureId, uint count)
         {
             AttackPacket p = new AttackPacket(client);
             p.CreatureId = creatureId;
+
+            if (client.VersionNumber >= 860)
+            {
+                p.Count = count;
+            }
             return p.Send();
         }
     }

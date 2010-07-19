@@ -115,7 +115,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4F46BF;  // 8.60
+        public static uint LevelSpy2 = 0x4F47BF;  // 8.60
 
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Tibia.Addresses
         public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
         public static byte[] FullLightNopEdited = { 0x90, 0x90 };
 
-        public static uint FullLightAdr = 0x4EAEAC;  // 8.60
+        public static uint FullLightAdr = 0x4EAFAC;  // 8.60
         public static byte FullLightAdrDefault = 0x80;
         public static byte FullLightAdrEdited = 0xFF;
     }
