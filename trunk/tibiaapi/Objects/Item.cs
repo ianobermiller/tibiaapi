@@ -473,15 +473,15 @@ namespace Tibia.Objects
 
         public bool GetFlag(Addresses.DatItem.Flag flag)
         {
-            return (Flags & (uint)flag) == (uint)flag;
+            return (Flags & (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag]) == (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
         }
 
         public void SetFlag(Addresses.DatItem.Flag flag, bool enable)
         {
             if (enable)
-                Flags |= (uint)flag;
+                Flags |= (uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
             else
-                Flags &= ~(uint)flag;
+                Flags &= ~(uint)Addresses.DatItem.flagDictionary[client.VersionNumber][flag];
         }
 
         #endregion
