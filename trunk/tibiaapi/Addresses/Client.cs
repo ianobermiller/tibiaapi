@@ -283,10 +283,5 @@ namespace Tibia.Addresses
         /// The address of the received "stream". It is laid as pointer to buffer, dwSize, dwSize
         /// </summary>
         public static uint RecvStream = 0x7998AC; //8.60
-
-        /// <summary>
-        /// Used to hold the number of followed/attacked creatures
-        /// </summary>
-        public static uint AttackCount = 0x63DA40; //8.60
     }
 }

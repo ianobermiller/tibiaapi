@@ -111,15 +111,15 @@ namespace Tibia.Objects
 
                 if (objectCount <= 11)
                 {
-                    for (int i = 0; i < objectCount; i++)
+                    for (uint i = 0; i < objectCount; i++)
                     {
                         // Go to the next object
                         pointer += Addresses.Map.StepTileObject;
 
                         objects.Add(new TileObject(
-                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectId),
-                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectData),
-                            client.Memory.ReadInt32(pointer + Addresses.Map.DistanceObjectDataEx),
+                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectId),
+                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectData),
+                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectDataEx),
                             i + 1));
                     }
                 }
@@ -180,9 +180,9 @@ namespace Tibia.Objects
                 (Addresses.Map.DistanceTileObjects +
                 Addresses.Map.StepTileObject * oldObject.StackOrder));
 
-            return client.Memory.WriteInt32(pointer + Addresses.Map.DistanceObjectId, newObject.Id) &&
-                client.Memory.WriteInt32(pointer + Addresses.Map.DistanceObjectData, newObject.Data) &&
-                client.Memory.WriteInt32(pointer + Addresses.Map.DistanceObjectDataEx, newObject.DataEx);
+            return client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectId, newObject.Id) &&
+                client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectData, newObject.Data) &&
+                client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectDataEx, newObject.DataEx);
         }
         #endregion
     }
@@ -193,15 +193,15 @@ namespace Tibia.Objects
     /// </summary>
     public class TileObject
     {
-        public int StackOrder { get; set; }
-        public int Id { get; set; }
-        public int Data { get; set; }
-        public int DataEx { get; set; }
+        public uint StackOrder { get; set; }
+        public uint Id { get; set; }
+        public uint Data { get; set; }
+        public uint DataEx { get; set; }
 
-        public TileObject(int id, int data, int dataEx)
+        public TileObject(uint id, uint data, uint dataEx)
             : this(id, data, dataEx, 0) { }
 
-        public TileObject(int id, int data, int dataEx, int stackOrder)
+        public TileObject(uint id, uint data, uint dataEx, uint stackOrder)
         {
             StackOrder = stackOrder;
             Id = id;

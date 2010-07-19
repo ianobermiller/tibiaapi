@@ -300,11 +300,11 @@ namespace Tibia
 
         public static Objects.Tile GetTileWithPlayer(this IEnumerable<Objects.Tile> tiles, Objects.Client client)
         {
-            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+            uint playerId = client.Player.Id;
             return GetTileWithCreature(tiles, playerId);
         }
 
-        public static Objects.Tile GetTileWithCreature(this IEnumerable<Objects.Tile> tiles, int creatureId)
+        public static Objects.Tile GetTileWithCreature(this IEnumerable<Objects.Tile> tiles, uint creatureId)
         {
             return tiles.FirstOrDefault(t => t.Objects.Any(
                     o => o.Id == 0x63 && o.Data == creatureId));

@@ -68,9 +68,9 @@ namespace Tibia.Objects
                 return false;
 
             int xDiff, yDiff;
-            int playerZ = client.Memory.ReadInt32(Addresses.Player.Z);
+            uint playerZ = client.Player.Z;
             var creatures = client.BattleList.GetCreatures().Where(c => c.Z == playerZ);
-            int playerId = client.Memory.ReadInt32(Addresses.Player.Id);
+            uint playerId = client.Player.Id;
 
             xDiff = (int)playerTile.MemoryLocation.X - 8;
             yDiff = (int)playerTile.MemoryLocation.Y - 6;
@@ -103,7 +103,7 @@ namespace Tibia.Objects
         /// <returns>True if it's yourself, false otherwise</returns>
         public bool IsSelf()
         {
-            return (Id == client.Memory.ReadInt32(Addresses.Player.Id));
+            return (Id == client.Player.Id);
         }
 
         public void Approach()
@@ -128,7 +128,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Attack()
         {
-            client.Memory.WriteInt32(Addresses.Player.TargetID, Id);
+            if (client.VersionNumber >= 860)
+            {
+                if (client.Player.TargetId != Id)
+                {
+                    client.Player.AttackCount += 1;
+                }
+            }
+            client.Player.TargetId = Id;
             return Packets.Outgoing.AttackPacket.Send(client, (uint)Id);
         }
 
@@ -149,7 +156,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Follow()
         {
-            client.Memory.WriteInt32(Addresses.Player.GreenSquare, Id);
+            client.Player.GreenSquare = Id;
             return Packets.Outgoing.FollowPacket.Send(client, (uint)Id);
         }
 
@@ -175,10 +182,10 @@ namespace Tibia.Objects
             get { return client; }
         }
 
-        public int Id
+        public uint Id
         {
-            get { return client.Memory.ReadInt32(address + Addresses.Creature.DistanceId); }
-            set { client.Memory.WriteInt32(address + Addresses.Creature.DistanceId, value); }
+            get { return client.Memory.ReadUInt32(address + Addresses.Creature.DistanceId); }
+            set { client.Memory.WriteUInt32(address + Addresses.Creature.DistanceId, value); }
         }
 
         public CreatureData Data

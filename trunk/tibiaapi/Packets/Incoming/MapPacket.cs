@@ -332,7 +332,7 @@ namespace Tibia.Packets.Incoming
 	        if(tile != null)
             {
                 List<TileObject> objects = tile.Objects;
-                objects.Insert(0, new TileObject((int)tile.Ground.Id, tile.Ground.Count, 0));
+                objects.Insert(0, new TileObject(tile.Ground.Id, tile.Ground.Count, 0));
 
                 foreach (TileObject o in objects)
                 {

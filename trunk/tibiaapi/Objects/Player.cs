@@ -26,7 +26,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Turn(Constants.Direction direction)
         {
-            return Packets.Outgoing.TurnPacket.Send(client, direction);
+            return client.Player.Turn(direction);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Walk(Constants.Direction direction)
         {
-            return Packets.Outgoing.MovePacket.Send(client, direction);
+            return client.Player.Walk(direction);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Walk(List<Constants.Direction> list)
         {
-            return Packets.Outgoing.AutoWalkPacket.Send(client, list);
+            return client.Player.Walk(list);
         }
 
         /// <summary>
@@ -57,18 +57,14 @@ namespace Tibia.Objects
         {
             set
             {
-                client.Memory.WriteInt32(Addresses.Player.GoToX, value.X);
-                client.Memory.WriteInt32(Addresses.Player.GoToY, value.Y);
-                client.Memory.WriteInt32(Addresses.Player.GoToZ, value.Z);
+                GoToX = (uint)value.X;
+                GoToY = (uint)value.Y;
+                GoToZ = (uint)value.Z;
                 IsWalking = true;
             }
             get
             {
-                return new Location(
-                    client.Memory.ReadInt32(Addresses.Player.GoToX),
-                    client.Memory.ReadInt32(Addresses.Player.GoToY),
-                    client.Memory.ReadInt32(Addresses.Player.GoToZ)
-                );
+                return new Location((int)GoToX, (int)GoToY, (int)GoToZ);
             }
         }
 
@@ -78,26 +74,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Stop()
         {
-            // Make sure the client stops walking 
-            // if a destination has been chosen
-            GoTo_X = 0;
-
-            return Packets.Outgoing.CancelMovePacket.Send(client);
-        }
-
-        /// <summary>
-        /// Set the player's outfit. Sends a packet.
-        /// </summary>
-        /// <param name="outfitType"></param>
-        /// <param name="headColor"></param>
-        /// <param name="bodyColor"></param>
-        /// <param name="legsColor"></param>
-        /// <param name="feetColor"></param>
-        /// <param name="addons"></param>
-        /// <returns></returns>
-        public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
-        {
-            return Packets.Outgoing.SetOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons));
+            return client.Player.Stop();
         }
 
         /// <summary>
@@ -105,7 +82,7 @@ namespace Tibia.Objects
         /// </summary>
         public bool SetOutfit(Outfit outfit)
         {
-            return Packets.Outgoing.SetOutfitPacket.Send(client, outfit);
+            return client.Player.SetOutfit(outfit);
         }
 
         #endregion
@@ -117,239 +94,237 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool HasFlag(Constants.Flag flag)
         {
-            return (Flags & (int)flag) == (int)flag;
+            return client.Player.HasFlag(flag);
         }
 
         #region Get/Set Properties
 
-        public new int Id
+        public new uint Id
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Id); }
-            set { client.Memory.WriteInt32(Addresses.Player.Id, value); }
+            get { return client.Player.Id; }
+            set { client.Player.Id = value; }
         }
-        public int Exp
+        public uint Experience
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Exp); }
-            set { client.Memory.WriteInt32(Addresses.Player.Exp, value); }
+            get { return client.Player.Experience; }
+            set { client.Player.Experience = value; }
         }
-        public int Flags
+        public uint Flags
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Flags); }
-            set { client.Memory.WriteInt32(Addresses.Player.Flags, value); }
+            get { return client.Player.Flags; }
+            set { client.Player.Flags = value; }
         }
-        public int Level
+        public uint Level
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Level); }
-            set { client.Memory.WriteInt32(Addresses.Player.Level, value); }
+            get { return client.Player.Level; }
+            set { client.Player.Level = value; }
         }
-        public int Level_Percent
+        public uint LevelPercent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.LevelPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.LevelPercent, value); }
+            get { return client.Player.LevelPercent; }
+            set { client.Player.LevelPercent = value; }
         }
-        public int MagicLevel
+        public uint MagicLevel
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.MagicLevel); }
-            set { client.Memory.WriteInt32(Addresses.Player.MagicLevel, value); }
+            get { return client.Player.MagicLevel; }
+            set { client.Player.MagicLevel = value; }
         }
-        public int MagicLevel_Percent
+        public uint MagicLevelPercent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.MagicLevelPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.MagicLevelPercent, value); }
-        }
-
-        public int Mana
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Mana); }
-            set { client.Memory.WriteInt32(Addresses.Player.Mana, value); }
-        }
-        public int Mana_Max
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.ManaMax); }
-            set { client.Memory.WriteInt32(Addresses.Player.ManaMax, value); }
-        }
-        public int HP
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.HP); }
-            set { client.Memory.WriteInt32(Addresses.Player.HP, value); }
-        }
-        public int HP_Max
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.HPMax); }
-            set { client.Memory.WriteInt32(Addresses.Player.HPMax, value); }
+            get { return client.Player.MagicLevelPercent; }
+            set { client.Player.MagicLevelPercent = value; }
         }
 
-        public int Soul
+        public uint Mana
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Soul); }
-            set { client.Memory.WriteInt32(Addresses.Player.Soul, value); }
+            get { return client.Player.Mana; }
+            set { client.Player.Mana = value; }
         }
-        public int Cap
+        public uint ManaMax
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Cap); }
-            set { client.Memory.WriteInt32(Addresses.Player.Cap, value); }
+            get { return client.Player.ManaMax; }
+            set { client.Player.ManaMax = value; }
         }
-        public int Stamina
+        public uint Health
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Stamina); }
-            set { client.Memory.WriteInt32(Addresses.Player.Stamina, value); }
+            get { return client.Player.Health; }
+            set { client.Player.Health = value; }
         }
-
-        public int Fist
+        public uint HealthMax
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Fist); }
-            set { client.Memory.WriteInt32(Addresses.Player.Fist, value); }
-        }
-        public int Fist_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.FistPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.FistPercent, value); }
-        }
-        public int Club
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Club); }
-            set { client.Memory.WriteInt32(Addresses.Player.Club, value); }
-        }
-        public int Club_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.ClubPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.ClubPercent, value); }
-        }
-        public int Sword
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Sword); }
-            set { client.Memory.WriteInt32(Addresses.Player.Sword, value); }
-        }
-        public int Sword_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.SwordPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.SwordPercent, value); }
-        }
-        public int Axe
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Axe); }
-            set { client.Memory.WriteInt32(Addresses.Player.Axe, value); }
-        }
-        public int Axe_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.AxePercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.AxePercent, value); }
-        }
-        public int Distance
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Distance); }
-            set { client.Memory.WriteInt32(Addresses.Player.Distance, value); }
-        }
-        public int Distance_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.DistancePercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.DistancePercent, value); }
-        }
-        public int Shielding
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Shielding); }
-            set { client.Memory.WriteInt32(Addresses.Player.Shielding, value); }
-        }
-        public int Shielding_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.ShieldingPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.ShieldingPercent, value); }
-        }
-        public int Fishing
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.Fishing); }
-            set { client.Memory.WriteInt32(Addresses.Player.Fishing, value); }
-        }
-        public int Fishing_Percent
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.FishingPercent); }
-            set { client.Memory.WriteInt32(Addresses.Player.FishingPercent, value); }
+            get { return client.Player.HealthMax; }
+            set { client.Player.HealthMax = value; }
         }
 
-        public int GoTo_X
+        public uint Soul
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoToX); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoToX, value); }
+            get { return client.Player.Soul; }
+            set { client.Player.Soul = value; }
         }
-        public int GoTo_Y
+        public uint Capacity
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoToY); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoToY, value); }
+            get { return client.Player.Capacity; }
+            set { client.Player.Capacity = value; }
         }
-        public int GoTo_Z
+        public uint Stamina
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.GoToZ); }
-            set { client.Memory.WriteInt32(Addresses.Player.GoToZ, value); }
-        }
-
-        public int RedSquare
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.RedSquare); }
-            set { client.Memory.WriteInt32(Addresses.Player.RedSquare, value); }
-        }
-        public int GreenSquare
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.GreenSquare); }
-            set { client.Memory.WriteInt32(Addresses.Player.GreenSquare, value); }
-        }
-        public int WhiteSquare
-        {
-            get { return client.Memory.ReadInt32(Addresses.Player.WhiteSquare); }
-            set { client.Memory.WriteInt32(Addresses.Player.WhiteSquare, value); }
+            get { return client.Player.Stamina; }
+            set { client.Player.Stamina = value; }
         }
 
-        public int AccessN
+        public uint Fist
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.AccessN); }
-            set { client.Memory.WriteInt32(Addresses.Player.AccessN, value); }
+            get { return client.Player.Fist; }
+            set { client.Player.Fist = value; }
         }
-        public int AccessS
+        public uint FistPercent
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.AccessS); }
-            set { client.Memory.WriteInt32(Addresses.Player.AccessS, value); }
+            get { return client.Player.FistPercent; }
+            set { client.Player.FistPercent = value; }
+        }
+        public uint Club
+        {
+            get { return client.Player.Club; }
+            set { client.Player.Club = value; }
+        }
+        public uint ClubPercent
+        {
+            get { return client.Player.ClubPercent; }
+            set { client.Player.ClubPercent = value; }
+        }
+        public uint Sword
+        {
+            get { return client.Player.Sword; }
+            set { client.Player.Sword = value; }
+        }
+        public uint SwordPercent
+        {
+            get { return client.Player.SwordPercent; }
+            set { client.Player.SwordPercent = value; }
+        }
+        public uint Axe
+        {
+            get { return client.Player.Axe; }
+            set { client.Player.Axe = value; }
+        }
+        public uint AxePercent
+        {
+            get { return client.Player.AxePercent; }
+            set { client.Player.AxePercent = value; }
+        }
+        public uint Distance
+        {
+            get { return client.Player.Distance; }
+            set { client.Player.Distance = value; }
+        }
+        public uint DistancePercent
+        {
+            get { return client.Player.DistancePercent; }
+            set { client.Player.DistancePercent = value; }
+        }
+        public uint Shielding
+        {
+            get { return client.Player.Shielding; }
+            set { client.Player.Shielding = value; }
+        }
+        public uint ShieldingPercent
+        {
+            get { return client.Player.ShieldingPercent; }
+            set { client.Player.ShieldingPercent = value; }
+        }
+        public uint Fishing
+        {
+            get { return client.Player.Fishing; }
+            set { client.Player.Fishing = value; }
+        }
+        public uint FishingPercent
+        {
+            get { return client.Player.FishingPercent; }
+            set { client.Player.FishingPercent = value; }
         }
 
-        public int Target_ID
+        public uint GoToX
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.TargetID); }
-            set { client.Memory.WriteInt32(Addresses.Player.TargetID, value); }
+            get { return client.Player.GoToX; }
+            set { client.Player.GoToX = value; }
         }
-        public int Target_Type
+        public uint GoToY
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.TargetType); }
-            set { client.Memory.WriteInt32(Addresses.Player.TargetType, value); }
+            get { return client.Player.GoToY; }
+            set { client.Player.GoToY = value; }
         }
-        public int Target_BList_ID
+        public uint GoToZ
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.TargetBListID); }
-            set { client.Memory.WriteInt32(Addresses.Player.TargetBListID, value); }
+            get { return client.Player.GoToZ; }
+            set { client.Player.GoToZ = value; }
         }
-        public int Target_BList_Type
+
+        public uint RedSquare
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.TargetBListType); }
-            set { client.Memory.WriteInt32(Addresses.Player.TargetBListType, value); }
+            get { return client.Player.RedSquare; }
+            set { client.Player.RedSquare = value; }
         }
-        public new int Z
+        public uint GreenSquare
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Z); }
-            set { client.Memory.WriteInt32(Addresses.Player.Z, value); }
+            get { return client.Player.GreenSquare; }
+            set { client.Player.GreenSquare = value; }
         }
-        public new int Y
+        public uint WhiteSquare
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.Y); }
-            set { client.Memory.WriteInt32(Addresses.Player.Y, value); }
+            get { return client.Player.WhiteSquare; }
+            set { client.Player.WhiteSquare = value; }
         }
-        public new int X
+
+        public uint AccessN
         {
-            get { return client.Memory.ReadInt32(Addresses.Player.X); }
-            set { client.Memory.WriteInt32(Addresses.Player.X, value); }
+            get { return client.Player.AccessN; }
+            set { client.Player.AccessN = value; }
         }
+        public uint AccessS
+        {
+            get { return client.Player.AccessS; }
+            set { client.Player.AccessS = value; }
+        }
+
+        public uint TargetId
+        {
+            get { return client.Player.TargetId; }
+            set { client.Player.TargetId = value; }
+        }
+        public uint TargetType
+        {
+            get { return client.Player.TargetType; }
+            set { client.Player.TargetType = value; }
+        }
+        public uint TargetBattlelistId
+        {
+            get { return client.Player.TargetBattlelistId; }
+            set { client.Player.TargetBattlelistId = value; }
+        }
+        public uint TargetBattlelistType
+        {
+            get { return client.Player.TargetBattlelistType; }
+            set { client.Player.TargetBattlelistType = value; }
+        }
+        public new uint Z
+        {
+            get { return client.Player.Z; }
+            set { client.Player.Z = value; }
+        }
+        public new uint Y
+        {
+            get { return client.Player.Y; }
+            set { client.Player.Y = value; }
+        }
+        public new uint X
+        {
+            get { return client.Player.X; }
+            set { client.Player.X = value; }
+        }
+
         public string WorldName
         {
-            get
-            {
-                return client.Login.CharacterList[client.Login.SelectedChar].WorldName;
-            }
+            get { return client.Player.WorldName; }
         }
 
         #endregion

@@ -5,44 +5,44 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Player
     {
-        public static uint Exp = 0x63FE8C; // 8.60
+        public static uint Experience = 0x63FE8C; // 8.60
 
-        public static uint GoToX = Exp + 80;
-        public static uint GoToY = Exp + 76;
-        public static uint GoToZ = Exp + 72;
+        public static uint GoToX = Experience + 80;
+        public static uint GoToY = Experience + 76;
+        public static uint GoToZ = Experience + 72;
 
-        public static uint Id = Exp + 12;
-        public static uint HP = Exp + 8;
-        public static uint HPMax = Exp + 4;
+        public static uint Id = Experience + 12;
+        public static uint Health = Experience + 8;
+        public static uint HealthMax = Experience + 4;
 
-        public static uint Level = Exp - 4;
-        public static uint MagicLevel = Exp - 8;
-        public static uint LevelPercent = Exp - 12;
-        public static uint MagicLevelPercent = Exp - 16;
+        public static uint Level = Experience - 4;
+        public static uint MagicLevel = Experience - 8;
+        public static uint LevelPercent = Experience - 12;
+        public static uint MagicLevelPercent = Experience - 16;
 
-        public static uint Mana = Exp - 20;
-        public static uint ManaMax = Exp - 24;
+        public static uint Mana = Experience - 20;
+        public static uint ManaMax = Experience - 24;
 
-        public static uint Soul = Exp - 28;
-        public static uint Stamina = Exp - 32;
-        public static uint Cap = Exp - 36;
+        public static uint Soul = Experience - 28;
+        public static uint Stamina = Experience - 32;
+        public static uint Capacity = Experience - 36;
 
-        public static uint Fishing = Exp - 52;
-        public static uint Shielding = Exp - 56;
-        public static uint Distance = Exp - 60;
-        public static uint Axe = Exp - 64;
-        public static uint Sword = Exp - 68;
-        public static uint Club = Exp - 72;
-        public static uint Fist = Exp - 76;
+        public static uint Fishing = Experience - 52;
+        public static uint Shielding = Experience - 56;
+        public static uint Distance = Experience - 60;
+        public static uint Axe = Experience - 64;
+        public static uint Sword = Experience - 68;
+        public static uint Club = Experience - 72;
+        public static uint Fist = Experience - 76;
 
-        public static uint FishingPercent = Exp - 80;
-        public static uint ShieldingPercent = Exp - 84;
-        public static uint DistancePercent = Exp - 88;
-        public static uint AxePercent = Exp - 92;
-        public static uint SwordPercent = Exp - 96;
-        public static uint ClubPercent = Exp - 100;
-        public static uint FistPercent = Exp - 104;
-        public static uint Flags = Exp - 108;
+        public static uint FishingPercent = Experience - 80;
+        public static uint ShieldingPercent = Experience - 84;
+        public static uint DistancePercent = Experience - 88;
+        public static uint AxePercent = Experience - 92;
+        public static uint SwordPercent = Experience - 96;
+        public static uint ClubPercent = Experience - 100;
+        public static uint FistPercent = Experience - 104;
+        public static uint Flags = Experience - 108;
 
         /// <summary>
         /// Total number of equipment slots (accessed 0-10)
@@ -61,10 +61,18 @@ namespace Tibia.Addresses
 
         public static uint DistanceSlotCount = 4;
 
-
         public static uint CurrentTileToGo = 0x63FEA0; // 8.60
         public static uint TilesToGo = 0x63FEA4; // 8.60
 
+        /// <summary>
+        /// The number of times the player has attacked
+        /// </summary>
+        public static uint AttackCount = 0x63DA40; //8.60
+
+        /// <summary>
+        /// The number of times the player has followed
+        /// </summary>
+        public static uint FollowCount = AttackCount + 0x20; //8.60
 
         public static uint RedSquare = 0x63FE64; // 8.60
         public static uint GreenSquare = RedSquare - 4;
@@ -73,10 +81,10 @@ namespace Tibia.Addresses
         public static uint AccessN = 0; // 8.0
         public static uint AccessS = 0; // 8.0
 
-        public static uint TargetID = RedSquare;
-        public static uint TargetBListID = TargetID - 8; 
-        public static uint TargetBListType = TargetID - 5;
-        public static uint TargetType = TargetID + 3;
+        public static uint TargetId = RedSquare;
+        public static uint TargetBattlelistId = TargetId - 8; 
+        public static uint TargetBattlelistType = TargetId - 5;
+        public static uint TargetType = TargetId + 3;
 
         /// <summary>
         /// Static address for player Z, used for level spy

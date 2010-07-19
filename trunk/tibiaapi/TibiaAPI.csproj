@@ -12,7 +12,7 @@
     <AssemblyName>TibiaAPI</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -114,6 +114,7 @@
     <Compile Include="Objects\Client.MemoryHelper.cs" />
     <Compile Include="Objects\Client.WindowHelper.cs" />
     <Compile Include="Objects\ContextMenu.cs" />
+    <Compile Include="Objects\Client.PlayerHelper.cs" />
     <Compile Include="Objects\CreatureData.cs" />
     <Compile Include="Objects\Icon.cs" />
     <Compile Include="Objects\ItemData.cs" />

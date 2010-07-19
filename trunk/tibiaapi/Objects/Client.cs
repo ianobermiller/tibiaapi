@@ -41,6 +41,7 @@ namespace Tibia.Objects
         private LoginHelper login;
         private DllHelper dll;
         private InputHelper input;
+        private PlayerHelper player;
         private Icon icon;
         private Skin skin;
 
@@ -101,6 +102,7 @@ namespace Tibia.Objects
             login = new LoginHelper(this);
             dll = new DllHelper(this);
             input = new InputHelper(this);
+            player = new PlayerHelper(this);
 
             icon = new Icon(this);
             skin = new Skin(this);
@@ -127,14 +129,18 @@ namespace Tibia.Objects
             get
             {
                 if (IO.UsingProxy)
+                {
                     return playerLocation;
+                }
                 else if (LoggedIn)
+                {
                     return new Location(
-                        Memory.ReadInt32(Addresses.Player.X),
-                        Memory.ReadInt32(Addresses.Player.Y),
-                        Memory.ReadInt32(Addresses.Player.Z));
-                else
-                    return Location.Invalid;
+                        (int)Player.X,
+                        (int)Player.Y,
+                        (int)Player.Z);
+                }
+                
+                return Location.Invalid;
             }
         }
 
@@ -281,7 +287,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the attack mode.
         /// </summary>
-        /// <returns></returns>
         public Constants.Attack AttackMode {
             get { return (Constants.Attack)Memory.ReadByte(Addresses.Client.AttackMode); }
             set { Memory.WriteByte(Addresses.Client.AttackMode, (byte)value); }
@@ -290,7 +295,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the follow mode.
         /// </summary>
-        /// <returns></returns>
         public Constants.Follow FollowMode
         {
             get { return (Constants.Follow)Memory.ReadByte(Addresses.Client.FollowMode); }
@@ -300,7 +304,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the follow mode.
         /// </summary>
-        /// <returns></returns>
         public byte SafeMode {
             get { return Memory.ReadByte(Addresses.Client.SafeMode); }
             set { Memory.WriteByte(Addresses.Client.FollowMode, value); }
@@ -309,7 +312,6 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the action state.
         /// </summary>
-        /// <returns></returns>
         public Constants.ActionState ActionState
         {
             get { return (Constants.ActionState)Memory.ReadByte(Addresses.Client.ActionState); }
@@ -530,6 +532,11 @@ namespace Tibia.Objects
         public InputHelper Input
         {
             get { return input; }
+        }
+
+        public PlayerHelper Player
+        {
+            get { return player; }
         }
 
         /// <summary>
