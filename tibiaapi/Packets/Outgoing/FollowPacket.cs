@@ -43,13 +43,14 @@ namespace Tibia.Packets.Outgoing
             }
         }
 
-        public static bool Send(Objects.Client client,uint creatureId, uint count)
+        public static bool Send(Objects.Client client,uint creatureId)
         {
             FollowPacket p = new FollowPacket(client);
             p.CreatureId = creatureId;
 
             if (client.VersionNumber >= 860)
             {
+                uint count = client.Memory.ReadUInt32(Addresses.Client.AttackCount) + 1;
                 p.Count = count;
             }
             return p.Send();
