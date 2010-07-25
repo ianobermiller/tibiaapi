@@ -6,9 +6,10 @@ namespace Tibia.Addresses
 {
     public static class DatItem
     {
+        public static uint StepItems = 0x4C;
         public static uint Width = 0;
         public static uint Height = 4;
-        public static uint Unknown1 = 8;
+        public static uint MaxSizeInPixels = 8;
         public static uint Layers = 12;
         public static uint PatternX = 16;
         public static uint PatternY = 20;
@@ -16,16 +17,16 @@ namespace Tibia.Addresses
         public static uint Phase = 28;
         public static uint Sprite = 32;
         public static uint Flags = 36;
-        public static uint CanLookAt = 40;
-        public static uint WalkSpeed = 44;
-        public static uint TextLimit = 48; // If it is readable/writable
-        public static uint LightRadius = 52;
-        public static uint LightColor = 56;
-        public static uint ShiftX = 60;
-        public static uint ShiftY = 64;
-        public static uint WalkHeight = 68;
-        public static uint Automap = 72; // Minimap color
-        public static uint LensHelp = 76;
+        public static uint CanLookAt = 0;
+        public static uint WalkSpeed = 40;
+        public static uint TextLimit = 44; // If it is readable/writable
+        public static uint LightRadius = 48;
+        public static uint LightColor = 52;
+        public static uint ShiftX = 56;
+        public static uint ShiftY = 60;
+        public static uint WalkHeight = 64;
+        public static uint Automap = 68; // Minimap color
+        public static uint LensHelp = 72;
 
         public enum Flag : uint
         {
@@ -134,6 +135,41 @@ namespace Tibia.Addresses
             { Flag.IgnoreStackpos, 2147483648 }
         };
 
+        private static readonly Dictionary<Flag, uint> flagOffsetsPre850 = new Dictionary<Flag, uint>()
+        { 
+            { Flag.IsGround, 1 },
+            { Flag.TopOrder1, 2 },
+            { Flag.TopOrder2, 4 },
+            { Flag.TopOrder3, 8 },
+            { Flag.IsContainer, 16 },
+            { Flag.IsStackable, 32 },
+            { Flag.IsCorpse, 64 },
+            { Flag.IsUsable, 128 },
+            { Flag.IsRune, 256 },
+            { Flag.IsWritable, 512 },
+            { Flag.IsReadable, 1024 },
+            { Flag.IsFluidContainer, 2048 },
+            { Flag.IsSplash, 4096 },
+            { Flag.Blocking, 8192 },
+            { Flag.IsImmovable, 16384 },
+            { Flag.BlocksMissiles, 32768 },
+            { Flag.BlocksPath, 65536 },
+            { Flag.IsPickupable, 131072 },
+            { Flag.IsHangable, 262144 },
+            { Flag.IsHangableHorizontal, 524288 },
+            { Flag.IsHangableVertical, 1048576 },
+            { Flag.IsRotatable, 2097152 },
+            { Flag.IsLightSource, 4194304 },
+            { Flag.Floorchange, 8388608 },
+            { Flag.IsShifted, 16777216 },
+            { Flag.HasHeight, 33554432 },
+            { Flag.IsLayer, 67108864 },
+            { Flag.IsIdleAnimation, 134217728 },
+            { Flag.HasAutoMapColor, 268435456 },
+            { Flag.HasHelpLens, 536870912 },
+            { Flag.Unknown, 1073741824 }
+        };
+
         public static uint GetFlagOffset(uint version, Flag flag)
         {
             uint offset;
@@ -142,9 +178,13 @@ namespace Tibia.Addresses
                 // offset is set to zero if flag does not exist
                 flagOffsets860.TryGetValue(flag, out offset);
             }
-            else
+            else if (version <= 857 && version >= 850)
             {
                 flagOffsetsPre860.TryGetValue(flag, out offset);
+            }
+            else
+            {
+                flagOffsetsPre850.TryGetValue(flag, out offset);
             }
             return offset;
         }

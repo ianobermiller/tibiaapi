@@ -148,9 +148,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -158,16 +159,16 @@ namespace Tibia
                     DatItem.Phase = 28;
                     DatItem.Sprite = 32;
                     DatItem.Flags = 36;
-                    DatItem.CanLookAt = 40;
-                    DatItem.WalkSpeed = 44;
-                    DatItem.TextLimit = 48;
-                    DatItem.LightRadius = 52;
-                    DatItem.LightColor = 56;
-                    DatItem.ShiftX = 60;
-                    DatItem.ShiftY = 64;
-                    DatItem.WalkHeight = 68;
-                    DatItem.Automap = 72;
-                    DatItem.LensHelp = 76;
+                    DatItem.CanLookAt = 0;
+                    DatItem.WalkSpeed = 40;
+                    DatItem.TextLimit = 44;
+                    DatItem.LightRadius = 48;
+                    DatItem.LightColor = 52;
+                    DatItem.ShiftX = 56;
+                    DatItem.ShiftY = 60;
+                    DatItem.WalkHeight = 64;
+                    DatItem.Automap = 68;
+                    DatItem.LensHelp = 72;
 
                     DrawItem.DrawItemFunc = 0x4B5990;
 
@@ -407,9 +408,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -664,9 +666,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -921,9 +924,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -1178,9 +1182,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -1435,9 +1440,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -1692,9 +1698,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x50;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -1945,9 +1952,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -2193,9 +2201,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -2439,9 +2448,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -2678,9 +2688,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -2907,9 +2918,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -3127,9 +3139,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -3318,9 +3331,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;
@@ -3517,9 +3531,10 @@ namespace Tibia
                     Creature.DistanceColorFeet = 112;
                     Creature.DistanceAddon = 116;
 
+                    DatItem.StepItems = 0x4C;
                     DatItem.Width = 0;
                     DatItem.Height = 4;
-                    DatItem.Unknown1 = 8;
+                    DatItem.MaxSizeInPixels = 8;
                     DatItem.Layers = 12;
                     DatItem.PatternX = 16;
                     DatItem.PatternY = 20;

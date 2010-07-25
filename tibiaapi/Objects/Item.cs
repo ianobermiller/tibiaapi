@@ -226,7 +226,7 @@ namespace Tibia.Objects
             get
             {
                 uint baseAddr = client.Memory.ReadUInt32(Addresses.Client.DatPointer);
-                return client.Memory.ReadUInt32(baseAddr + 8) + 0x4C * (id - 100);
+                return client.Memory.ReadUInt32(baseAddr + 8) + Addresses.DatItem.StepItems * (id - 100);
             }
         }
 
@@ -248,10 +248,10 @@ namespace Tibia.Objects
             set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Height, value); }
         }
 
-        public int Unknown1
+        public int MaxSizeInPixels
         {
-            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.Unknown1); }
-            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.Unknown1, value); }
+            get { return client.Memory.ReadInt32(DatAddress + Addresses.DatItem.MaxSizeInPixels); }
+            set { client.Memory.WriteInt32(DatAddress + Addresses.DatItem.MaxSizeInPixels, value); }
         }
 
         public int Layers

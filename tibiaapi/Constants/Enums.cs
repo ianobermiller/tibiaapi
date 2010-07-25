@@ -552,9 +552,9 @@ namespace Tibia.Constants
     public enum WarIcon
     {
         None = 0,
-        Blue = 1,
-        Green = 2,
-        Red = 3
+        Green = 1,
+        Red = 2,
+        Blue = 3
     }
 
     #endregion
