@@ -124,11 +124,17 @@ namespace Tibia.Util
         {
             options.UseOT = uxUseOT.Checked;
             LoginServer ls = null;
+
             if (options.UseOT)
             {
-                string[] split = uxLoginServer.Text.Split(new char[] { ':' });
-                ls = new LoginServer(split[0], short.Parse(split[1]));
+                string[] split = uxLoginServer.Text.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if(split.Length == 2)
+                    ls = new LoginServer(split[0].Trim(), short.Parse(split[1]));
+                else
+                    ls = new LoginServer(uxLoginServer.Text.Trim(), 7171);
             }
+
             client = ClientChooserBase.ChooseClient(options, uxClients.SelectedItem, ls);
             newClientChooser.Dispose();
         }
