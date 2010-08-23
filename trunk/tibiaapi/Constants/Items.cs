@@ -750,7 +750,7 @@ public static Item PurpleKissBlossom = new Item(7249, "Purple Kiss Blossom");
 public static class Food {
 public static Objects.Food Apple = new Objects.Food(3585, "Apple", 72);
 public static Objects.Food Banana = new Objects.Food(3587, "Banana", 96);
-public static Objects.Food Blueberry = new Objects.Food(0, "Blueberry", 12);
+public static Objects.Food Blueberry = new Objects.Food(3588, "Blueberry", 12);
 public static Objects.Food Bread = new Objects.Food(3600, "Bread", 120);
 public static Objects.Food BrownBread = new Objects.Food(3602, "Brown Bread", 96);
 public static Objects.Food BrownMushroom = new Objects.Food(3725, "Brown Mushroom", 264);

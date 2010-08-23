@@ -5,7 +5,7 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Player
     {
-        public static uint Experience = 0x63FE8C; // 8.60
+        public static uint Experience = 0x634BCC; // 8.61
 
         public static uint GoToX = Experience + 80;
         public static uint GoToY = Experience + 76;
@@ -48,7 +48,7 @@ namespace Tibia.Addresses
         /// Total number of equipment slots (accessed 0-10)
         /// </summary>
         public static int MaxSlots = 11;
-        public static uint SlotHead = 0x64CC98; // 8.60
+        public static uint SlotHead = 0x6418F8; // 8.61
         public static uint SlotNeck = SlotHead + 12;
         public static uint SlotBackpack = SlotHead + 24;
         public static uint SlotArmor = SlotHead + 36;
@@ -61,20 +61,20 @@ namespace Tibia.Addresses
 
         public static uint DistanceSlotCount = 4;
 
-        public static uint CurrentTileToGo = 0x63FEA0; // 8.60
-        public static uint TilesToGo = 0x63FEA4; // 8.60
+        public static uint CurrentTileToGo = 0x634BE0; // 8.61
+        public static uint TilesToGo = 0x634BE4; // 8.61
 
         /// <summary>
         /// The number of times the player has attacked
         /// </summary>
-        public static uint AttackCount = 0x63DA40; //8.60
+        public static uint AttackCount = 0x632780; //8.61
 
         /// <summary>
         /// The number of times the player has followed
         /// </summary>
-        public static uint FollowCount = AttackCount + 0x20; //8.60
+        public static uint FollowCount = AttackCount + 0x20; //8.61
 
-        public static uint RedSquare = 0x63FE64; // 8.60
+        public static uint RedSquare = 0x634BA4; // 8.61
         public static uint GreenSquare = RedSquare - 4;
         public static uint WhiteSquare = GreenSquare - 8;
 
@@ -89,9 +89,9 @@ namespace Tibia.Addresses
         /// <summary>
         /// Static address for player Z, used for level spy
         /// </summary>
-        public static uint Z = 0x64F600; // 8.60
+        public static uint Z = 0x644260; // 8.61
 
-        public static uint Y = Z + 4; // 8.60
-        public static uint X = Z + 8; // 8.60
+        public static uint Y = Z + 4; // 8.61
+        public static uint X = Z + 8; // 8.61
     }
 }
