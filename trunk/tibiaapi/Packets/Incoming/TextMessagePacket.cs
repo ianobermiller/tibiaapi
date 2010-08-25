@@ -8,7 +8,7 @@ namespace Tibia.Packets.Incoming
 {
     public class TextMessagePacket : IncomingPacket
     {
-        public StatusMessage Color { get; set; }
+        public TextMessageColor Color { get; set; }
         public string Message { get; set; }
 
         public TextMessagePacket(Objects.Client c)
@@ -28,7 +28,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.TextMessage;
 
-            Color = (StatusMessage)msg.GetByte();
+            Color = (TextMessageColor)msg.GetByte();
             Message = msg.GetString();
 
             return true;
@@ -41,7 +41,7 @@ namespace Tibia.Packets.Incoming
             msg.AddString(Message);
         }
 
-        public static bool Send(Objects.Client client, StatusMessage color, string msg)
+        public static bool Send(Objects.Client client, TextMessageColor color, string msg)
         {
             TextMessagePacket p = new TextMessagePacket(client);
             p.Color = color;

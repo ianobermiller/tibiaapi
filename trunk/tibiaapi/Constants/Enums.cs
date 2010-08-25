@@ -100,7 +100,7 @@ namespace Tibia.Constants
     public static class RSAKey
     {
         public static string OpenTibia = "109120132967399429278860960508995541528237502902798129123468757937266291492576446330739696001110603907230888610072655818825358503429057592827629436413108566029093628212635953836686562675849720620786279431090218017681061521755056710823876476444260558147179707119674283982419152118103759076030616683978566631413";
-        public static string RealTibia = "124710459426827943004376449897985582167801707960697037164044904862948569380850421396904597686953877022394604239428185498284169068581802277612081027966724336319448537811441719076484340922854929273517308661370727105382899118999403808045846444647284499123164879035103627004668521005328367415259939915284902061793";
+        public static string RealTibia = "132127743205872284062295099082293384952776326496165507967876361843343953435544496682053323833394351797728954155097012103928360786959821132214473291575712138800495033169914814069637740318278150290733684032524174782740134357629699062987023311132821016569775488792221429527047321331896351555606801473202394175817";
     }
     #endregion
 
@@ -658,18 +658,20 @@ namespace Tibia.Constants
         MonsterYell = 0x14,	//Yell orange
     }
 
-    public enum StatusMessage : byte
+    public enum TextMessageColor : byte
     {
-        ConsoleRed = 0x12, //Red message in the console
-        ConsoleOrange = 0x13, //Orange message in the console
-        ConsoleOrange2 = 0x14, //Orange message in the console
-        Warning = 0x15, //Red message in game window and in the console
-        EventAdvance = 0x16, //White message in game window and in the console
-        EventDefault = 0x17, //White message at the bottom of the game window and in the console
-        StatusDefault = 0x18, //White message at the bottom of the game window and in the console
-        DescriptionGreen = 0x19, //Green message in game window and in the console
-        StatusSmall = 0x1A, //White message at the bottom of the game window"
-        ConsoleBlue = 0x1B, //Blue message in the console
+        YellowConsole = 1, // 2, 3
+        PurpleConsole = 4, // 21
+        TealConsole = 5, // 6
+        RedServerLog = 9, // 11
+        OrangeConsole = 13, // 14
+        RedCenterGameWindowAndServerLog = 15,
+        WhiteServerLogAndCenterGameWindow = 16,
+        WhiteServerLogAndBottomGameWindow = 17,
+        WhiteBottomGameWindow = 18, // 20
+        GreenCenterGameWindow = 19,
+        RedConsole = 22, // 23
+        // None: 7, 8, 10, 12
     }
 
     public enum SquareColor : byte
