@@ -40,7 +40,7 @@ namespace Tibia
 
         public static string Prepare(string text)
         {
-            return HttpUtility.HtmlDecode(text) // Decode html character entities
+            return System.Net.WebUtility.HtmlDecode(text) // Decode html character entities
                 .Replace((char)0xA0, ' '); // Replace non-breaking spaces
         }
     }

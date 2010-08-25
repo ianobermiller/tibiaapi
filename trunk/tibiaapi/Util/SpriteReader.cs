@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
@@ -13,8 +10,8 @@ namespace Tibia.Util
         {
             return GetSpriteImage(
                 Path.Combine(
-                    Path.GetDirectoryName(client.Process.MainModule.FileName), 
-                    "Tibia.spr"), 
+                    Path.GetDirectoryName(client.Process.MainModule.FileName),
+                    "Tibia.spr"),
                 spriteId);
         }
 
@@ -22,7 +19,7 @@ namespace Tibia.Util
         // and to Thomac at http://otfans.net/showthread.php?t=141982
         public static Image GetSpriteImage(string file, int spriteId)
         {
-            if (spriteId < 2 || spriteId > 28722)
+            if (spriteId < 2)// || spriteId > 28722)
                 throw new ArgumentOutOfRangeException("spriteId");
 
             int size = 32;
