@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace Tibia.Objects
 {
@@ -110,12 +109,7 @@ namespace Tibia.Objects
                 foreach (char c in replace)
                     s = s.Replace(c, ' ');
 
-                s = s.Trim();
-
-                while (s.IndexOf("  ") != -1)
-                    s = s.Replace("  ", " ");
-
-                string[] split = s.Split(" ".ToCharArray());
+                string[] split = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 return new Location(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]));
             }
