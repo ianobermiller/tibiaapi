@@ -95,7 +95,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// The text of the last message sent to the default channel(innacurate?).
         /// </summary>
-        public static uint LastMSGText = 0x0; //8.61
+        public static uint LastMSGText = 0x789CF8; //8.61
 
         /// <summary>
         /// The last player to send a message to the default channel(innacurate?).
