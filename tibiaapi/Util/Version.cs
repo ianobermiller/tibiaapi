@@ -54,7 +54,7 @@ namespace Tibia
                     Client.AttackMode = Client.FollowMode + 4;
                     Client.ActionState = 0x791B1C;
                     Client.ActionStateFreezer = 0x518140;
-                    //Client.LastMSGText = 0x7E0A00;
+                    Client.LastMSGText = 0x789CF8;
                     Client.LastMSGAuthor = Client.LastMSGText - 0x28;
                     Client.StatusbarText = 0x7D5340;
                     Client.StatusbarTime = Client.StatusbarText - 4;
