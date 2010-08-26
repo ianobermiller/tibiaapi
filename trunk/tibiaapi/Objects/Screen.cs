@@ -78,7 +78,7 @@ namespace Tibia.Objects
             return Packets.Pipes.DisplayCreatureTextPacket.Send(client, 0, creatureName, loc, color, font, text);
         }
 
-        public bool DrawCreatureText(int CreatureID, Location loc, Color color, ClientFont font, string Text)
+        public bool DrawCreatureText(uint CreatureID, Location loc, Color color, ClientFont font, string Text)
         {
             //Testing that user has given valid values
             if (CreatureID == 0 || Text == string.Empty)
@@ -108,7 +108,7 @@ namespace Tibia.Objects
             return Packets.Pipes.UpdateCreatureTextPacket.Send(client, 0, CreatureName, loc, NewText);
         }
 
-        public bool UpdateCreatureText(int CreatureID, Location loc, string NewText)
+        public bool UpdateCreatureText(uint CreatureID, Location loc, string NewText)
         {
             //Testing that user has given valid values
             if (CreatureID == 0 || NewText == string.Empty)
@@ -138,7 +138,7 @@ namespace Tibia.Objects
             return Packets.Pipes.RemoveCreatureTextPacket.Send(client, 0, CreatureName);
         }
 
-        public bool RemoveCreatureText(int CreatureID)
+        public bool RemoveCreatureText(uint CreatureID)
         {
             //Testing that user has given valid values
             if (CreatureID == 0)

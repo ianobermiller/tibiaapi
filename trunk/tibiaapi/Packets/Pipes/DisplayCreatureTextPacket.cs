@@ -7,7 +7,7 @@ namespace Tibia.Packets.Pipes
 {
     public class DisplayCreatureTextPacket : PipePacket
     {
-        public int CreatureId{get;set;}
+        public uint CreatureId{get;set;}
         public string CreatureName{get;set;}
         public Location Location{get;set;}
         public Color Color{get;set;}
@@ -27,7 +27,7 @@ namespace Tibia.Packets.Pipes
 
             Type = PipePacketType.DisplayCreatureText;
             
-            CreatureId = (int)msg.GetUInt32();
+            CreatureId = msg.GetUInt32();
             CreatureName = msg.GetString();
             Location = new Location((int)msg.GetUInt32(), (int)msg.GetUInt32(), 0);
             Color = Color.FromArgb((int)msg.GetUInt32(), (int)msg.GetUInt32(), (int)msg.GetUInt32());
@@ -42,7 +42,7 @@ namespace Tibia.Packets.Pipes
             NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 21 + CreatureName.Length + Text.Length);
             msg.AddByte((byte)Type);
 
-            msg.AddUInt32((uint)CreatureId);
+            msg.AddUInt32(CreatureId);
             msg.AddString(CreatureName);
             msg.AddUInt16((ushort)Location.X);
             msg.AddUInt16((ushort)Location.Y);
@@ -55,7 +55,7 @@ namespace Tibia.Packets.Pipes
             return msg.Data;
         }
 
-        public static bool Send(Objects.Client client, int creatureId , string creatureName, Location location, Color color, ClientFont font, string text)
+        public static bool Send(Objects.Client client, uint creatureId , string creatureName, Location location, Color color, ClientFont font, string text)
         {
             DisplayCreatureTextPacket p = new DisplayCreatureTextPacket(client);
 
