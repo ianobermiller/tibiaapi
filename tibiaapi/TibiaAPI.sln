@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TibiaAPI", "TibiaAPI.csproj", "{4D132EB7-B97D-461D-85CF-949FF5A7BA96}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectedDLL", "InjectedDLL\Injected DLL.vcproj", "{6EDB8131-F2B1-4763-8E2F-6AE9BD4D76FC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectedDLL", "InjectedDLL\Injected DLL.vcxproj", "{6EDB8131-F2B1-4763-8E2F-6AE9BD4D76FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

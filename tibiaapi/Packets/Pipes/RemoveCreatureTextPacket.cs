@@ -5,7 +5,7 @@ namespace Tibia.Packets.Pipes
 {
     public class RemoveCreatureTextPacket : PipePacket
     {
-        public int CreatureId{get;set;}
+        public uint CreatureId{get;set;}
         public string CreatureName { get; set; }
 
         public RemoveCreatureTextPacket(Client client)
@@ -20,7 +20,7 @@ namespace Tibia.Packets.Pipes
                 return false;
 
             Type = PipePacketType.RemoveCreatureText;
-            CreatureId = (int)msg.GetUInt32();
+            CreatureId = msg.GetUInt32();
             CreatureName = msg.GetString();
 
             return true;
@@ -31,13 +31,13 @@ namespace Tibia.Packets.Pipes
             NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client, 7 + CreatureName.Length);
             msg.AddByte((byte)Type);
 
-            msg.AddUInt32((uint)CreatureId);
+            msg.AddUInt32(CreatureId);
             msg.AddString(CreatureName);
 
             return msg.Data;
         }
 
-        public static bool Send(Objects.Client client, int creatureId, string creatureName)
+        public static bool Send(Objects.Client client, uint creatureId, string creatureName)
         {
             RemoveCreatureTextPacket p = new RemoveCreatureTextPacket(client);
             p.CreatureId = creatureId;

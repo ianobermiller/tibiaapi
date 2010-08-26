@@ -22,31 +22,31 @@ Partial Class frmInventory
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lvInventory = New System.Windows.Forms.ListView
-        Me.chId = New System.Windows.Forms.ColumnHeader
-        Me.chCount = New System.Windows.Forms.ColumnHeader
-        Me.chWidth = New System.Windows.Forms.ColumnHeader
-        Me.chHeight = New System.Windows.Forms.ColumnHeader
-        Me.chUnknown1 = New System.Windows.Forms.ColumnHeader
-        Me.chLayers = New System.Windows.Forms.ColumnHeader
-        Me.chPatternX = New System.Windows.Forms.ColumnHeader
-        Me.chPatternY = New System.Windows.Forms.ColumnHeader
-        Me.chPatternDepth = New System.Windows.Forms.ColumnHeader
-        Me.chPhase = New System.Windows.Forms.ColumnHeader
-        Me.chSpriteCount = New System.Windows.Forms.ColumnHeader
-        Me.chFlags = New System.Windows.Forms.ColumnHeader
-        Me.chWalkSpeed = New System.Windows.Forms.ColumnHeader
-        Me.chTextLimit = New System.Windows.Forms.ColumnHeader
-        Me.chLightRadius = New System.Windows.Forms.ColumnHeader
-        Me.chLightColor = New System.Windows.Forms.ColumnHeader
-        Me.chShiftX = New System.Windows.Forms.ColumnHeader
-        Me.chShiftY = New System.Windows.Forms.ColumnHeader
-        Me.chWalkHeight = New System.Windows.Forms.ColumnHeader
-        Me.chAutomapColor = New System.Windows.Forms.ColumnHeader
-        Me.chLensHelp = New System.Windows.Forms.ColumnHeader
-        Me.chTopOrder = New System.Windows.Forms.ColumnHeader
-        Me.chHasExtraByte = New System.Windows.Forms.ColumnHeader
-        Me.btnGetItems = New System.Windows.Forms.Button
+        Me.lvInventory = New System.Windows.Forms.ListView()
+        Me.chId = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chCount = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chWidth = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chHeight = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chUnknown1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chLayers = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chPatternX = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chPatternY = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chPatternDepth = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chPhase = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chSpriteCount = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chFlags = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chWalkSpeed = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chTextLimit = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chLightRadius = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chLightColor = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chShiftX = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chShiftY = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chWalkHeight = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chAutomapColor = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chLensHelp = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chTopOrder = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.chHasExtraByte = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnGetItems = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lvInventory

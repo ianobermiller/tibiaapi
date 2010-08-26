@@ -6,7 +6,7 @@ Public Class frmPackets
         If client.Dll.Pipe IsNot Nothing Then
             client.Dll.DisconnectPipe()
         End If
-        Packets.Incoming.TextMessagePacket.Send(client, Constants.StatusMessage.ConsoleRed, "TibiAPI Send Packet To Client By Memory")
+        Packets.Incoming.TextMessagePacket.Send(client, Constants.TextMessageColor.RedConsole, "TibiAPI Send Packet To Client By Memory")
     End Sub
 
     Private Sub btnServerMemory_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnServerMemory.Click
@@ -24,7 +24,7 @@ Public Class frmPackets
                 client.Dll.InitializePipe()
             End If
         End If
-        Packets.Incoming.TextMessagePacket.Send(client, Constants.StatusMessage.ConsoleRed, "TibiAPI Send Packet To Client By HookProxy")
+        Packets.Incoming.TextMessagePacket.Send(client, Constants.TextMessageColor.RedConsole, "TibiAPI Send Packet To Client By HookProxy")
     End Sub
 
     Private Sub btnServerHookProxy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnServerHookProxy.Click
