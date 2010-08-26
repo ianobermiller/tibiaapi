@@ -237,7 +237,7 @@ namespace Tibia.Addresses
 
         public static uint DatPointer = 0x78E53C; //8.61
 
-        public static uint EventTriggerPointer = 0x0; //8.61
+        public static uint EventTriggerPointer = 0x519C50; //8.61
         public static uint DialogPointer = 0x644224; //8.61
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;

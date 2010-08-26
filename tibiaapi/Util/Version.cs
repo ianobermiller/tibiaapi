@@ -78,7 +78,7 @@ namespace Tibia
                     Client.GameWindowRectPointer = 0x640EBC;
                     Client.GameWindowBar = 0x7D5330;
                     Client.DatPointer = 0x78E53C;
-                    //Client.EventTriggerPointer = 0x51F4D8;
+                    Client.EventTriggerPointer = 0x519C50;
                     Client.DialogPointer = 0x644224;
                     Client.DialogLeft = 0x14;
                     Client.DialogTop = 0x18;
@@ -113,8 +113,8 @@ namespace Tibia
                     Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
 
                     ContextMenus.AddContextMenuPtr = 0x450140;
-                    ContextMenus.OnClickContextMenuPtr = 0x44EB70;
-                    ContextMenus.OnClickContextMenuVf = 0x5B5C00;
+                    ContextMenus.OnClickContextMenuPtr = 0x44CD60;
+                    ContextMenus.OnClickContextMenuVf = 0x5B5668;
                     ContextMenus.AddSetOutfitContextMenu = 0x45105C;
                     ContextMenus.AddPartyActionContextMenu = 0x451489;
                     ContextMenus.AddCopyNameContextMenu = 0x45152D;
@@ -338,7 +338,7 @@ namespace Tibia
                     Client.GameWindowRectPointer = 0x64C25C;
                     Client.GameWindowBar = 0x7E07A4;
                     Client.DatPointer = 0x7998DC;
-                    Client.EventTriggerPointer = 0x51F4D8;
+                    Client.EventTriggerPointer = 0x51F650;
                     Client.DialogPointer = 0x64F5C4;
                     Client.DialogLeft = 0x14;
                     Client.DialogTop = 0x18;

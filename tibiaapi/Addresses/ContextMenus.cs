@@ -12,7 +12,7 @@
         /// that is, the events issued when you click a context
         /// menu item.
         /// </summary>
-        public static uint OnClickContextMenuPtr = 0x44EB70; //8.61
+        public static uint OnClickContextMenuPtr = 0x44CD60; //8.61
 
         /// <summary>
         /// The address in the virtual function table where the
@@ -25,7 +25,7 @@
         /// OnClickContextMenuPtr from your hooked function to
         /// process standard Tibia events.
         /// </summary>
-        public static uint OnClickContextMenuVf = 0x5B5C00; //8.61
+        public static uint OnClickContextMenuVf = 0x5B5668; //8.61
 
         /// <summary>
         /// The "Set Outfit" context menu item function call.
