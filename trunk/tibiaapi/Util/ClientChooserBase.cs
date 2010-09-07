@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 using Tibia.Objects;
-using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace Tibia.Util
 {
@@ -59,7 +58,9 @@ namespace Tibia.Util
             }
             else if (selectedItem.GetType() == typeof(ClientPathInfo))
             {
-                client = Client.Open(((ClientPathInfo)selectedItem).Path, options.Arguments);
+                string clientPath = ((ClientPathInfo)selectedItem).Path;
+                Version.Set(FileVersionInfo.GetVersionInfo(clientPath).FileVersion);
+                client = Client.OpenMC(clientPath, options.Arguments);
             }
             else
             {
@@ -113,14 +114,15 @@ namespace Tibia.Util
             {
                 document.Load(location);
                 clientPaths = document["clientPaths"];
-                foreach (XmlElement clientPath in clientPaths){
+                foreach (XmlElement clientPath in clientPaths)
+                {
                     if (clientPath.GetAttribute("location").Equals(fileName))
                     {
                         if (document["clientPaths"].FirstChild != clientPath)
                         {
                             document["clientPaths"].RemoveChild(clientPath);
                             document["clientPaths"].InsertBefore(
-                                clientPath, 
+                                clientPath,
                                 document["clientPaths"].FirstChild);
                         }
                         document.Save(location);
