@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 
 // Enumerations
 
@@ -645,17 +643,10 @@ namespace Tibia.Constants
         ChannelYellow = 0x07,	//Yellow message in chat
         ChannelWhite = 0x08, //White message in chat
         RuleViolationReport = 0x09, //Reporting rule violation - Ctrl+R
-        RuleViolationAnswer = 0x0A, //Answering report
+        ChannelRed = 0x0A,	//Talk red on chat - #c
         RuleViolationContinue = 0x0B, //Answering the answer of the report
-        Broadcast = 0x0C,	//Broadcast a message - #b
-        ChannelRed = 0x0D,	//Talk red on chat - #c
-        PrivateRed = 0x0E,	//Red private - @name@ text
-        ChannelOrange = 0x0F,	//Talk orange on text
-        //SPEAK_                = 0x10, //?
-        ChannelRedAnonymous = 0x11,	//Talk red anonymously on chat - #d
-        //SPEAK_MONSTER_SAY12 = 0x12, //?????
-        MonsterSay = 0x13,	//Talk orange
-        MonsterYell = 0x14,	//Yell orange
+        ChannelOrange = 0x0C,	//Talk orange on text
+        CreatureSayOrange = 0x0D,
     }
 
     public enum TextMessageColor : byte

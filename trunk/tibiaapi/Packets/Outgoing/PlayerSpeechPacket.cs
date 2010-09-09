@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tibia.Constants;
+﻿using Tibia.Constants;
 
 namespace Tibia.Packets.Outgoing
 {
@@ -34,14 +30,12 @@ namespace Tibia.Packets.Outgoing
             switch (SpeechType)
             {
                 case SpeechType.Private:
-                case SpeechType.PrivateRed:
-                case SpeechType.RuleViolationAnswer:
                     Receiver = msg.GetString();
                     break;
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelRed:
-                case SpeechType.ChannelRedAnonymous:
                 case SpeechType.ChannelWhite:
+                case SpeechType.ChannelOrange:
                     ChannelId = (ChatChannel)msg.GetUInt16();
                     break;
                 default:
@@ -61,13 +55,10 @@ namespace Tibia.Packets.Outgoing
             switch (SpeechType)
             {
                 case SpeechType.Private:
-                case SpeechType.PrivateRed:
-                case SpeechType.RuleViolationAnswer:
                     msg.AddString(Receiver);
                     break;
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelRed:
-                case SpeechType.ChannelRedAnonymous:
                 case SpeechType.ChannelWhite:
                     msg.AddUInt16((ushort)ChannelId);
                     break;

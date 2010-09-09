@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
-using System.Diagnostics;
-using Tibia;
+using System.Xml;
 using Tibia.Objects;
 using Tibia.Util;
-using System.Xml;
-using System.IO;
 
 namespace SmartIPChanger
 {
@@ -33,7 +27,7 @@ namespace SmartIPChanger
         private void Go()
         {
             Client client = ClientChooser.ShowBox(new ClientChooserOptions() { ShowOTOption = false, Smart = false });
-            
+
             if (client == null)
             {
                 client = Client.Open();
