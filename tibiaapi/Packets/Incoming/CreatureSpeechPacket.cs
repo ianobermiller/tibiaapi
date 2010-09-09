@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tibia.Constants;
+﻿using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
@@ -44,16 +40,16 @@ namespace Tibia.Packets.Incoming
                 case SpeechType.Say:
                 case SpeechType.Whisper:
                 case SpeechType.Yell:
-                case SpeechType.MonsterSay:
-                case SpeechType.MonsterYell:
                 case SpeechType.PrivateNPCToPlayer:
+                case SpeechType.Private:
+                case SpeechType.RuleViolationContinue:
+                case SpeechType.CreatureSayOrange:
                     Position = msg.GetLocation();
                     break;
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelRedAnonymous:
-                case SpeechType.ChannelOrange:
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelWhite:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelOrange:
                     ChannelId = (ChatChannel)msg.GetUInt16();
                     break;
                 case SpeechType.RuleViolationReport:
@@ -148,16 +144,16 @@ namespace Tibia.Packets.Incoming
                 case SpeechType.Say:
                 case SpeechType.Whisper:
                 case SpeechType.Yell:
-                case SpeechType.MonsterSay:
-                case SpeechType.MonsterYell:
                 case SpeechType.PrivateNPCToPlayer:
+                case SpeechType.Private:
+                case SpeechType.RuleViolationContinue:
+                case SpeechType.CreatureSayOrange:
                     msg.AddLocation(Position);
                     break;
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelRedAnonymous:
-                case SpeechType.ChannelOrange:
                 case SpeechType.ChannelYellow:
                 case SpeechType.ChannelWhite:
+                case SpeechType.ChannelRed:
+                case SpeechType.ChannelOrange:
                     msg.AddUInt16((ushort)ChannelId);
                     break;
                 case SpeechType.RuleViolationReport:
@@ -165,7 +161,6 @@ namespace Tibia.Packets.Incoming
                     break;
                 default:
                     break;
-
             }
 
             msg.AddString(Message);

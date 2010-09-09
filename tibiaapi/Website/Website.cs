@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace Tibia
 {
@@ -32,8 +30,8 @@ namespace Tibia
         {
             return Prepare(
                 Regex.Match(
-                    html, 
-                    pattern, 
+                    html,
+                    pattern,
                     RegexOptions.IgnoreCase | RegexOptions.Singleline)
                 .Groups[1].Value);
         }
