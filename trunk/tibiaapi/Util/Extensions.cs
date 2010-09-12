@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using Tibia.Objects;
 
 namespace Tibia
@@ -199,6 +199,14 @@ namespace Tibia
         public static string ToHexString(this byte[] data)
         {
             return data.ToHexString(0, data.Length);
+        }
+
+        public static void Foreach<T>(this IEnumerable<T> items, Action<T> action)
+        {
+            foreach (T item in items)
+            {
+                action(item);
+            }
         }
         #endregion
 

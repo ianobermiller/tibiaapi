@@ -79,7 +79,7 @@ namespace Tibia.Objects
             process = p;
             process.Exited += new EventHandler(process_Exited);
             process.EnableRaisingEvents = true;
-            
+
             // Wait until we can really access the process
             process.WaitForInputIdle();
 
@@ -139,7 +139,7 @@ namespace Tibia.Objects
                         (int)Player.Y,
                         (int)Player.Z);
                 }
-                
+
                 return Location.Invalid;
             }
         }
@@ -172,11 +172,11 @@ namespace Tibia.Objects
         public string Statusbar
         {
             get { return Memory.ReadString(Addresses.Client.StatusbarText); }
-            set 
-            { 
+            set
+            {
                 Memory.WriteByte(Addresses.Client.StatusbarTime, 50);
                 Memory.WriteString(Addresses.Client.StatusbarText, value);
-                Memory.WriteByte(Addresses.Client.StatusbarText + value.Length, 0x00); 
+                Memory.WriteByte(Addresses.Client.StatusbarText + value.Length, 0x00);
             }
         }
 
@@ -287,7 +287,8 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the attack mode.
         /// </summary>
-        public Constants.Attack AttackMode {
+        public Constants.Attack AttackMode
+        {
             get { return (Constants.Attack)Memory.ReadByte(Addresses.Client.AttackMode); }
             set { Memory.WriteByte(Addresses.Client.AttackMode, (byte)value); }
         }
@@ -304,7 +305,8 @@ namespace Tibia.Objects
         /// <summary>
         /// Gets or sets the follow mode.
         /// </summary>
-        public byte SafeMode {
+        public byte SafeMode
+        {
             get { return Memory.ReadByte(Addresses.Client.SafeMode); }
             set { Memory.WriteByte(Addresses.Client.FollowMode, value); }
         }
@@ -379,7 +381,7 @@ namespace Tibia.Objects
         {
             Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
             Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
-            
+
             if (arguments == null)
                 arguments = "";
 
@@ -398,7 +400,7 @@ namespace Tibia.Objects
             Util.WinApi.CloseHandle(pi.hThread);
 
             return new Client(p);
-        }           
+        }
 
         #endregion
 
@@ -439,7 +441,8 @@ namespace Tibia.Objects
         /// Get a list of all the open clients of certain version. Class method.
         /// </summary>
         /// <returns></returns>
-        public static List<Client> GetClients(string version) {
+        public static List<Client> GetClients(string version)
+        {
             return GetClients(version, false);
         }
 
@@ -447,21 +450,26 @@ namespace Tibia.Objects
         /// Get a list of all the open clients of certain version. Class method.
         /// </summary>
         /// <returns></returns>
-        public static List<Client> GetClients(string version, bool offline) {
+        public static List<Client> GetClients(string version, bool offline)
+        {
             List<Client> clients = new List<Client>();
             Client client = null;
 
-            foreach (Process process in Process.GetProcesses()) {
+            foreach (Process process in Process.GetProcesses())
+            {
                 StringBuilder classname = new StringBuilder();
                 Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
 
-                if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase)) {
-                    if (version == null) {
+                if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (version == null)
+                    {
                         client = new Client(process);
-                        if (!offline || !client.LoggedIn) 
+                        if (!offline || !client.LoggedIn)
                             clients.Add(client);
                     }
-                    else if (process.MainModule.FileVersionInfo.FileVersion == version) {
+                    else if (process.MainModule.FileVersionInfo.FileVersion == version)
+                    {
                         clients.Add(new Client(process));
                         if (!offline || !client.LoggedIn)
                             clients.Add(client);
@@ -487,9 +495,9 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Player GetPlayer()
         {
-            if (!LoggedIn) 
+            if (!LoggedIn)
                 throw new Exceptions.NotLoggedInException();
-            
+
             int playerId = Memory.ReadInt32(Addresses.Player.Id);
 
             return new Player(this, BattleList.GetCreatures().
@@ -548,7 +556,7 @@ namespace Tibia.Objects
             get
             {
                 if (battleList == null) battleList = new BattleList(this);
-                return battleList; 
+                return battleList;
             }
         }
 

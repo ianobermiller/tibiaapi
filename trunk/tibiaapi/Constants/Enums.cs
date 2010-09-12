@@ -1,5 +1,4 @@
-
-// Enumerations
+using System.Collections.Generic;
 
 namespace Tibia.Constants
 {
@@ -632,21 +631,123 @@ namespace Tibia.Constants
         LookContextMenu = 0x05
     }
 
-    public enum SpeechType : byte
+    public class SpeechTypeInfo
     {
-        Say = 0x01,	//normal talk
-        Whisper = 0x02,	//whispering - #w text
-        Yell = 0x03,	//yelling - #y text
-        PrivatePlayerToNPC = 0x04, //Player-to-NPC speaking(NPCs channel)
-        PrivateNPCToPlayer = 0x05, //NPC-to-Player speaking
-        Private = 0x06, //Players speaking privately to players
-        ChannelYellow = 0x07,	//Yellow message in chat
-        ChannelWhite = 0x08, //White message in chat
-        RuleViolationReport = 0x09, //Reporting rule violation - Ctrl+R
-        ChannelRed = 0x0A,	//Talk red on chat - #c
-        RuleViolationContinue = 0x0B, //Answering the answer of the report
-        ChannelOrange = 0x0C,	//Talk orange on text
-        CreatureSayOrange = 0x0D,
+        public readonly SpeechType SpeechType;
+        public readonly byte Value;
+        public readonly AdditionalSpeechData AdditionalSpeechData;
+
+        public SpeechTypeInfo(SpeechType speechType, byte value, AdditionalSpeechData data)
+        {
+            this.SpeechType = speechType;
+            this.Value = value;
+            this.AdditionalSpeechData = data;
+        }
+    }
+
+    public enum AdditionalSpeechData
+    {
+        None,
+        Location,
+        ChannelId,
+        Time
+    }
+
+    public static class Enums
+    {
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo861 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo861 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        {
+            { SpeechType.Say, new SpeechTypeInfo(SpeechType.Say, 0x01, AdditionalSpeechData.Location) },
+            { SpeechType.Whisper, new SpeechTypeInfo(SpeechType.Whisper, 0x02, AdditionalSpeechData.Location) },
+            { SpeechType.Yell, new SpeechTypeInfo(SpeechType.Yell, 0x03, AdditionalSpeechData.Location) },
+            { SpeechType.PrivatePlayerToNPC, new SpeechTypeInfo(SpeechType.PrivatePlayerToNPC, 0x04, AdditionalSpeechData.None) },
+            { SpeechType.PrivateNPCToPlayer, new SpeechTypeInfo(SpeechType.PrivateNPCToPlayer, 0x05, AdditionalSpeechData.Location) },
+            { SpeechType.Private, new SpeechTypeInfo(SpeechType.Private, 0x06, AdditionalSpeechData.None) },
+            { SpeechType.ChannelYellow, new SpeechTypeInfo(SpeechType.ChannelYellow, 0x07, AdditionalSpeechData.ChannelId) },
+            { SpeechType.ChannelWhite, new SpeechTypeInfo(SpeechType.ChannelWhite, 0x08, AdditionalSpeechData.ChannelId) },
+            { SpeechType.RuleViolationReport, new SpeechTypeInfo(SpeechType.RuleViolationReport, 0x09, AdditionalSpeechData.Time) },
+            { SpeechType.ChannelRed, new SpeechTypeInfo(SpeechType.ChannelRed, 0x0A, AdditionalSpeechData.ChannelId) },
+            { SpeechType.RuleViolationContinue, new SpeechTypeInfo(SpeechType.RuleViolationContinue, 0x0B, AdditionalSpeechData.None) },
+            { SpeechType.ChannelOrange, new SpeechTypeInfo(SpeechType.ChannelOrange, 0x0C, AdditionalSpeechData.ChannelId) },
+            { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x0D, AdditionalSpeechData.Location) },
+        };
+
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfoPre861 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfoPre861 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        {
+            { SpeechType.Say, new SpeechTypeInfo(SpeechType.Say, 0x01, AdditionalSpeechData.Location) },
+            { SpeechType.Whisper, new SpeechTypeInfo(SpeechType.Whisper, 0x02, AdditionalSpeechData.Location) },
+            { SpeechType.Yell, new SpeechTypeInfo(SpeechType.Yell, 0x03, AdditionalSpeechData.Location) },
+            { SpeechType.PrivatePlayerToNPC, new SpeechTypeInfo(SpeechType.PrivatePlayerToNPC, 0x04, AdditionalSpeechData.None) },
+            { SpeechType.PrivateNPCToPlayer, new SpeechTypeInfo(SpeechType.PrivateNPCToPlayer, 0x05, AdditionalSpeechData.Location) },
+            { SpeechType.Private, new SpeechTypeInfo(SpeechType.Private, 0x06, AdditionalSpeechData.None) },
+            { SpeechType.ChannelYellow, new SpeechTypeInfo(SpeechType.ChannelYellow, 0x07, AdditionalSpeechData.ChannelId) },
+            { SpeechType.ChannelWhite, new SpeechTypeInfo(SpeechType.ChannelWhite, 0x08, AdditionalSpeechData.ChannelId) },
+            { SpeechType.RuleViolationReport, new SpeechTypeInfo(SpeechType.RuleViolationReport, 0x09, AdditionalSpeechData.Time) },
+            { SpeechType.RuleViolationAnswer, new SpeechTypeInfo(SpeechType.RuleViolationAnswer, 0x0A, AdditionalSpeechData.None) },
+            { SpeechType.RuleViolationContinue, new SpeechTypeInfo( SpeechType.RuleViolationContinue, 0x0B, AdditionalSpeechData.None) },
+            { SpeechType.Broadcast, new SpeechTypeInfo(SpeechType.Broadcast, 0x0C, AdditionalSpeechData.None) },
+            { SpeechType.ChannelRed, new SpeechTypeInfo(SpeechType.ChannelRed, 0x0D, AdditionalSpeechData.ChannelId) },
+            { SpeechType.PrivateRed, new SpeechTypeInfo(SpeechType.PrivateRed, 0x0E, AdditionalSpeechData.None) },
+            { SpeechType.ChannelOrange, new SpeechTypeInfo(SpeechType.ChannelOrange, 0x0F, AdditionalSpeechData.ChannelId) },
+            { SpeechType.ChannelRedAnonymous, new SpeechTypeInfo(SpeechType.ChannelRedAnonymous, 0x11, AdditionalSpeechData.ChannelId) },
+            { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x13, AdditionalSpeechData.Location) },
+            { SpeechType.MonsterYell, new SpeechTypeInfo(SpeechType.MonsterYell, 0x14, AdditionalSpeechData.Location) },
+        };
+
+        static Enums()
+        {
+            enumToSpeechTypeInfo861.Values.Foreach(s => valueToSpeechTypeInfo861.Add(s.Value, s));
+            enumToSpeechTypeInfoPre861.Values.Foreach(s => valueToSpeechTypeInfoPre861.Add(s.Value, s));
+        }
+
+        public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, byte value)
+        {
+            if (version >= 861)
+            {
+                return valueToSpeechTypeInfo861[value];
+            }
+            else
+            {
+                return valueToSpeechTypeInfoPre861[value];
+            }
+        }
+
+        public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, SpeechType speechType)
+        {
+            if (version >= 861)
+            {
+                return enumToSpeechTypeInfo861[speechType];
+            }
+            else
+            {
+                return enumToSpeechTypeInfoPre861[speechType];
+            }
+        }
+    }
+
+    public enum SpeechType
+    {
+        Say,
+        Whisper,
+        Yell,
+        PrivatePlayerToNPC,
+        PrivateNPCToPlayer,
+        Private,
+        ChannelYellow,
+        ChannelWhite,
+        ChannelOrange,
+        ChannelRed,
+        ChannelRedAnonymous,
+        RuleViolationReport,
+        RuleViolationAnswer,
+        RuleViolationContinue,
+        MonsterSay,
+        // Old
+        Broadcast,
+        MonsterYell,
+        PrivateRed
     }
 
     public enum TextMessageColor : byte
