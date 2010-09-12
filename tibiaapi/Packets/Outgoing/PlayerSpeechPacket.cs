@@ -25,21 +25,16 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.PlayerSpeech;
 
-            SpeechType = (SpeechType)msg.GetByte();
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(Client.VersionNumber, msg.GetByte());
+            SpeechType = info.SpeechType;
 
-            switch (SpeechType)
+            if (SpeechType == SpeechType.Private)
             {
-                case SpeechType.Private:
-                    Receiver = msg.GetString();
-                    break;
-                case SpeechType.ChannelYellow:
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelWhite:
-                case SpeechType.ChannelOrange:
-                    ChannelId = (ChatChannel)msg.GetUInt16();
-                    break;
-                default:
-                    break;
+                Receiver = msg.GetString();
+            }
+            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
+            {
+                ChannelId = (ChatChannel)msg.GetUInt16();
             }
 
             Message = msg.GetString();
@@ -50,20 +45,18 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(ref NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte((byte)SpeechType);
 
-            switch (SpeechType)
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(Client.VersionNumber, SpeechType);
+
+            msg.AddByte(info.Value);
+
+            if (SpeechType == SpeechType.Private)
             {
-                case SpeechType.Private:
-                    msg.AddString(Receiver);
-                    break;
-                case SpeechType.ChannelYellow:
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelWhite:
-                    msg.AddUInt16((ushort)ChannelId);
-                    break;
-                default:
-                    break;
+                msg.AddString(Receiver);
+            }
+            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
+            {
+                msg.AddUInt16((ushort)ChannelId);
             }
 
             msg.AddString(Message);

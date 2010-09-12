@@ -33,26 +33,19 @@ namespace Tibia.Packets.Incoming
             Unknown = msg.GetUInt32();
             SenderName = msg.GetString();
             SenderLevel = msg.GetUInt16();
-            SpeechType = (SpeechType)msg.GetByte();
 
-            switch (SpeechType)
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(Client.VersionNumber, msg.GetByte());
+            SpeechType = info.SpeechType;
+
+            switch (info.AdditionalSpeechData)
             {
-                case SpeechType.Say:
-                case SpeechType.Whisper:
-                case SpeechType.Yell:
-                case SpeechType.PrivateNPCToPlayer:
-                case SpeechType.Private:
-                case SpeechType.RuleViolationContinue:
-                case SpeechType.CreatureSayOrange:
+                case AdditionalSpeechData.Location:
                     Position = msg.GetLocation();
                     break;
-                case SpeechType.ChannelYellow:
-                case SpeechType.ChannelWhite:
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelOrange:
+                case AdditionalSpeechData.ChannelId:
                     ChannelId = (ChatChannel)msg.GetUInt16();
                     break;
-                case SpeechType.RuleViolationReport:
+                case AdditionalSpeechData.Time:
                     Time = msg.GetUInt32();
                     break;
                 default:
@@ -137,26 +130,20 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(Unknown);
             msg.AddString(SenderName);
             msg.AddUInt16(SenderLevel);
-            msg.AddByte((byte)SpeechType);
 
-            switch (SpeechType)
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(Client.VersionNumber, SpeechType);
+
+            msg.AddByte(info.Value);
+
+            switch (info.AdditionalSpeechData)
             {
-                case SpeechType.Say:
-                case SpeechType.Whisper:
-                case SpeechType.Yell:
-                case SpeechType.PrivateNPCToPlayer:
-                case SpeechType.Private:
-                case SpeechType.RuleViolationContinue:
-                case SpeechType.CreatureSayOrange:
+                case AdditionalSpeechData.Location:
                     msg.AddLocation(Position);
                     break;
-                case SpeechType.ChannelYellow:
-                case SpeechType.ChannelWhite:
-                case SpeechType.ChannelRed:
-                case SpeechType.ChannelOrange:
+                case AdditionalSpeechData.ChannelId:
                     msg.AddUInt16((ushort)ChannelId);
                     break;
-                case SpeechType.RuleViolationReport:
+                case AdditionalSpeechData.Time:
                     msg.AddUInt32(Time);
                     break;
                 default:

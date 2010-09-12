@@ -166,7 +166,7 @@ namespace Tibia.Packets
             bool packetKnown = true;
             IncomingPacket packet = null;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
-            
+
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:

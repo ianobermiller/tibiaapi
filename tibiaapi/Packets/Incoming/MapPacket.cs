@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Tibia.Objects;
 using Tibia.Constants;
+using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
 {
@@ -51,7 +50,6 @@ namespace Tibia.Packets.Incoming
 
             for (int nz = startz; nz != endz + zstep; nz += zstep)
             {
-                //pare each floor
                 if (!ParseFloorDescription(msg, x, y, nz, width, height, z - nz, outMsg))
                     return false;
             }
@@ -262,74 +260,74 @@ namespace Tibia.Packets.Incoming
 
         protected void GetMapDescription(int x, int y, int z, int width, int height, NetworkMessage msg)
         {
-	        int skip = -1;
-	        int startz, endz, zstep = 0;
+            int skip = -1;
+            int startz, endz, zstep = 0;
 
-	        if (z > 7) 
+            if (z > 7)
             {
-		        startz = z - 2;
-		        endz = Math.Min(16 - 1, z + 2);
-		        zstep = 1;
-	        }
-	        else 
+                startz = z - 2;
+                endz = Math.Min(16 - 1, z + 2);
+                zstep = 1;
+            }
+            else
             {
-		        startz = 7;
-		        endz = 0;
+                startz = 7;
+                endz = 0;
 
-		        zstep = -1;
-	        }
+                zstep = -1;
+            }
 
-	        for (int nz = startz; nz != endz + zstep; nz += zstep)
+            for (int nz = startz; nz != endz + zstep; nz += zstep)
             {
                 skip = GetFloorDescription(x, y, nz, width, height, z - nz, skip, msg);
-	        }
+            }
 
-	        if(skip >= 0)
+            if (skip >= 0)
             {
                 msg.AddByte((byte)skip);
                 msg.AddByte(0xFF);
-	        }
+            }
         }
 
         protected int GetFloorDescription(int x, int y, int z, int width, int height, int offset, int skip, NetworkMessage msg)
         {
-	        Tile tile;
+            Tile tile;
 
-	        for(int nx = 0; nx < width; nx++)
+            for (int nx = 0; nx < width; nx++)
             {
-		        for(int ny = 0; ny < height; ny++)
+                for (int ny = 0; ny < height; ny++)
                 {
-			        tile = Client.Map.GetTile(new Location(x + nx + offset, y + ny + offset, z));
-			        if(tile != null)
+                    tile = Client.Map.GetTile(new Location(x + nx + offset, y + ny + offset, z));
+                    if (tile != null)
                     {
-				        if(skip >= 0)
+                        if (skip >= 0)
                         {
                             msg.AddByte((byte)skip);
                             msg.AddByte(0xFF);
-				        }
-				        skip = 0;
+                        }
+                        skip = 0;
 
 
                         GetTileDescription(tile, msg);
-			        }
-			        else 
+                    }
+                    else
                     {
-				        skip++;
-				        if(skip == 0xFF)
+                        skip++;
+                        if (skip == 0xFF)
                         {
                             msg.AddByte(0xFF);
                             msg.AddByte(0xFF);
-					        skip = -1;
-				        }
-			        }
-		        }
-	        }
+                            skip = -1;
+                        }
+                    }
+                }
+            }
             return skip;
         }
 
         protected void GetTileDescription(Tile tile, NetworkMessage msg)
         {
-	        if(tile != null)
+            if (tile != null)
             {
                 List<TileObject> objects = tile.Objects;
                 objects.Insert(0, new TileObject(tile.Ground.Id, tile.Ground.Count, 0));
@@ -399,7 +397,7 @@ namespace Tibia.Packets.Incoming
                         catch { }
                     }
                 }
-	        }
+            }
         }
     }
 
