@@ -5,14 +5,14 @@
         /// <summary>
         /// The function used to add a context menu item.
         /// </summary>
-        public static uint AddContextMenuPtr = 0x450140; //8.61
+        public static uint AddContextMenuPtr = 0x450C90; //8.62
 
         /// <summary>
         /// The function used to process Tibia's "OnClick" events,
         /// that is, the events issued when you click a context
         /// menu item.
         /// </summary>
-        public static uint OnClickContextMenuPtr = 0x44CD60; //8.61
+        public static uint OnClickContextMenuPtr = 0x44D870; //8.62
 
         /// <summary>
         /// The address in the virtual function table where the
@@ -25,14 +25,14 @@
         /// OnClickContextMenuPtr from your hooked function to
         /// process standard Tibia events.
         /// </summary>
-        public static uint OnClickContextMenuVf = 0x5B5668; //8.61
+        public static uint OnClickContextMenuVf = 0x5B7878; //8.62
 
         /// <summary>
         /// The "Set Outfit" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to your character
         /// </summary>
-        public static uint AddSetOutfitContextMenu = 0x45105C; //8.61
+        public static uint AddSetOutfitContextMenu = 0x451BAC; //8.62
 
         /// <summary>
         /// The "Invite to Party" / "Leave Party" context menu
@@ -40,23 +40,23 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to other players.
         /// </summary>
-        public static uint AddPartyActionContextMenu = 0x451489; //8.61
+        public static uint AddPartyActionContextMenu = 0x451BFD; //8.62
 
         /// <summary>
         /// The "Copy Name" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to creatures (including you and monsters).
         /// </summary>
-        public static uint AddCopyNameContextMenu = 0x45152D; //8.61
+        public static uint AddCopyNameContextMenu = 0x451C14; //8.62
 
-        public static uint AddTradeWithContextMenu = 0x450CE9; //8.61
+        public static uint AddTradeWithContextMenu = 0x451839; //8.62
 
         /// <summary>
         /// The "Look" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that always appears on game window or inventory item clicks.
         /// </summary>
-        public static uint AddLookContextMenu = 0x450B9F; //8.61
+        public static uint AddLookContextMenu = 0x4516EF; //8.62
 
     }
 }
