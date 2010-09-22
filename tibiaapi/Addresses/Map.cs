@@ -94,7 +94,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4EE51D;  // 8.62
+        public static uint NameSpy2 = 0x4EE523;  // 8.62
 
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4F038A;  // 8.62
+        public static uint LevelSpy1 = 0x4F033A;  // 8.62
 
 
         /// <summary>

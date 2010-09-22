@@ -199,10 +199,10 @@ namespace Tibia
                     Map.MaxTiles = 2016;
                     Map.ZAxisDefault = 7;
                     Map.NameSpy1 = 0x4EE519;
-                    Map.NameSpy2 = 0x4EE51D;
+                    Map.NameSpy2 = 0x4EE523;
                     Map.NameSpy1Default = 19061;
                     Map.NameSpy2Default = 16501;
-                    Map.LevelSpy1 = 0x4F038A;
+                    Map.LevelSpy1 = 0x4F033A;
                     Map.LevelSpy2 = 0x4F048F;
                     Map.LevelSpy3 = 0x4F0510;
                     Map.LevelSpyPtr = 0x66F080;
