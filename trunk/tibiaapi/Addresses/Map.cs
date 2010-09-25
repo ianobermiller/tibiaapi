@@ -100,16 +100,16 @@ namespace Tibia.Addresses
         /// <summary>
         /// Default value for Namespy1.
         /// </summary>
-        public static uint NameSpy1Default = 19061;
+        public static uint NameSpy1Default = 0x4C75;
         /// <summary>
         /// Default value for Namespy2.
         /// </summary>
-        public static uint NameSpy2Default = 16501;
+        public static uint NameSpy2Default = 0x4275;
 
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4F033A;  // 8.62
+        public static uint LevelSpy1 = 0x4F038A;  // 8.62
 
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Defaults for level spy.
         /// </summary>
-        public static byte[] LevelSpyDefault = { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
+        public static byte[] LevelSpyDefault = { 0x89, 0x86, 0xC0, 0x5B, 0x00, 0x00 };
         /// <summary>
         /// Level spy add 1.
         /// </summary>
@@ -140,7 +140,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy add 2.
         /// </summary>
-        public static uint LevelSpyAdd2 = 0x2A88;
+        public static uint LevelSpyAdd2 = 0x5BC0;
 
         /// <summary>
         /// Write to this byte to reveal invisible creatures.

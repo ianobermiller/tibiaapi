@@ -793,6 +793,7 @@ public static Objects.Rune FireWall = new Objects.Rune(3190, "Fire Wall Rune", S
 public static Objects.Rune Fireball = new Objects.Rune(3189, "Fireball Rune", Spells.Fireball, 3);
 public static Objects.Rune GreatFireball = new Objects.Rune(3191, "Great Fireball Rune", Spells.GreatFireball, 3);
 public static Objects.Rune HeavyMagicMissile = new Objects.Rune(3198, "Heavy Magic Missile Rune", Spells.HeavyMagicMissile, 2);
+public static Objects.Rune HolyMissile = new Objects.Rune(3182, "Holy Missile Rune", Spells.HolyMissile, 3);
 public static Objects.Rune Icicle = new Objects.Rune(3158, "Icicle Rune", Spells.Icicle, 3);
 public static Objects.Rune IntenseHealing = new Objects.Rune(3152, "Intense Healing Rune", Spells.IntenseHealingRune, 2);
 public static Objects.Rune LightMagicMissile = new Objects.Rune(3174, "Light Magic Missile Rune", Spells.LightMagicMissile, 1);
