@@ -63,7 +63,7 @@ namespace Tibia
                 CharInfo i = new CharInfo();
                 try
                 {
-                    i.Name = Match(html, @"Name:</td><td>([^<]*)</td>");
+                    i.Name = Match(html, @"Name:</td><td>([^<]*)\s");
                     i.Sex = Match(html, @"Sex:</td><td>([^<]*)</td>");
                     i.Profession = Match(html, @"Profession:</td><td>([^<]*)</td>");
                     i.Level = int.Parse(Match(html, @"Level:</td><td>([^<]*)</td>"));

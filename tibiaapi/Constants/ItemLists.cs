@@ -3067,6 +3067,7 @@ public static Dictionary<uint, Item> Corpse = new Dictionary<uint, Item>
 			{ Items.Rune.Fireball.Id, Items.Rune.Fireball },
 			{ Items.Rune.GreatFireball.Id, Items.Rune.GreatFireball },
 			{ Items.Rune.HeavyMagicMissile.Id, Items.Rune.HeavyMagicMissile },
+            { Items.Rune.HolyMissile.Id, Items.Rune.HolyMissile },
 			{ Items.Rune.Icicle.Id, Items.Rune.Icicle },
 			{ Items.Rune.IntenseHealing.Id, Items.Rune.IntenseHealing },
 			{ Items.Rune.LightMagicMissile.Id, Items.Rune.LightMagicMissile },
