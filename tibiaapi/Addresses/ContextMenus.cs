@@ -40,7 +40,7 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to other players.
         /// </summary>
-        public static uint AddPartyActionContextMenu = 0x451BFD; //8.62
+        public static uint AddPartyActionContextMenu = 0x451AD4; //8.62
 
         /// <summary>
         /// The "Copy Name" context menu item function call.
