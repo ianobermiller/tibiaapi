@@ -116,7 +116,7 @@ namespace Tibia
                     ContextMenus.OnClickContextMenuPtr = 0x44D870;
                     ContextMenus.OnClickContextMenuVf = 0x5B7878;
                     ContextMenus.AddSetOutfitContextMenu = 0x451BAC;
-                    ContextMenus.AddPartyActionContextMenu = 0x451BFD;
+                    ContextMenus.AddPartyActionContextMenu = 0x451AD4;
                     ContextMenus.AddCopyNameContextMenu = 0x451C14;
                     ContextMenus.AddTradeWithContextMenu = 0x451839;
                     ContextMenus.AddLookContextMenu = 0x4516EF;
