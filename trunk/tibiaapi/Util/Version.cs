@@ -468,6 +468,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x640EBC;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.FullLightNop = 0x4E5ED9;
                     Map.FullLightAdr = 0x4E5EDC;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -728,6 +729,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x64C25C;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.FullLightNop = 0x4EAFA9;
                     Map.FullLightAdr = 0x4EAFAC;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -988,6 +990,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x64C254;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.FullLightNop = 0x4EAE29;
                     Map.FullLightAdr = 0x4EAE2C;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -1246,6 +1249,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x649784;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.FullLightNop = 0x4EA8B9;
                     Map.FullLightAdr = 0x4EA8BC;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -1504,6 +1508,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x64218C;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.FullLightNop = 0x4E6119;
                     Map.FullLightAdr = 0x4E611C;
                     Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
@@ -1762,6 +1767,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x641DA4;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     //Map.RevealInvisible1 = 0x45F7A3;
                     //Map.RevealInvisible2 = 0x4EC595;
                     Map.FullLightNop = 0x4E5EC9;
@@ -2020,6 +2026,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x63F894;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45F7A3;
                     Map.RevealInvisible2 = 0x4EC595;
                     Map.FullLightNop = 0x4E5A59;
@@ -2278,6 +2285,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x63E8D4;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45F6F3;
                     Map.RevealInvisible2 = 0x4EC505;
                     Map.FullLightNop = 0x4E59C9;
@@ -2528,6 +2536,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x63D794;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45EFE3;
                     Map.RevealInvisible2 = 0x4EBD55;
                     Map.FullLightNop = 0x4E5239;
@@ -2777,6 +2786,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x638734;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45EB63;
                     Map.RevealInvisible2 = 0x4EBCD5;
                     Map.FullLightNop = 0x4E51B9;
@@ -3025,6 +3035,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x6376A8;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x2A88;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0x88, 0x2A, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45E2F3;
                     Map.RevealInvisible2 = 0x4EB445;
                     Map.FullLightNop = 0x4E4929;
@@ -3264,6 +3275,7 @@ namespace Tibia
                     Map.LevelSpyPtr = 0x6327E8;
                     Map.LevelSpyAdd1 = 28;
                     Map.LevelSpyAdd2 = 0x25D8;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0xD8, 0x25, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45E283;
                     Map.RevealInvisible1Default = 0x72;
                     Map.RevealInvisible1Edited = 0xEB;
@@ -3494,6 +3506,7 @@ namespace Tibia
                     Map.LevelSpy3 = 0x4EB630;
                     Map.LevelSpyPtr = 0x62E754;
                     Map.LevelSpyAdd2 = 0x25D8;
+                    Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0xD8, 0x25, 0x00, 0x00 };
                     Map.RevealInvisible1 = 0x45BF63;
                     Map.RevealInvisible2 = 0x4E88C5;
 

@@ -21,7 +21,7 @@ namespace Tibia.Objects
             public void SendString(string s)
             {
                 foreach (var c in s)
-                    SendKey(Convert.ToInt32(c));
+                    SendMessage(Hooks.WM_CHAR, Convert.ToInt32(c), 0);
             }
 
             /// <summary>
