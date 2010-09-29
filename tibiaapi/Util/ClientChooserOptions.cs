@@ -75,6 +75,11 @@ namespace Tibia.Util
         /// </summary>
         public string Version = null;
 
+        /// <summary>
+        /// Run client in a single processor
+        /// </summary>
+        public bool UseSingleProcessor = false;
+
         public List<string> Addresses;
 
         public ClientChooserOptions()

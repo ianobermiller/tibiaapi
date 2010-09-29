@@ -76,6 +76,10 @@ namespace Tibia.Util
             {
                 client.Login.SetOT(ls);
             }
+            
+            // Set client to run on one processor if instructed by the user
+            if (options.UseSingleProcessor)
+                client.Process.ProcessorAffinity = (IntPtr)1;
 
             return client;
         }
