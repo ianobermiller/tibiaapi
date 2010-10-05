@@ -8,6 +8,12 @@ using Tibia.Objects;
 
 namespace Tibia.Util
 {
+    public class OtServer
+    {
+        public LoginServer LoginServer;
+        public string ClientVersion;
+    }
+
     public class ClientChooserBase
     {
         public const string NewClientDefaultText = "New default client...";
@@ -75,6 +81,7 @@ namespace Tibia.Util
             if (client != null && options.UseOT)
             {
                 client.Login.SetOT(ls);
+                SaveOtServer(options.SavedServersLocation, ls, client.Version);
             }
             
             // Set client to run on one processor if instructed by the user
@@ -82,6 +89,34 @@ namespace Tibia.Util
                 client.Process.ProcessorAffinity = (IntPtr)1;
 
             return client;
+        }
+
+        public static List<OtServer> GetServers(string location)
+        {
+            List<OtServer> servers = new List<OtServer>();
+            if (File.Exists(location))
+            {
+                try
+                {
+                    XmlDocument document = new XmlDocument();
+                    document.Load(location);
+                    string ip;
+                    short port;
+                    string version;
+                    foreach (XmlElement server in document["servers"])
+                    {
+                        ip = server.GetAttribute("ip");
+                        port = short.Parse(server.GetAttribute("port"));
+                        version = server.GetAttribute("version");
+                        servers.Add(new OtServer { LoginServer = new LoginServer(ip, port), ClientVersion = version });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return servers;
         }
 
         public static List<ClientPathInfo> GetClientPaths(string location)
@@ -109,6 +144,7 @@ namespace Tibia.Util
             }
             return clientPaths;
         }
+
         public static void SaveClientPath(string location, string fileName, string fileVersion)
         {
             XmlDocument document = new XmlDocument();
@@ -160,6 +196,60 @@ namespace Tibia.Util
                 clientPath.Attributes.Append(locationAttr);
                 clientPath.Attributes.Append(version);
                 clientPaths.AppendChild(clientPath);
+
+                if (!Directory.Exists(Constants.TAConstants.AppDataPath))
+                    Directory.CreateDirectory(Constants.TAConstants.AppDataPath);
+
+                document.Save(location);
+            }
+        }
+
+        public static void SaveOtServer(string location, LoginServer ot, string version)
+        {
+            XmlDocument document = new XmlDocument();
+            XmlElement servers = null;
+            bool exists = false;
+
+            if (File.Exists(location))
+            {
+                document.Load(location);
+                servers = document["servers"];
+                foreach (XmlElement clientPath in servers)
+                {
+                    if (clientPath.GetAttribute("ip").Equals(ot.Server) &&
+                        clientPath.GetAttribute("port").Equals(ot.Port.ToString()))
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                XmlDeclaration Declaration = document.CreateXmlDeclaration("1.0", "", "");
+                document.AppendChild(Declaration);
+                servers = document.CreateElement("servers");
+                document.AppendChild(servers);
+            }
+
+            if (!exists)
+            {
+                XmlElement server = document.CreateElement("server");
+
+                XmlAttribute ipAttr = document.CreateAttribute("ip");
+                ipAttr.InnerText = ot.Server;
+
+                XmlAttribute portAttr = document.CreateAttribute("port");
+                portAttr.InnerText = ot.Port.ToString();
+
+                XmlAttribute versionAttr = document.CreateAttribute("version");
+                versionAttr.InnerText = version;
+
+                server.Attributes.Append(ipAttr);
+                server.Attributes.Append(portAttr);
+                server.Attributes.Append(versionAttr);
+
+                servers.AppendChild(server);
 
                 if (!Directory.Exists(Constants.TAConstants.AppDataPath))
                     Directory.CreateDirectory(Constants.TAConstants.AppDataPath);

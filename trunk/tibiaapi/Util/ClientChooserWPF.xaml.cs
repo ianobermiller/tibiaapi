@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Xml;
-using Tibia.Objects;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Forms;
+using Tibia.Objects;
 
 namespace Tibia.Util
 {
@@ -27,7 +21,7 @@ namespace Tibia.Util
         private const string LoginServerDisabled = "Disabled";
 
         private ClientChooserOptions options;
-        
+
         public ClientChooserWPF()
         {
             InitializeComponent();
@@ -93,9 +87,9 @@ namespace Tibia.Util
                 newClientChooser.uxClients.Items.Add(ClientChooserBase.NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
-                foreach (string address in options.Addresses)
+                foreach (var ot in ClientChooserBase.GetServers(options.SavedServersLocation))
                 {
-                    newClientChooser.uxLoginServer.Items.Add(address);
+                    newClientChooser.uxLoginServer.Items.Add(ot.LoginServer.Server + ":" + ot.LoginServer.Port);
                 }
 
                 if (newClientChooser.uxLoginServer.Items.Count > 0)
