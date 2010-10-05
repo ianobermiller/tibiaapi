@@ -51,14 +51,11 @@ namespace Tibia.Util
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder className, int maxCharCount);
-        
+
         public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;
         public const uint PROCESS_VM_READ = 0x0010;
         public const uint PROCESS_VM_WRITE = 0x0020;
         public const uint PROCESS_VM_OPERATION = 0x0008;
-        public const uint PAGE_EXECUTE_READ = 0x20;
-        public const uint PAGE_EXECUTE_READWRITE = 0x40;
-        public const uint PAGE_READWRITE = 0x4;
         public const uint MEM_COMMIT = 0x1000;
         public const uint MEM_RESERVE = 0x2000;
         public const uint MEM_RELEASE = 0x8000;
@@ -81,8 +78,8 @@ namespace Tibia.Util
         public const uint WM_LBUTTONDOWN = 0x201;
         public const uint WM_LBUTTONUP = 0x202;
 
-        public const uint CREATE_SUSPENDED =0x00000004;
-        
+        public const uint CREATE_SUSPENDED = 0x00000004;
+
         public struct PROCESS_INFORMATION
         {
             public IntPtr hProcess;
@@ -149,7 +146,7 @@ namespace Tibia.Util
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress,
-            IntPtr dwSize, uint flNewProtect, ref uint lpflOldProtect);
+            IntPtr dwSize, MemoryProtection flNewProtect, ref MemoryProtection lpflOldProtect);
 
         [DllImport("kernel32.dll")]
         public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
@@ -160,11 +157,11 @@ namespace Tibia.Util
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress,
-           uint dwSize, uint flAllocationType, uint flProtect);
+           uint dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern bool VirtualFreeEx(IntPtr hProcess, IntPtr lpAddress,
-           uint dwSize, uint dwFreeType);
+           uint dwSize, AllocationType dwFreeType);
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr CreateRemoteThread(IntPtr hProcess,
@@ -196,6 +193,40 @@ namespace Tibia.Util
         public static int MakeWParam(int LoWord, int HiWord)
         {
             return ((HiWord << 16) | (LoWord & 0xffff));
-        } 
+        }
+
+        [Flags]
+        public enum AllocationType
+        {
+            Commit = 0x1000,
+            Reserve = 0x2000,
+            Decommit = 0x4000,
+            Release = 0x8000,
+            Reset = 0x80000,
+            Physical = 0x400000,
+            TopDown = 0x100000,
+            WriteWatch = 0x200000,
+            LargePages = 0x20000000
+        }
+
+        [Flags]
+        public enum MemoryProtection
+        {
+            Execute = 0x10,
+            ExecuteRead = 0x20,
+            ExecuteReadWrite = 0x40,
+            ExecuteWriteCopy = 0x80,
+            NoAccess = 0x01,
+            ReadOnly = 0x02,
+            ReadWrite = 0x04,
+            WriteCopy = 0x08,
+            GuardModifierflag = 0x100,
+            NoCacheModifierflag = 0x200,
+            WriteCombineModifierflag = 0x400
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool VirtualProtect(IntPtr lpAddress, uint dwSize,
+           MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
     }
 }
