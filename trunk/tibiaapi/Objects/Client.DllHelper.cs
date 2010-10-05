@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using Tibia.Constants;
 using Tibia.Packets;
+using Tibia.Util;
 
 namespace Tibia.Objects
 {
@@ -27,25 +28,34 @@ namespace Tibia.Objects
             /// <param name="filename"></param>
             /// <returns></returns>
             public bool Inject(string filename)
-            {    
+            {
                 Extract();
 
                 // Get a block of memory to store the filename in the client
-                IntPtr remoteAddress = Util.WinApi.VirtualAllocEx(
-                    client.ProcessHandle, IntPtr.Zero, (uint)filename.Length, 
-                    Util.WinApi.MEM_COMMIT | Util.WinApi.MEM_RESERVE, Util.WinApi.PAGE_READWRITE);
+                IntPtr remoteAddress = WinApi.VirtualAllocEx(
+                    client.ProcessHandle,
+                    IntPtr.Zero,
+                    (uint)filename.Length,
+                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                    WinApi.MemoryProtection.ExecuteReadWrite);
 
                 // Write the filename to the client's memory
                 client.Memory.WriteStringNoEncoding(remoteAddress.ToInt32(), filename);
 
                 // Start the remote thread, first loading our library
-                IntPtr thread = Util.WinApi.CreateRemoteThread(
-                    client.ProcessHandle, IntPtr.Zero, 0, 
-                    Util.WinApi.GetProcAddress(Util.WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"), 
+                IntPtr thread = WinApi.CreateRemoteThread(
+                    client.ProcessHandle, IntPtr.Zero, 0,
+                    WinApi.GetProcAddress(WinApi.GetModuleHandle("Kernel32"), "LoadLibraryA"),
                     remoteAddress, 0, IntPtr.Zero);
 
+                WinApi.WaitForSingleObject(thread, 0xFFFFFFFF); // Infinite
+
                 // Free the memory used for the filename
-                Util.WinApi.VirtualFreeEx(client.ProcessHandle, remoteAddress, (uint)filename.Length, Util.WinApi.MEM_RELEASE);
+                WinApi.VirtualFreeEx(
+                    client.ProcessHandle, 
+                    remoteAddress, 
+                    (uint)filename.Length, 
+                    WinApi.AllocationType.Release);
 
                 return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
             }

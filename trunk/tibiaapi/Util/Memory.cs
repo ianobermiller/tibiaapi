@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Tibia.Util
 {
@@ -280,19 +278,23 @@ namespace Tibia.Util
         {
             IntPtr bytesWritten;
             int result;
-            uint oldProtection = 0;
+            WinApi.MemoryProtection oldProtection = 0;
 
             System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
             byte[] bytes = enc.GetBytes(newKey);
 
             // Make it so we can write to the memory block
-            Util.WinApi.VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), Util.WinApi.PAGE_EXECUTE_READWRITE, ref oldProtection);
+            WinApi.VirtualProtectEx(
+                handle,
+                new IntPtr(address),
+                new IntPtr(bytes.Length),
+                WinApi.MemoryProtection.ExecuteReadWrite, ref oldProtection);
 
             // Write to memory
-            result = Util.WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, (uint)bytes.Length, out bytesWritten);
+            result = WinApi.WriteProcessMemory(handle, new IntPtr(address), bytes, (uint)bytes.Length, out bytesWritten);
 
             // Put the protection back on the memory block
-            Util.WinApi.VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), oldProtection, ref oldProtection);
+            WinApi.VirtualProtectEx(handle, new IntPtr(address), new IntPtr(bytes.Length), oldProtection, ref oldProtection);
 
             return (result != 0);
         }

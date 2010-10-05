@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Tibia.Packets;
 using Tibia.Util;
 
@@ -128,9 +125,11 @@ namespace Tibia.Objects
                 if (pSendToServer == IntPtr.Zero)
                 {
                     pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
-                        client.ProcessHandle, IntPtr.Zero, (uint)OpCodes.Length,
-                        WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
-                        WinApi.PAGE_EXECUTE_READWRITE);
+                        client.ProcessHandle,
+                        IntPtr.Zero,
+                        (uint)OpCodes.Length,
+                        WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                        WinApi.MemoryProtection.ExecuteReadWrite);
                 }
 
                 if (pSendToServer != IntPtr.Zero)
@@ -141,7 +140,11 @@ namespace Tibia.Objects
                         sendToServerCodeWritten = true;
                         return true;
                     }
-                    WinApi.VirtualFreeEx(client.ProcessHandle, pSendToServer, 0, WinApi.MEM_RELEASE);
+                    WinApi.VirtualFreeEx(
+                        client.ProcessHandle,
+                        pSendToServer,
+                        0,
+                        WinApi.AllocationType.Release);
                     pSendToServer = IntPtr.Zero;
                 }
                 sendToServerCodeWritten = false;
@@ -266,15 +269,17 @@ namespace Tibia.Objects
                     client.ProcessHandle,
                     IntPtr.Zero,
                     (uint)opCodes.Length,
-                    WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
-                    WinApi.PAGE_EXECUTE_READWRITE);
+                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                    WinApi.MemoryProtection.ExecuteReadWrite);
 
                 if (pSendToClient != IntPtr.Zero)
                 {
                     Array.Copy(BitConverter.GetBytes(pSendToClient.ToInt32()), 0, opCodes, 5, 4);
 
                     //Begin HookCall
-                    uint oldProtect = 0, newProtect = 0, newCall, oldCall;
+                    WinApi.MemoryProtection oldProtect = WinApi.MemoryProtection.NoAccess;
+                    WinApi.MemoryProtection newProtect = WinApi.MemoryProtection.NoAccess;
+                    uint newCall, oldCall;
                     byte[] call = new byte[] { 0xE8, 0x00, 0x00, 0x00, 0x00 };
 
                     newCall = (uint)(pSendToClient.ToInt32() + 4) - Tibia.Addresses.Client.GetNextPacketCall - 5;
@@ -283,7 +288,7 @@ namespace Tibia.Objects
                     if (WinApi.VirtualProtectEx(client.ProcessHandle,
                         new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
                         new IntPtr(5),
-                        WinApi.PAGE_READWRITE,
+                        WinApi.MemoryProtection.ReadWrite,
                         ref oldProtect))
                     {
 
@@ -322,10 +327,11 @@ namespace Tibia.Objects
                 }
                 if (pSendToClient == IntPtr.Zero)
                 {
-                    WinApi.VirtualFreeEx(client.ProcessHandle,
-                                        pSendToClient,
-                                        (uint)opCodes.Length,
-                                        WinApi.MEM_RELEASE);
+                    WinApi.VirtualFreeEx(
+                        client.ProcessHandle,
+                        pSendToClient,
+                        (uint)opCodes.Length,
+                        WinApi.AllocationType.Release);
                 }
                 sendToClientCodeWritten = false;
                 return false;
@@ -335,11 +341,12 @@ namespace Tibia.Objects
             {
                 if (oldCallBytes != null && sendToClientCodeWritten)
                 {
-                    if (client.Memory.WriteBytes(Tibia.Addresses.Client.GetNextPacketCall, oldCallBytes, 5)
-                        && WinApi.VirtualFreeEx(client.ProcessHandle,
-                                        pSendToClient,
-                                        60/*(uint)opCodes.Length*/,
-                                        WinApi.MEM_RELEASE))
+                    if (client.Memory.WriteBytes(Tibia.Addresses.Client.GetNextPacketCall, oldCallBytes, 5) &&
+                        WinApi.VirtualFreeEx(
+                            client.ProcessHandle,
+                            pSendToClient,
+                            60/*(uint)opCodes.Length*/,
+                            WinApi.AllocationType.Release))
                     {
                         pSendToClient = IntPtr.Zero;
                         sendToClientCodeWritten = false;
@@ -354,4 +361,4 @@ namespace Tibia.Objects
         }
     }
 }
-    
+
