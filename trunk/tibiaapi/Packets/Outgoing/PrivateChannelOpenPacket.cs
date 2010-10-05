@@ -25,7 +25,7 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
             msg.AddString(Receiver);
@@ -35,7 +35,7 @@ namespace Tibia.Packets.Outgoing
         {
             PrivateChannelOpenPacket p = new PrivateChannelOpenPacket(client);
             p.Receiver = receiver;
-            return p.Send();   
+            return p.Send();
         }
     }
 }

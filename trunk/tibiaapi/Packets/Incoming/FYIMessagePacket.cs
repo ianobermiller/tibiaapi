@@ -1,5 +1,4 @@
-﻿using System;
-using Tibia.Constants;
+﻿using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
@@ -30,7 +29,7 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
             msg.AddString(Message);

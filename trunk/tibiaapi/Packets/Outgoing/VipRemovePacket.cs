@@ -26,14 +26,14 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
 
             msg.AddUInt32(Id);
         }
 
-        public static bool Send(Objects.Client client,uint id)
+        public static bool Send(Objects.Client client, uint id)
         {
             VipRemovePacket p = new VipRemovePacket(client);
             p.Id = id;

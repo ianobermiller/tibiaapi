@@ -123,7 +123,7 @@ namespace Tibia.Packets.Incoming
             return p.Send();
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
 
