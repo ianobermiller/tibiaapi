@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Tibia.Util
 {
@@ -71,6 +69,11 @@ namespace Tibia.Util
         public string SavedClientPathsLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"clientPaths.xml");
 
         /// <summary>
+        /// Location of where to read/save the selected OT server. Default: %APPDATA%\TibiaAPI\servers.xml.
+        /// </summary>
+        public string SavedServersLocation = System.IO.Path.Combine(Tibia.Constants.TAConstants.AppDataPath, @"servers.xml");
+
+        /// <summary>
         /// Version of the clients to look for
         /// </summary>
         public string Version = null;
@@ -80,24 +83,9 @@ namespace Tibia.Util
         /// </summary>
         public bool UseSingleProcessor = false;
 
-        public List<string> Addresses;
-
         public ClientChooserOptions()
         {
             clientPaths = new List<string>();
-            Addresses = new List<string>(new string[]{
-            "login01.tibia.com:7171",
-            "login02.tibia.com:7171",
-            "login03.tibia.com:7171",
-            "login04.tibia.com:7171",
-            "login05.tibia.com:7171",
-            "tibia01.cipsoft.com:7171",
-            "tibia02.cipsoft.com:7171",
-            "tibia03.cipsoft.com:7171",
-            "tibia04.cipsoft.com:7171",
-            "tibia05.cipsoft.com:7171"
-            });
-
         }
 
         /// <summary>

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Tibia.Objects;
-using System.Diagnostics;
 
 namespace Tibia.Util
 {
@@ -13,7 +12,7 @@ namespace Tibia.Util
         private static Objects.Client client;
 
         private ClientChooserOptions options;
-        
+
         public ClientChooser()
         {
             InitializeComponent();
@@ -40,10 +39,10 @@ namespace Tibia.Util
             {
                 clients = Objects.Client.GetClients(options.Version, options.OfflineOnly);
             }
-            if (options.Smart && 
-                options.LookUpClients && 
-                !options.ShowOTOption && 
-                clients != null && 
+            if (options.Smart &&
+                options.LookUpClients &&
+                !options.ShowOTOption &&
+                clients != null &&
                 clients.Count == 1)
             {
                 return clients[0];
@@ -75,9 +74,9 @@ namespace Tibia.Util
                 newClientChooser.uxClients.Items.Add(ClientChooserBase.NewClientCustomText);
                 newClientChooser.uxClients.SelectedIndex = 0;
 
-                foreach (string address in options.Addresses)
+                foreach (var ot in ClientChooserBase.GetServers(options.SavedServersLocation))
                 {
-                    newClientChooser.uxLoginServer.Items.Add(address);
+                    newClientChooser.uxLoginServer.Items.Add(ot.LoginServer.Server + ":" + ot.LoginServer.Port);
                 }
 
                 if (newClientChooser.uxLoginServer.Items.Count > 0)
@@ -129,7 +128,7 @@ namespace Tibia.Util
             {
                 string[] split = uxLoginServer.Text.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if(split.Length == 2)
+                if (split.Length == 2)
                     ls = new LoginServer(split[0].Trim(), short.Parse(split[1]));
                 else
                     ls = new LoginServer(uxLoginServer.Text.Trim(), 7171);
