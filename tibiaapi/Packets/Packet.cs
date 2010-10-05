@@ -21,19 +21,19 @@ namespace Tibia.Packets
             Forward = true;
         }
 
-        public virtual void ToNetworkMessage(ref NetworkMessage msg)
+        public virtual void ToNetworkMessage(NetworkMessage msg)
         {
             throw new Exception("ToNetworkMessage not implemented.");
         }
 
         public bool Send()
         {
-            
+
             if (Client.IO.UsingProxy)
             {
                 return Send(SendMethod.Proxy);
             }
-            else if (Client.Dll.Pipe != null && Client.Dll.Pipe.Connected && Destination!=PacketDestination.Client)
+            else if (Client.Dll.Pipe != null && Client.Dll.Pipe.Connected && Destination != PacketDestination.Client)
             {
                 return Send(SendMethod.HookProxy);
             }
@@ -43,19 +43,19 @@ namespace Tibia.Packets
             }
         }
 
-        public bool Send(SendMethod method) 
+        public bool Send(SendMethod method)
         {
             if (msg == null)
                 msg = new NetworkMessage(Client, 4048);
 
             switch (method)
             {
-                
+
                 case SendMethod.Proxy:
                     lock (msgLock)
                     {
                         msg.Reset();
-                        ToNetworkMessage(ref msg);
+                        ToNetworkMessage(msg);
 
                         if (msg.Length > 8)
                         {
@@ -75,7 +75,7 @@ namespace Tibia.Packets
                     lock (msgLock)
                     {
                         msg.Reset();
-                        ToNetworkMessage(ref msg);
+                        ToNetworkMessage(msg);
 
                         if (msg.Length > 8)
                         {
@@ -92,7 +92,7 @@ namespace Tibia.Packets
                     lock (msgLock)
                     {
                         msg.Reset();
-                        ToNetworkMessage(ref msg);
+                        ToNetworkMessage(msg);
                         if (Destination == PacketDestination.Server)
                         {
                             if (msg.Length > 8)
@@ -137,10 +137,10 @@ namespace Tibia.Packets
                 Array.Copy(BitConverter.GetBytes(msg.Length), readyPacket, 4);
                 Array.Copy(packet, 0, readyPacket, 4, packet.Length);
 
-                IntPtr pRemote = Tibia.Util.WinApi.VirtualAllocEx(client.ProcessHandle, IntPtr.Zero, /*bufferSize*/
-                                            bufferSize,
-                                            Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
-                                            Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
+                IntPtr pRemote = WinApi.VirtualAllocEx(client.ProcessHandle, IntPtr.Zero, /*bufferSize*/
+                    bufferSize,
+                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                    WinApi.MemoryProtection.ExecuteReadWrite);
 
                 if (pRemote != IntPtr.Zero)
                 {
@@ -169,14 +169,14 @@ namespace Tibia.Packets
                     if (!client.IO.WriteOnGetNextPacketCode()) return false;
 
                 byte[] originalStream = client.Memory.ReadBytes(Tibia.Addresses.Client.RecvStream, 12);
-                
+
                 IntPtr myStreamAddress = WinApi.VirtualAllocEx(
                     client.ProcessHandle,
                     IntPtr.Zero,
                     (uint)packet.Length,
-                    Tibia.Util.WinApi.MEM_COMMIT | Tibia.Util.WinApi.MEM_RESERVE,
-                    Tibia.Util.WinApi.PAGE_EXECUTE_READWRITE);
-                if (myStreamAddress != IntPtr.Zero )
+                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                    WinApi.MemoryProtection.ExecuteReadWrite);
+                if (myStreamAddress != IntPtr.Zero)
                 {
 
                     if (client.Memory.WriteBytes(
@@ -217,10 +217,13 @@ namespace Tibia.Packets
                     }
                 }
                 if (myStreamAddress != IntPtr.Zero)
-                    WinApi.VirtualFreeEx(client.ProcessHandle,
-                                        myStreamAddress,
-                                        12,
-                                        WinApi.MEM_RELEASE);
+                {
+                    WinApi.VirtualFreeEx(
+                        client.ProcessHandle,
+                        myStreamAddress,
+                        12,
+                        WinApi.AllocationType.Release);
+                }
             }
             return ret;
         }
@@ -228,7 +231,7 @@ namespace Tibia.Packets
 
 
         public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination)
-        { 
+        {
             return false;
         }
 

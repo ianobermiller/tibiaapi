@@ -32,7 +32,7 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
             msg.AddLocation(FromLocation);

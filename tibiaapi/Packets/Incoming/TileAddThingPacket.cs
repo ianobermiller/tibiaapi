@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
@@ -32,7 +29,7 @@ namespace Tibia.Packets.Incoming
             Location = msg.GetLocation();
             Stack = msg.GetByte();
             ThingId = msg.GetUInt16();
-            
+
             if (ThingId == 0x0061 || ThingId == 0x0062)
             {
                 Creature = new PacketCreature(Client);
@@ -62,7 +59,7 @@ namespace Tibia.Packets.Incoming
                 Creature.Skull = (Constants.Skull)msg.GetByte();
                 Creature.PartyShield = (PartyShield)msg.GetByte();
 
-                
+
                 if (Client.VersionNumber >= 853)
                 {
                     if (ThingId == 0x0061)
@@ -90,7 +87,7 @@ namespace Tibia.Packets.Incoming
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
 

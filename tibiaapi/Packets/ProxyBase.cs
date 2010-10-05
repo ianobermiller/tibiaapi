@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using System.Linq;
 using Tibia.Constants;
 using Tibia.Objects;
 using Tibia.Util;
@@ -177,7 +177,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAnimatedTextIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ContainerClose:
@@ -188,7 +188,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerCloseIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureSpeech:
@@ -199,7 +199,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureSpeechIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ChannelOpen:
@@ -210,7 +210,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelOpenIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.PlayerWalkCancel:
@@ -221,7 +221,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPlayerWalkCancelIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ChannelList:
@@ -232,7 +232,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelListIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureMove:
@@ -243,7 +243,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureMoveIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.TextMessage:
@@ -254,7 +254,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTextMessageIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.TileAddThing:
@@ -265,7 +265,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTileAddThingIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureOutfit:
@@ -276,7 +276,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureOutfitIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureLight:
@@ -287,7 +287,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureLightIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureHealth:
@@ -298,7 +298,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureHealthIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureSpeed:
@@ -309,7 +309,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureSpeedIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
 
                         return true;
                     }
@@ -322,7 +322,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureSquareIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.TileTransformThing:
@@ -333,7 +333,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTileTransformThingIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
 
                         return true;
                     }
@@ -346,7 +346,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTileRemoveThingIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ContainerAddItem:
@@ -357,7 +357,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerAddItemIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ContainerRemoveItem:
@@ -368,7 +368,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerRemoveItemIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ContainerUpdateItem:
@@ -379,7 +379,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerUpdateItemIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ContainerOpen:
@@ -390,7 +390,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerOpenIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ItemTextWindow:
@@ -401,7 +401,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemTextWindowIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.WorldLight:
@@ -412,7 +412,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedWorldLightIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.Projectile:
@@ -423,7 +423,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedProjectileIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.MapDescription:
@@ -474,7 +474,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedSelfAppearIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.MagicEffect:
@@ -485,7 +485,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMagicEffectIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.FloorChangeDown:
@@ -512,7 +512,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPlayerStatusIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CreatureSkull:
@@ -523,7 +523,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCreatureSkullIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.WaitingList:
@@ -534,7 +534,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedWaitingListIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.Ping:
@@ -545,7 +545,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPingIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.Death:
@@ -556,7 +556,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedDeathIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CanReportBugs:
@@ -567,7 +567,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCanReportBugsIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.TileUpdate:
@@ -586,7 +586,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedFyiMessageIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.InventorySetSlot:
@@ -597,7 +597,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedInventorySetSlotIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.InventoryResetSlot:
@@ -608,7 +608,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedInventoryResetSlotIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.SafeTradeRequestAck:
@@ -619,7 +619,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedSafeTradeRequestAckIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.SafeTradeRequestNoAck:
@@ -630,7 +630,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedSafeTradeRequestNoAckIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.SafeTradeClose:
@@ -641,7 +641,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedSafeTradeCloseIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.PlayerSkillsUpdate:
@@ -652,7 +652,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPlayerSkillsIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.PlayerFlags:
@@ -663,7 +663,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPlayerFlagsIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ChannelOpenPrivate:
@@ -674,7 +674,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelOpenPrivateIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.PrivateChannelCreate:
@@ -685,7 +685,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPrivateChannelCreateIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ChannelClosePrivate:
@@ -696,7 +696,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelClosePrivateIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.VipState:
@@ -707,7 +707,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedVipStateIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.VipLogin:
@@ -718,7 +718,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedVipLoginIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.VipLogout:
@@ -729,7 +729,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedVipLogoutIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ShopSaleGoldCount:
@@ -740,7 +740,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopSaleGoldCountIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ShopWindowOpen:
@@ -751,7 +751,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopWindowOpenIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.ShopWindowClose:
@@ -762,7 +762,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopWindowCloseIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.OutfitWindow:
@@ -773,7 +773,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedOutfitWindowIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.RuleViolationOpen:
@@ -784,7 +784,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRuleViolationOpenIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.RuleViolationRemove:
@@ -795,7 +795,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRuleViolationRemoveIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.RuleViolationCancel:
@@ -806,7 +806,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRuleViolationCancelIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.RuleViolationLock:
@@ -817,7 +817,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRuleViolationLockIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case IncomingPacketType.CancelTarget:
@@ -828,7 +828,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCancelTargetIncomingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 default:
@@ -858,7 +858,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelCloseOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ChannelOpen:
@@ -869,7 +869,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelOpenOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.PlayerSpeech:
@@ -880,7 +880,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPlayerSpeechOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.Attack:
@@ -891,7 +891,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAttackOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.Follow:
@@ -902,7 +902,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedFollowOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.LookAt:
@@ -913,7 +913,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedLookAtOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ItemUse:
@@ -924,7 +924,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemUseOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ItemUseOn:
@@ -935,7 +935,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemUseOnOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ItemMove:
@@ -946,7 +946,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemMoveOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.CancelMove:
@@ -957,7 +957,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCancelMoveOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ItemUseBattlelist:
@@ -968,7 +968,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemUseBattlelistOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.Logout:
@@ -979,7 +979,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedLogoutOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ContainerClose:
@@ -990,7 +990,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerCloseOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ContainerOpenParent:
@@ -1001,7 +1001,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedContainerOpenParentOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ShopBuy:
@@ -1012,7 +1012,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopBuyOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ShopSell:
@@ -1023,7 +1023,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopSellOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.TurnDown:
@@ -1034,7 +1034,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
                     break;
                 case OutgoingPacketType.TurnUp:
                     msg.GetByte();
@@ -1044,7 +1044,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.TurnLeft:
@@ -1055,7 +1055,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.TurnRight:
@@ -1066,7 +1066,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedTurnOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveDown:
@@ -1077,7 +1077,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveDownLeft:
@@ -1088,7 +1088,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveDownRight:
@@ -1099,7 +1099,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveLeft:
@@ -1110,7 +1110,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveRight:
@@ -1121,7 +1121,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveUp:
@@ -1132,7 +1132,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveUpLeft:
@@ -1143,7 +1143,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.MoveUpRight:
@@ -1154,7 +1154,7 @@ namespace Tibia.Packets
                         packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
 
                     if (packet.Forward)
-                        packet.ToNetworkMessage(ref outMsg);
+                        packet.ToNetworkMessage(outMsg);
 
                     break;
                 case OutgoingPacketType.AutoWalk:
@@ -1166,7 +1166,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.VipAdd:
@@ -1178,7 +1178,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedVipAddOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.VipRemove:
@@ -1190,7 +1190,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedVipRemoveOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ItemRotate:
@@ -1202,7 +1202,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedItemRotateOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.SetOutfit:
@@ -1214,7 +1214,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedSetOutfitOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.AutoWalkCancel:
@@ -1226,7 +1226,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAutoWalkCancelOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.Ping:
@@ -1238,7 +1238,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPingOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.FightModes:
@@ -1250,7 +1250,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedFightModesOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.TileUpdate:
@@ -1262,7 +1262,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTitleUpdateOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ShopClose:
@@ -1274,7 +1274,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShopCloseOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.NpcChannelClose:
@@ -1286,7 +1286,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedNpcChannelCloseOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.PrivateChannelOpen:
@@ -1298,7 +1298,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPrivateChannelOpenOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 case OutgoingPacketType.ChannelList:
@@ -1310,7 +1310,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedChannelListOutgoingPacket.Invoke(packet);
 
                         if (packet.Forward)
-                            packet.ToNetworkMessage(ref outMsg);
+                            packet.ToNetworkMessage(outMsg);
                     }
                     break;
                 default:

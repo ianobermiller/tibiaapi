@@ -32,7 +32,7 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
             msg.AddUInt32(CreatureId);
@@ -43,7 +43,7 @@ namespace Tibia.Packets.Outgoing
             }
         }
 
-        public static bool Send(Objects.Client client,uint creatureId)
+        public static bool Send(Objects.Client client, uint creatureId)
         {
             FollowPacket p = new FollowPacket(client);
             p.CreatureId = creatureId;

@@ -28,7 +28,7 @@ namespace Tibia.Packets.Outgoing
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
-                        "direction", 
+                        "direction",
                         "Valid directions for turning are Up, Right, Down, and Left.");
             }
 
@@ -40,7 +40,7 @@ namespace Tibia.Packets.Outgoing
             return true;
         }
 
-        public override void ToNetworkMessage(ref NetworkMessage msg)
+        public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
         }
