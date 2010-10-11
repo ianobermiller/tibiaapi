@@ -59,12 +59,5 @@ namespace Tibia.Properties {
                 resourceCulture = value;
             }
         }
-        
-        public static byte[] TibiaAPI_Inject {
-            get {
-                object obj = ResourceManager.GetObject("TibiaAPI_Inject", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

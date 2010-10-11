@@ -151,8 +151,13 @@ namespace Tibia.Packets
         public bool ParseServerPacket(Client client, byte[] packet)
         {
             NetworkMessage inMsg = new NetworkMessage(client, packet);
+            return ParseServerPacket(client, inMsg);
+        }
+
+        public bool ParseServerPacket(Client client, NetworkMessage inMsg)
+        {
             NetworkMessage outMsg = new NetworkMessage(client);
-            while (inMsg.Position < packet.Length)
+            while (inMsg.Position < inMsg.Length)
             {
                 if (!ParsePacketFromServer(client, inMsg, outMsg))
                     return false;

@@ -110,8 +110,6 @@ namespace Tibia.Util
             public IntPtr hStdError;
         }
 
-
-
         public struct SECURITY_ATTRIBUTES
         {
             public int length;
@@ -228,5 +226,13 @@ namespace Tibia.Util
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool VirtualProtect(IntPtr lpAddress, uint dwSize,
            MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32")]
+        public static extern int CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, int wParam, int lParam);
+
+        public const int GWLP_WNDPROC = -4; // Sets a new address for the window procedure.
     }
 }
