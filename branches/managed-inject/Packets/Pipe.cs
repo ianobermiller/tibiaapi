@@ -9,9 +9,11 @@ namespace Tibia.Packets
     {
         #region Variables
         private Client client;
-        private NamedPipeServerStream pipe;
-        private byte[] buffer = new byte[2];
-        private string name = string.Empty;
+
+        private NamedPipeServerStream pipeRecv;
+        private NamedPipeServerStream pipeSend;
+
+        byte[] buffer = new byte[1024 * 1024];
         #endregion
 
         #region Events
@@ -66,12 +68,17 @@ namespace Tibia.Packets
         /// <summary>
         ///  Creates a Pipe to interact with an injected DLL or another program.
         /// </summary>
-        public Pipe(Client client, string name)
+        public Pipe(Client client)
         {
             this.client = client;
-            this.name = name;
-            pipe = new NamedPipeServerStream(name, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            pipe.BeginWaitForConnection(new AsyncCallback(BeginWaitForConnection), null);
+
+            string name = "InjectedDllPipe_" + client.Process.Id + "_";
+
+            pipeRecv = new NamedPipeServerStream(name + "1", PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            pipeRecv.BeginWaitForConnection(BeginWaitForConnection, pipeRecv);
+
+            pipeSend = new NamedPipeServerStream(name + "2", PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            pipeSend.BeginWaitForConnection(BeginWaitForConnection, pipeSend);
         }
 
         /// <summary>
@@ -79,12 +86,12 @@ namespace Tibia.Packets
         /// </summary>
         public bool Connected
         {
-            get { return pipe.IsConnected; }
+            get { return pipeRecv.IsConnected; }
         }
-
 
         private void BeginWaitForConnection(IAsyncResult ar)
         {
+            NamedPipeServerStream pipe = ar.AsyncState as NamedPipeServerStream;
             pipe.EndWaitForConnection(ar);
 
             if (pipe.IsConnected)
@@ -93,60 +100,47 @@ namespace Tibia.Packets
                 if (OnConnected != null)
                     OnConnected.BeginInvoke(null, null);
 
-                pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);
+                pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), pipe);
             }
         }
 
         private void BeginRead(IAsyncResult ar)
         {
-            int read = pipe.EndRead(ar);
+            NamedPipeServerStream pipe = ar.AsyncState as NamedPipeServerStream;
+            int length = pipeRecv.EndRead(ar);
 
-            if (read == 0)
-                return;
-
-            int length = BitConverter.ToInt16(buffer, 0)+2;
-
-            if (length <= 2)
-                return;
-
-            byte[] received = new byte[length];
-            Array.Copy(buffer, received, 2);
-            
-            int pos = 2;
-
-            while (length - pos > 0)
+            if (length > 0)
             {
-                pos += pipe.Read(received, pos, length - pos);
+                // Call OnReceive asynchronously
+                if (OnReceive != null)
+                    OnReceive.BeginInvoke(new NetworkMessage(client, buffer, length), null, null);
+
+                NetworkMessage message = new NetworkMessage(client, buffer, length);
+                PipePacketType type = (PipePacketType)message.GetByte();
+                switch (type)
+                {
+                    case PipePacketType.OnClickContextMenu:
+                        if (OnContextMenuClick != null)
+                            OnContextMenuClick.BeginInvoke(message, null, null);
+                        break;
+                    case PipePacketType.HookReceivedPacket:
+                        if (OnSocketRecv != null)
+                            OnSocketRecv.BeginInvoke(message, null, null);
+                        break;
+                    case PipePacketType.HookSentPacket:
+                        if (OnSocketSend != null)
+                            OnSocketSend.BeginInvoke(message, null, null);
+                        break;
+                    case PipePacketType.OnClickIcon:
+                        if (OnIconClick != null)
+                            OnIconClick.BeginInvoke(message, null, null);
+                        break;
+                    default:
+                        break;
+                }
             }
 
-            // Call OnReceive asynchronously
-            if (OnReceive != null)
-                OnReceive.BeginInvoke(new NetworkMessage(client, received, read), null, null);
-            PipePacketType type = (PipePacketType)received[2];
-            switch (type)
-            {
-                case PipePacketType.OnClickContextMenu:
-                    if (OnContextMenuClick != null)
-                        if(length == 7)
-                            OnContextMenuClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                    break;
-                case PipePacketType.HookReceivedPacket:
-                    if (OnSocketRecv != null)
-                        OnSocketRecv.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                    break;
-                case PipePacketType.HookSentPacket:
-                    if (OnSocketSend != null)
-                        OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                    break;
-                case PipePacketType.OnClickIcon:
-                    if (OnIconClick != null)
-                        OnIconClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                    break;
-                default:
-                    break;
-            }
-
-            pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), null);           
+            pipe.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginRead), pipe);
         }
 
         /// <summary>
@@ -157,15 +151,7 @@ namespace Tibia.Packets
             if (OnSend != null)
                 OnSend.BeginInvoke(msg, null, null);
 
-            pipe.Write(msg.Data, 0, msg.Length);
-        }
-
-        /// <summary>
-        /// Gets the name of the pipe.
-        /// </summary>
-        public string Name
-        {
-            get { return name; }
+            pipeSend.Write(msg.Data, 0, msg.Length);
         }
 
         /// <summary>

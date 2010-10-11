@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Threading;
-using Tibia.Constants;
 using Tibia.Packets;
 using Tibia.Util;
 
@@ -29,7 +28,10 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool Inject(string filename)
             {
-                Extract();
+                if (!File.Exists(filename))
+                {
+                    throw new FileNotFoundException("Dll to inject does not exist: " + filename);
+                }
 
                 // Get a block of memory to store the filename in the client
                 IntPtr remoteAddress = WinApi.VirtualAllocEx(
@@ -52,9 +54,9 @@ namespace Tibia.Objects
 
                 // Free the memory used for the filename
                 WinApi.VirtualFreeEx(
-                    client.ProcessHandle, 
-                    remoteAddress, 
-                    (uint)filename.Length, 
+                    client.ProcessHandle,
+                    remoteAddress,
+                    (uint)filename.Length,
                     WinApi.AllocationType.Release);
 
                 return thread.ToInt32() > 0 && remoteAddress.ToInt32() > 0;
@@ -81,71 +83,33 @@ namespace Tibia.Objects
                 if (pipe != null)
                     return;
 
-                pipe = new Pipe(client, "TibiaAPI" + client.Process.Id.ToString());
+                pipe = new Pipe(client);
                 pipe.OnConnected += new Pipe.PipeNotification(OnPipeConnect);
                 client.ContextMenu.AddInternalEvents();
                 client.Icon.AddInternalEvents();
 
-                if (!Inject(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "TibiaAPI_Inject.dll")))
+                if (!Inject(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath.ToString(), "InjectBooter.dll")))
                     throw new Tibia.Exceptions.InjectDLLNotFoundException();
-            }
-
-            public void DisconnectPipe()
-            {
-                byte[] uninjectByte = { 0x2, 0x0, 0xD, 0x0 };
-                pipe.Send(new NetworkMessage(uninjectByte));
-                pipe = null;
             }
 
             private void OnPipeConnect()
             {
-                //Set constants for displaying
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintName, Tibia.Addresses.TextDisplay.PrintName);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintFPS, Tibia.Addresses.TextDisplay.PrintFPS);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.ShowFPS, Tibia.Addresses.TextDisplay.ShowFPS);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintTextFunc, Tibia.Addresses.TextDisplay.PrintTextFunc);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.NopFPS, Tibia.Addresses.TextDisplay.NopFPS);
-
-                //Context Menus
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.AddContextMenuFunc, Tibia.Addresses.ContextMenus.AddContextMenuPtr);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenu, Tibia.Addresses.ContextMenus.OnClickContextMenuPtr);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.SetOutfitContextMenu, Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PartyActionContextMenu, Tibia.Addresses.ContextMenus.AddPartyActionContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.CopyNameContextMenu, Tibia.Addresses.ContextMenus.AddCopyNameContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.TradeWithContextMenu, Tibia.Addresses.ContextMenus.AddTradeWithContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.LookContextMenu, Tibia.Addresses.ContextMenus.AddLookContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, Tibia.Addresses.ContextMenus.OnClickContextMenuVf);
-
-                //winsock recv/send
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
-
-                //event triggering
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, Tibia.Addresses.Client.EventTriggerPointer);
-
-                //image drawing
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawItemFunc, Tibia.Addresses.DrawItem.DrawItemFunc);
-
-                //skin drawing
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawSkinFunc, Tibia.Addresses.DrawSkin.DrawSkinFunc);
-
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();
 
                 if (PipeInitialized != null)
                     PipeInitialized.BeginInvoke(client, new EventArgs(), null, null);
-
             }
 
-            public void Extract()
+            public static void Extract(byte[] resourceBytes, string newFileName)
             {
                 bool doExtract = false;
 
-                if (File.Exists("TibiaAPI_Inject.dll"))
+                if (File.Exists(newFileName))
                 {
-                    byte[] embeddedBytes = Tibia.Properties.Resources.TibiaAPI_Inject;
-                    byte[] existingBytes = File.ReadAllBytes("TibiaAPI_Inject.dll");
+                    byte[] embeddedBytes = resourceBytes;
+                    byte[] existingBytes = File.ReadAllBytes(newFileName);
 
                     if (embeddedBytes.Length == existingBytes.Length)
                     {
@@ -171,8 +135,8 @@ namespace Tibia.Objects
 
                 if (doExtract)
                 {
-                    FileStream fileStream = new FileStream("TibiaAPI_Inject.dll", FileMode.Create);
-                    fileStream.Write(Tibia.Properties.Resources.TibiaAPI_Inject, 0, (int)Tibia.Properties.Resources.TibiaAPI_Inject.Length);
+                    FileStream fileStream = new FileStream(newFileName, FileMode.Create);
+                    fileStream.Write(resourceBytes, 0, (int)resourceBytes.Length);
                     fileStream.Close();
                 }
             }

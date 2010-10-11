@@ -1,5 +1,4 @@
 ﻿using System;
-using Tibia.Constants;
 using Tibia.Objects;
 
 namespace Tibia.Packets
@@ -14,9 +13,6 @@ namespace Tibia.Packets
         private NetworkMessage serverSendMsg;
         private NetworkMessage clientRecvMsg;
         private NetworkMessage clientSendMsg;
-
-        private int fullPacketSize;
-        private int partialPacketSize;
 
         public HookProxy(Client client)
         {
@@ -47,120 +43,17 @@ namespace Tibia.Packets
 
         private void Pipe_OnSocketRecv(Tibia.Packets.NetworkMessage msg)
         {
-            int length = msg.GetUInt16();
-            if (msg.GetByte() == (byte)PipePacketType.HookReceivedPacket)
+            if (protocol == Protocol.World)
             {
-                byte[] buf = new byte[msg.Data.Length - 3];
-                Array.Copy(msg.Data, 3, buf, 0, buf.Length);
-                ProcessFromServer(buf);
+                ParseServerPacket(client, msg);
             }
         }
 
         private void Pipe_OnSocketSend(Tibia.Packets.NetworkMessage msg)
         {
-            int length = msg.GetUInt16();
-            if (msg.GetByte() == (byte)PipePacketType.HookSentPacket)
-            {
-                byte[] buf = new byte[msg.Data.Length - 3];
-                Array.Copy(msg.Data, 3, buf, 0, buf.Length);
-                ProcessFromClient(buf);
-            }
-        }
-
-        public void ProcessFromServer(byte[] buffer)
-        {
-            int length = (int)BitConverter.ToUInt16(buffer, 0) + 2;
-
-            if (length > buffer.Length)
-            {
-                // Packet is split into multiple chunks
-                if (partialPacketSize == 0)
-                {
-                    // This is the first chunk
-                    fullPacketSize = length;
-                    Array.Copy(buffer, serverRecvMsg.GetBuffer(), buffer.Length);
-                    partialPacketSize = buffer.Length;
-                    return;
-                }
-                else
-                {
-                    // This is a subsequent chunk
-                    Array.Copy(buffer, 0, serverRecvMsg.GetBuffer(), partialPacketSize, buffer.Length);
-                    partialPacketSize += buffer.Length;
-
-                    if (partialPacketSize < fullPacketSize)
-                    {
-                        // Packet is still incomplete
-                        return;
-                    }
-                    else
-                    {
-                        // Packet is complete
-                        serverRecvMsg.Length = fullPacketSize;
-                    }
-                }
-            }
-            else
-            {
-                fullPacketSize = 0;
-                partialPacketSize = 0;
-                Array.Copy(buffer, serverRecvMsg.GetBuffer(), length);
-                serverRecvMsg.Length = length;
-            }
-
-            OnReceivedDataFromServer(serverRecvMsg.Data);
-
-            switch (protocol)
-            {
-                case Protocol.Login:
-                    break;
-                case Protocol.World:
-                    bool adlerOkay = serverRecvMsg.CheckAdler32();
-                    bool decryptOkay = serverRecvMsg.XteaDecrypt(client.IO.XteaKey);
-                    if (adlerOkay && decryptOkay)
-                    {
-                        serverRecvMsg.Position = 6;
-                        int msgSize = (int)serverRecvMsg.GetUInt16() + 8;
-                        clientSendMsg.Reset();
-
-                        while (serverRecvMsg.Position < msgSize)
-                        {
-                            int position = serverRecvMsg.Position;
-                            bool parsed = false;
-
-                            try
-                            {
-                                parsed = ParsePacketFromServer(client, serverRecvMsg, clientSendMsg);
-                            }
-                            catch (Exception ex)
-                            {
-                                WriteDebug(ex.Message + "\nStackTrace: " + ex.StackTrace);
-                            }
-
-                            if (!parsed)
-                            {
-                                if (serverRecvMsg.Length - serverRecvMsg.Position > 0 &&
-                                    serverRecvMsg.Length < serverRecvMsg.GetBuffer().Length)
-                                {
-                                    byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);
-                                    OnSplitPacketFromServer(unknown[0], unknown);
-                                }
-                                break;
-                            }
-
-                            if (serverRecvMsg.Position - position > 0)
-                            {
-                                byte[] data = new byte[serverRecvMsg.Position - position];
-                                Array.Copy(serverRecvMsg.GetBuffer(), position, data, 0, data.Length);
-
-                                OnSplitPacketFromServer(data[0], data);
-                            }
-                        }
-                    }
-                    break;
-                case Protocol.None:
-                    break;
-            }
+            byte[] buf = new byte[msg.Length - 1];
+            Array.Copy(msg.GetBuffer(), 1, buf, 0, buf.Length);
+            ProcessFromClient(buf);
         }
 
         public void ProcessFromClient(byte[] buffer)

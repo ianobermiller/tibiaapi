@@ -89,7 +89,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider">
@@ -136,6 +135,7 @@
     <Compile Include="Objects\ContextMenu.cs" />
     <Compile Include="Objects\Client.PlayerHelper.cs" />
     <Compile Include="Objects\CreatureData.cs" />
+    <Compile Include="Objects\DrawingItem.cs" />
     <Compile Include="Objects\Icon.cs" />
     <Compile Include="Objects\ItemData.cs" />
     <Compile Include="Objects\Location.cs" />
@@ -267,7 +267,6 @@
     <Compile Include="Packets\Pipes\RemoveAllTextPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveCreatureTextPacket.cs" />
     <Compile Include="Packets\Pipes\RemoveTextPacket.cs" />
-    <Compile Include="Packets\Pipes\SetConstantPacket.cs" />
     <Compile Include="Packets\Pipes\UpdateCreatureTextPacket.cs" />
     <Compile Include="Packets\Xtea.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

@@ -621,6 +621,24 @@ namespace Tibia.Constants
     }
     #endregion
 
+
+    public enum SkinType : int
+    {
+        Pointer = 1,
+        ResizeVertical = 2,
+        Wait = 3,
+        Crosshairs = 4,
+        Crosshairs2 = 5,
+        Help = 6,
+        Background = 7,
+        LightGrayVertical = 8,
+        DarkGrayVertical = 9,
+        LightGrayHorizontal = 10,
+        DarkGrayHorizontal = 11,
+        ButtonUp = 12,
+        ButtonDown = 13
+    }
+
     public enum ContextMenuType : byte
     {
         AllMenus = 0x00,
@@ -1181,29 +1199,8 @@ namespace Tibia.Constants
         AddSkin = 0x17,
         RemoveSkin = 0x18,
         UpdateSkin = 0x19,
-        RemoveAllSkins = 0x20
-    }
-
-    public enum PipeConstantType : byte
-    {
-        PrintName = 0x01,
-        PrintFPS = 0x02,
-        ShowFPS = 0x03,
-        PrintTextFunc = 0x04,
-        NopFPS = 0x05,
-        AddContextMenuFunc = 0x06,
-        OnClickContextMenu = 0x07,
-        SetOutfitContextMenu = 0x08,
-        PartyActionContextMenu = 0x09,
-        CopyNameContextMenu = 0x0A,
-        OnClickContextMenuVf = 0x0B,
-        TradeWithContextMenu = 0x0C,
-        Recv = 0x0D,
-        Send = 0x0E,
-        EventTrigger = 0x0F,
-        LookContextMenu = 0x10,
-        DrawItemFunc = 0x11,
-        DrawSkinFunc = 0x12
+        RemoveAllSkins = 0x20,
+        HookSendToClient = 0x21,
     }
 
     /// <summary>
