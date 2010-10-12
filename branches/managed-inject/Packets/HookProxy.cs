@@ -104,6 +104,11 @@ namespace Tibia.Packets
             Pipes.HookSendToServerPacket.Send(client, packet);
         }
 
+        public void SendToClient(byte[] packet)
+        {
+            Pipes.HookSendToClientPacket.Send(client, packet);
+        }
+
         private void ParseFirstClientMsg()
         {
             try

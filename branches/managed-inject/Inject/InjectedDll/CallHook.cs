@@ -4,7 +4,7 @@ using Tibia.Util;
 
 namespace Inject
 {
-    public class CallHook<TDel> : CallHookContainer<TDel>.CallHook<TDel> where TDel : class
+    public class CallHook<TDel> : CallHookContainer<TDel>.CallHook<TDel>, IHook where TDel : class
     {
         public CallHook(IntPtr hookAddress, TDel newFunction) : base(hookAddress, newFunction) { }
     }
@@ -31,11 +31,11 @@ namespace Inject
                 WinApi.VirtualProtect(hookAddress, 5, WinApi.MemoryProtection.ReadWrite, out oldProtect);
 
                 oldFunction = Marshal.ReadIntPtr(new IntPtr(hookAddress.ToInt32() + 1));
-                oldFunction = new IntPtr(hookAddress.ToInt32() + oldFunction.ToInt32() + 5);
 
                 WinApi.VirtualProtect(hookAddress, 5, oldProtect, out newProtect);
 
-                original = Marshal.GetDelegateForFunctionPointer(oldFunction, typeof(TDelegate)) as TDelegate;
+                IntPtr originalFunction = new IntPtr(hookAddress.ToInt32() + oldFunction.ToInt32() + 5);
+                original = Marshal.GetDelegateForFunctionPointer(originalFunction, typeof(TDelegate)) as TDelegate;
             }
 
             public void Enable()

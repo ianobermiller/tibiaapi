@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Text;
-using Tibia.Util;
 using Tibia.Objects;
 
 namespace Tibia.Packets
@@ -44,9 +42,8 @@ namespace Tibia.Packets
 
         public NetworkMessage(byte[] data, int length)
         {
-            buffer = new byte[bufferSize];
-            Array.Copy(data, buffer, length);
-            this.length = length;
+            bufferSize = length;
+            buffer = data;
             position = 0;
         }
 

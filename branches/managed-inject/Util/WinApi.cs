@@ -78,6 +78,9 @@ namespace Tibia.Util
         public const uint WM_LBUTTONDOWN = 0x201;
         public const uint WM_LBUTTONUP = 0x202;
 
+        public const uint WM_RBUTTONDOWN = 0x204;
+        public const uint WM_RBUTTONUP = 0x205;
+
         public const uint CREATE_SUSPENDED = 0x00000004;
 
         public struct PROCESS_INFORMATION
@@ -229,6 +232,9 @@ namespace Tibia.Util
 
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32")]
         public static extern int CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, int wParam, int lParam);
