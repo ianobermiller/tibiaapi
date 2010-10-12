@@ -151,7 +151,12 @@ namespace Tibia.Packets
             if (OnSend != null)
                 OnSend.BeginInvoke(msg, null, null);
 
-            pipeSend.Write(msg.Data, 0, msg.Length);
+            pipeSend.BeginWrite(msg.Data, 0, msg.Length, BeginWrite, null);
+        }
+
+        void BeginWrite(IAsyncResult ar)
+        {
+            pipeSend.EndWrite(ar);
         }
 
         /// <summary>

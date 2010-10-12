@@ -228,6 +228,7 @@
     <Compile Include="Packets\Packet.cs" />
     <Compile Include="Packets\Pipes\AddIconPacket.cs" />
     <Compile Include="Packets\Pipes\AddSkinPacket.cs" />
+    <Compile Include="Packets\Pipes\HookSendToClientPacket.cs" />
     <Compile Include="Packets\Pipes\EventTriggerPacket.cs" />
     <Compile Include="Packets\Pipes\HookSendToServerPacket.cs" />
     <Compile Include="Packets\Pipes\OnClickIcon.cs" />

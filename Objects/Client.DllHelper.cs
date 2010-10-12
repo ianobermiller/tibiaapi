@@ -95,7 +95,7 @@ namespace Tibia.Objects
             private void OnPipeConnect()
             {
                 //Hook Display functions
-                Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
+                //Packets.Pipes.HooksEnableDisablePacket.Send(client, true);
                 pipeIsReady.Set();
 
                 if (PipeInitialized != null)

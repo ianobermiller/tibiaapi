@@ -45,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallHook.cs" />
+    <Compile Include="WindowHook.cs" />
+    <Compile Include="FunctionHook.cs" />
+    <Compile Include="IHook.cs" />
     <Compile Include="InjectedMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

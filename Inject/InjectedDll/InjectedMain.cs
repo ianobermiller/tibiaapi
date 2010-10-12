@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using Tibia.Constants;
 using Tibia.Objects;
@@ -14,28 +14,43 @@ namespace Inject
 {
     unsafe class InjectedMain
     {
+        List<IHook> hooks = new List<IHook>();
+
         public static int EntryPoint(string pwzArgument)
         {
             new InjectedMain().Run();
             return 0;
         }
 
-        volatile bool shouldUninject = false;
         volatile bool sendingToClient = false;
 
         private void Run()
         {
             Tibia.Version.Set(FileVersionInfo.GetVersionInfo(Path.Combine(Environment.CurrentDirectory, Process.GetCurrentProcess().ProcessName + ".exe")).FileVersion);
 
+            CreateHooks();
+
             EnableHooks();
 
             ConnectPipes();
 
+            NetworkMessage message = new NetworkMessage(recvBuffer, recvBuffer.Length);
             while (true)
             {
-                if (shouldUninject) break;
-                Thread.Sleep(1000);
+                int bytesRead = pipeRecv.Read(recvBuffer, 0, recvBuffer.Length);
+                if (bytesRead > 0)
+                {
+                    message.Position = 0;
+                    message.Length = bytesRead;
+                    ProcessCommand(message);
+                }
+                else
+                {
+                    break;
+                }
             }
+
+            Close();
         }
 
         byte[] recvBuffer = new byte[1024 * 1024];
@@ -51,38 +66,21 @@ namespace Inject
 
             pipeRecv = new NamedPipeClientStream(name + "2");
             pipeRecv.Connect();
-            pipeRecv.BeginRead(recvBuffer, 0, recvBuffer.Length, new AsyncCallback(BeginRead), null);
 
             pipeSend = new NamedPipeClientStream(name + "1");
             pipeSend.Connect();
         }
 
-        private void BeginRead(IAsyncResult ar)
-        {
-            try
-            {
-                int read = pipeRecv.EndRead(ar);
-
-                if (read > 0)
-                {
-                    NetworkMessage message = new NetworkMessage(recvBuffer, read);
-                    ProcessCommand(message);
-                }
-
-                pipeRecv.BeginRead(recvBuffer, 0, recvBuffer.Length, new AsyncCallback(BeginRead), null);
-            }
-            catch
-            {
-                shouldUninject = true;
-            }
-        }
-
         private void ProcessCommand(NetworkMessage message)
         {
-            switch ((PipePacketType)message.GetByte())
+            PipePacketType type = (PipePacketType)message.GetByte();
+            switch (type)
             {
                 case PipePacketType.HookSendToClient:
                     SendToClient(message.GetBuffer(), 1, (uint)(message.Length - 1));
+                    break;
+                case PipePacketType.HookSendToServer:
+                    SendToServer(message.GetBuffer(), 1, (uint)(message.Length - 1));
                     break;
             }
         }
@@ -98,8 +96,7 @@ namespace Inject
         SendMessageDelegate SendMessage = (SendMessageDelegate)Marshal.GetDelegateForFunctionPointer((IntPtr)0x00407520, typeof(SendMessageDelegate));
 
         public delegate void PrintTextDelegate(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, string lpText, int nAlign);
-        PrintTextDelegate PrintText = (PrintTextDelegate)Marshal.GetDelegateForFunctionPointer(
-            (IntPtr)Tibia.Addresses.TextDisplay.PrintTextFunc, typeof(PrintTextDelegate));
+        PrintTextDelegate PrintText;
 
         public delegate void DrawItemDelegate(
             int surface,
@@ -110,8 +107,7 @@ namespace Inject
             int clipX, int clipY, int clipW, int clipH,
             ClientFont textFont, int textRed, int textGreen, int textBlue, int textAlign,
             int textForce);
-        DrawItemDelegate DrawItemRaw = (DrawItemDelegate)Marshal.GetDelegateForFunctionPointer(
-            (IntPtr)Tibia.Addresses.DrawItem.DrawItemFunc, typeof(DrawItemDelegate));
+        DrawItemDelegate DrawItemRaw;
 
         public delegate void DrawSkinDelegate(
             int surface,
@@ -119,8 +115,7 @@ namespace Inject
             int width, int height,
             SkinType skinId,
             int dX, int dY);
-        DrawSkinDelegate DrawSkin = (DrawSkinDelegate)Marshal.GetDelegateForFunctionPointer(
-            (IntPtr)Tibia.Addresses.DrawSkin.DrawSkinFunc, typeof(DrawSkinDelegate));
+        DrawSkinDelegate DrawSkin;
 
         unsafe delegate int GetNextPacketDelegate();
 
@@ -129,49 +124,56 @@ namespace Inject
         CallHook<PrintTextDelegate> PrintFpsHook;
 
         delegate int WndProcDelegate(IntPtr hWnd, int msg, int wParam, int lParam);
-        IntPtr oldWndProcPtr;
-        WndProcDelegate OriginalWndProc;
+        WindowHook<WndProcDelegate> WndProcHook;
+
+        unsafe delegate int SendDelegate(SOCKET s, byte* buf, int len, int flags);
+        FunctionHook<SendDelegate> SendHook;
+
+        unsafe private void CreateHooks()
+        {
+            hooks.Add(GetNextPacketHook = new CallHook<GetNextPacketDelegate>(
+                new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
+                (GetNextPacketDelegate)GetNextPacket));
+
+            hooks.Add(PrintFpsHook = new CallHook<PrintTextDelegate>(
+                new IntPtr(Tibia.Addresses.TextDisplay.PrintFPS),
+                (PrintTextDelegate)PrintFps));
+
+            hooks.Add(SendHook = new FunctionHook<SendDelegate>(
+                new IntPtr(Tibia.Addresses.Client.SendPointer),
+                (SendDelegate)WinsockSend));
+
+            hooks.Add(WndProcHook = new WindowHook<WndProcDelegate>(
+                Process.GetCurrentProcess().MainWindowHandle,
+                WinApi.GWLP_WNDPROC,
+                (WndProcDelegate)WndProc));
+        }
 
         private unsafe void EnableHooks()
         {
             packet = (PacketStream*)Tibia.Addresses.Client.RecvStream;
 
-            GetNextPacketHook = new CallHook<GetNextPacketDelegate>(
-                new IntPtr(Tibia.Addresses.Client.GetNextPacketCall),
-                (GetNextPacketDelegate)GetNextPacket);
-            GetNextPacketHook.Enable();
+            Parser = (ParserDelegate)Marshal.GetDelegateForFunctionPointer(
+                (IntPtr)Tibia.Addresses.Client.ParserFunc, typeof(ParserDelegate));
 
-            PrintFpsHook = new CallHook<PrintTextDelegate>(
-                new IntPtr(Tibia.Addresses.TextDisplay.PrintFPS),
-                (PrintTextDelegate)PrintFps);
-            PrintFpsHook.Enable();
+            PrintText = (PrintTextDelegate)Marshal.GetDelegateForFunctionPointer(
+                (IntPtr)Tibia.Addresses.TextDisplay.PrintTextFunc, typeof(PrintTextDelegate));
 
-            oldWndProcPtr = WinApi.SetWindowLong(
-                Process.GetCurrentProcess().MainWindowHandle,
-                WinApi.GWLP_WNDPROC,
-                Marshal.GetFunctionPointerForDelegate((WndProcDelegate)WndProc));
+            DrawItemRaw = (DrawItemDelegate)Marshal.GetDelegateForFunctionPointer(
+                (IntPtr)Tibia.Addresses.DrawItem.DrawItemFunc, typeof(DrawItemDelegate));
 
-            OriginalWndProc = (WndProcDelegate)Marshal.GetDelegateForFunctionPointer(oldWndProcPtr, typeof(WndProcDelegate));
+            DrawSkin = (DrawSkinDelegate)Marshal.GetDelegateForFunctionPointer(
+                (IntPtr)Tibia.Addresses.DrawSkin.DrawSkinFunc, typeof(DrawSkinDelegate));
 
-
-            OrigSendAddress = WinApi.GetProcAddress(WinApi.GetModuleHandle("WS2_32.dll"), "send");
-            OrigSend = (SendDelegate)Marshal.GetDelegateForFunctionPointer(OrigSendAddress, typeof(SendDelegate));
-            IntPtr funcAddress = Marshal.GetFunctionPointerForDelegate((SendDelegate)WinsockSend);
-            WinApi.MemoryProtection oldProtect;
-            WinApi.VirtualProtect(SendPtr, 4, WinApi.MemoryProtection.ReadWrite, out oldProtect);
-            Marshal.WriteIntPtr(SendPtr, funcAddress);
-            WinApi.MemoryProtection newProtect;
-            WinApi.VirtualProtect(SendPtr, 4, oldProtect, out newProtect);
+            hooks.ForEach(h => h.Enable());
         }
 
-        SendDelegate OrigSend;
-        IntPtr OrigSendAddress;
-        IntPtr SendPtr = new IntPtr(Tibia.Addresses.Client.SendPointer);
-        unsafe delegate int SendDelegate(SOCKET s, byte* buf, int len, int flags);
+        SOCKET sendSocket;
 
         int WinsockSend(SOCKET s, byte* buf, int len, int flags)
         {
-            int bytesSent = OrigSend(s, buf, len, flags);
+            sendSocket = s;
+            int bytesSent = SendHook.Original(s, buf, len, flags);
 
             if (bytesSent > 0)
             {
@@ -189,27 +191,22 @@ namespace Inject
 
         private void DisableHooks()
         {
-            GetNextPacketHook.Disable();
-            PrintFpsHook.Disable();
-
-            WinApi.SetWindowLong(
-                Process.GetCurrentProcess().MainWindowHandle,
-                WinApi.GWLP_WNDPROC,
-                oldWndProcPtr);
+            hooks.ForEach(h => h.Disable());
         }
 
         private int WndProc(IntPtr hWnd, int msg, int wParam, int lParam)
         {
             switch ((uint)msg)
             {
-                case WinApi.WM_LBUTTONDOWN:
+                case WinApi.WM_RBUTTONDOWN:
+                    MessageBox.Show("Clicked right button");
                     break;
 
                 default:
                     break;
             }
 
-            return OriginalWndProc(hWnd, msg, wParam, lParam);
+            return WndProcHook.Original(hWnd, msg, wParam, lParam);
         }
 
         private void Close()
@@ -221,19 +218,19 @@ namespace Inject
 
         private void ClosePipes()
         {
-            if (pipeSend != null && pipeSend.IsConnected)
+            if (pipeSend != null)
             {
                 pipeSend.Close();
             }
 
-            if (pipeRecv != null && pipeRecv.IsConnected)
+            if (pipeRecv != null)
             {
                 pipeSend.Close();
             }
         }
 
         public delegate void ParserDelegate();
-        ParserDelegate Parser = (ParserDelegate)Marshal.GetDelegateForFunctionPointer(new IntPtr(Tibia.Addresses.Client.ParserFunc), typeof(ParserDelegate));
+        ParserDelegate Parser;
 
         void SendToClient(byte[] dataBuffer, int offset, uint dataSize)
         {
@@ -250,6 +247,14 @@ namespace Inject
                 *packet = streamBackup;
             }
             sendingToClient = false;
+        }
+
+        void SendToServer(byte[] dataBuffer, int offset, uint dataSize)
+        {
+            fixed (byte* fixedPtr = &dataBuffer[offset])
+            {
+                SendHook.Original(sendSocket, fixedPtr, (int)dataSize, 0);
+            }
         }
 
         void PrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, string lpText, int nAlign)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tibia.Constants;
+﻿using Tibia.Constants;
 
 namespace Tibia.Packets
 {
@@ -23,13 +19,9 @@ namespace Tibia.Packets
 
         public bool Send()
         {
-            NetworkMessage msg = new NetworkMessage(Client);
-            msg.Position = 2;
+            NetworkMessage msg = NetworkMessage.CreateUnencrypted(Client);
             msg.AddBytes(ToByteArray());
-            msg.InsertPacketHeader();
-
             Client.Dll.Pipe.Send(msg);
-
             return true;
         }
     }

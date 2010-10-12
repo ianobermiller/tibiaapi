@@ -3,25 +3,23 @@ using Tibia.Objects;
 
 namespace Tibia.Packets.Pipes
 {
-    public class HookSendToServerPacket : PipePacket
+    public class HookSendToClientPacket : PipePacket
     {
         public byte[] PacketToSend { get; set; }
 
-        public HookSendToServerPacket(Client client)
+        public HookSendToClientPacket(Client client)
             : base(client)
         {
-            Type = PipePacketType.HookSendToServer;
+            Type = PipePacketType.HookSendToClient;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)PipePacketType.HookSendToServer)
+            if (msg.GetByte() != (byte)PipePacketType.HookSendToClient)
                 return false;
 
-            Type = PipePacketType.HookSendToServer;
-            ushort InnerLength = msg.GetUInt16();
-            msg.Position -= 2;
-            PacketToSend = msg.GetBytes(InnerLength + 2);
+            Type = PipePacketType.HookSendToClient;
+            PacketToSend = msg.GetBytes(msg.Length - 1);
 
             return true;
         }
@@ -36,7 +34,7 @@ namespace Tibia.Packets.Pipes
 
         public static bool Send(Objects.Client client, byte[] packet)
         {
-            HookSendToServerPacket p = new HookSendToServerPacket(client);
+            HookSendToClientPacket p = new HookSendToClientPacket(client);
 
             p.PacketToSend = packet;
 

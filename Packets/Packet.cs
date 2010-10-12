@@ -33,7 +33,7 @@ namespace Tibia.Packets
             {
                 return Send(SendMethod.Proxy);
             }
-            else if (Client.Dll.Pipe != null && Client.Dll.Pipe.Connected && Destination != PacketDestination.Client)
+            else if (Client.Dll.Pipe != null && Client.Dll.Pipe.Connected)
             {
                 return Send(SendMethod.HookProxy);
             }
@@ -74,16 +74,27 @@ namespace Tibia.Packets
                 case SendMethod.HookProxy:
                     lock (msgLock)
                     {
-                        msg.Reset();
-                        ToNetworkMessage(msg);
-
-                        if (msg.Length > 8)
+                        if (Destination == PacketDestination.Server)
                         {
-                            msg.InsetLogicalPacketHeader();
-                            msg.PrepareToSend();
+                            msg.Reset();
+                            ToNetworkMessage(msg);
 
-                            Pipes.HookSendToServerPacket.Send(Client, msg.Data);
+                            if (msg.Length > 8)
+                            {
+                                msg.InsetLogicalPacketHeader();
+                                msg.PrepareToSend();
 
+                                Pipes.HookSendToServerPacket.Send(Client, msg.Data);
+
+                                return true;
+                            }
+                        }
+                        else if (Destination == PacketDestination.Client)
+                        {
+                            msg.Length = 0;
+                            msg.Position = 0;
+                            ToNetworkMessage(msg);
+                            Pipes.HookSendToClientPacket.Send(Client, msg.Data);
                             return true;
                         }
                     }
