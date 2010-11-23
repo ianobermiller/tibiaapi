@@ -13,7 +13,7 @@ namespace Tibia.Objects
         {
             private Client client;
             private AutoResetEvent pipeIsReady;
-            private Pipe pipe = null; //For Displaying Text
+            private Pipe pipe = null;
             public event EventHandler PipeInitialized;
 
             internal DllHelper(Client client)
