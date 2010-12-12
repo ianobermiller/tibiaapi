@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Tibia.Packets;
 
 namespace Tibia.Objects
 {
@@ -14,7 +12,7 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="address">The address.</param>
-        public Player(Client client, uint address) 
+        public Player(Client client, uint address)
             : base(client, address) { }
 
         #region Packet Methods
@@ -104,7 +102,7 @@ namespace Tibia.Objects
             get { return client.Player.Id; }
             set { client.Player.Id = value; }
         }
-        public uint Experience
+        public ulong Experience
         {
             get { return client.Player.Experience; }
             set { client.Player.Experience = value; }

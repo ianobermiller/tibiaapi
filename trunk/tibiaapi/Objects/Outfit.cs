@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Tibia.Objects
 {
@@ -15,11 +12,12 @@ namespace Tibia.Objects
         private byte legs;
         private byte feet;
         private byte addons;
+        private byte mountId;
 
-        public ushort LookType 
-        { 
-            get { return lookType; } 
-            set { lookType = value; TrySetOutfit(); } 
+        public ushort LookType
+        {
+            get { return lookType; }
+            set { lookType = value; TrySetOutfit(); }
         }
         public ushort LookItem
         {
@@ -51,6 +49,11 @@ namespace Tibia.Objects
             get { return addons; }
             set { addons = value; TrySetOutfit(); }
         }
+        public byte MountId
+        {
+            get { return mountId; }
+            set { mountId = value; TrySetOutfit(); }
+        }
 
         public Outfit(ushort looktype, ushort lookitem)
         {
@@ -58,9 +61,9 @@ namespace Tibia.Objects
             this.lookType = looktype;
         }
 
-        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons) : this(null, looktype, head, body, legs, feet, addons) { }
+        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, byte mountId) : this(null, looktype, head, body, legs, feet, addons, mountId) { }
 
-        public Outfit(Creature creature, ushort looktype, byte head, byte body, byte legs, byte feet, byte addons)
+        public Outfit(Creature creature, ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, byte mountId)
         {
             this.creature = creature;
             this.lookType = looktype;
@@ -69,6 +72,7 @@ namespace Tibia.Objects
             this.legs = legs;
             this.feet = feet;
             this.addons = addons;
+            this.mountId = mountId;
         }
 
         private void TrySetOutfit()

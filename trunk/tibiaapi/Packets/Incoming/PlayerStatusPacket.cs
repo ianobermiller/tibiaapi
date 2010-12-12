@@ -7,7 +7,7 @@ namespace Tibia.Packets.Incoming
         public ushort Health { get; set; }
         public ushort MaxHealth { get; set; }
         public uint Capacity { get; set; }
-        public uint Experience { get; set; }
+        public ulong Experience { get; set; }
         public ushort Level { get; set; }
         public byte LevelPercent { get; set; }
         public ushort Mana { get; set; }
@@ -38,7 +38,7 @@ namespace Tibia.Packets.Incoming
             MaxHealth = msg.GetUInt16();
             Capacity = msg.GetUInt32();
 
-            Experience = msg.GetUInt32();
+            Experience = msg.GetUInt64();
 
             Level = msg.GetUInt16();
 
@@ -64,7 +64,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt16(MaxHealth);
             msg.AddUInt32(Capacity);
 
-            msg.AddUInt32(Experience);
+            msg.AddUInt64(Experience);
 
             msg.AddUInt16(Level);
 

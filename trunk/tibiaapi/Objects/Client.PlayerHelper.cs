@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Tibia.Objects
 {
@@ -63,9 +61,9 @@ namespace Tibia.Objects
             /// <summary>
             /// Set the player's outfit. Sends a packet.
             /// </summary>
-            public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons)
+            public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons, byte mountId)
             {
-                return Packets.Outgoing.SetOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons));
+                return Packets.Outgoing.SetOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons, mountId));
             }
 
             /// <summary>
@@ -95,10 +93,10 @@ namespace Tibia.Objects
                 get { return client.Memory.ReadUInt32(Addresses.Player.Id); }
                 set { client.Memory.WriteUInt32(Addresses.Player.Id, value); }
             }
-            public uint Experience
+            public ulong Experience
             {
-                get { return client.Memory.ReadUInt32(Addresses.Player.Experience); }
-                set { client.Memory.WriteUInt32(Addresses.Player.Experience, value); }
+                get { return client.Memory.ReadUInt64(Addresses.Player.Experience); }
+                set { client.Memory.WriteUInt64(Addresses.Player.Experience, value); }
             }
             public uint Flags
             {
@@ -314,7 +312,7 @@ namespace Tibia.Objects
             }
             public string WorldName
             {
-                get { return client.Login.CharacterList[client.Login.SelectedChar].WorldName; }
+                get { return String.Empty; }// return client.Login.CharacterList[client.Login.SelectedChar].WorldName; }
             }
 
             /// <summary>
