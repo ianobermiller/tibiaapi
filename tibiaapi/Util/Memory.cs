@@ -85,6 +85,17 @@ namespace Tibia.Util
             return BitConverter.ToUInt32(ReadBytes(handle, address, 4), 0);
         }
 
+        /// <summary>
+        /// Read an unsigned long from the process (64-bits)
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static ulong ReadUInt64(IntPtr handle, long address)
+        {
+            return BitConverter.ToUInt64(ReadBytes(handle, address, 8), 0);
+        }
+
         [Obsolete("Please use ReadInt32.")]
         public static int ReadInt(IntPtr handle, long address)
         {
@@ -181,6 +192,18 @@ namespace Tibia.Util
         public static bool WriteUInt32(IntPtr handle, long address, uint value)
         {
             return WriteBytes(handle, address, BitConverter.GetBytes(value), 4);
+        }
+
+        /// <summary>
+        /// Write an unsigned long (64-bits) to memory.
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="address"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool WriteUInt64(IntPtr handle, long address, ulong value)
+        {
+            return WriteBytes(handle, address, BitConverter.GetBytes(value), 8);
         }
 
         /// <summary>

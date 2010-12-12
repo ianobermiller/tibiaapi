@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Tibia.Addresses
 {
     /// <summary>
@@ -10,17 +8,17 @@ namespace Tibia.Addresses
         /// <summary>
         /// Distance between creatures.
         /// </summary>
-        public static uint StepCreatures = 0xA8;
+        public static uint StepCreatures = 172; // 870
 
         /// <summary>
         /// Maximum number of creatures.
         /// </summary>
-        public static uint MaxCreatures = 250;
+        public static uint MaxCreatures = 1300;
 
         /// <summary>
         /// Start of the battle list.
         /// </summary>
-        public static uint Start = 0x637CE0; //8.62
+        public static uint Start = 0x63FDE8; // 8.70
 
         /// <summary>
         /// End of the battle list.

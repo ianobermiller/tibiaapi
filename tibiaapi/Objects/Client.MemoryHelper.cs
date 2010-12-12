@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace Tibia.Objects
 {
     public partial class Client
@@ -43,6 +39,11 @@ namespace Tibia.Objects
                 return Util.Memory.ReadUInt32(client.ProcessHandle, address);
             }
 
+            public ulong ReadUInt64(long address)
+            {
+                return Util.Memory.ReadUInt64(client.ProcessHandle, address);
+            }
+
             public double ReadDouble(long address)
             {
                 return Util.Memory.ReadDouble(client.ProcessHandle, address);
@@ -81,6 +82,11 @@ namespace Tibia.Objects
             public bool WriteUInt32(long address, uint value)
             {
                 return Util.Memory.WriteUInt32(client.ProcessHandle, address, value);
+            }
+
+            public bool WriteUInt64(long address, ulong value)
+            {
+                return Util.Memory.WriteUInt64(client.ProcessHandle, address, value);
             }
 
             public bool WriteDouble(long address, double value)
