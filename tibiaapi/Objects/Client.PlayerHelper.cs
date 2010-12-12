@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Tibia.Objects
 {
@@ -312,7 +311,7 @@ namespace Tibia.Objects
             }
             public string WorldName
             {
-                get { return String.Empty; }// return client.Login.CharacterList[client.Login.SelectedChar].WorldName; }
+                get { return client.Login.CharacterList[client.Login.SelectedChar].WorldName; }
             }
 
             /// <summary>
