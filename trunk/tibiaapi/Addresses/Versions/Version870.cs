@@ -49,9 +49,9 @@ namespace Tibia
             Client.DistancePort = 100;
             Client.MaxLoginServers = 10;
             //Client.RSA = 0x5B2980;
-            //Client.LoginCharList = 0x7BFC38;
-            //Client.LoginCharListLength = 0x7BFC3C;
-            //Client.LoginSelectedChar = 0x7BFC34;
+            Client.LoginCharList = 0x7C9240;
+            Client.LoginCharListLength = Client.LoginCharList + 4;
+            Client.LoginSelectedChar = Client.LoginCharList - 4;
             Client.GameWindowRectPointer = 0x67868C;
             Client.GameWindowBar = 0x80CB00;
             Client.DatPointer = 0x7C5D0C;
@@ -62,13 +62,13 @@ namespace Tibia
             //Client.DialogWidth = 0x1C;
             //Client.DialogHeight = 0x20;
             //Client.DialogCaption = 0x50;
-            //Client.LoginAccountNum = 0;
-            //Client.LoginPassword = 0x7BFC40;
-            //Client.LoginAccount = Client.LoginPassword + 32;
-            //Client.LoginPatch = 0;
-            //Client.LoginPatch2 = 0;
-            //Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
-            //Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+            Client.LoginAccountNum = 0;
+            Client.LoginPassword = Client.LoginCharList + 8;
+            Client.LoginAccount = Client.LoginPassword + 32;
+            Client.LoginPatch = 0;
+            Client.LoginPatch2 = 0;
+            Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
+            Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
 
             Container.Start = 0x679140;
             Container.StepContainer = 492;
