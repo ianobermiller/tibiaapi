@@ -12,7 +12,7 @@ namespace Tibia
             BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
             Client.StartTime = 0x80CAF0;
-            //Client.XTeaKey = 0x7BC6E4;
+            Client.XTeaKey = 0x7C5CEC;
             //Client.SocketStruct = 0x7BC6B8;
             //Client.RecvPointer = 0x5B25E4;
             //Client.SendPointer = 0x5B2610;
@@ -48,7 +48,7 @@ namespace Tibia
             Client.StepLoginServer = 112;
             Client.DistancePort = 100;
             Client.MaxLoginServers = 10;
-            //Client.RSA = 0x5B2980;
+            Client.RSA = 0x5B8980;
             Client.LoginCharList = 0x7C9240;
             Client.LoginCharListLength = Client.LoginCharList + 4;
             Client.LoginSelectedChar = Client.LoginCharList - 4;
