@@ -8,7 +8,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x676F40; // 8.62
+        public static uint MapPointer = 0x680548; // 8.70
 
         /// <summary>
         /// Step between tiles on the map.
@@ -88,13 +88,13 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4EE519; // 8.62
+        public static uint NameSpy1 = 0x4F2769; // 8.70
 
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4EE523;  // 8.62
+        public static uint NameSpy2 = 0x4F2773;  // 8.70
 
 
         /// <summary>
@@ -109,25 +109,25 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4F038A;  // 8.62
+        public static uint LevelSpy1 = 0x4F465A;  // 8.70
 
 
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4F048F;  // 8.62
+        public static uint LevelSpy2 = 0x4F475F;  // 8.70
 
 
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4F0510;  // 8.62
+        public static uint LevelSpy3 = 0x4F47E0;  // 8.70
 
 
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x66F080;  // 8.62
+        public static uint LevelSpyPtr = 0x67868C;  // 8.70
 
         /// <summary>
         /// Defaults for level spy.
@@ -157,11 +157,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Global light, all floors, used for improving levelspy
         /// </summary>
-        public static uint FullLightNop = 0x4E6C29;  // 8.62
+        public static uint FullLightNop = 0x4EACD9;  // 8.70
         public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
         public static byte[] FullLightNopEdited = { 0x90, 0x90 };
 
-        public static uint FullLightAdr = 0x4E6C2C;  // 8.62
+        public static uint FullLightAdr = 0x4EACDC;  // 8.70
         public static byte FullLightAdrDefault = 0x80;
         public static byte FullLightAdrEdited = 0xFF;
     }

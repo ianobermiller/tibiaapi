@@ -7,6 +7,6 @@ namespace Tibia.Addresses
 {
     public class DrawItem
     {
-        public static uint DrawItemFunc = 0x4B1B30; //8.62
+        public static uint DrawItemFunc = 0x4B5910; //8.70
     }
 }
