@@ -25,7 +25,7 @@
         /// OnClickContextMenuPtr from your hooked function to
         /// process standard Tibia events.
         /// </summary>
-        public static uint OnClickContextMenuVf = 0x5B7878; //8.62
+        public static uint OnClickContextMenuVf = 0x5BDB60; //8.70
 
         /// <summary>
         /// The "Set Outfit" context menu item function call.
