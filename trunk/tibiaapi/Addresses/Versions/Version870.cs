@@ -17,9 +17,9 @@ namespace Tibia
             //Client.RecvPointer = 0x5B25E4;
             //Client.SendPointer = 0x5B2610;
             //Client.LastRcvPacket = 0x7B7E98;
-            //Client.DecryptCall = 0x45A775;
+            Client.DecryptCall = 0x0045C6A5;
             Client.ParserFunc = 0x45C670;
-            //Client.GetNextPacketCall = 0x45A775;
+            Client.GetNextPacketCall = 0x45C6A5;
             Client.RecvStream = 0x7C5CDC;
             Client.FrameRatePointer = 0x7C9DD4;
             Client.FrameRateCurrentOffset = 0x60;
@@ -147,15 +147,15 @@ namespace Tibia
 
             //DrawSkin.DrawSkinFunc = 0x4B57A0;
 
-            //Hotkey.SendAutomaticallyStart = 0x7BCD08;
-            //Hotkey.SendAutomaticallyStep = 0x01;
-            //Hotkey.TextStart = 0x7BCD30;
-            //Hotkey.TextStep = 0x100;
-            //Hotkey.ObjectStart = 0x7BCC78;
-            //Hotkey.ObjectStep = 0x04;
-            //Hotkey.ObjectUseTypeStart = 0x7BCB58;
-            //Hotkey.ObjectUseTypeStep = 0x04;
-            //Hotkey.MaxHotkeys = 36;
+            Hotkey.SendAutomaticallyStart = 0x7C630F;
+            Hotkey.SendAutomaticallyStep = 0x01;
+            Hotkey.TextStart = 0x7C6238;
+            Hotkey.TextStep = 0x100;
+            Hotkey.ObjectStart = 0x7C627C;
+            Hotkey.ObjectStep = 0x04;
+            Hotkey.ObjectUseTypeStart = 0x7C615C;
+            Hotkey.ObjectUseTypeStep = 0x04;
+            Hotkey.MaxHotkeys = 36;
 
             Map.MapPointer = 0x680548;
             Map.StepTile = 168;
