@@ -5,14 +5,14 @@
         /// <summary>
         /// The function used to add a context menu item.
         /// </summary>
-        public static uint AddContextMenuPtr = 0x450C90; //8.62
+        public static uint AddContextMenuPtr = 0x452BA0; //8.70
 
         /// <summary>
         /// The function used to process Tibia's "OnClick" events,
         /// that is, the events issued when you click a context
         /// menu item.
         /// </summary>
-        public static uint OnClickContextMenuPtr = 0x44D870; //8.62
+        public static uint OnClickContextMenuPtr = 0x44F760; //8.70
 
         /// <summary>
         /// The address in the virtual function table where the
@@ -32,7 +32,7 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to your character
         /// </summary>
-        public static uint AddSetOutfitContextMenu = 0x451BAC; //8.62
+        public static uint AddSetOutfitContextMenu = 0x453AB0; //8.70
 
         /// <summary>
         /// The "Invite to Party" / "Leave Party" context menu
@@ -40,23 +40,23 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to other players.
         /// </summary>
-        public static uint AddPartyActionContextMenu = 0x451AD4; //8.62
+        public static uint AddPartyActionContextMenu = 0x4539E4; //8.70
 
         /// <summary>
         /// The "Copy Name" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to creatures (including you and monsters).
         /// </summary>
-        public static uint AddCopyNameContextMenu = 0x451C14; //8.62
+        public static uint AddCopyNameContextMenu = 0x453B4E; //8.70
 
-        public static uint AddTradeWithContextMenu = 0x451839; //8.62
+        public static uint AddTradeWithContextMenu = 0x453749; //8.70
 
         /// <summary>
         /// The "Look" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that always appears on game window or inventory item clicks.
         /// </summary>
-        public static uint AddLookContextMenu = 0x4516EF; //8.62
+        public static uint AddLookContextMenu = 0x4535FF; //8.70
 
     }
 }
