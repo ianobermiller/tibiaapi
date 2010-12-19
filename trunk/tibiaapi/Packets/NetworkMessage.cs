@@ -42,9 +42,8 @@ namespace Tibia.Packets
 
         public NetworkMessage(byte[] data, int length)
         {
-            buffer = new byte[bufferSize];
-            Array.Copy(data, buffer, length);
-            this.length = length;
+            bufferSize = length;
+            buffer = data;
             position = 0;
         }
 
@@ -205,7 +204,8 @@ namespace Tibia.Packets
 
         public Objects.Outfit GetOutfit()
         {
-            byte head, body, legs, feet, addons, mountId = 0;
+            byte head, body, legs, feet, addons;
+            ushort mountId = 0;
             ushort looktype = GetUInt16();
 
             if (looktype != 0)
@@ -217,7 +217,7 @@ namespace Tibia.Packets
                 addons = GetByte();
                 if (Client.VersionNumber >= 870)
                 {
-                    mountId = GetByte();
+                    mountId = GetUInt16();
                 }
 
                 return new Objects.Outfit(looktype, head, body, legs, feet, addons, mountId);
