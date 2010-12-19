@@ -24,7 +24,7 @@ namespace Tibia.Addresses
         public static uint DistanceColorLegs = 108;
         public static uint DistanceColorFeet = 112;
         public static uint DistanceAddon = 116;
-        public static uint DistanceMount = 120;        
+        public static uint DistanceMountId = 120;        
 
         public static uint DistanceLight = 124;
         public static uint DistanceLightColor = 128;
