@@ -12,7 +12,7 @@ namespace Tibia.Objects
         private byte legs;
         private byte feet;
         private byte addons;
-        private byte mountId;
+        private ushort mountId;
 
         public ushort LookType
         {
@@ -49,7 +49,7 @@ namespace Tibia.Objects
             get { return addons; }
             set { addons = value; TrySetOutfit(); }
         }
-        public byte MountId
+        public ushort MountId
         {
             get { return mountId; }
             set { mountId = value; TrySetOutfit(); }
@@ -61,9 +61,9 @@ namespace Tibia.Objects
             this.lookType = looktype;
         }
 
-        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, byte mountId) : this(null, looktype, head, body, legs, feet, addons, mountId) { }
+        public Outfit(ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, ushort mountId) : this(null, looktype, head, body, legs, feet, addons, mountId) { }
 
-        public Outfit(Creature creature, ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, byte mountId)
+        public Outfit(Creature creature, ushort looktype, byte head, byte body, byte legs, byte feet, byte addons, ushort mountId)
         {
             this.creature = creature;
             this.lookType = looktype;
@@ -89,13 +89,14 @@ namespace Tibia.Objects
 
             if (LookType != 0)
             {
-                temp = new byte[7];
+                temp = new byte[9];
                 Array.Copy(BitConverter.GetBytes(LookType), temp, 2);
                 temp[2] = Head;
                 temp[3] = Body;
                 temp[4] = Legs;
                 temp[5] = Feet;
                 temp[6] = Addons;
+                Array.Copy(BitConverter.GetBytes(mountId), 0, temp, 7, 2);
             }
             else
             {
