@@ -16,7 +16,7 @@ namespace Tibia
             Client.SocketStruct = 0x7C5CC0;
             Client.RecvPointer = 0x5B85E4;
             Client.SendPointer = 0x5B8610;
-            //Client.LastRcvPacket = 0x7B7E98;
+            Client.LastRcvPacket = 0x7C14A0;
             Client.DecryptCall = 0x45C6A5;
             Client.ParserFunc = 0x45C670;
             Client.GetNextPacketCall = 0x45C6A5; // Same as Client.DecryptCall = ParserFunc + 0x35
@@ -56,7 +56,7 @@ namespace Tibia
             Client.GameWindowBar = 0x80CB00;
             Client.DatPointer = 0x7C5D0C;
             Client.EventTriggerPointer = 0x520600;
-            //Client.DialogPointer = 0x6723EC;
+            Client.DialogPointer = 0x67B9F4;
             Client.DialogLeft = 0x14;
             Client.DialogTop = 0x18;
             Client.DialogWidth = 0x1C;

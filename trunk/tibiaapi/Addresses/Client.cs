@@ -238,7 +238,7 @@ namespace Tibia.Addresses
         public static uint DatPointer = 0x7C5D0C; //8.70
 
         public static uint EventTriggerPointer = 0x520600; //8.70
-        public static uint DialogPointer = 0x6723EC; //8.62
+        public static uint DialogPointer = 0x67B9F4; //8.70
         public static uint DialogLeft = 0x14;
         public static uint DialogTop = 0x18;
         public static uint DialogWidth = 0x1C;
@@ -248,7 +248,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        public static uint LastRcvPacket = 0x7B7E98; //8.62
+        public static uint LastRcvPacket = 0x7C14A0; //8.70
 
         /// <summary>
         /// Call to decrypt packet
