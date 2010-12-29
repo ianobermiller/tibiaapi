@@ -34,6 +34,7 @@ namespace Tibia.Packets
             if (client.LoggedIn)
             {
                 protocol = Protocol.World;
+                client.playerLocation = client.PlayerLocation;
             }
             else
             {
