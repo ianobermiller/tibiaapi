@@ -173,14 +173,19 @@ namespace Tibia.Packets
             return t;
         }
 
-        public ushort GetUInt16()
+        public UInt16 GetUInt16()
         {
             return BitConverter.ToUInt16(GetBytes(2), 0);
         }
 
-        public uint GetUInt32()
+        public UInt32 GetUInt32()
         {
             return BitConverter.ToUInt32(GetBytes(4), 0);
+        }
+
+        public UInt64 GetUInt64()
+        {
+            return BitConverter.ToUInt64(GetBytes(8), 0);
         }
 
         public Objects.Location GetLocation()
@@ -200,6 +205,7 @@ namespace Tibia.Packets
         public Objects.Outfit GetOutfit()
         {
             byte head, body, legs, feet, addons;
+            ushort mountId = 0;
             ushort looktype = GetUInt16();
 
             if (looktype != 0)
@@ -209,8 +215,12 @@ namespace Tibia.Packets
                 legs = GetByte();
                 feet = GetByte();
                 addons = GetByte();
+                if (Client.VersionNumber >= 870)
+                {
+                    mountId = GetUInt16();
+                }
 
-                return new Objects.Outfit(looktype, head, body, legs, feet, addons);
+                return new Objects.Outfit(looktype, head, body, legs, feet, addons, mountId);
             }
             else
                 return new Tibia.Objects.Outfit(looktype, GetUInt16());
@@ -262,6 +272,11 @@ namespace Tibia.Packets
         }
 
         public void AddUInt32(uint value)
+        {
+            AddBytes(BitConverter.GetBytes(value));
+        }
+
+        public void AddUInt64(ulong value)
         {
             AddBytes(BitConverter.GetBytes(value));
         }

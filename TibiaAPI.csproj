@@ -111,6 +111,25 @@
     <Compile Include="Addresses\DrawSkin.cs" />
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
+    <Compile Include="Addresses\Versions\Version800.cs" />
+    <Compile Include="Addresses\Versions\Version810and811.cs" />
+    <Compile Include="Addresses\Versions\Version820.cs" />
+    <Compile Include="Addresses\Versions\Version852.cs" />
+    <Compile Include="Addresses\Versions\Version821.cs" />
+    <Compile Include="Addresses\Versions\Version822.cs" />
+    <Compile Include="Addresses\Versions\Version831.cs" />
+    <Compile Include="Addresses\Versions\Version840.cs" />
+    <Compile Include="Addresses\Versions\Version841.cs" />
+    <Compile Include="Addresses\Versions\Version842.cs" />
+    <Compile Include="Addresses\Versions\Version850.cs" />
+    <Compile Include="Addresses\Versions\Version853.cs" />
+    <Compile Include="Addresses\Versions\Version854.cs" />
+    <Compile Include="Addresses\Versions\Version855.cs" />
+    <Compile Include="Addresses\Versions\Version857.cs" />
+    <Compile Include="Addresses\Versions\Version860.cs" />
+    <Compile Include="Addresses\Versions\Version861.cs" />
+    <Compile Include="Addresses\Versions\Version862.cs" />
+    <Compile Include="Addresses\Versions\Version870.cs" />
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Clientless\GameServerConnection.cs" />
     <Compile Include="Clientless\LoginServerConnection.cs" />
@@ -331,7 +350,7 @@
     <Compile Include="Util\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Util\Version.cs" />
+    <Compile Include="Addresses\Versions\Version.cs" />
     <Compile Include="Util\WinApi.cs" />
     <Compile Include="Website\Guild.cs" />
     <Compile Include="Website\LookupPlayer.cs" />

@@ -1,11 +1,12 @@
 ﻿using Tibia.Constants;
+using Tibia.Objects;
 
 namespace Tibia.Packets.Incoming
 {
     public class MagicEffectPacket : IncomingPacket
     {
-        public Objects.Location Position { get; set; }
-        public byte Effect { get; set; }
+        public Location Location { get; set; }
+        public Effect Effect { get; set; }
 
         public MagicEffectPacket(Objects.Client c)
             : base(c)
@@ -24,8 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.MagicEffect;
 
-            Position = msg.GetLocation();
-            Effect = msg.GetByte();
+            Location = msg.GetLocation();
+            Effect = (Effect)msg.GetByte();
 
             return true;
         }
@@ -33,8 +34,17 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddLocation(Position);
-            msg.AddByte(Effect);
+            msg.AddLocation(Location);
+            msg.AddByte((byte)Effect);
+        }
+
+        public static bool Send(Objects.Client client, Location location, Effect effect)
+        {
+            MagicEffectPacket p = new MagicEffectPacket(client);
+            p.Location = location;
+            p.Effect = effect;
+
+            return p.Send();
         }
     }
 }
