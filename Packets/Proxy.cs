@@ -568,7 +568,7 @@ namespace Tibia.Packets
                             {
                                 int position = serverRecvMsg.Position;
                                 byte type = serverRecvMsg.PeekByte();
-                                lastReceivedPacketTypes.Push(type);
+
                                 if (!ParsePacketFromServer(client, serverRecvMsg, clientSendMsg))
                                 {
                                     byte[] unknown = serverRecvMsg.GetBytes(serverRecvMsg.Length - serverRecvMsg.Position);

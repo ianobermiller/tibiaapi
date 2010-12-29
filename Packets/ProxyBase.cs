@@ -172,6 +172,8 @@ namespace Tibia.Packets
             IncomingPacket packet = null;
             IncomingPacketType type = (IncomingPacketType)msg.PeekByte();
 
+            lastReceivedPacketTypes.Push(type);
+
             switch (type)
             {
                 case IncomingPacketType.AnimatedText:
@@ -1411,21 +1413,11 @@ namespace Tibia.Packets
             }
         }
 
-        protected FixedCollector<byte> lastReceivedPacketTypes = new FixedCollector<byte>(10);
+        protected FixedCollector<IncomingPacketType> lastReceivedPacketTypes = new FixedCollector<IncomingPacketType>(10);
 
         public string GetLastReceivedPacketTypesString()
         {
-            return String.Join(", ", lastReceivedPacketTypes.Select(delegate(byte b)
-            {
-                if (Enum.IsDefined(typeof(IncomingPacketType), b))
-                {
-                    return ((IncomingPacketType)b).ToString();
-                }
-                else
-                {
-                    return b.ToString("X2");
-                }
-            }).ToArray());
+            return String.Join(", ", lastReceivedPacketTypes.Select(t => t.ToString()).ToArray());
         }
 
         #endregion
