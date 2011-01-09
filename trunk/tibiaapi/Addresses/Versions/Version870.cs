@@ -236,7 +236,7 @@ namespace Tibia
             Player.DistanceSlotCount = 4;
             Player.CurrentTileToGo = Player.Flags + 132;
             Player.TilesToGo = Player.CurrentTileToGo + 4;
-            Player.GoToX = Player.Experience + 80;
+            Player.GoToX = Player.Experience + 84;
             Player.GoToY = Player.GoToX - 4;
             Player.GoToZ = Player.GoToX - 8;
             //Player.AccessN = 0;
@@ -247,8 +247,8 @@ namespace Tibia
             Player.TargetType = Player.TargetId + 3;
 
             Player.Z = 0x67BA30;
-            Player.X = Player.Z + 4;
-            Player.Y = Player.Z + 8;
+            Player.Y = Player.Z + 4;
+            Player.X = Player.Z + 8;
 
             Player.AttackCount = 0x63D900;
             Player.FollowCount = Player.AttackCount + 0x20;
