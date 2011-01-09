@@ -57,17 +57,20 @@ namespace Tibia.Packets.Incoming
                 OutfitList.Add(outfit);
             }
 
-            count = msg.GetByte();
-            MountList = new List<MountDescription> { };
-
-            for (int i = 0; i < count; i++)
+            if (Client.VersionNumber >= 870)
             {
-                MountDescription mount = new MountDescription();
+                count = msg.GetByte();
+                MountList = new List<MountDescription> { };
 
-                mount.Id = msg.GetUInt16();
-                mount.Name = msg.GetString();
+                for (int i = 0; i < count; i++)
+                {
+                    MountDescription mount = new MountDescription();
 
-                MountList.Add(mount);
+                    mount.Id = msg.GetUInt16();
+                    mount.Name = msg.GetString();
+
+                    MountList.Add(mount);
+                }
             }
 
             return true;
@@ -88,12 +91,15 @@ namespace Tibia.Packets.Incoming
                 msg.AddByte(i.Addons);
             }
 
-            msg.AddByte((byte)MountList.Count);
-
-            foreach (MountDescription i in MountList)
+            if (Client.VersionNumber >= 870)
             {
-                msg.AddUInt16(i.Id);
-                msg.AddString(i.Name);
+                msg.AddByte((byte)MountList.Count);
+
+                foreach (MountDescription i in MountList)
+                {
+                    msg.AddUInt16(i.Id);
+                    msg.AddString(i.Name);
+                }
             }
         }
     }

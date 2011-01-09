@@ -38,7 +38,14 @@ namespace Tibia.Packets.Incoming
             MaxHealth = msg.GetUInt16();
             Capacity = msg.GetUInt32();
 
-            Experience = msg.GetUInt64();
+            if (Client.VersionNumber >= 870)
+            {
+                Experience = msg.GetUInt64();
+            }
+            else
+            {
+                Experience = msg.GetUInt32();
+            }
 
             Level = msg.GetUInt16();
 
@@ -64,7 +71,14 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt16(MaxHealth);
             msg.AddUInt32(Capacity);
 
-            msg.AddUInt64(Experience);
+            if (Client.VersionNumber >= 870)
+            {
+                msg.AddUInt64(Experience);
+            }
+            else
+            {
+                msg.AddUInt32((uint)Experience);
+            }
 
             msg.AddUInt16(Level);
 
