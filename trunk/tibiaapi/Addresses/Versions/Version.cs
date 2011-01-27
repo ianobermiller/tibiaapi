@@ -28,6 +28,9 @@ namespace Tibia
             CurrentVersionString = version;
             switch (version)
             {
+                case "8.71":
+                   SetVersion870();
+                    break;
                 case "8.70":
                     SetVersion870();
                     break;
