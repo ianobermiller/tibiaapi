@@ -7,7 +7,7 @@ namespace Tibia
         public static void SetVersion870()
         {
             BattleList.Start = 0x63FDE8;
-            BattleList.StepCreatures = 172;
+            BattleList.StepCreatures = 0xAC;
             BattleList.MaxCreatures = 1300;
             BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
@@ -35,7 +35,7 @@ namespace Tibia
             Client.LastMSGAuthor = Client.LastMSGText - 0x28;
             Client.StatusbarText = Client.StartTime + 0x20;
             Client.StatusbarTime = Client.StatusbarText - 4;
-            Client.ClickId = 0x7C9320;
+            Client.ClickId = 0x7C932C;
             Client.ClickCount = Client.ClickId + 4;
             Client.ClickZ = Client.ClickId - 0x68;
             Client.SeeId = Client.ClickId + 12;
@@ -87,7 +87,7 @@ namespace Tibia
             ContextMenus.AddContextMenuPtr = 0x452BA0;
             ContextMenus.OnClickContextMenuPtr = 0x44F760;
             ContextMenus.OnClickContextMenuVf = 0x5BDB60;
-            ContextMenus.AddSetOutfitContextMenu = 0x453AB0;
+            ContextMenus.AddSetOutfitContextMenu = 0x453ABC;
             ContextMenus.AddPartyActionContextMenu = 0x4539E4;
             ContextMenus.AddCopyNameContextMenu = 0x453B4E;
             ContextMenus.AddTradeWithContextMenu = 0x453749;
@@ -147,13 +147,13 @@ namespace Tibia
 
             DrawSkin.DrawSkinFunc = 0x4B9620;
 
-            Hotkey.SendAutomaticallyStart = 0x7C630F;
+            Hotkey.SendAutomaticallyStart = 0x7C6310;
             Hotkey.SendAutomaticallyStep = 0x01;
-            Hotkey.TextStart = 0x7C6238;
+            Hotkey.TextStart = 0x7C6338;
             Hotkey.TextStep = 0x100;
-            Hotkey.ObjectStart = 0x7C627C;
+            Hotkey.ObjectStart = 0x7C6280;
             Hotkey.ObjectStep = 0x04;
-            Hotkey.ObjectUseTypeStart = 0x7C615C;
+            Hotkey.ObjectUseTypeStart = 0x7C6160;
             Hotkey.ObjectUseTypeStep = 0x04;
             Hotkey.MaxHotkeys = 36;
 
@@ -171,8 +171,8 @@ namespace Tibia
             Map.MaxZ = 8;
             Map.MaxTiles = 2016;
             Map.ZAxisDefault = 7;
-            Map.NameSpy1 = 0x4F2769;
-            Map.NameSpy2 = 0x4F2773;
+            Map.NameSpy1 = 0x4F2789;
+            Map.NameSpy2 = 0x4F2793;
             Map.NameSpy1Default = 0x4C75;
             Map.NameSpy2Default = 0x4275;
             Map.LevelSpy1 = 0x4F465A;
@@ -195,7 +195,7 @@ namespace Tibia
             Player.HealthMax = Player.Experience + 4;
             Player.Level = Player.Experience - 8;
             Player.MagicLevel = Player.Experience - 12;
-            Player.LevelPercent = Player.Experience - 14;
+            Player.LevelPercent = Player.Experience - 16;
             Player.MagicLevelPercent = Player.Experience - 20;
             Player.Mana = Player.Experience - 24;
             Player.ManaMax = Player.Experience - 28;
@@ -232,7 +232,7 @@ namespace Tibia
             Player.SlotFeet = Player.SlotHead + 84;
             Player.SlotRing = Player.SlotHead + 96;
             Player.SlotAmmo = Player.SlotHead + 108;
-            Player.MaxSlots = 11;
+            Player.MaxSlots = 10;
             Player.DistanceSlotCount = 4;
             Player.CurrentTileToGo = Player.Flags + 132;
             Player.TilesToGo = Player.CurrentTileToGo + 4;

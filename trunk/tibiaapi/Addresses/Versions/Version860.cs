@@ -226,7 +226,7 @@ namespace Tibia
             Player.SlotFeet = Player.SlotHead + 84;
             Player.SlotRing = Player.SlotHead + 96;
             Player.SlotAmmo = Player.SlotHead + 108;
-            Player.MaxSlots = 11;
+            Player.MaxSlots = 10;
             Player.DistanceSlotCount = 4;
             Player.CurrentTileToGo = 0x63FEA0;
             Player.TilesToGo = 0x63FEA4;
