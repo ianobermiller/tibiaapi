@@ -185,7 +185,7 @@ namespace Tibia
             Player.ClubPercent = Player.Experience - 100;
             Player.FistPercent = Player.Experience - 104;
             Player.Flags = Player.Experience - 108;
-            Player.MaxSlots = 11;
+            Player.MaxSlots = 10;
             Player.SlotHead = 0x62D190;
             Player.SlotNeck = Player.SlotHead + 12;
             Player.SlotBackpack = Player.SlotHead + 24;

@@ -8,7 +8,7 @@ namespace Tibia
         {
             BattleList.Start = 0x637CE0;
             BattleList.StepCreatures = 0xA8;
-            BattleList.MaxCreatures = 250;
+            BattleList.MaxCreatures = 1300;
             BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
             Client.StartTime = 0x8034E8;
@@ -225,7 +225,7 @@ namespace Tibia
             Player.SlotFeet = Player.SlotHead + 84;
             Player.SlotRing = Player.SlotHead + 96;
             Player.SlotAmmo = Player.SlotHead + 108;
-            Player.MaxSlots = 11;
+            Player.MaxSlots = 10;
             Player.DistanceSlotCount = 4;
             Player.CurrentTileToGo = 0x637C60;
             Player.TilesToGo = 0x637C64;
