@@ -112,6 +112,7 @@
     <Compile Include="Addresses\DrawSkin.cs" />
     <Compile Include="Addresses\Hotkey.cs" />
     <Compile Include="Addresses\TextDisplay.cs" />
+    <Compile Include="Addresses\Versions\Version871.cs" />
     <Compile Include="Addresses\Versions\Version800.cs" />
     <Compile Include="Addresses\Versions\Version810and811.cs" />
     <Compile Include="Addresses\Versions\Version820.cs" />
