@@ -202,12 +202,6 @@ namespace Tibia.Objects
             }
         }
 
-        public Constants.CreatureType Type
-        {
-            get { return (Constants.CreatureType)client.Memory.ReadByte(address + Addresses.Creature.DistanceType); }
-            set { client.Memory.WriteByte(address + Addresses.Creature.DistanceType, (byte)value); }
-        }
-
         public string Name
         {
             get { return client.Memory.ReadString(address + Addresses.Creature.DistanceName); }
