@@ -122,9 +122,9 @@ namespace Tibia.Constants
         None = 0,
         Poisoned = 1,
         Burning = 2,
-        Electrified = 4,
+        Electrified = 4, //Energy
         Drunk = 8,
-        ProtectedByMagicShield = 16,
+        ProtectedByManaShield = 16,
         Paralysed = 32,
         Paralyzed = Paralysed,
         Hasted = 64,
@@ -133,9 +133,10 @@ namespace Tibia.Constants
         Freezing = 512,
         Dazzled = 1024,
         Cursed = 2048,
-        Strengthened = 4096,
+        Buffed = 4096,
         CannotLogoutOrEnterProtectionZone = 8192,
-        WithinProtectionZone = 16384
+        WithinProtectionZone = 16384,
+        Bleeding = 32768
     }
 
     public enum SlotNumber
@@ -185,6 +186,22 @@ namespace Tibia.Constants
         public static int Pink = 91;
         public static int Grey = 57;
         public static int Peach = 1;
+    }
+
+    public enum OutfitMount
+    {
+        WidowQueen = 368,
+        RacingBird = 369,
+        WarBear = 370,
+        BlackSheep = 371,
+        MidnightPanther = 372,
+        Draptor = 373,
+        Titanica = 374,
+        TinLizzard = 375,
+        Blazebringer = 376,
+        RapidBoar = 377,
+        Stampor = 378,
+        UndeadCaveBear = 379
     }
 
     public enum OutfitType
@@ -477,7 +494,7 @@ namespace Tibia.Constants
         MercuryBlob = 316,
         YoungSeaSerpent = 317,
         MutatedTiger = 318,
-        Unknown2 = 319,
+        GhostlyApparition = 319,
         Nightstalker = 320,
         NightmareScion = 321,
         Hellspawn = 322,
@@ -491,7 +508,60 @@ namespace Tibia.Constants
         Medusa = 330,
         Queen = 331,
         King = 332,
-        SmallStoneGolem = 333
+        SmallStoneGolem = 333,
+        DrakenWarmaster = 334,
+        WarmasterMale = 335,
+        WarmasterFemale = 336,
+        LizardHighGuard = 337,
+        LizardLegionnaire = 338,
+        LizardDragonPriest = 339,
+        DrakenSpellweaver = 340,
+        Gnarlhound = 341,
+        OrcMarauder = 342,
+        LizardZaogun = 343,
+        LizardChosen = 344,
+        EternalGuardian = 345,
+        Terramite = 346,
+        WailingWidow = 347,
+        LancerBeetle = 348,
+        InsectSwarm = 349,
+        Sandcrawler = 350,
+        GhastlyDragon = 351,
+        BrimstoneBug = 352,
+        SpawnOfDevovorga = 353,
+        Devovorga = 354,
+        Souleater = 355,
+        SnakeGodEssence = 356,
+        DrakenAbomination = 357,
+        KillerCaiman = 358,
+        Irahsae = 359,
+        Teneshpar = 360,
+        Chikhaton = 361,
+        DrakenElite = 362,
+        Anmothra = 363,
+        LizardAbomination = 364,
+        Unknown2 = 365,
+        WayfarerFemale = 366,
+        WayfarerMale = 367,
+        WidowQueenMount = 368,
+        RacingBirdMount = 369,
+        WarBearMount = 370,
+        BlackSheepMount = 371,
+        MidnightPantherMount = 372,
+        DraptorMount = 373,
+        TitanicaMount = 374,
+        TinLizzardMount = 375,
+        BlazebringerMount = 376,
+        RapidBoarMount = 377,
+        StamporMount = 378,
+        UndeadCaveBearMount = 379,
+        Boar = 380,
+        Stampor = 381,
+        Draptor = 382,
+        CrustaceaGigantica = 383,
+        UndeadCavebear = 384,
+        MidnightPanther = 385,
+        GameMasterNew = 386
     }
 
     #endregion
@@ -520,7 +590,8 @@ namespace Tibia.Constants
         Green = 2,
         White = 3,
         Red = 4,
-        Black = 5
+        Black = 5,
+        Orange = 6
     }
 
     public enum PartyShield
@@ -535,15 +606,9 @@ namespace Tibia.Constants
         MemberSharedExp = 5,
         LeaderSharedExp = 6,
         MemberSharedExpInactive = 7,
-        LeaderSharedExpInactive = 8
-
-    }
-
-    public enum CreatureType : byte
-    {
-        Player = 0x0,
-        Target = 0x1,
-        NPC = 0x40
+        LeaderSharedExpInactive = 8,
+        MemberNoSharedExp = 9,
+        LeaderNoSharedExp = 10
     }
 
     public enum WarIcon
@@ -655,6 +720,25 @@ namespace Tibia.Constants
 
     public static class Enums
     {
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo870 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo870 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        {
+            { SpeechType.Say, new SpeechTypeInfo(SpeechType.Say, 0x01, AdditionalSpeechData.Location) },
+            { SpeechType.Whisper, new SpeechTypeInfo(SpeechType.Whisper, 0x02, AdditionalSpeechData.Location) },
+            { SpeechType.Yell, new SpeechTypeInfo(SpeechType.Yell, 0x03, AdditionalSpeechData.Location) },
+            { SpeechType.PrivatePlayerToNPC, new SpeechTypeInfo(SpeechType.PrivatePlayerToNPC, 0x04, AdditionalSpeechData.None) },
+            { SpeechType.PrivateNPCToPlayer, new SpeechTypeInfo(SpeechType.PrivateNPCToPlayer, 0x05, AdditionalSpeechData.Location) },
+            { SpeechType.Private, new SpeechTypeInfo(SpeechType.Private, 0x06, AdditionalSpeechData.None) },
+            { SpeechType.ChannelYellow, new SpeechTypeInfo(SpeechType.ChannelYellow, 0x07, AdditionalSpeechData.ChannelId) },
+            { SpeechType.ChannelWhite, new SpeechTypeInfo(SpeechType.ChannelWhite, 0x08, AdditionalSpeechData.ChannelId) },
+            { SpeechType.Broadcast, new SpeechTypeInfo(SpeechType.Broadcast, 0x09, AdditionalSpeechData.None) },
+            { SpeechType.ChannelRed, new SpeechTypeInfo(SpeechType.ChannelRed, 0x0A, AdditionalSpeechData.ChannelId) },
+            { SpeechType.PrivateRed, new SpeechTypeInfo(SpeechType.PrivateRed, 0x0B, AdditionalSpeechData.None) },
+            { SpeechType.ChannelOrange, new SpeechTypeInfo(SpeechType.ChannelOrange, 0x0C, AdditionalSpeechData.ChannelId) },
+            { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x0D, AdditionalSpeechData.Location) },
+            { SpeechType.MonsterYell, new SpeechTypeInfo(SpeechType.MonsterYell, 0xE, AdditionalSpeechData.Location) }
+        };
+
         private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo861 = new Dictionary<byte, SpeechTypeInfo>();
         private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo861 = new Dictionary<SpeechType, SpeechTypeInfo>()
         {
@@ -670,7 +754,7 @@ namespace Tibia.Constants
             { SpeechType.ChannelRed, new SpeechTypeInfo(SpeechType.ChannelRed, 0x0A, AdditionalSpeechData.ChannelId) },
             { SpeechType.RuleViolationContinue, new SpeechTypeInfo(SpeechType.RuleViolationContinue, 0x0B, AdditionalSpeechData.None) },
             { SpeechType.ChannelOrange, new SpeechTypeInfo(SpeechType.ChannelOrange, 0x0C, AdditionalSpeechData.ChannelId) },
-            { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x0D, AdditionalSpeechData.Location) },
+            { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x0D, AdditionalSpeechData.Location) }
         };
 
         private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfoPre861 = new Dictionary<byte, SpeechTypeInfo>();
@@ -693,18 +777,23 @@ namespace Tibia.Constants
             { SpeechType.ChannelOrange, new SpeechTypeInfo(SpeechType.ChannelOrange, 0x0F, AdditionalSpeechData.ChannelId) },
             { SpeechType.ChannelRedAnonymous, new SpeechTypeInfo(SpeechType.ChannelRedAnonymous, 0x11, AdditionalSpeechData.ChannelId) },
             { SpeechType.MonsterSay, new SpeechTypeInfo(SpeechType.MonsterSay, 0x13, AdditionalSpeechData.Location) },
-            { SpeechType.MonsterYell, new SpeechTypeInfo(SpeechType.MonsterYell, 0x14, AdditionalSpeechData.Location) },
+            { SpeechType.MonsterYell, new SpeechTypeInfo(SpeechType.MonsterYell, 0x14, AdditionalSpeechData.Location) }
         };
 
         static Enums()
         {
+            enumToSpeechTypeInfo870.Values.Foreach(s => valueToSpeechTypeInfo870.Add(s.Value, s));
             enumToSpeechTypeInfo861.Values.Foreach(s => valueToSpeechTypeInfo861.Add(s.Value, s));
             enumToSpeechTypeInfoPre861.Values.Foreach(s => valueToSpeechTypeInfoPre861.Add(s.Value, s));
         }
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, byte value)
         {
-            if (version >= 861)
+            if (version >= 870)
+            {
+                return valueToSpeechTypeInfo870[value];
+            }
+            else if (version >= 861)
             {
                 return valueToSpeechTypeInfo861[value];
             }
@@ -716,7 +805,11 @@ namespace Tibia.Constants
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, SpeechType speechType)
         {
-            if (version >= 861)
+            if (version >= 870)
+            {
+                return enumToSpeechTypeInfo870[speechType];
+            }
+            else if (version >= 861)
             {
                 return enumToSpeechTypeInfo861[speechType];
             }
@@ -787,15 +880,13 @@ namespace Tibia.Constants
     public enum ChatChannel : ushort
     {
         Guild = 0x00,
-        Party = 0x01,
-        //?Gamemaster = 0x01,
+        Gamemaster = 0x01,
         Tutor = 0x02,
-        RuleReport = 0x03,
-        Game = 0x05,
-        Trade = 0x06,
-        TradeRook = 0x07,
-        RealLife = 0x08,
-        Help = 0x09,
+        WorldChat = 0x03,
+        EnglishChat = 0x04,
+        Advertise = 0x05,
+        AdvertiseRook = 0x06,
+        Help = 0x07,
         OwnPrivate = 0x0E,
         Custom = 0xA0,
         Custom1 = 0xA1,
@@ -943,7 +1034,9 @@ namespace Tibia.Constants
         StepsVertical = 65,
         YalahariGhost = 66,
         Bats = 67,
-        Smoke = 68
+        Smoke = 68,
+        Insects = 69,
+        DragonHead = 70
     }
 
     // (http://www.tpforums.org/forum/showthread.php?t=2399)
