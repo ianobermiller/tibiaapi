@@ -5,38 +5,38 @@ namespace Tibia.Addresses
     /// </summary>
     public static class Creature
     {
-        public static uint DistanceId = 0;
-        public static uint DistanceType = 3;
-        public static uint DistanceName = 4;
+        public static uint DistanceId;
+        public static uint DistanceType;
+        public static uint DistanceName;
 
-        public static uint DistanceX = 36;
-        public static uint DistanceY = 40;
-        public static uint DistanceZ = 44;
-        public static uint DistanceScreenOffsetHoriz = 48;
-        public static uint DistanceScreenOffsetVert = 52;
+        public static uint DistanceX;
+        public static uint DistanceY;
+        public static uint DistanceZ;
+        public static uint DistanceScreenOffsetHoriz;
+        public static uint DistanceScreenOffsetVert;
 
-        public static uint DistanceIsWalking = 76;
-        public static uint DistanceDirection = 80;
+        public static uint DistanceIsWalking;
+        public static uint DistanceDirection;
 
-        public static uint DistanceOutfit = 96;
-        public static uint DistanceColorHead = 100;
-        public static uint DistanceColorBody = 104;
-        public static uint DistanceColorLegs = 108;
-        public static uint DistanceColorFeet = 112;
-        public static uint DistanceAddon = 116;
-        public static uint DistanceMountId = 120;        
+        public static uint DistanceOutfit;
+        public static uint DistanceColorHead;
+        public static uint DistanceColorBody;
+        public static uint DistanceColorLegs;
+        public static uint DistanceColorFeet;
+        public static uint DistanceAddon;
+        public static uint DistanceMountId;
 
-        public static uint DistanceLight = 124;
-        public static uint DistanceLightColor = 128;
-        public static uint DistanceLightPattern = 132;
-        public static uint DistanceBlackSquare = 136;
-        public static uint DistanceHPBar = 140;
-        public static uint DistanceWalkSpeed = 144;
-        public static uint DistanceIsVisible = 148;
+        public static uint DistanceLight;
+        public static uint DistanceLightColor;
+        public static uint DistanceLightPattern;
+        public static uint DistanceBlackSquare;
+        public static uint DistanceHPBar;
+        public static uint DistanceWalkSpeed;
+        public static uint DistanceIsVisible;
 
-        public static uint DistanceSkull = 152;
-        public static uint DistanceParty = 156;
-        public static uint DistanceWarIcon = 164;
-        public static uint DistanceIsBlocking = 168;
+        public static uint DistanceSkull;
+        public static uint DistanceParty;
+        public static uint DistanceWarIcon;
+        public static uint DistanceIsBlocking;
     }
 }

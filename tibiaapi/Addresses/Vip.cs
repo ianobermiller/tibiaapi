@@ -5,29 +5,29 @@ namespace Tibia.Addresses
         /// <summary>
         /// Step between Players.
         /// </summary>
-        public static uint StepPlayers = 0x2C;
+        public static uint StepPlayers;
 
         /// <summary>
         /// Max names in VipList.
         /// </summary>
-        public static uint MaxPlayers = 200;
+        public static uint MaxPlayers;
 
         /// <summary>
         /// Start of the VipList.
         /// </summary>
-        public static uint Start = 0x63EAA8; // 8.72
+        public static uint Start;
 
         /// <summary>
         /// End of the VipList.
         /// </summary>
-        public static uint End = Start + (StepPlayers * MaxPlayers);
+        public static uint End;
 
         /// <summary>
         /// Distances for Vips.
         /// </summary>
-        public static uint DistanceId = 0;
-        public static uint DistanceName = 4;
-        public static uint DistanceStatus = 34; // 0 = offline, 1 = online
-        public static uint DistanceIcon = 40;
+        public static uint DistanceId;
+        public static uint DistanceName;
+        public static uint DistanceStatus; // 0 = offline, 1 = online
+        public static uint DistanceIcon;
     }
 }

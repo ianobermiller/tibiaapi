@@ -8,77 +8,77 @@ namespace Tibia.Addresses
         /// <summary>
         /// Pointer to the start of the map memory addresses.
         /// </summary>
-        public static uint MapPointer = 0x681548; // 8.72
+        public static uint MapPointer;
 
         /// <summary>
         /// Step between tiles on the map.
         /// </summary>
-        public static uint StepTile = 168;
+        public static uint StepTile;
 
         /// <summary>
         /// Step between objects on a tile.
         /// The first object is the gound, subsequent objects are any nonmoveable items (trees),
         /// creatures (players), or items in that tile.
         /// </summary>
-        public static uint StepTileObject = 12;
+        public static uint StepTileObject;
 
         /// <summary>
         /// Distance from the tile to the number of objects on the square.
         /// </summary>
-        public static uint DistanceTileObjectCount = 0;
+        public static uint DistanceTileObjectCount;
 
         /// <summary>
         /// Distance to the first object on a tile.
         /// </summary>
-        public static uint DistanceTileObjects = 4;
+        public static uint DistanceTileObjects;
 
         /// <summary>
         /// Distance to the id of the object that is on a tile.
         /// </summary>
-        public static uint DistanceObjectId = 0;
+        public static uint DistanceObjectId;
         /// <summary>
         /// Distance to the data of the object that is on a tile.
         /// </summary>
-        public static uint DistanceObjectData = 4;
+        public static uint DistanceObjectData;
         /// <summary>
         /// Distance to the ExData (extra data) of the object that is on a tile.
         /// </summary>
-        public static uint DistanceObjectDataEx = 8;
+        public static uint DistanceObjectDataEx;
 
         /// <summary>
         /// Maximum number of objects per tile.
         /// </summary>
-        public static uint MaxTileObjects = 10;
+        public static uint MaxTileObjects;
 
         /// <summary>
         /// Maximum number of tiles in the X direction
         /// </summary>
-        public static uint MaxX = 18;
+        public static uint MaxX;
 
         /// <summary>
         /// Maximum number of tiles in the Y direction
         /// </summary>
-        public static uint MaxY = 14;
+        public static uint MaxY;
 
         /// <summary>
         /// Maximum number of tiles in the Z direction
         /// </summary>
-        public static uint MaxZ = 8;
+        public static uint MaxZ;
 
         /// <summary>
         /// Maximum number of tiles.
         /// </summary>
-        public static uint MaxTiles = 2016; // MaxX * MaxY * MaxZ
+        public static uint MaxTiles;
 
         /// <summary>
         /// The default (starting) Z axis value
         /// </summary>
-        public static uint ZAxisDefault = 7; // default ground level
+        public static uint ZAxisDefault;
 
         /// <summary>
         /// Memory address for player tile
         /// </summary>
-        public static uint PlayerTile = 0; // 8.1, Doesn't appear to exist in 8.21
+        public static uint PlayerTile;
 
         /// <summary>
         /// Nop Value, to use with namespy and levelspy
@@ -88,46 +88,46 @@ namespace Tibia.Addresses
         /// <summary>
         /// NameSpy address 1.
         /// </summary>
-        public static uint NameSpy1 = 0x4F247B; // 8.72
+        public static uint NameSpy1;
 
 
         /// <summary>
         /// NameSpy address 2.
         /// </summary>
-        public static uint NameSpy2 = 0x4F2485;  // 8.72
+        public static uint NameSpy2;
 
 
         /// <summary>
         /// Default value for Namespy1.
         /// </summary>
-        public static uint NameSpy1Default = 0x4875;
+        public static uint NameSpy1Default;
         /// <summary>
         /// Default value for Namespy2.
         /// </summary>
-        public static uint NameSpy2Default = 0x3E75;
+        public static uint NameSpy2Default;
 
         /// <summary>
         /// Level spy address 1.
         /// </summary>
-        public static uint LevelSpy1 = 0x4F433A;  // 8.72
+        public static uint LevelSpy1;
 
 
         /// <summary>
         /// Level spy address 2.
         /// </summary>
-        public static uint LevelSpy2 = 0x4F443F;  // 8.72
+        public static uint LevelSpy2;
 
 
         /// <summary>
         /// Level spy address 3.
         /// </summary>
-        public static uint LevelSpy3 = 0x4F44C0;  // 8.72
+        public static uint LevelSpy3;
 
 
         /// <summary>
         /// Level spy pointer.
         /// </summary>
-        public static uint LevelSpyPtr = 0x67968C;  // 8.72
+        public static uint LevelSpyPtr;
 
         /// <summary>
         /// Defaults for level spy.
@@ -136,11 +136,11 @@ namespace Tibia.Addresses
         /// <summary>
         /// Level spy add 1.
         /// </summary>
-        public static byte LevelSpyAdd1 = 28;
+        public static byte LevelSpyAdd1;
         /// <summary>
         /// Level spy add 2.
         /// </summary>
-        public static uint LevelSpyAdd2 = 0x5BC0;
+        public static uint LevelSpyAdd2;
 
         /// <summary>
         /// Write to this byte to reveal invisible creatures.
@@ -157,12 +157,12 @@ namespace Tibia.Addresses
         /// <summary>
         /// Global light, all floors, used for improving levelspy
         /// </summary>
-        public static uint FullLightNop = 0x4EA9E9;  // 8.72
-        public static byte[] FullLightNopDefault = { 0x7E, 0x05 };
-        public static byte[] FullLightNopEdited = { 0x90, 0x90 };
+        public static uint FullLightNop;
+        public static byte[] FullLightNopDefault;
+        public static byte[] FullLightNopEdited;
 
-        public static uint FullLightAdr = 0x4EA9EC;  // 8.72
-        public static byte FullLightAdrDefault = 0x80;
-        public static byte FullLightAdrEdited = 0xFF;
+        public static uint FullLightAdr;
+        public static byte FullLightAdrDefault;
+        public static byte FullLightAdrEdited;
     }
 }

@@ -8,47 +8,47 @@ namespace Tibia.Addresses
         /// <summary>
         /// Start of the container list in memory.
         /// </summary>
-        public static uint Start = 0x67A140; //8.72
+        public static uint Start;
 
         /// <summary>
         /// Distance between the containers.
         /// </summary>
-        public static uint StepContainer = 492;
+        public static uint StepContainer;
         /// <summary>
         /// Distance between the slots.
         /// </summary>
-        public static uint StepSlot = 12;
+        public static uint StepSlot;
 
         /// <summary>
         /// Maximum amount of containers that can be opened.
         /// </summary>
-        public static uint MaxContainers = 16;
+        public static uint MaxContainers;
 
         /// <summary>
         /// The maximum amount of items in one stack.
         /// </summary>
-        public static uint MaxStack = 100;
+        public static uint MaxStack;
 
         /// <summary>
         /// The distance from the start of the container to the IsOpen variable.
         /// </summary>
-        public static uint DistanceIsOpen = 0;
+        public static uint DistanceIsOpen;
 
         /// <summary>
         /// The distance from the start of the container to the Id variable.
         /// </summary>
-        public static uint DistanceId = 4;
+        public static uint DistanceId;
 
         /// <summary>
         /// The distance from the start of the container to the Name variable.
         /// </summary>
-        public static uint DistanceName = 16;
+        public static uint DistanceName;
 
         /// <summary>
         /// The distance from the start of the container to the Volume variable.
         /// Volume is the maximum items the container can hold.
         /// </summary>
-        public static uint DistanceVolume = 48;
+        public static uint DistanceVolume;
 
         public static uint DistanceHasParent = 52; // maybe.. only for test.. 
 
@@ -56,20 +56,20 @@ namespace Tibia.Addresses
         /// The distance from the start of the contianer to the Amount variable.
         /// Amount is the current amount of items in the container.
         /// </summary>
-        public static uint DistanceAmount = 56;
+        public static uint DistanceAmount;
 
         /// <summary>
         /// The distance from the start of the item to the Id variable.
         /// </summary>
-        public static uint DistanceItemId = 60;
+        public static uint DistanceItemId;
         /// <summary>
         /// The distance from the start of the item to the ItemCount variable.
         /// </summary>
-        public static uint DistanceItemCount = 64;
+        public static uint DistanceItemCount;
 
         /// <summary>
         /// End of the container list in memory.
         /// </summary>
-        public static uint End = Start + (MaxContainers * StepContainer);
+        public static uint End;
     }
 }
