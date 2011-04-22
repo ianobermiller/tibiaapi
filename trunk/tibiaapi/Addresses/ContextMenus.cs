@@ -5,14 +5,14 @@
         /// <summary>
         /// The function used to add a context menu item.
         /// </summary>
-        public static uint AddContextMenuPtr = 0x453930; //8.72
+        public static uint AddContextMenuPtr;
 
         /// <summary>
         /// The function used to process Tibia's "OnClick" events,
         /// that is, the events issued when you click a context
         /// menu item.
         /// </summary>
-        public static uint OnClickContextMenuPtr = 0x450510; //8.72
+        public static uint OnClickContextMenuPtr;
 
         /// <summary>
         /// The address in the virtual function table where the
@@ -25,14 +25,14 @@
         /// OnClickContextMenuPtr from your hooked function to
         /// process standard Tibia events.
         /// </summary>
-        public static uint OnClickContextMenuVf = 0x5BED20; //8.72
+        public static uint OnClickContextMenuVf;
 
         /// <summary>
         /// The "Set Outfit" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to your character
         /// </summary>
-        public static uint AddSetOutfitContextMenu = 0x45485F; //8.72
+        public static uint AddSetOutfitContextMenu;
 
         /// <summary>
         /// The "Invite to Party" / "Leave Party" context menu
@@ -40,23 +40,23 @@
         /// Overwrite it if you want to add a context menu item
         /// that is specific to other players.
         /// </summary>
-        public static uint AddPartyActionContextMenu = 0x45477F; //8.72
+        public static uint AddPartyActionContextMenu;
 
         /// <summary>
         /// The "Copy Name" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that is specific to creatures (including you and monsters).
         /// </summary>
-        public static uint AddCopyNameContextMenu = 0x4548F1; //8.72
+        public static uint AddCopyNameContextMenu;
 
-        public static uint AddTradeWithContextMenu = 0x4544D9; //8.72
+        public static uint AddTradeWithContextMenu;
 
         /// <summary>
         /// The "Look" context menu item function call.
         /// Overwrite it if you want to add a context menu item
         /// that always appears on game window or inventory item clicks.
         /// </summary>
-        public static uint AddLookContextMenu = 0x45438F; //8.72
+        public static uint AddLookContextMenu;
 
     }
 }

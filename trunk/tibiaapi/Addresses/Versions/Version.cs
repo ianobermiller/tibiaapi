@@ -4,8 +4,8 @@ namespace Tibia
 {
     public partial class Version
     {
-        public static ushort CurrentVersion = 871;
-        public static string CurrentVersionString = "8.71";
+        public static ushort CurrentVersion = 872;
+        public static string CurrentVersionString = "8.72";
 
         public static string VersionToString(ushort version)
         {
@@ -28,6 +28,9 @@ namespace Tibia
             CurrentVersionString = version;
             switch (version)
             {
+                case "8.72":
+                    SetVersion872();
+                    break;
                 case "8.71":
                     SetVersion871();
                     break;

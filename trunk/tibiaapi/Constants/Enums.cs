@@ -720,8 +720,17 @@ namespace Tibia.Constants
 
     public static class Enums
     {
-        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo870 = new Dictionary<byte, SpeechTypeInfo>();
-        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo870 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo872 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo872 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        {
+            { SpeechType.Say, new SpeechTypeInfo(SpeechType.Say, 0x01, AdditionalSpeechData.Location) },
+            { SpeechType.Whisper, new SpeechTypeInfo(SpeechType.Whisper, 0x02, AdditionalSpeechData.Location) },
+            { SpeechType.Yell, new SpeechTypeInfo(SpeechType.Yell, 0x03, AdditionalSpeechData.Location) },
+            { SpeechType.PrivatePlayerToNPC, new SpeechTypeInfo(SpeechType.PrivatePlayerToNPC, 0x0B, AdditionalSpeechData.None) }
+        };
+
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfoPre872 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfoPre872 = new Dictionary<SpeechType, SpeechTypeInfo>()
         {
             { SpeechType.Say, new SpeechTypeInfo(SpeechType.Say, 0x01, AdditionalSpeechData.Location) },
             { SpeechType.Whisper, new SpeechTypeInfo(SpeechType.Whisper, 0x02, AdditionalSpeechData.Location) },
@@ -782,16 +791,21 @@ namespace Tibia.Constants
 
         static Enums()
         {
-            enumToSpeechTypeInfo870.Values.Foreach(s => valueToSpeechTypeInfo870.Add(s.Value, s));
+            enumToSpeechTypeInfo872.Values.Foreach(s => valueToSpeechTypeInfo872.Add(s.Value, s));
+            enumToSpeechTypeInfoPre872.Values.Foreach(s => valueToSpeechTypeInfoPre872.Add(s.Value, s));
             enumToSpeechTypeInfo861.Values.Foreach(s => valueToSpeechTypeInfo861.Add(s.Value, s));
             enumToSpeechTypeInfoPre861.Values.Foreach(s => valueToSpeechTypeInfoPre861.Add(s.Value, s));
         }
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, byte value)
         {
-            if (version >= 870)
+            if (version >= 872)
             {
-                return valueToSpeechTypeInfo870[value];
+                return valueToSpeechTypeInfo872[value];
+            }
+            else if (version >= 870)
+            {
+                return valueToSpeechTypeInfoPre872[value];
             }
             else if (version >= 861)
             {
@@ -805,9 +819,13 @@ namespace Tibia.Constants
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, SpeechType speechType)
         {
-            if (version >= 870)
+            if (version >= 872)
             {
-                return enumToSpeechTypeInfo870[speechType];
+                return enumToSpeechTypeInfo872[speechType];
+            }
+            else if (version >= 870)
+            {
+                return enumToSpeechTypeInfoPre872[speechType];
             }
             else if (version >= 861)
             {

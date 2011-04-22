@@ -9,177 +9,177 @@ namespace Tibia.Addresses
         /// The system time in ms when the client was started.
         /// Used for Creatures.Distance_BlackSquare calculations.
         /// </summary>
-        public static uint StartTime = 0x80DAF0; //8.72
+        public static uint StartTime;
 
         /// <summary>
         /// Address to the XTea encryption key.
         /// </summary>
-        public static uint XTeaKey = 0x7C6CEC; //8.72 : RecvStream + 0x10
+        public static uint XTeaKey; //RecvStream + 0x10
 
         /// <summary>
         /// Address of the socket struct
         /// </summary>
-        public static uint SocketStruct = 0x7C6CC0; //8.72
+        public static uint SocketStruct;
 
         /// <summary>
         /// Pointer to the WS2_32.Recv function
         /// </summary>
-        public static uint RecvPointer = 0x5B95E8; //8.72
+        public static uint RecvPointer;
 
         /// <summary>
         /// Pointer to the WS2_32.Send function
         /// </summary>
-        public static uint SendPointer = 0x5B9614; //8.72
+        public static uint SendPointer;
 
 
         /// <summary>
         /// FPS (Frames Per Second) Pointer
         /// </summary>
-        public static uint FrameRatePointer = 0x7CADD4; //8.72
+        public static uint FrameRatePointer;
 
         /// <summary>
         /// FPS limit offset
         /// </summary>
-        public static int FrameRateLimitOffset = 0x58;
+        public static int FrameRateLimitOffset;
 
         /// <summary>
         /// Current fps offset
         /// </summary>
-        public static int FrameRateCurrentOffset = 0x60;
+        public static int FrameRateCurrentOffset;
 
         /// <summary>
         /// Address to activate multiclient.
         /// </summary>
-        public static uint MultiClient = 0x50BCF8; //8.72
+        public static uint MultiClient;
 
         /// <summary>
         /// Value to be written to the multiclient address(JMP).
         /// </summary>
-        public static byte MultiClientJMP = 0xEB;
+        public static byte MultiClientJMP;
 
         ///<summary>
         /// Original value of the multiclient address(JNZ).
         /// </summary>
-        public static byte MultiClientJNZ = 0x75; 
+        public static byte MultiClientJNZ;
 
         /// <summary>
         /// 8 = Connected | 0 = Disconnected
         /// </summary>
-        public static uint Status = 0x7C7114; //8.72
+        public static uint Status;
 
         /// <summary>
         /// Safe mode (don't attack other players)
         /// </summary>
-        public static uint SafeMode = 0x7C6114; //8.72
+        public static uint SafeMode;
         /// <summary>
         /// Follow mode while attacking (Follow, keep distance, stand still)
         /// </summary>
-        public static uint FollowMode = SafeMode + 4;
+        public static uint FollowMode;
 
         /// <summary>
         /// Attack type (Full attack, half and half, full defense)
         /// </summary>
-        public static uint AttackMode = FollowMode + 4;
+        public static uint AttackMode;
 
         /// <summary>
         /// Action state (formerly MouseCursor icon)
         /// </summary>
-        public static uint ActionState = 0x7CA2EC; //8.72
+        public static uint ActionState;
 
         /// <summary>
         /// Action state freezer
         /// </summary>
-        public static uint ActionStateFreezer = 0x51E730; //8.72
-        public static byte[] ActionStateOriginal = new byte[] { 0xA3, 0x00, 0x00, 0x00, 0x00, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
-        public static byte[] ActionStateFreezed = new byte[] { 0xC7, 0x05, 0x00 , 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xC3 };
+        public static uint ActionStateFreezer;
+        public static byte[] ActionStateOriginal;
+        public static byte[] ActionStateFreezed;
         /// <summary>
         /// The text of the last message sent to the default channel(innacurate?).
         /// </summary>
-        public static uint LastMSGText = 0x0; //8.72
+        public static uint LastMSGText;
 
         /// <summary>
         /// The last player to send a message to the default channel(innacurate?).
         /// </summary>
-        public static uint LastMSGAuthor = LastMSGText - 0x28;
+        public static uint LastMSGAuthor;
 
         /// <summary>
         /// The statusbar text to be displayed.
         /// </summary>
-        public static uint StatusbarText = StartTime + 0x20; //8.72
+        public static uint StatusbarText;
         /// <summary>
         /// The time that the text will be displayed for in the statusbar.
         /// </summary>
-        public static uint StatusbarTime = StatusbarText - 4;
+        public static uint StatusbarTime;
 
         /// <summary>
         /// The id of the last clicked item.
         /// </summary>
-        public static uint ClickId = 0x7CA32C; // 8.72
+        public static uint ClickId;
         /// <summary>
         /// The amount of the last clicked item (eg. 52 fish)
         /// </summary>
-        public static uint ClickCount = ClickId + 4;
+        public static uint ClickCount;
         /// <summary>
         /// The floor that was clicked.
         /// </summary>
-        public static uint ClickZ = ClickId - 0x68;
+        public static uint ClickZ;
 
         /// <summary>
         /// Used for showing item id functions.
         /// </summary>
-        public static uint ClickContextMenuItemId = ClickId + 0x0C; //8.72 - This is also the "SeeID"
+        public static uint ClickContextMenuItemId; //This is also the "SeeID"
 
         /// <summary>
         /// Used for showing item id functions
         /// Deprecated on 8.5x due to player stacking?
         /// </summary>
-        public static uint ClickContextMenuItemGroundId = 0; //8.61
+        public static uint ClickContextMenuItemGroundId;
 
         /// <summary>
         /// Used for searching the last right-clicked creature
         /// </summary>
-        public static uint ClickContextMenuCreatureId = ClickContextMenuItemId + 0x0C; //8.72
+        public static uint ClickContextMenuCreatureId;
 
         /// <summary>
         /// The id of the last item seen (looked at).
         /// </summary>
-        public static uint SeeId = ClickId + 12;
+        public static uint SeeId;
         /// <summary>
         /// The amount of the last item seen (eg. 42 fish).
         /// </summary>
-        public static uint SeeCount = SeeId + 4;
+        public static uint SeeCount;
         /// <summary>
         /// The floor that the last seen item is on.
         /// </summary>
-        public static uint SeeZ = SeeId - 0x68;
+        public static uint SeeZ;
         
         /// <summary>
         /// The text that came with the last seen item (eg. You see a fish).
         /// Deprecated on 8.50+ due to Server Log channel.
         /// </summary>
-        public static uint SeeText = 0; //8.50 
+        public static uint SeeText;
         
         // Login Server addresses
-        public static uint LoginServerStart = 0x7C1C28; //8.72
-        public static uint StepLoginServer = 112;
-        public static uint DistancePort = 100;
-        public static uint MaxLoginServers = 10;
+        public static uint LoginServerStart;
+        public static uint StepLoginServer;
+        public static uint DistancePort;
+        public static uint MaxLoginServers;
 
         /// <summary>
         /// RSA Key Adress
         /// </summary>
-        public static uint RSA = 0x5B9980; //8.72
+        public static uint RSA;
 
 		  
         /// <summary>
         /// Login character list. This points to the character list.
         /// </summary>
-        public static uint LoginCharList = 0x7CA240; //8.72
+        public static uint LoginCharList;
 
         /// <summary>
         /// Login character list length, specifies how many characters the upper address leads to
         /// </summary>
-        public static uint LoginCharListLength = LoginCharList + 4; // 8.72
+        public static uint LoginCharListLength;
 
         /* Character List Format
         
@@ -195,7 +195,7 @@ namespace Tibia.Addresses
         /// <summary>
         /// Login character list selected character. This address doesn't move.
         /// </summary>
-        public static uint LoginSelectedChar = LoginCharList - 4; // 8.72
+        public static uint LoginSelectedChar;
 
         //This format is for the character list that is stored at 0x76450D (8.40).
         //This format is also how it comes in the packet.
@@ -220,8 +220,8 @@ namespace Tibia.Addresses
         /// it, it points to the game window rect 
         /// struct.
         /// </summary>
-        public static uint GameWindowRectPointer = Map.LevelSpyPtr; //8.72
-        public static uint GameWindowBar = 0x80DB00; //8.72
+        public static uint GameWindowRectPointer;
+        public static uint GameWindowBar;
         /*
             Several notes are needed on this one.
             1) This address is in the stack so it is very volitile. However it appears
@@ -235,56 +235,56 @@ namespace Tibia.Addresses
             X, Y, Width, Height
         */
 
-        public static uint DatPointer = 0x7C6D0C; //8.72
+        public static uint DatPointer;
 
-        public static uint EventTriggerPointer = 0x520230; //8.72
-        public static uint DialogPointer = 0x67C9F4; //8.72
-        public static uint DialogLeft = 0x14;
-        public static uint DialogTop = 0x18;
-        public static uint DialogWidth = 0x1C;
-        public static uint DialogHeight = 0x20;
-        public static uint DialogCaption = 0x50;
+        public static uint EventTriggerPointer;
+        public static uint DialogPointer;
+        public static uint DialogLeft;
+        public static uint DialogTop;
+        public static uint DialogWidth;
+        public static uint DialogHeight;
+        public static uint DialogCaption;
 
         /// <summary>
         /// Last Received Packet
         /// </summary>
-        public static uint LastRcvPacket = 0x7C24A0; //8.72
+        public static uint LastRcvPacket;
 
         /// <summary>
         /// Call to decrypt packet
         /// </summary>
-        public static uint DecryptCall = 0x45D615; //8.72 : Same as GetNextPacketCall ALSO = ParserFunc + 0X35
+        public static uint DecryptCall; //Same as GetNextPacketCall ALSO = ParserFunc + 0X35
         
 
 
         /// <summary>
         /// Auto login stuff
         /// </summary>
-        public static uint LoginPassword = LoginCharList + 8; //8.72
-        public static uint LoginAccount = LoginPassword + 32;
-        public static uint LoginAccountNum = 0; // deprecated
+        public static uint LoginPassword;
+        public static uint LoginAccount;
+        public static uint LoginAccountNum; // deprecated
 
-        public static uint LoginPatch = 0x47935E; // 8.11
-        public static uint LoginPatch2 = 0x47A2B3; // 8.11
+        public static uint LoginPatch;
+        public static uint LoginPatch2;
 
         public static byte Nop = 0x90;
-        public static byte[] LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
-        public static byte[] LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
+        public static byte[] LoginPatchOrig;
+        public static byte[] LoginPatchOrig2;
 
         /// <summary>
         /// The function that tibia calls to parse packets
         /// </summary>
 
-        public static uint ParserFunc = 0x45D5E0; //8.701
+        public static uint ParserFunc;
 
         /// <summary>
         /// The address of the call to get next packet command
         /// </summary>
-        public static uint GetNextPacketCall = DecryptCall; //8.72 : Same as DecryptCall
+        public static uint GetNextPacketCall; //Same as DecryptCall
         
         /// <summary>
         /// The address of the received "stream". It is laid as pointer to buffer, dwSize, dwSize
         /// </summary>
-        public static uint RecvStream = 0x7C6CDC; //8.72
+        public static uint RecvStream;
     }
 }

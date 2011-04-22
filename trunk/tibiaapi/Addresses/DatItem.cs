@@ -6,27 +6,27 @@ namespace Tibia.Addresses
 {
     public static class DatItem
     {
-        public static uint StepItems = 0x4C;
-        public static uint Width = 0;
-        public static uint Height = 4;
-        public static uint MaxSizeInPixels = 8;
-        public static uint Layers = 12;
-        public static uint PatternX = 16;
-        public static uint PatternY = 20;
-        public static uint PatternDepth = 24;
-        public static uint Phase = 28;
-        public static uint Sprite = 32;
-        public static uint Flags = 36;
-        public static uint CanLookAt = 0;
-        public static uint WalkSpeed = 40;
-        public static uint TextLimit = 44; // If it is readable/writable
-        public static uint LightRadius = 48;
-        public static uint LightColor = 52;
-        public static uint ShiftX = 56;
-        public static uint ShiftY = 60;
-        public static uint WalkHeight = 64;
-        public static uint Automap = 68; // Minimap color
-        public static uint LensHelp = 72;
+        public static uint StepItems;
+        public static uint Width;
+        public static uint Height;
+        public static uint MaxSizeInPixels;
+        public static uint Layers;
+        public static uint PatternX;
+        public static uint PatternY;
+        public static uint PatternDepth;
+        public static uint Phase;
+        public static uint Sprite;
+        public static uint Flags;
+        public static uint CanLookAt;
+        public static uint WalkSpeed;
+        public static uint TextLimit;
+        public static uint LightRadius;
+        public static uint LightColor;
+        public static uint ShiftX;
+        public static uint ShiftY;
+        public static uint WalkHeight;
+        public static uint Automap; // Minimap color
+        public static uint LensHelp;
 
         public enum Flag : uint
         {
