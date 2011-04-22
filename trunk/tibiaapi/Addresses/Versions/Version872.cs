@@ -136,16 +136,17 @@ namespace Tibia
             DatItem.Phase = 28;
             DatItem.Sprite = 32;
             DatItem.Flags = 36;
+            DatItem.Unknown = 40;
             DatItem.CanLookAt = 0;
-            DatItem.WalkSpeed = 40;
-            DatItem.TextLimit = 44;
-            DatItem.LightRadius = 48;
-            DatItem.LightColor = 52;
-            DatItem.ShiftX = 56;
-            DatItem.ShiftY = 60;
-            DatItem.WalkHeight = 64;
-            DatItem.Automap = 68;
-            DatItem.LensHelp = 72;
+            DatItem.WalkSpeed = 44;
+            DatItem.TextLimit = 48;
+            DatItem.LightRadius = 52;
+            DatItem.LightColor = 56;
+            DatItem.ShiftX = 60;
+            DatItem.ShiftY = 64;
+            DatItem.WalkHeight = 68;
+            DatItem.Automap = 72;
+            DatItem.LensHelp = 76;
 
             DrawItem.DrawItemFunc = 0x4B56B0;
 
