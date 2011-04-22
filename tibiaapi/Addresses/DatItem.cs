@@ -17,7 +17,7 @@ namespace Tibia.Addresses
         public static uint Phase;
         public static uint Sprite;
         public static uint Flags;
-        public static uint Unknown;
+        public static uint CanEquip;
         public static uint CanLookAt;
         public static uint WalkSpeed;
         public static uint TextLimit;
