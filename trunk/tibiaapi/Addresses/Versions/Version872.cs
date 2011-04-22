@@ -136,7 +136,7 @@ namespace Tibia
             DatItem.Phase = 28;
             DatItem.Sprite = 32;
             DatItem.Flags = 36;
-            DatItem.Unknown = 40;
+            DatItem.CanEquip = 40;
             DatItem.CanLookAt = 0;
             DatItem.WalkSpeed = 44;
             DatItem.TextLimit = 48;
