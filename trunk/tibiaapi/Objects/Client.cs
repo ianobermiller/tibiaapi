@@ -411,7 +411,10 @@ namespace Tibia.Objects
         /// <returns></returns>
         public override string ToString()
         {
-            Tibia.Version.Set(Version);
+            if (!Constants.TAConstants.CurrentTibiaVersion.Equals(Version))
+            {
+                Tibia.Version.Set(Version);
+            }
 
             string s = "[" + Version + "] ";
             if (!LoggedIn)

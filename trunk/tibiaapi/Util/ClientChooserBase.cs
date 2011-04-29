@@ -73,6 +73,10 @@ namespace Tibia.Util
                 client = (Client)selectedItem;
             }
 
+            // Set addresses
+            if (client != null)
+                Version.Set(client.Version);
+
             // Set OT server
             if (client != null && options.UseOT)
             {
