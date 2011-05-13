@@ -20,6 +20,8 @@ namespace Tibia
               Client.DecryptCall = 0x45D565;
               Client.GetNextPacketCall = Client.DecryptCall;
               Client.RecvStream = 0x7C6CEC;
+              Client.ParserFunc = 0x45d530;
+              Client.FrameRatePointer = 0x7CADE4;
               Client.MultiClient =0x50bc92;
               Client.Status = 0x7CA29C;
               Client.RSA = 0x5B9980;
@@ -28,12 +30,22 @@ namespace Tibia
               Client.ActionState = 0x7ca2fc;
               Client.ActionStateFreezer = 0x51e7c0;
               Client.ClickId = 0x7ca33c;
+              Client.ClickCount = Client.ClickId + 4;
+              Client.ClickZ = Client.ClickId - 0x68;
+              Client.SeeId = Client.ClickId + 12;
+              Client.SeeCount = Client.SeeId + 4;
+              Client.SeeZ = Client.SeeId - 0x68;
               Client.LoginServerStart = 0x7C1C38;
+              Client.StepLoginServer = 112;
+              Client.DistancePort = 100;
+              Client.MaxLoginServers = 10;
               Client.LoginCharList = 0x7CA250;
+              Client.LoginCharListLength = Client.LoginCharList + 4;
+              Client.LoginSelectedChar = Client.LoginCharList - 4;
               Client.GameWindowBar = 0x80DB10;
               Client.DatPointer = 0x7C6D1C;
               Client.EventTriggerPointer = 0x5202B0;
-
+              Client.ClickContextMenuCreatureId = Client.ClickContextMenuItemId + 0x0C;
 
               Container.Start = 0x679140;
               Container.StepContainer = 492;
