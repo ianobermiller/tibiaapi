@@ -46,6 +46,9 @@ namespace Tibia
               Client.DatPointer = 0x7C6D1C;
               Client.EventTriggerPointer = 0x5202B0;
               Client.ClickContextMenuCreatureId = Client.ClickContextMenuItemId + 0x0C;
+              Client.StatusbarText = Client.StartTime + 0x20;
+              Client.StatusbarTime = Client.StatusbarText - 4;
+
 
               Container.Start = 0x679140;
               Container.StepContainer = 492;
