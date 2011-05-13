@@ -22,7 +22,9 @@ namespace Tibia
               Client.RecvStream = 0x7C6CEC;
               Client.ParserFunc = 0x45d530;
               Client.FrameRatePointer = 0x7CADE4;
-              Client.MultiClient =0x50bc92;
+              Client.MultiClient =0x50bc94;
+                      Client.MultiClientJMP = 0xEB;
+                      Client.MultiClientJNZ = 0x75;
               Client.Status = 0x7CA29C;
               Client.RSA = 0x5B9980;
               Client.DialogPointer = 0x67CA04;
