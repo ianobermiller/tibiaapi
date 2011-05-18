@@ -191,8 +191,8 @@ namespace Tibia
             Player.Experience = 0x63FD50;
             Player.Flags = Player.Experience - 112;
             Player.Id = Player.Experience + 16;
-            Player.Health = Player.Experience + 8;
-            Player.HealthMax = Player.Experience + 4;
+            Player.Health = Player.Experience + 12;
+            Player.HealthMax = Player.Experience + 8;
             Player.Level = Player.Experience - 8;
             Player.MagicLevel = Player.Experience - 12;
             Player.LevelPercent = Player.Experience - 16;
