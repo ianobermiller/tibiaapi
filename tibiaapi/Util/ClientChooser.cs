@@ -17,6 +17,7 @@ namespace Tibia.Util
         {
             InitializeComponent();
             client = null;
+            Tibia.Version.Set(Tibia.Version.CurrentVersionString);
         }
 
         /// <summary>

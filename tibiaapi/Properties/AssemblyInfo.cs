@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TProgramming")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright ©  2007-2010")]
+[assembly: AssemblyCopyright("Copyright ©  2007-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.10.1.0")]
-[assembly: AssemblyFileVersion("2.10.1.0")]
+[assembly: AssemblyVersion("2.10.2.0")]
+[assembly: AssemblyFileVersion("2.10.2.0")]
