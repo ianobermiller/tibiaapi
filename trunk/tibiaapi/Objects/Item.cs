@@ -63,9 +63,10 @@ namespace Tibia.Objects
         /// Use the item (eg. eat food).
         /// </summary>
         /// <returns></returns>
+        /// Use function should never send anything more than 0 for using food(but only for open containers.)(Klusbert)
         public bool Use()
         {
-            return Packets.Outgoing.ItemUsePacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, 0x0F);
+            return Packets.Outgoing.ItemUsePacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, 0);
         }
 
         /// <summary>
