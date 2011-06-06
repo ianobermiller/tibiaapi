@@ -217,13 +217,37 @@ namespace Tibia
         /// <returns></returns>
         public static Location ToWorldLocation(this Location memoryLocation, Tile playerTile, Client client)
         {
-            Location globalPlayerLoc = client.PlayerLocation;
+            // thanks to blaster_89 to updating this!
+            /*Location globalPlayerLoc = Client.Player.Location;
             Location localPlayerLoc = playerTile.MemoryLocation;
             int xAdjustment = globalPlayerLoc.X - localPlayerLoc.X;
             int yAdjustment = globalPlayerLoc.Y - localPlayerLoc.Y;
             int zAdjustment = globalPlayerLoc.Z - localPlayerLoc.Z;
+ 
+            return new Location(memoryLocation.X + xAdjustment, memoryLocation.Y + yAdjustment, memoryLocation.Z + zAdjustment);*/
 
-            return new Location(memoryLocation.X + xAdjustment, memoryLocation.Y + yAdjustment, memoryLocation.Z + zAdjustment);
+            Location loc = new Location();
+                   if (playerTile != null)
+            {
+                loc = new Location(memoryLocation.X, memoryLocation.Y, memoryLocation.Z);
+                Location playerMemLoc = playerTile.MemoryLocation;
+                int diffX = 8 - playerMemLoc.X;
+                int diffY = 6 - playerMemLoc.Y;
+                loc.X += diffX;
+                loc.Y += diffY;
+          
+                int  maxY = Convert.ToInt32(Addresses.Map.MaxY - 1);
+                int maxX = Convert.ToInt32(Addresses.Map.MaxX);
+
+                if (loc.X > maxX) { loc.X -= Convert.ToInt32(Addresses.Map.MaxX); loc.Y++; }
+                else if (loc.X < 0) { loc.X += Convert.ToInt32(Addresses.Map.MaxX); loc.Y--; }
+                if (loc.Y > maxY) { loc.Y -= Convert.ToInt32(Addresses.Map.MaxY); }
+                else if (loc.Y < 0) { loc.Y += Convert.ToInt32(Addresses.Map.MaxY); }
+                Location playerLoc = playerTile.Location;
+                return new Location(playerLoc.X + (loc.X - 8), playerLoc.Y + (loc.Y - 6),
+                                    playerLoc.Z + (loc.Z - playerMemLoc.Z));
+            }
+            return loc;
         }
 
         /// <summary>
