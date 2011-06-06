@@ -16,7 +16,7 @@ namespace Tibia.Objects
 
         private int objectCount;
         private uint address;
-        private uint squareNumber;
+        private   uint squareNumber;
 
         private Location location;
         private Location memoryLocation;
@@ -81,6 +81,10 @@ namespace Tibia.Objects
         {
             get { return ground; }
             set { ground = value; }
+        }
+        public uint TileNumber
+        {
+            get { return squareNumber; }
         }
 
         public uint Address

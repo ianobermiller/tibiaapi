@@ -93,9 +93,26 @@ namespace Tibia.Objects
 
         private Tile GetTile(Location worldLocation, Tile playerTile)
         {
-            Location memoryLocation = worldLocation.ToMemoryLocation(playerTile, client);
-            uint tileNumber = memoryLocation.ToTileNumber();
-            return new Tile(client, tileNumber.ToMapTileAddress(client), tileNumber, worldLocation);
+            // All credits goes to blaster_89 who solved this.
+            if (playerTile == null) { playerTile = GetTileWithPlayer(); }
+             Location memLoc = worldLocation.ToMemoryLocation(playerTile,client);
+             uint num = memLoc.ToTileNumber();
+     
+            int minFloor = 0, maxFloor = 0;
+            for (int i = 0; i < 8; i++)
+            { 
+                if (playerTile.TileNumber   >= Addresses.Map.MaxTiles  * i &&
+                    playerTile.TileNumber <= Addresses.Map.MaxTiles * (i + 1))
+                {
+             
+                    minFloor =  Convert.ToInt32(Addresses.Map.MaxTiles * i);
+                    maxFloor =  Convert.ToInt32(Addresses.Map.MaxTiles * (i + 1) - 1);
+                    break;
+                }
+            }
+            if (num > maxFloor) { num = Convert.ToUInt32(num - maxFloor + minFloor - 1); }
+            else if (num < minFloor) { num = Convert.ToUInt32(maxFloor - minFloor + num + 1); }
+            return GetTile(num, playerTile);
         }
 
         private Tile GetTile(uint tileNumber)
