@@ -11,7 +11,7 @@ namespace Tibia
             BattleList.MaxCreatures = 1300;
             BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
-            //  Client.StartTime = &H80DB00
+            Client.StartTime = 0x80fb20;
 
             //RecvStream + 0x10
             Client.SocketStruct = 0x7c8cf0;
