@@ -64,8 +64,8 @@ namespace Tibia
 };
             //Client.LastMSGText = 0x80CD60;
             Client.LastMSGAuthor = Client.LastMSGText - 0x28;
-            Client.StatusbarText = Client.StartTime + 0x20;
-            Client.StatusbarTime = Client.StatusbarText - 2;
+            Client.StatusbarText = 0x80fb40;
+            Client.StatusbarTime = Client.StatusbarText - 8;
             Client.ClickId = 0x7cc35c;
             Client.ClickCount = Client.ClickId + 4;
             Client.ClickZ = Client.ClickId - 0x68;
