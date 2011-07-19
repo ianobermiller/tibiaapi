@@ -413,7 +413,7 @@ namespace Tibia.Objects
         {
             if (!Constants.TAConstants.CurrentTibiaVersion.Equals(Version))
             {
-                Tibia.Version.Set(Version);
+                Tibia.Version.Set(Version,Process);
             }
 
             string s = "[" + Version + "] ";

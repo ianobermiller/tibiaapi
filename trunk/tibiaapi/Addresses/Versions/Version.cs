@@ -1,5 +1,5 @@
 using System;
-
+using System.Diagnostics;
 namespace Tibia
 {
     public partial class Version
@@ -22,12 +22,16 @@ namespace Tibia
             return (ushort)(main * 100 + secondary);
         }
 
-        public static void Set(string version)
-        {
+        public static void Set(string version,Process p)
+            {
+
             CurrentVersion = StringToVersion(version);
             CurrentVersionString = version;
             switch (version)
             {
+                case "9.10":
+                    SetVersion910(p);
+                    break;
                 case "9.00":
                     SetVersion900();
                     break;

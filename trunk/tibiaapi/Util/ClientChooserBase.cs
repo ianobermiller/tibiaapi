@@ -65,7 +65,7 @@ namespace Tibia.Util
             else if (selectedItem.GetType() == typeof(ClientPathInfo))
             {
                 string clientPath = ((ClientPathInfo)selectedItem).Path;
-                Version.Set(FileVersionInfo.GetVersionInfo(clientPath).FileVersion);
+               // Version.Set(FileVersionInfo.GetVersionInfo(clientPath).FileVersion);
                 client = Client.OpenMC(clientPath, options.Arguments);
             }
             else
@@ -75,7 +75,7 @@ namespace Tibia.Util
 
             // Set addresses
             if (client != null)
-                Version.Set(client.Version);
+                Version.Set(client.Version,client.Process );
 
             // Set OT server
             if (client != null && options.UseOT)
