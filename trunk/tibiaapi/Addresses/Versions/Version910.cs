@@ -240,7 +240,7 @@ namespace Tibia
                         Map.FullLightAdrEdited = 0xff;
 
                         Player.Experience = 0x81ce10 - 0x400000 + baseAdress;
-                        Player.Flags = Player.Experience - 112 - 0x400000 + baseAdress;
+                        Player.Flags = 0x7e2cdc - 0x400000 + baseAdress;
                         Player.Id = 0x81ceac - 0x400000 + baseAdress;
                         Player.Health = 0x7e2cd4 - 0x400000 + baseAdress;
                         Player.HealthMax = 0x81cea0 - 0x400000 + baseAdress;
@@ -248,8 +248,8 @@ namespace Tibia
                         Player.MagicLevel = 0x81ce4c - 0x400000 + baseAdress;
                         Player.LevelPercent = 0x81ce9c - 0x400000 + baseAdress;
                         Player.MagicLevelPercent = 0x81ce54 - 0x400000 + baseAdress;
-                        Player.Mana = Player.Experience - 24;
-                        Player.ManaMax = Player.Experience - 28;
+                        Player.Mana = 0x81ce5c - 0x400000 + baseAdress;
+                        Player.ManaMax = 0x7e2cdc - 0x400000 + baseAdress;
                         Player.Soul = Player.Experience - 32;
                         Player.Stamina = Player.Experience - 36;
                         Player.Capacity = Player.Experience - 40;
