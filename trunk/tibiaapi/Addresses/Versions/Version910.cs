@@ -226,11 +226,11 @@ namespace Tibia
                         Map.LevelSpyPtr = Client.GameWindowRectPointer;
                         Map.LevelSpyAdd1 = 28;
                         Map.LevelSpyAdd2 = 0x5bc0;
-                        //	Map.FullLightNop = &H4eb589
-                        //	Map.FullLightAdr = &H4eb58b
+                        Map.FullLightNop = 0x4F7229 - 0x400000 + baseAdress;
+                        Map.FullLightAdr = 0x4F722E - 0x400000 + baseAdress;
                         Map.FullLightNopDefault = new byte[] {
 	0x7e,
-	0x5
+	0xA
 };
                         Map.FullLightNopEdited = new byte[] {
 	0x90,
