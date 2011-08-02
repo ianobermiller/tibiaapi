@@ -135,6 +135,7 @@
     <Compile Include="Addresses\Versions\Version872.cs" />
     <Compile Include="Addresses\Versions\Version874.cs" />
     <Compile Include="Addresses\Versions\Version900.cs" />
+    <Compile Include="Addresses\Versions\Version910.cs" />
     <Compile Include="Addresses\Vip.cs" />
     <Compile Include="Clientless\GameServerConnection.cs" />
     <Compile Include="Clientless\LoginServerConnection.cs" />
