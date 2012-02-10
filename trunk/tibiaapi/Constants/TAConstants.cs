@@ -7,7 +7,7 @@ namespace Tibia.Constants
 {
     public static class TAConstants
     {
-        public static string CurrentTibiaVersion = "8.74";
+        public static string CurrentTibiaVersion = "9.10";
         public static string AppDataPath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TibiaAPI");
     }
 }

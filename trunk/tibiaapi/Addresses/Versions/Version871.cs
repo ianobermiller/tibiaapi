@@ -42,7 +42,6 @@ namespace Tibia
             Client.SeeCount = Client.SeeId + 4;
             Client.SeeZ = Client.SeeId - 0x68;
             Client.ClickContextMenuItemId = Client.SeeId;
-            //Client.ClickContextMenuItemGroundId = ?
             Client.ClickContextMenuCreatureId = Client.ClickContextMenuItemId + 0x0C;
             Client.LoginServerStart = 0x7C0C28;
             Client.StepLoginServer = 112;
@@ -239,8 +238,6 @@ namespace Tibia
             Player.GoToX = Player.Experience + 84;
             Player.GoToY = Player.GoToX - 4;
             Player.GoToZ = Player.GoToX - 8;
-            //Player.AccessN = 0;
-            //Player.AccessS = 0;
             Player.TargetId = Player.RedSquare;
             Player.TargetBattlelistId = Player.TargetId - 8;
             Player.TargetBattlelistType = Player.TargetId - 5;

@@ -6,91 +6,61 @@ namespace Tibia
     {
         public static void SetVersion900()
         {
-            BattleList.Start = 0x642e28;
-            BattleList.StepCreatures = 0xac;
+            BattleList.Start = 0x642E28;
+            BattleList.StepCreatures = 0xAC;
             BattleList.MaxCreatures = 1300;
             BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
 
-            Client.StartTime = 0x80fb20;
-
-            //RecvStream + 0x10
-            Client.SocketStruct = 0x7c8cf0;
-            Client.RecvPointer = 0x5ba5f8;
-            Client.SendPointer = 0x5ba624;
-            Client.LastRcvPacket = 0x7c44d0;
-            Client.DecryptCall = 0x45d775;
-            Client.ParserFunc = 0x45d740;
-            Client.XTeaKey = Addresses.Client.SocketStruct + 0x2c;
-            Client.GetNextPacketCall = 0x45d775;
-            // Same as Client.DecryptCall = ParserFunc + 0x35
-            Client.RecvStream = 0x7c8d0c;
-            Client.FrameRatePointer = 0x7cce04;
+            Client.StartTime = 0x80FB20;
+            Client.XTeaKey = 0x7C8D1C; //RecvStream + 0x10
+            Client.SocketStruct = 0x7C8CF0;
+            Client.RecvPointer = 0x5BA5F8;
+            Client.SendPointer = 0x5BA624;
+            Client.LastRcvPacket = 0x7C44D0;
+            Client.DecryptCall = 0x45D775;
+            Client.ParserFunc = 0x45D740;
+            Client.GetNextPacketCall = 0x45D775; // Same as Client.DecryptCall = ParserFunc + 0x35
+            Client.RecvStream = 0x7C8D0C;
+            Client.FrameRatePointer = 0x7CCE04;
             Client.FrameRateCurrentOffset = 0x60;
             Client.FrameRateLimitOffset = 0x58;
-            Client.MultiClient = 0x50cf44;
-            Client.MultiClientJMP = 0xeb;
+            Client.MultiClient = 0x50CF44;
+            Client.MultiClientJMP = 0xEB;
             Client.MultiClientJNZ = 0x75;
-            Client.Status = 0x7cc2bc;
-            Client.SafeMode = 0x7c9144;
+            Client.Status = 0x7CC2BC;
+            Client.SafeMode = 0x7C9144;
             Client.FollowMode = Client.SafeMode + 4;
             Client.AttackMode = Client.FollowMode + 4;
-            Client.ActionState = 0x7cc31c;
-            Client.ActionStateFreezer = 0x51fa70;
-            Client.ActionStateOriginal = new byte[] {
-	0xa3,
-	0x0,
-	0x0,
-	0x0,
-	0x0,
-	0xc3,
-	0xcc,
-	0xcc,
-	0xcc,
-	0xcc,
-	0xcc
-};
-            Client.ActionStateFreezed = new byte[] {
-	0xc7,
-	0x5,
-	0x0,
-	0x0,
-	0x0,
-	0x0,
-	0x7,
-	0x0,
-	0x0,
-	0x0,
-	0xc3
-};
-            //Client.LastMSGText = 0x80CD60;
-            Client.LastMSGAuthor = Client.LastMSGText - 0x28;
-            Client.StatusbarText = 0x80fb40;
+            Client.ActionState = 0x7CC31C;
+            Client.ActionStateFreezer = 0x51FA70;
+            Client.ActionStateOriginal = new byte[] { 0xA3, 0x00, 0x00, 0x00, 0x00, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC };
+            Client.ActionStateFreezed = new byte[] { 0xC7, 0x05, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xC3 };
+            Client.StatusbarText = Client.StartTime + 0x20;
             Client.StatusbarTime = Client.StatusbarText - 8;
-            Client.ClickId = 0x7cc35c;
+            Client.ClickId = 0x7CC35C;
             Client.ClickCount = Client.ClickId + 4;
             Client.ClickZ = Client.ClickId - 0x68;
             Client.SeeId = Client.ClickId + 12;
             Client.SeeCount = Client.SeeId + 4;
             Client.SeeZ = Client.SeeId - 0x68;
             Client.ClickContextMenuItemId = Client.SeeId;
-            //Client.ClickContextMenuItemGroundId = ?
-            Client.ClickContextMenuCreatureId = Client.ClickContextMenuItemId + 0xc;
-            Client.LoginServerStart = 0x7c3c58;
+            Client.ClickContextMenuCreatureId = Client.ClickContextMenuItemId + 0x0C;
+            Client.LoginServerStart = 0x7C3C58;
             Client.StepLoginServer = 112;
             Client.DistancePort = 100;
             Client.MaxLoginServers = 10;
-            Client.RSA = 0x5ba990;
-            Client.LoginCharList = 0x7cc270;
+            Client.RSA = 0x5BA990;
+            Client.LoginCharList = 0x7CC270;
             Client.LoginCharListLength = Client.LoginCharList + 4;
             Client.LoginSelectedChar = Client.LoginCharList - 4;
-            // Client.GameWindowRectPointer = &H67969C
-            // Client.GameWindowBar = &H80DB10
-            Client.DatPointer = 0x7c8d3c;
+            Client.GameWindowRectPointer = 0x67B6BC;
+            Client.GameWindowBar = 0x80FB30;
+            Client.DatPointer = 0x7C8D3C;
             Client.EventTriggerPointer = 0x521580;
-            Client.DialogPointer = 0x67ea24;
+            Client.DialogPointer = 0x67EA24;
             Client.DialogLeft = 0x14;
             Client.DialogTop = 0x18;
-            Client.DialogWidth = 0x1c;
+            Client.DialogWidth = 0x1C;
             Client.DialogHeight = 0x20;
             Client.DialogCaption = 0x50;
             Client.LoginAccountNum = 0;
@@ -98,22 +68,10 @@ namespace Tibia
             Client.LoginAccount = Client.LoginPassword + 32;
             Client.LoginPatch = 0;
             Client.LoginPatch2 = 0;
-            Client.LoginPatchOrig = new byte[] {
-	0xe8,
-	0xd,
-	0x1d,
-	0x9,
-	0x0
-};
-            Client.LoginPatchOrig2 = new byte[] {
-	0xe8,
-	0xc8,
-	0x15,
-	0x9,
-	0x0
-};
+            Client.LoginPatchOrig = new byte[] { 0xE8, 0x0D, 0x1D, 0x09, 0x00 };
+            Client.LoginPatchOrig2 = new byte[] { 0xE8, 0xC8, 0x15, 0x09, 0x00 };
 
-            Container.Start = 0x67c170;
+            Container.Start = 0x67C170;
             Container.StepContainer = 492;
             Container.StepSlot = 12;
             Container.MaxContainers = 16;
@@ -127,14 +85,14 @@ namespace Tibia
             Container.DistanceItemCount = 64;
             Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
 
-            ContextMenus.AddContextMenuPtr = 0x4539e0;
+            ContextMenus.AddContextMenuPtr = 0x4539E0;
             ContextMenus.OnClickContextMenuPtr = 0x450560;
             ContextMenus.OnClickContextMenuVf = 0x5BFD48;
-            ContextMenus.AddSetOutfitContextMenu = 0x45490f;
+            ContextMenus.AddSetOutfitContextMenu = 0x45490F;
             ContextMenus.AddPartyActionContextMenu = 0x454824;
-            ContextMenus.AddCopyNameContextMenu = 0x4549a1;
+            ContextMenus.AddCopyNameContextMenu = 0x4549A1;
             ContextMenus.AddTradeWithContextMenu = 0x454589;
-            ContextMenus.AddLookContextMenu = 0x45443f;
+            ContextMenus.AddLookContextMenu = 0x45443F;
 
             Creature.DistanceId = 0;
             Creature.DistanceType = 3;
@@ -187,18 +145,18 @@ namespace Tibia
             DatItem.Automap = 72;
             DatItem.LensHelp = 76;
 
-            DrawItem.DrawItemFunc = 0x4b5a30;
+            DrawItem.DrawItemFunc = 0x4B5A30;
 
-            DrawSkin.DrawSkinFunc = 0x4b96f0;
+            DrawSkin.DrawSkinFunc = 0x4B96F0;
 
-            Hotkey.SendAutomaticallyStart = 0x7c9340;
-            Hotkey.SendAutomaticallyStep = 0x1;
-            Hotkey.TextStart = 0x7c9368;
+            Hotkey.SendAutomaticallyStart = 0x7C9340;
+            Hotkey.SendAutomaticallyStep = 0x01;
+            Hotkey.TextStart = 0x7C9368;
             Hotkey.TextStep = 0x100;
-            Hotkey.ObjectStart = 0x7c92b0;
-            Hotkey.ObjectStep = 0x4;
-            Hotkey.ObjectUseTypeStart = 0x7c9190;
-            Hotkey.ObjectUseTypeStep = 0x4;
+            Hotkey.ObjectStart = 0x7C92B0;
+            Hotkey.ObjectStep = 0x04;
+            Hotkey.ObjectUseTypeStart = 0x7C9190;
+            Hotkey.ObjectUseTypeStep = 0x04;
             Hotkey.MaxHotkeys = 36;
 
             Map.MapPointer = 0x683578;
@@ -215,30 +173,24 @@ namespace Tibia
             Map.MaxZ = 8;
             Map.MaxTiles = 2016;
             Map.ZAxisDefault = 7;
-            Map.NameSpy1 = 0x4f245b;
-            Map.NameSpy2 = 0x4f2465;
-            Map.NameSpy1Default = 0x4c75;
+            Map.NameSpy1 = 0x4F24DB;
+            Map.NameSpy2 = 0x4F24E5;
+            Map.NameSpy1Default = 0x4C75;
             Map.NameSpy2Default = 0x4275;
-            Map.LevelSpy1 = 0x4f4eaa;
-            Map.LevelSpy2 = 0x4f4faf;
-            Map.LevelSpy3 = 0x4f5030;
+            Map.LevelSpy1 = 0x4F4EAA;
+            Map.LevelSpy2 = 0x4F4FAF;
+            Map.LevelSpy3 = 0x4F5030;
             Map.LevelSpyPtr = Client.GameWindowRectPointer;
             Map.LevelSpyAdd1 = 28;
-            Map.LevelSpyAdd2 = 0x5bc0;
-            Map.FullLightNop = 0x4eb589;
-            Map.FullLightAdr = 0x4eb58b;
-            Map.FullLightNopDefault = new byte[] {
-	0x7e,
-	0x5
-};
-            Map.FullLightNopEdited = new byte[] {
-	0x90,
-	0x90
-};
+            Map.LevelSpyAdd2 = 0x5BC0;
+            Map.FullLightNop = 0x4EB589;
+            Map.FullLightAdr = 0x4EB58C;
+            Map.FullLightNopDefault = new byte[] { 0x7E, 0x05 };
+            Map.FullLightNopEdited = new byte[] { 0x90, 0x90 };
             Map.FullLightAdrDefault = 0x80;
-            Map.FullLightAdrEdited = 0xff;
+            Map.FullLightAdrEdited = 0xFF;
 
-            Player.Experience = 0x642d90;
+            Player.Experience = 0x642D90;
             Player.Flags = Player.Experience - 112;
             Player.Id = Player.Experience + 16;
             Player.Health = Player.Experience + 12;
@@ -272,7 +224,7 @@ namespace Tibia
             Player.GreenSquare = Player.Flags + 64;
             Player.RedSquare = Player.Flags + 68;
 
-            Player.SlotHead = 0x67c0f8;
+            Player.SlotHead = 0x67C0F8;
             Player.SlotNeck = Player.SlotHead + 12;
             Player.SlotBackpack = Player.SlotHead + 24;
             Player.SlotArmor = Player.SlotHead + 36;
@@ -289,28 +241,26 @@ namespace Tibia
             Player.GoToX = Player.Experience + 84;
             Player.GoToY = Player.GoToX - 4;
             Player.GoToZ = Player.GoToX - 8;
-            //Player.AccessN = 0;
-            //Player.AccessS = 0;
             Player.TargetId = Player.RedSquare;
             Player.TargetBattlelistId = Player.TargetId - 8;
             Player.TargetBattlelistType = Player.TargetId - 5;
             Player.TargetType = Player.TargetId + 3;
 
-            Player.Z = 0x67ea60;
+            Player.Z = 0x67EA60;
             Player.Y = Player.Z + 4;
             Player.X = Player.Z + 8;
 
             Player.AttackCount = 0x640940;
             Player.FollowCount = Player.AttackCount + 0x20;
 
-            TextDisplay.PrintName = 0x4f6013;
-            TextDisplay.PrintFPS = 0x45b778;
-            TextDisplay.ShowFPS = 0x640a3c;
-            TextDisplay.PrintTextFunc = 0x4b4e70;
-            TextDisplay.NopFPS = 0x45b6b4;
+            TextDisplay.PrintName = 0x4F6013;
+            TextDisplay.PrintFPS = 0x45B778;
+            TextDisplay.ShowFPS = 0x640A3C;
+            TextDisplay.PrintTextFunc = 0x4B4E70;
+            TextDisplay.NopFPS = 0x45B6B4;
 
-            Vip.Start = 0x640ab8;
-            Vip.StepPlayers = 0x2c;
+            Vip.Start = 0x640AB8;
+            Vip.StepPlayers = 0x2C;
             Vip.MaxPlayers = 200;
             Vip.DistanceId = 0;
             Vip.DistanceName = 4;

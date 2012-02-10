@@ -75,7 +75,7 @@ namespace Tibia.Util
 
             // Set addresses
             if (client != null)
-                Version.Set(client.Version,client.Process );
+                Version.Set(client.Version, client.Process);
 
             // Set OT server
             if (client != null && options.UseOT)
