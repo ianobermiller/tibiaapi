@@ -37,7 +37,6 @@ namespace Tibia
             Client.SeeCount = Client.SeeId + 4;
             Client.SeeZ = Client.SeeId - 0x68;
             Client.ClickContextMenuItemId = 0x791B68;
-            //Client.ClickContextMenuItemGroundId = ?
             Client.ClickContextMenuCreatureId = 0x791B6C;
             Client.LoginServerStart = 0x789458;
             Client.StepLoginServer = 112;
