@@ -252,7 +252,7 @@ void MyOnClickContextMenuWork (int eventId)
 	Packet* packet = new Packet(5);
 	packet->AddByte(0x0C);
 	packet->AddDWord(eventId);
-	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 
+	PipeWrite(packet);
 }
 
 LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -276,7 +276,7 @@ LRESULT WINAPI SubClassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					Packet* packet = new Packet(5);
 					packet->AddByte(0x15);
 					packet->AddDWord(iIT->IconId);
-					WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 	
+					PipeWrite(packet);
 				}
 			}
 		}
@@ -469,6 +469,36 @@ void __declspec(naked) MyOnClickContextMenu (int eventId)
 	}
 }
 
+int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
+{	
+	//sock=s;
+	int bytesCount=OrigRecv(s,buf,len,flags);
+	if(bytesCount>0)
+	{		
+		Packet* packet = new Packet(((WORD)buf)+1);
+		packet->AddByte(0x0E);
+		for(int i=0;i<bytesCount;i++)
+			packet->AddByte((BYTE)buf[i]);
+		PipeWrite(packet);
+	}
+	return bytesCount;
+}
+
+int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
+{
+	sock=s;
+	if(len>0)
+	{
+		Packet* packet = new Packet(((WORD)buf)+1);
+		packet->AddByte(0x0F);
+		for(int i=0;i<len;i++)
+			packet->AddByte((BYTE)buf[i]);
+		PipeWrite(packet);
+	}
+
+	return OrigSend(s,buf,len,flags);
+}
+
 bool case_insensitive_compare( string a, string b)
 { 
 	char char1, char2, blank = ' ' ;   
@@ -502,24 +532,37 @@ void EnableHooks()
 	
 	DWORD dwOldProtect, dwNewProtect, funcAddress;	
 	
-	funcAddress = (DWORD)&MyOnClickContextMenu;
-	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
-	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
-	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect);
+
 
 	OldPrintName = HookCall(Consts::ptrPrintName, (DWORD)&MyPrintName);
 	OldPrintFPS = HookCall(Consts::ptrPrintFPS, (DWORD)&MyPrintFps);	
 	OldNopFPS = Nop(Consts::ptrNopFPS, 6);
+
 	
 	OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
 	OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
 	OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 	OldLookContextMenu = HookCall(Consts::ptrLookContextMenu,(DWORD) &MyLookContextMenu);
-			
+
+	funcAddress = (DWORD)&MyOnClickContextMenu;
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
+	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect);
+				
+	
 	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"send");
 	OrigSend=(PSEND)OrigSendAddress;
+	funcAddress = (DWORD)&MySend;
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::ptrSend, &funcAddress, 4);
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+		
 	OrigRecvAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"recv");
 	OrigRecv=(PRECV)OrigRecvAddress;
+	funcAddress = (DWORD)&MyRecv;
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::ptrRecv, &funcAddress, 4);
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 	
 
 	oldWndProc = (WNDPROC) ((fUnicode) ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc) : 
@@ -536,6 +579,15 @@ void DisableHooks()
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &Consts::ptrOnClickContextMenu, 4);
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect);
+	
+
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::ptrSend, &OrigSendAddress, 4);
+	VirtualProtect((LPVOID)Consts::ptrSend, 4, dwOldProtect, &dwNewProtect);
+
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, PAGE_READWRITE, &dwOldProtect);
+	memcpy((LPVOID)Consts::ptrRecv, &OrigRecvAddress, 4);
+	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 
 
 	if (OldPrintName)
@@ -678,6 +730,7 @@ void UnloadSelf()
 	CloseHandle(pipe);
 	
 	DeleteCriticalSection(&PipeReadCriticalSection);
+	DeleteCriticalSection(&PipeWriteCriticalSection);
 	DeleteCriticalSection(&NormalTextCriticalSection);
 	DeleteCriticalSection(&CreatureTextCriticalSection);
 	DeleteCriticalSection(&ContextMenuCriticalSection);
@@ -694,6 +747,19 @@ void UnloadSelf()
 	#if _DEBUG
 		MessageBoxA(0, "Done.", "TibiaAPI Injected DLL - Cleaning up", MB_ICONINFORMATION);
 	#endif
+}
+
+void PipeWriteProc(LPVOID lpParameter)
+{
+	EnterCriticalSection(&ContextMenuCriticalSection);
+	Packet* packet=(Packet*)lpParameter;
+	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 	
+	LeaveCriticalSection(&ContextMenuCriticalSection);
+}
+
+inline void PipeWrite(Packet* p)
+{
+	CreateThread(NULL, NULL,(LPTHREAD_START_ROUTINE) PipeWriteProc ,(LPVOID)p,0,NULL);
 }
 
 inline void PipeOnRead()
@@ -1405,6 +1471,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 			PipeName =  sout.str();
 	
 			InitializeCriticalSection(&PipeReadCriticalSection);
+			InitializeCriticalSection(&PipeWriteCriticalSection);
 			InitializeCriticalSection(&NormalTextCriticalSection);
 			InitializeCriticalSection(&CreatureTextCriticalSection);
 			InitializeCriticalSection(&ContextMenuCriticalSection);
@@ -1421,6 +1488,7 @@ extern "C" bool APIENTRY DllMain (HMODULE hModule, DWORD reason, LPVOID reserved
 		{
 			TerminateThread(PipeThread, EXIT_SUCCESS);
 			DeleteCriticalSection(&PipeReadCriticalSection);
+			DeleteCriticalSection(&PipeWriteCriticalSection);
 			DeleteCriticalSection(&NormalTextCriticalSection);
 			DeleteCriticalSection(&CreatureTextCriticalSection);
 			DeleteCriticalSection(&ContextMenuCriticalSection);

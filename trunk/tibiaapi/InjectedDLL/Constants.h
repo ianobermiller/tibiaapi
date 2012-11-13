@@ -38,6 +38,7 @@ extern bool PipeConnected;
 extern HANDLE PipeThread;
 extern BYTE Buffer[1024];
 extern CRITICAL_SECTION PipeReadCriticalSection;
+extern CRITICAL_SECTION PipeWriteCriticalSection;
 extern CRITICAL_SECTION NormalTextCriticalSection;
 extern CRITICAL_SECTION CreatureTextCriticalSection;
 extern CRITICAL_SECTION ContextMenuCriticalSection;
@@ -64,7 +65,7 @@ enum PipeConstantType : BYTE
 		EventTriggered = 0x0F,
 		LookContextMenu = 0x10,
 		DrawItemFunc = 0x11,
-		DrawSkinFunc = 0x12
+		DrawSkinFunc = 0x12,
 };
 
 /* Structures */

@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_PACKETSIZE 1024
+#define MAX_PACKETSIZE 10000
 
 class Packet {
 

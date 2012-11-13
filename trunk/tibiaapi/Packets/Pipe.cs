@@ -10,7 +10,7 @@ namespace Tibia.Packets
         #region Variables
         private Client client;
         private NamedPipeServerStream pipe;
-        private byte[] buffer = new byte[2];
+        private byte[] buffer = new byte[10000];
         private string name = string.Empty;
         #endregion
 
@@ -108,21 +108,22 @@ namespace Tibia.Packets
 
             if (length <= 2)
                 return;
+            else if (length > buffer.Length - 2)
+                throw new ArgumentOutOfRangeException();
 
-            byte[] received = new byte[length];
-            Array.Copy(buffer, received, 2);
-            
-            int pos = 2;
-
-            while (length - pos > 0)
-            {
-                pos += pipe.Read(received, pos, length - pos);
-            }
+            byte[] received = new byte[read];
+            Array.Copy(buffer, received, read);
 
             // Call OnReceive asynchronously
             if (OnReceive != null)
                 OnReceive.BeginInvoke(new NetworkMessage(client, received, read), null, null);
+            
+
+
+
             PipePacketType type = (PipePacketType)received[2];
+
+            System.Diagnostics.Debug.Print("read: {0}   length: {1}    type:   {2}", read, length, type.ToString());
             switch (type)
             {
                 case PipePacketType.OnClickContextMenu:
@@ -130,14 +131,14 @@ namespace Tibia.Packets
                         if(length == 7)
                             OnContextMenuClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
                     break;
-                //case PipePacketType.HookReceivedPacket:
-                //    if (OnSocketRecv != null)
-                //        OnSocketRecv.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                //    break;
-                //case PipePacketType.HookSentPacket:
-                //    if (OnSocketSend != null)
-                //        OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
-                //    break;
+                case PipePacketType.HookReceivedPacket:
+                    if (OnSocketRecv != null)
+                        OnSocketRecv.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
+                case PipePacketType.HookSentPacket:
+                    if (OnSocketSend != null)
+                        OnSocketSend.BeginInvoke(new NetworkMessage(client, received, length), null, null);
+                    break;
                 case PipePacketType.OnClickIcon:
                     if (OnIconClick != null)
                         OnIconClick.BeginInvoke(new NetworkMessage(client, received, length), null, null);
