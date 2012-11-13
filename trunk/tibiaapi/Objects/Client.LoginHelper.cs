@@ -297,7 +297,6 @@ namespace Tibia.Objects
                     long address = Addresses.Client.LoginServerStart;
                     if (value.Length == 1)
                     {
-                        string server = value[0].Server + (char)0;
                         for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
                         {
                             client.Memory.WriteString(address, value[0].Server);
@@ -307,12 +306,10 @@ namespace Tibia.Objects
                     }
                     else if (value.Length > 1 && value.Length <= Addresses.Client.MaxLoginServers)
                     {
-                        string server = string.Empty;
                         for (int i = 0; i < value.Length; i++)
                         {
-                            server = value[i].Server + (char)0;
-                            client.Memory.WriteString(address, server);
-                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[0].Port);
+                            client.Memory.WriteString(address, value[i].Server);
+                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[i].Port);
                             address += Addresses.Client.StepLoginServer;
                         }
                     }

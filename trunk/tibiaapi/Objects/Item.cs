@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Tibia.Packets;
 using System.Drawing;
@@ -496,16 +497,7 @@ namespace Tibia.Objects
         /// <returns>True if the item is in the list, false if not</returns>
         public bool IsInList<T>(IEnumerable<T> list) where T : Item
         {
-            if (Id != 0)
-            {
-                foreach (T i in list)
-                {
-                    if (Id == i.Id)
-                        return true;
-                }
-            }
-
-            return false;
+            return list.Any(item => Id == item.Id);
         }
 
         public override string ToString()
