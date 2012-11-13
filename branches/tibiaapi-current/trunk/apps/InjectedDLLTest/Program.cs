@@ -30,8 +30,8 @@ namespace InjectedDLLTest
             s.Console.Write("Initializing pipe...");
             client.Dll.InitializePipe();
             client.Dll.PipeIsReady.WaitOne();
-            //client.Dll.Pipe.OnSocketRecv += new Tibia.Packets.Pipe.PipeListener(Pipe_OnSocketRecv);
-            //client.Dll.Pipe.OnSocketSend += new Tibia.Packets.Pipe.PipeListener(Pipe_OnSocketSend);
+            client.Dll.Pipe.OnSocketRecv += new Tibia.Packets.Pipe.PipeListener(Pipe_OnSocketRecv);
+            client.Dll.Pipe.OnSocketSend += new Tibia.Packets.Pipe.PipeListener(Pipe_OnSocketSend);
             s.Console.Write("done.\n");
 
             s.Console.Write("Adding some text to screen...test1, test2, test3, test4...");
@@ -96,20 +96,22 @@ namespace InjectedDLLTest
             }
         }
 
-        /*
+        
         static void Pipe_OnSocketRecv(Tibia.Packets.NetworkMessage msg)
         {
             s.Console.ForegroundColor = ConsoleColor.Green;
-            s.Console.WriteLine("Packet received...");
+            s.Console.WriteLine("Packet received:");
+            s.Console.WriteLine(msg.Data.ToHexString());
             s.Console.ResetColor();
         }
         static void Pipe_OnSocketSend(Tibia.Packets.NetworkMessage msg)
         {
             s.Console.ForegroundColor = ConsoleColor.Red;
-            s.Console.WriteLine("Packet sent...");
+            s.Console.WriteLine("Packet sent:");
+            s.Console.WriteLine(msg.Data.ToHexString());
             s.Console.ResetColor();
         }
-        */
+        
 
         static void ContextMenu_Click(int eventID)
         {

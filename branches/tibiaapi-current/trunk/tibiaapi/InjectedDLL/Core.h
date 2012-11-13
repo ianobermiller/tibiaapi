@@ -5,6 +5,7 @@
 #define _CORE_H_
 
 #include <string>
+#include "Packet.h"
 
 enum PipePacketType : unsigned char
 {
@@ -87,6 +88,7 @@ void StartUninjectSelf();
 void __declspec(noreturn) UninjectSelf();
 void UnloadSelf();
 
+inline void PipeWrite(Packet* p);
 inline void PipeOnRead();
 void PipeThreadProc(HMODULE Module);
 void CALLBACK ReadFileCompleted(DWORD errorCode, DWORD bytesCopied, OVERLAPPED* overlapped);

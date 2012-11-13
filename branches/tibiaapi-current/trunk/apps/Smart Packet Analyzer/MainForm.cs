@@ -1,4 +1,4 @@
-//#define UseHookProxy
+#define UseHookProxy
 
 using System;
 using System.Collections.Generic;

@@ -39,6 +39,7 @@ bool PipeConnected = false;
 HANDLE PipeThread = 0;
 BYTE Buffer[1024] = {0};
 CRITICAL_SECTION PipeReadCriticalSection;
+CRITICAL_SECTION PipeWriteCriticalSection;
 CRITICAL_SECTION NormalTextCriticalSection;
 CRITICAL_SECTION CreatureTextCriticalSection;
 CRITICAL_SECTION ContextMenuCriticalSection;
