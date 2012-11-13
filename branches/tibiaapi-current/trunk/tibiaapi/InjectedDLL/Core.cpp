@@ -751,10 +751,10 @@ void UnloadSelf()
 
 void PipeWriteProc(LPVOID lpParameter)
 {
-	EnterCriticalSection(&ContextMenuCriticalSection);
+	EnterCriticalSection(&PipeWriteCriticalSection);
 	Packet* packet=(Packet*)lpParameter;
 	WriteFileEx(pipe, packet->GetPacket(), packet->GetSize(), &overlapped, NULL); 	
-	LeaveCriticalSection(&ContextMenuCriticalSection);
+	LeaveCriticalSection(&PipeWriteCriticalSection);
 }
 
 inline void PipeWrite(Packet* p)
