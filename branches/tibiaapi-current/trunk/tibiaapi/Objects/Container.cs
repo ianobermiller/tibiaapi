@@ -32,21 +32,26 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Item> GetItems()
         {
-            byte slot = 0;
             int amount = Amount;
-            for (uint i = address; i <= address + Addresses.Container.StepSlot * amount - 1; i += Addresses.Container.StepSlot)
-            {
-                uint itemId = client.Memory.ReadUInt32(i + Addresses.Container.DistanceItemId);
-                if (itemId > 0)
-                    yield return new Item(
-                        client, 
-                        itemId,
-                        client.Memory.ReadByte(i + Addresses.Container.DistanceItemCount),
-                        "", 
-                        ItemLocation.FromContainer(number, slot));
-                
-                slot++;
-            }
+            return Enumerable.Range(0, amount)
+                    .Select(slotnum => new
+                    {
+                        Number = slotnum,
+                        Address = address + slotnum * Addresses.Container.StepSlot
+                    })
+                    .Select(slot => new
+                    {
+                        ItemID = client.Memory.ReadUInt32(slot.Address + Addresses.Container.DistanceItemId),
+                        ItemCount = client.Memory.ReadByte(slot.Address + Addresses.Container.DistanceItemCount),
+                        Position = slot.Number
+                    })
+                    .Where(ItemSlot => ItemSlot.ItemID > 0)
+                    .Select(ItemSlot => new Item(
+                        client,
+                        ItemSlot.ItemID,
+                        ItemSlot.ItemCount,
+                        "",
+                        ItemLocation.FromContainer(number, (byte)ItemSlot.Position)));
         }
 
         /// <summary>

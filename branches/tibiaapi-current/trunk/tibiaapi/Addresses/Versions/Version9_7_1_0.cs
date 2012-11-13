@@ -280,14 +280,17 @@ namespace Tibia
             Player.RedSquare = 0x3B3F20 + BaseAddress;
 
             Player.SlotAmmo = 0x5D52DC + BaseAddress;
-            Player.SlotRing = Player.SlotHead + 12;
-            Player.SlotFeet = Player.SlotRing + 12;
-            Player.SlotLegs = Player.SlotFeet + 12;
-            Player.SlotRight = Player.SlotLegs + 12;
-            Player.SlotLeft = Player.SlotRight + 12;
-            Player.SlotArmor = Player.SlotLeft + 12;
-            Player.SlotBackpack = Player.SlotArmor + 12;
-            Player.SlotNeck = Player.SlotBackpack + 12;
+            Player.SlotRing = Player.SlotAmmo + Player.SlotStep;
+            Player.SlotFeet = Player.SlotRing + Player.SlotStep;
+            Player.SlotLegs = Player.SlotFeet + Player.SlotStep;
+            Player.SlotLeft = Player.SlotLegs + Player.SlotStep;
+            Player.SlotRight = Player.SlotLeft + Player.SlotStep;
+            Player.SlotArmor = Player.SlotLeft + Player.SlotStep;
+            Player.SlotBackpack = Player.SlotArmor + Player.SlotStep;
+            Player.SlotNeck = Player.SlotBackpack + Player.SlotStep;
+            Player.SlotHead = Player.SlotNeck + Player.SlotStep;
+            Player.SlotBegin = Player.SlotAmmo;
+            Player.SlotStep = 12;
             Player.MaxSlots = 10;
             Player.DistanceSlotCount = 4;
             Player.CurrentTileToGo = Player.Flags + 132;

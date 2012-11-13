@@ -50,6 +50,8 @@ namespace Tibia.Addresses
         /// Total number of equipment slots (accessed 0-9)
         /// </summary>
         public static int MaxSlots;
+        public static uint SlotBegin;
+        public static uint SlotStep;
         public static uint SlotHead;
         public static uint SlotNeck;
         public static uint SlotBackpack;

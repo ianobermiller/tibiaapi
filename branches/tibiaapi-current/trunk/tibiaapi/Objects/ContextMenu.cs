@@ -34,7 +34,7 @@ namespace Tibia.Objects
                 client.Dll.PipeIsReady.WaitOne();
             }
 
-            if (eventId < 0 || eventId > 2000 || text == string.Empty)
+            if (eventId < 0 || eventId > 0x2000 || text == string.Empty)
                 return false;
 
             return Packets.Pipes.AddContextMenuPacket.Send(client, eventId, text, type, hasSeparator);
@@ -48,7 +48,7 @@ namespace Tibia.Objects
                 client.Dll.PipeIsReady.WaitOne();
             }
 
-            if (eventId < 0 || eventId > 2000 || text == string.Empty)
+            if (eventId < 0 || eventId > 0x2000 || text == string.Empty)
                 return false;
 
             return Packets.Pipes.RemoveContextMenuPacket.Send(client, eventId, text, type, hasSeparator);

@@ -41,15 +41,15 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Container> GetContainers()
         {
-            byte containerNumber = 0;
-            for (uint i = Addresses.Container.Start; i < Addresses.Container.End; i += Addresses.Container.StepContainer)
-            {
-                if (client.Memory.ReadByte(i + Addresses.Container.DistanceIsOpen) == 1)
-                {
-                    yield return new Container(client, i, containerNumber);
-                }
-                containerNumber++;
-            }
+            return Enumerable.Range(0, (int)Addresses.Container.MaxContainers)
+                    .Select(containerNumber => new
+                    {
+                        Address = (uint)(Addresses.Container.Start + containerNumber * Addresses.Container.StepContainer),
+                        Number = (byte)containerNumber,
+                    })
+                    .Where(pair => client.Memory.ReadByte(pair.Address + Addresses.Container.DistanceIsOpen) == 1)
+                    .Select(pair => new Container(client, pair.Address, pair.Number));
+
         }
 
         public IEnumerable<Item> GetItems()
@@ -99,7 +99,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Item GetItemInSlot(Constants.SlotNumber s)
         {
-            uint address = Addresses.Player.SlotHead + 12 * ((uint)s - 1);
+            uint address = Addresses.Player.SlotBegin + Addresses.Player.SlotStep * (10 - (uint)s);
             uint id = client.Memory.ReadUInt32(address);
             if (id > 0)
             {
@@ -114,18 +114,25 @@ namespace Tibia.Objects
 
         public IEnumerable<Item> GetSlotItems()
         {
-            uint address = Addresses.Player.SlotHead;
-            for (int i = 0; i < Addresses.Player.MaxSlots; i++, address += 12)
-            {
-                uint id = client.Memory.ReadUInt32(address);
-                if (id > 0)
-                {
-                    yield return new Item(client,
-                        id,
-                        client.Memory.ReadByte(address + +Addresses.Player.DistanceSlotCount), "",
-                        ItemLocation.FromSlot((Constants.SlotNumber)i));
-                }
-            }
+            return Enumerable.Range(0, Addresses.Player.MaxSlots)
+                    .Select(slotNumber => new
+                    {
+                        Address = (uint)(Addresses.Player.SlotBegin + slotNumber * Addresses.Player.SlotStep),
+                        Number = slotNumber
+                    })
+                    .Select(slot => new
+                    {
+                        ItemID = client.Memory.ReadUInt32(slot.Address),
+                        ItemCount = client.Memory.ReadByte(slot.Address + Addresses.Player.DistanceSlotCount),
+                        Position = slot.Number
+                    })
+                    .Where(ItemSlot => ItemSlot.ItemID > 0)
+                    .Select(ItemSlot => new Item(
+                        client,
+                        ItemSlot.ItemID,
+                        ItemSlot.ItemCount,
+                        "",
+                        ItemLocation.FromSlot((Constants.SlotNumber)10-ItemSlot.Position)));
         }
 
         /// <summary>

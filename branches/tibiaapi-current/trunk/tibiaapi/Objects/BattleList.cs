@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Tibia.Objects
@@ -25,11 +26,10 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Creature> GetCreatures()
         {
-            for (uint i = Addresses.BattleList.Start; i < Addresses.BattleList.End; i += Addresses.BattleList.StepCreatures)
-            {
-                if (client.Memory.ReadByte(i + Addresses.Creature.DistanceIsVisible) == 1)
-                    yield return new Creature(client, i);
-            }
+            return Enumerable.Range(0,(int) Addresses.BattleList.MaxCreatures)
+                    .Select(index => Addresses.BattleList.Start + (uint)index * Addresses.BattleList.StepCreatures)
+                    .Where(address => client.Memory.ReadByte(address + Addresses.Creature.DistanceIsVisible) == 1)
+                    .Select(address => new Creature(client, address));
         }
 
         /// <summary>
