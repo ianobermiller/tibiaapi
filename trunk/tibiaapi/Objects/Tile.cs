@@ -16,7 +16,7 @@ namespace Tibia.Objects
 
         private int objectCount;
         private uint address;
-        private   uint squareNumber;
+        private uint squareNumber;
 
         private Location location;
         private Location memoryLocation;
@@ -42,9 +42,8 @@ namespace Tibia.Objects
             this.address = address;
             this.memoryLocation = squareNumber.ToMemoryLocation();
 
-            this.objectCount = client.Memory.ReadInt32(address + Tibia.Addresses.Map.DistanceTileObjectCount) - 1;
-            this.ground = new Item(client, client.Memory.ReadUInt32(address + 
-                Tibia.Addresses.Map.DistanceTileObjects + Tibia.Addresses.Map.DistanceObjectId));
+            this.ground = new Item(client, client.Memory.ReadUInt32(address +
+                client.Addresses.Map.DistanceTileItems + client.Addresses.Map.DistanceItemId));
         }
 
         //packet tile constructors
@@ -99,7 +98,10 @@ namespace Tibia.Objects
                 if (type == ObjectType.Packet)
                     return items.Count;
                 else
+                {
+                    objectCount = client.Memory.ReadInt32(address + client.Addresses.Map.DistanceTileItemsCount);
                     return objectCount;
+                }
             }
         }
 
@@ -111,21 +113,20 @@ namespace Tibia.Objects
                     return null;
 
                 List<TileObject> objects = new List<TileObject>();
-                uint pointer = address + Addresses.Map.DistanceTileObjects;
-
-                if (objectCount <= 11)
+                uint pointerItems = address + client.Addresses.Map.DistanceTileItems;
+                uint pointerOrder = address + client.Addresses.Map.DistanceTileItemOrder;
+                for (uint i = 0; i < objectCount; i++)
                 {
-                    for (uint i = 0; i < objectCount; i++)
-                    {
-                        // Go to the next object
-                        pointer += Addresses.Map.StepTileObject;
 
-                        objects.Add(new TileObject(
-                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectId),
-                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectData),
-                            client.Memory.ReadUInt32(pointer + Addresses.Map.DistanceObjectDataEx),
-                            i + 1));
-                    }
+                    objects.Add(new TileObject(
+                        client.Memory.ReadUInt32(pointerItems + client.Addresses.Map.DistanceItemId),
+                        client.Memory.ReadUInt32(pointerItems + client.Addresses.Map.DistanceItemData),
+                        client.Memory.ReadUInt32(pointerItems + client.Addresses.Map.DistanceItemDataEx),
+                        client.Memory.ReadUInt32(pointerOrder),
+                        this));
+
+                    pointerItems += client.Addresses.Map.StepTileObject;
+                    pointerOrder += 4;
                 }
 
                 return objects;
@@ -171,8 +172,8 @@ namespace Tibia.Objects
                 return false;
 
             return client.Memory.WriteUInt32(address +
-                Addresses.Map.DistanceTileObjects +
-                Addresses.Map.DistanceObjectId, newId);
+               client.Addresses.Map.DistanceTileItems +
+               client.Addresses.Map.DistanceItemId, newId);
         }
 
         public bool ReplaceObject(TileObject oldObject, TileObject newObject)
@@ -181,12 +182,12 @@ namespace Tibia.Objects
                 return false;
 
             uint pointer = (uint)(address +
-                (Addresses.Map.DistanceTileObjects +
-                Addresses.Map.StepTileObject * oldObject.StackOrder));
+                (client.Addresses.Map.DistanceTileItems +
+               client.Addresses.Map.StepTileObject * oldObject.StackOrder));
 
-            return client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectId, newObject.Id) &&
-                client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectData, newObject.Data) &&
-                client.Memory.WriteUInt32(pointer + Addresses.Map.DistanceObjectDataEx, newObject.DataEx);
+            return client.Memory.WriteUInt32(pointer + client.Addresses.Map.DistanceItemId, newObject.Id) &&
+                client.Memory.WriteUInt32(pointer + client.Addresses.Map.DistanceItemData, newObject.Data) &&
+                client.Memory.WriteUInt32(pointer + client.Addresses.Map.DistanceItemDataEx, newObject.DataEx);
         }
         #endregion
     }
@@ -201,16 +202,18 @@ namespace Tibia.Objects
         public uint Id { get; set; }
         public uint Data { get; set; }
         public uint DataEx { get; set; }
+        public Tile FromTile { get; set; }
 
         public TileObject(uint id, uint data, uint dataEx)
-            : this(id, data, dataEx, 0) { }
+            : this(id, data, dataEx, 0, null) { }
 
-        public TileObject(uint id, uint data, uint dataEx, uint stackOrder)
+        public TileObject(uint id, uint data, uint dataEx, uint stackOrder, Tile fromTile)
         {
             StackOrder = stackOrder;
             Id = id;
             Data = data;
             DataEx = dataEx;
+            FromTile = fromTile;
         }
     }
     #endregion

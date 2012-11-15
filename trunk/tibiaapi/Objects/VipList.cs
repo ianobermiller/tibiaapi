@@ -15,17 +15,17 @@ namespace Tibia.Objects
 
         public List<Vip> GetPlayers()
         {
-            uint count = client.Memory.ReadUInt32(Addresses.Vip.Count);
+            uint count = client.Memory.ReadUInt32(client.Addresses.Vip.Count);
             List<Vip> players = new List<Vip>((int)count);
 
             //Read marker node
-            uint nextNodeAddress = client.Memory.ReadUInt32(client.Memory.ReadUInt32(Addresses.Vip.MarkerNodePtr) + Addresses.Vip.DistanceNextNode);
+            uint nextNodeAddress = client.Memory.ReadUInt32(client.Memory.ReadUInt32(client.Addresses.Vip.MarkerNodePtr) + client.Addresses.Vip.DistanceNextNode);
 
 
             for (int i = 0; i < count; i++)
             {
                 players.Add(new Vip(client, nextNodeAddress));
-                nextNodeAddress = client.Memory.ReadUInt32(nextNodeAddress + Addresses.Vip.DistanceNextNode);
+                nextNodeAddress = client.Memory.ReadUInt32(nextNodeAddress + client.Addresses.Vip.DistanceNextNode);
             }
             return players;
         }

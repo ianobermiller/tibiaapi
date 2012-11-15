@@ -236,13 +236,13 @@ namespace Tibia
                 loc.X += diffX;
                 loc.Y += diffY;
           
-                int  maxY = Convert.ToInt32(Addresses.Map.MaxY - 1);
-                int maxX = Convert.ToInt32(Addresses.Map.MaxX);
+                int  maxY = Convert.ToInt32(client.Addresses.Map.MaxY - 1);
+                int maxX = Convert.ToInt32(client.Addresses.Map.MaxX);
 
-                if (loc.X > maxX) { loc.X -= Convert.ToInt32(Addresses.Map.MaxX); loc.Y++; }
-                else if (loc.X < 0) { loc.X += Convert.ToInt32(Addresses.Map.MaxX); loc.Y--; }
-                if (loc.Y > maxY) { loc.Y -= Convert.ToInt32(Addresses.Map.MaxY); }
-                else if (loc.Y < 0) { loc.Y += Convert.ToInt32(Addresses.Map.MaxY); }
+                if (loc.X > maxX) { loc.X -= Convert.ToInt32(client.Addresses.Map.MaxX); loc.Y++; }
+                else if (loc.X < 0) { loc.X += Convert.ToInt32(client.Addresses.Map.MaxX); loc.Y--; }
+                if (loc.Y > maxY) { loc.Y -= Convert.ToInt32(client.Addresses.Map.MaxY); }
+                else if (loc.Y < 0) { loc.Y += Convert.ToInt32(client.Addresses.Map.MaxY); }
                 Location playerLoc = playerTile.Location;
                 return new Location(playerLoc.X + (loc.X - 8), playerLoc.Y + (loc.Y - 6),
                                     playerLoc.Z + (loc.Z - playerMemLoc.Z));
@@ -265,11 +265,11 @@ namespace Tibia
             return new Location(worldLocation.X - xAdjustment, worldLocation.Y - yAdjustment, worldLocation.Z - zAdjustment);
         }
 
-        public static Location OffsetAsMemoryLocation(this Location loc, Location offset)
+        public static Location OffsetAsMemoryLocation(this Location loc, Location offset, Client client)
         {
-            int maxX = (int)Addresses.Map.MaxX;
-            int maxY = (int)Addresses.Map.MaxY;
-            int maxZ = (int)Addresses.Map.MaxZ;
+            int maxX = (int)client.Addresses.Map.MaxX;
+            int maxY = (int)client.Addresses.Map.MaxY;
+            int maxZ = (int)client.Addresses.Map.MaxZ;
 
             Location newLoc = new Location();
 
@@ -302,7 +302,7 @@ namespace Tibia
         /// <returns></returns>
         public static uint ToMapTileAddress(this uint tileNumber, Client client)
         {
-            return client.Memory.ReadUInt32(Addresses.Map.MapPointer) + (Addresses.Map.StepTile * tileNumber);
+            return client.Memory.ReadUInt32(client.Addresses.Map.MapPointer) + (client.Addresses.Map.StepTile * tileNumber);
         }
 
         /// <summary>

@@ -201,5 +201,10 @@ namespace ClientTest
                 client.Map.LevelSpyOn((int)uxLevelSpyNUD.Value);
         }
 
+        private void uxReplaceTreesBtn_Click(object sender, EventArgs e)
+        {
+            client.Map.ReplaceTrees();
+        }
+
     }
 }

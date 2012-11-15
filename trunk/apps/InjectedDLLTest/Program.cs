@@ -16,8 +16,6 @@ namespace InjectedDLLTest
             client = Client.GetClients().FirstOrDefault();
             if (client != null)
             {
-                Tibia.Version.Set(client.Version, client.Process);
-                client = new Client(client.Process);
                 Test();
             }
         }

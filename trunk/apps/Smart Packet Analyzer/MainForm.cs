@@ -1,4 +1,4 @@
-#define UseHookProxy
+//#define UseHookProxy
 
 using System;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ namespace SmartPacketAnalyzer
             Tibia.Packets.Incoming.MessagePacket p = (Tibia.Packets.Incoming.MessagePacket)packet;
 
             if (p.Mode == 20)
-                p.Message = p.Message + " [" + client.Memory.ReadInt32(Tibia.Addresses.Client.SeeId) + "]";
+                p.Message = p.Message + " [" + client.Memory.ReadInt32(client.Addresses.Client.SeeId) + "]";
 
             return true;
         }

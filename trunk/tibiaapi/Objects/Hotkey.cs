@@ -14,7 +14,7 @@ namespace Tibia.Objects
         #region Constructor
         public Hotkey(Client client, byte number)
         {
-            if (number < 0 || number > Addresses.Hotkey.MaxHotkeys)
+            if (number < 0 || number > client.Addresses.Hotkey.MaxHotkeys)
                 throw new ArgumentOutOfRangeException("number", "Hotkey number must be between 0 and Addresses.Hotkey.MaxHotkeys.");
             this.client = client;
             this.number = number;
@@ -27,14 +27,14 @@ namespace Tibia.Objects
             get
             {
                 return Convert.ToBoolean(client.Memory.ReadByte(
-                    Addresses.Hotkey.SendAutomaticallyStart + 
-                    number * Addresses.Hotkey.SendAutomaticallyStep));
+                    client.Addresses.Hotkey.SendAutomaticallyStart + 
+                    number * client.Addresses.Hotkey.SendAutomaticallyStep));
             }
             set
             {
                 client.Memory.WriteByte(
-                    Addresses.Hotkey.SendAutomaticallyStart + 
-                    number * Addresses.Hotkey.SendAutomaticallyStep, Convert.ToByte(value));
+                    client.Addresses.Hotkey.SendAutomaticallyStart + 
+                    number * client.Addresses.Hotkey.SendAutomaticallyStep, Convert.ToByte(value));
             }
         }
 
@@ -43,19 +43,19 @@ namespace Tibia.Objects
             get
             {
                 return client.Memory.ReadString(
-                    Addresses.Hotkey.TextStart +
-                    number * Addresses.Hotkey.TextStep);
+                    client.Addresses.Hotkey.TextStart +
+                    number * client.Addresses.Hotkey.TextStep);
             }
             set
             {
                 //set text
                 client.Memory.WriteString(
-                    Addresses.Hotkey.TextStart +
-                    number * Addresses.Hotkey.TextStep, value);
+                    client.Addresses.Hotkey.TextStart +
+                    number * client.Addresses.Hotkey.TextStep, value);
                 //reset objectID
                 client.Memory.WriteUInt32(
-                    Addresses.Hotkey.ObjectStart +
-                    number * Addresses.Hotkey.ObjectStep, 0);
+                    client.Addresses.Hotkey.ObjectStart +
+                    number * client.Addresses.Hotkey.ObjectStep, 0);
             }
         }
 
@@ -64,19 +64,19 @@ namespace Tibia.Objects
             get
             {
                 return client.Memory.ReadUInt32(
-                    Addresses.Hotkey.ObjectStart +
-                    number * Addresses.Hotkey.ObjectStep);
+                    client.Addresses.Hotkey.ObjectStart +
+                    number * client.Addresses.Hotkey.ObjectStep);
             }
             set
             {
                 //set objectID
                 client.Memory.WriteUInt32(
-                    Addresses.Hotkey.ObjectStart +
-                    number * Addresses.Hotkey.ObjectStep, value);
+                    client.Addresses.Hotkey.ObjectStart +
+                    number * client.Addresses.Hotkey.ObjectStep, value);
                 //reset text
                 client.Memory.WriteString(
-                    Addresses.Hotkey.TextStart +
-                    number * Addresses.Hotkey.TextStep, "");
+                    client.Addresses.Hotkey.TextStart +
+                    number * client.Addresses.Hotkey.TextStep, "");
             }
         }
 
@@ -85,14 +85,14 @@ namespace Tibia.Objects
             get
             {
                 return (Constants.HotkeyObjectUseType)client.Memory.ReadUInt32(
-                    Addresses.Hotkey.ObjectUseTypeStart +
-                    number * Addresses.Hotkey.ObjectUseTypeStep);
+                    client.Addresses.Hotkey.ObjectUseTypeStart +
+                    number * client.Addresses.Hotkey.ObjectUseTypeStep);
             }
             set
             {
                 client.Memory.WriteUInt32(
-                    Addresses.Hotkey.ObjectUseTypeStart +
-                    number * Addresses.Hotkey.ObjectUseTypeStep, (uint)value);
+                    client.Addresses.Hotkey.ObjectUseTypeStart +
+                    number * client.Addresses.Hotkey.ObjectUseTypeStep, (uint)value);
             }
         }
 

@@ -68,7 +68,7 @@ namespace Tibia.Objects
             {
                 AccountName = account;
                 AccountPassword = password;
-                client.Memory.WriteBytes(Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
             }
 
             [System.Obsolete]
@@ -76,8 +76,8 @@ namespace Tibia.Objects
             {
                 AccountName = "";
                 AccountPassword = string.Empty;
-                client.Memory.WriteBytes(Addresses.Client.LoginPatch, Addresses.Client.LoginPatchOrig, 5);
-                client.Memory.WriteBytes(Addresses.Client.LoginPatch2, Addresses.Client.LoginPatchOrig2, 5);
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch, client.Addresses.Client.LoginPatchOrig, 5);
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch2, client.Addresses.Client.LoginPatchOrig2, 5);
             }
 
             /// <summary>
@@ -85,7 +85,7 @@ namespace Tibia.Objects
             /// </summary>
             public string AccountName
             {
-                set { client.Memory.WriteString(Addresses.Client.LoginAccount, value); }
+                set { client.Memory.WriteString(client.Addresses.Client.LoginAccount, value); }
             }
 
             /// <summary>
@@ -93,7 +93,7 @@ namespace Tibia.Objects
             /// </summary>
             public string AccountPassword
             {
-                set { client.Memory.WriteString(Addresses.Client.LoginPassword, value); }
+                set { client.Memory.WriteString(client.Addresses.Client.LoginPassword, value); }
             }
 
             #endregion
@@ -104,8 +104,8 @@ namespace Tibia.Objects
             /// <returns></returns>
             public string RSA
             {
-                get { return client.Memory.ReadString(Addresses.Client.RSA, 309); }
-                set { Util.Memory.WriteRSA(client.ProcessHandle, Addresses.Client.RSA, value); }
+                get { return client.Memory.ReadString(client.Addresses.Client.RSA, 309); }
+                set { Util.Memory.WriteRSA(client.ProcessHandle, client.Addresses.Client.RSA, value); }
             }
 
             public LoginServer OpenTibiaServer
@@ -151,12 +151,12 @@ namespace Tibia.Objects
                         Report.Invoke(State.DialogsCleaned);
 
                     //reset the selected char value..
-                    client.Memory.WriteUInt32(Tibia.Addresses.Client.LoginSelectedChar, 0);
+                    client.Memory.WriteUInt32(client.Addresses.Client.LoginSelectedChar, 0);
                     if (Report != null)
                         Report.Invoke(State.ResetSelectedCharValue);
 
                     //reset the char count value..
-                    client.Memory.WriteInt32(Tibia.Addresses.Client.LoginCharListLength, 0);
+                    client.Memory.WriteInt32(client.Addresses.Client.LoginCharListLength, 0);
                     if (Report != null)
                         Report.Invoke(State.ResetSelectedCharCount);
 
@@ -279,38 +279,38 @@ namespace Tibia.Objects
             {
                 get
                 {
-                    LoginServer[] servers = new LoginServer[Addresses.Client.MaxLoginServers];
-                    long address = Addresses.Client.LoginServerStart;
+                    LoginServer[] servers = new LoginServer[client.Addresses.Client.MaxLoginServers];
+                    long address = client.Addresses.Client.LoginServerStart;
 
-                    for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
+                    for (int i = 0; i < client.Addresses.Client.MaxLoginServers; i++)
                     {
                         servers[i] = new LoginServer(
                             client.Memory.ReadString(address),
-                            (short)client.Memory.ReadInt32(address + Addresses.Client.DistancePort)
+                            (short)client.Memory.ReadInt32(address + client.Addresses.Client.DistancePort)
                         );
-                        address += Addresses.Client.StepLoginServer;
+                        address += client.Addresses.Client.StepLoginServer;
                     }
                     return servers;
                 }
                 set
                 {
-                    long address = Addresses.Client.LoginServerStart;
+                    long address = client.Addresses.Client.LoginServerStart;
                     if (value.Length == 1)
                     {
-                        for (int i = 0; i < Addresses.Client.MaxLoginServers; i++)
+                        for (int i = 0; i < client.Addresses.Client.MaxLoginServers; i++)
                         {
                             client.Memory.WriteString(address, value[0].Server);
-                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[0].Port);
-                            address += Addresses.Client.StepLoginServer;
+                            client.Memory.WriteInt32(address + client.Addresses.Client.DistancePort, value[0].Port);
+                            address += client.Addresses.Client.StepLoginServer;
                         }
                     }
-                    else if (value.Length > 1 && value.Length <= Addresses.Client.MaxLoginServers)
+                    else if (value.Length > 1 && value.Length <= client.Addresses.Client.MaxLoginServers)
                     {
                         for (int i = 0; i < value.Length; i++)
                         {
                             client.Memory.WriteString(address, value[i].Server);
-                            client.Memory.WriteInt32(address + Addresses.Client.DistancePort, value[i].Port);
-                            address += Addresses.Client.StepLoginServer;
+                            client.Memory.WriteInt32(address + client.Addresses.Client.DistancePort, value[i].Port);
+                            address += client.Addresses.Client.StepLoginServer;
                         }
                     }
                 }
@@ -352,13 +352,13 @@ namespace Tibia.Objects
 
             public void SetCharListServer(byte[] ipAddress, ushort port)
             {
-                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListBegin);
+                uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
 
                 for (int i = 0; i < CharListCount; i++)
                 {
-                    client.Memory.WriteBytes(pointer + Addresses.Client.LoginCharListDistanceWorldIP, ipAddress, 4);
-                    client.Memory.WriteUInt16(pointer + Addresses.Client.LoginCharListDistanceWorldPort, port);
-                    pointer += Addresses.Client.LoginCharListStepCharacter;
+                    client.Memory.WriteBytes(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP, ipAddress, 4);
+                    client.Memory.WriteUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort, port);
+                    pointer += client.Addresses.Client.LoginCharListStepCharacter;
                 }
             }
 
@@ -369,13 +369,13 @@ namespace Tibia.Objects
                 if (count != charList.Length)
                     return false;
 
-                uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListBegin);
+                uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
 
                 for (int i = 0; i < count; i++)
                 {
-                    client.Memory.WriteUInt32(pointer + Addresses.Client.LoginCharListDistanceWorldIP, charList[i].WorldIP);
-                    client.Memory.WriteUInt16(pointer + Addresses.Client.LoginCharListDistanceWorldPort, charList[i].WorldPort);
-                    pointer += Addresses.Client.LoginCharListStepCharacter;
+                    client.Memory.WriteUInt32(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP, charList[i].WorldIP);
+                    client.Memory.WriteUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort, charList[i].WorldPort);
+                    pointer += client.Addresses.Client.LoginCharListStepCharacter;
                 }
 
                 return true;
@@ -387,16 +387,16 @@ namespace Tibia.Objects
                 {
                     CharacterLoginInfo[] charList = new CharacterLoginInfo[CharListCount];
 
-                    uint pointer = client.Memory.ReadUInt32(Addresses.Client.LoginCharListBegin);
+                    uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
 
                     for (int i = 0; i < charList.Length; i++)
                     {
-                        charList[i].CharName = client.Memory.ReadTextField(pointer + Addresses.Client.LoginCharListDistanceCharName);
-                        charList[i].WorldName = client.Memory.ReadTextField(pointer + Addresses.Client.LoginCharListDistanceWorldName);
-                        charList[i].IsPreview = Convert.ToBoolean(client.Memory.ReadByte(pointer + Addresses.Client.LoginCharListDistanceIsPreview));
-                        charList[i].WorldIP = client.Memory.ReadUInt32(pointer + Addresses.Client.LoginCharListDistanceWorldIP);
-                        charList[i].WorldPort = client.Memory.ReadUInt16(pointer + Addresses.Client.LoginCharListDistanceWorldPort);
-                        pointer += Addresses.Client.LoginCharListStepCharacter;
+                        charList[i].CharName = client.Memory.ReadTextField(pointer + client.Addresses.Client.LoginCharListDistanceCharName);
+                        charList[i].WorldName = client.Memory.ReadTextField(pointer + client.Addresses.Client.LoginCharListDistanceWorldName);
+                        charList[i].IsPreview = Convert.ToBoolean(client.Memory.ReadByte(pointer + client.Addresses.Client.LoginCharListDistanceIsPreview));
+                        charList[i].WorldIP = client.Memory.ReadUInt32(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP);
+                        charList[i].WorldPort = client.Memory.ReadUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort);
+                        pointer += client.Addresses.Client.LoginCharListStepCharacter;
                     }
 
                     return charList;
@@ -407,16 +407,16 @@ namespace Tibia.Objects
             {
                 get 
                 {
-                    return (byte)((client.Memory.ReadUInt32(Addresses.Client.LoginCharListEnd) -
-                        client.Memory.ReadUInt32(Addresses.Client.LoginCharListBegin)) /
-                        Addresses.Client.LoginCharListStepCharacter);
+                    return (byte)((client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListEnd) -
+                        client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin)) /
+                        client.Addresses.Client.LoginCharListStepCharacter);
                 }
             }
 
             public int SelectedChar
             {
-                get { return client.Memory.ReadInt32(Addresses.Client.LoginSelectedChar); }
-                set { client.Memory.WriteInt32(Addresses.Client.LoginSelectedChar, value); }
+                get { return client.Memory.ReadInt32(client.Addresses.Client.LoginSelectedChar); }
+                set { client.Memory.WriteInt32(client.Addresses.Client.LoginSelectedChar, value); }
             }
 
         }

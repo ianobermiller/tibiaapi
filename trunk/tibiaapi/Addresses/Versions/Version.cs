@@ -27,21 +27,5 @@ namespace Tibia
 
             return (ushort)(main * 100 + secondary);
         }
-
-        public static void Set(string version, Process p)
-        {
-            CurrentVersion = StringToVersion(version);
-            CurrentVersionString = version;
-            switch (version)
-            {
-                case "9.7.1.0":
-                    SetVersion9_7_1_0(p);
-                    break;
-                default:
-                    throw new Exceptions.VersionNotSupportedException("Tibia version " + CurrentVersionString + " is not supported by TibiaAPI.");
-            }
-
-        }
-
     }
 }

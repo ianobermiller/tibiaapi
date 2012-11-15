@@ -38,8 +38,8 @@ namespace HotkeyTest
         {
             uxHotkeysDGV.BeginInvoke(new EventHandler(delegate
             {
-                hotkeyList=new List<Hotkey>((int)Tibia.Addresses.Hotkey.MaxHotkeys);
-                for (byte num = 0; num < Tibia.Addresses.Hotkey.MaxHotkeys; num++)
+                hotkeyList = new List<Hotkey>((int)client.Addresses.Hotkey.MaxHotkeys);
+                for (byte num = 0; num < client.Addresses.Hotkey.MaxHotkeys; num++)
                 {
                     hotkeyList.Add(new Hotkey(client, num));
                 }

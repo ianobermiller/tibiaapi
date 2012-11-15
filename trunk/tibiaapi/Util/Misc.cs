@@ -79,7 +79,7 @@ namespace Tibia
             byte[] ar = new byte[len];
             for (int i = 0; i < len; i++)
             {
-                ar[i] = Addresses.Client.Nop;
+                ar[i] = 0x90;
             }
             return ar;
         }

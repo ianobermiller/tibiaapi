@@ -106,14 +106,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Addresses\ContextMenus.cs" />
-    <Compile Include="Addresses\DatItem.cs" />
-    <Compile Include="Addresses\DrawItem.cs" />
-    <Compile Include="Addresses\DrawSkin.cs" />
-    <Compile Include="Addresses\Hotkey.cs" />
-    <Compile Include="Addresses\TextDisplay.cs" />
+    <Compile Include="Addresses\Addresses.cs" />
+    <Compile Include="Addresses\ContextMenusAddresses.cs" />
+    <Compile Include="Addresses\DatItemAddresses.cs" />
+    <Compile Include="Addresses\DrawItemAddresses.cs" />
+    <Compile Include="Addresses\DrawSkinAddresses.cs" />
+    <Compile Include="Addresses\HotkeyAddresses.cs" />
+    <Compile Include="Addresses\TextDisplayAddresses.cs" />
+    <Compile Include="Addresses\Versions\GameStructures.cs" />
     <Compile Include="Addresses\Versions\Version9_7_1_0.cs" />
-    <Compile Include="Addresses\Vip.cs" />
+    <Compile Include="Addresses\VipAddresses.cs" />
     <Compile Include="Clientless\GameServerConnection.cs" />
     <Compile Include="Clientless\LoginServerConnection.cs" />
     <Compile Include="Constants\CreatureLists.cs" />
@@ -355,12 +357,12 @@
     <Compile Include="Objects\Container.cs" />
     <Compile Include="Objects\BattleList.cs" />
     <Compile Include="Objects\Item.cs" />
-    <Compile Include="Addresses\BattleList.cs" />
-    <Compile Include="Addresses\Client.cs" />
-    <Compile Include="Addresses\Container.cs" />
-    <Compile Include="Addresses\Player.cs" />
-    <Compile Include="Addresses\Map.cs" />
-    <Compile Include="Addresses\Creature.cs" />
+    <Compile Include="Addresses\BattleListAddresses.cs" />
+    <Compile Include="Addresses\ClientAddresses.cs" />
+    <Compile Include="Addresses\ContainerAddresses.cs" />
+    <Compile Include="Addresses\PlayerAddresses.cs" />
+    <Compile Include="Addresses\MapAddresses.cs" />
+    <Compile Include="Addresses\CreatureAddresses.cs" />
     <Compile Include="Objects\Client.cs" />
     <Compile Include="Objects\VipList.cs" />
     <Compile Include="Objects\Vip.cs" />
@@ -396,8 +398,6 @@
     <None Include="TibiaAPI.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\Release\TibiaAPI_Inject.dll" />
-    <None Include="bin\Debug\TibiaAPI_Inject.dll" />
     <Content Include="CurrentForumPost.txt" />
   </ItemGroup>
   <ItemGroup>

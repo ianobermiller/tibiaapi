@@ -57,6 +57,7 @@
             this.uxMilisecondsNUD = new System.Windows.Forms.NumericUpDown();
             this.uxUpdateBtn = new System.Windows.Forms.Button();
             this.fpsUpdateTimer = new System.Windows.Forms.Timer(this.components);
+            this.uxReplaceTreesBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.uxClientDGV)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -109,6 +110,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.uxReplaceTreesBtn);
             this.splitContainer2.Panel1.Controls.Add(this.uxLevelSpyNUD);
             this.splitContainer2.Panel1.Controls.Add(this.uxLevelSpyChk);
             this.splitContainer2.Panel1.Controls.Add(this.uxFullLightChk);
@@ -193,9 +195,9 @@
             // 
             // uxOpenMC
             // 
-            this.uxOpenMC.Location = new System.Drawing.Point(327, 92);
+            this.uxOpenMC.Location = new System.Drawing.Point(301, 92);
             this.uxOpenMC.Name = "uxOpenMC";
-            this.uxOpenMC.Size = new System.Drawing.Size(75, 23);
+            this.uxOpenMC.Size = new System.Drawing.Size(101, 23);
             this.uxOpenMC.TabIndex = 43;
             this.uxOpenMC.Text = "Open MC";
             this.uxOpenMC.UseVisualStyleBackColor = true;
@@ -427,6 +429,16 @@
             this.fpsUpdateTimer.Interval = 500;
             this.fpsUpdateTimer.Tick += new System.EventHandler(this.fpsUpdateTimer_Tick);
             // 
+            // uxReplaceTreesBtn
+            // 
+            this.uxReplaceTreesBtn.Location = new System.Drawing.Point(301, 118);
+            this.uxReplaceTreesBtn.Name = "uxReplaceTreesBtn";
+            this.uxReplaceTreesBtn.Size = new System.Drawing.Size(101, 23);
+            this.uxReplaceTreesBtn.TabIndex = 48;
+            this.uxReplaceTreesBtn.Text = "Replace Trees";
+            this.uxReplaceTreesBtn.UseVisualStyleBackColor = true;
+            this.uxReplaceTreesBtn.Click += new System.EventHandler(this.uxReplaceTreesBtn_Click);
+            // 
             // uxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -483,6 +495,7 @@
         private System.Windows.Forms.NumericUpDown uxLevelSpyNUD;
         private System.Windows.Forms.CheckBox uxLevelSpyChk;
         private System.Windows.Forms.CheckBox uxFullLightChk;
+        private System.Windows.Forms.Button uxReplaceTreesBtn;
 
 
     }

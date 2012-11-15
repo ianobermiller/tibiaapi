@@ -100,34 +100,34 @@ namespace Tibia.Objects
             private void OnPipeConnect()
             {
                 //Set constants for displaying
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintName, Tibia.Addresses.TextDisplay.PrintName);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintFPS, Tibia.Addresses.TextDisplay.PrintFPS);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.ShowFPS, Tibia.Addresses.TextDisplay.ShowFPS);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintTextFunc, Tibia.Addresses.TextDisplay.PrintTextFunc);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.NopFPS, Tibia.Addresses.TextDisplay.NopFPS);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintName, client.Addresses.TextDisplay.PrintName);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintFPS, client.Addresses.TextDisplay.PrintFPS);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.ShowFPS, client.Addresses.TextDisplay.ShowFPS);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintTextFunc, client.Addresses.TextDisplay.PrintTextFunc);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.NopFPS, client.Addresses.TextDisplay.NopFPS);
 
                 //Context Menus
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.AddContextMenuFunc, Tibia.Addresses.ContextMenus.AddContextMenuPtr);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenu, Tibia.Addresses.ContextMenus.OnClickContextMenuPtr);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.SetOutfitContextMenu, Tibia.Addresses.ContextMenus.AddSetOutfitContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PartyActionContextMenu, Tibia.Addresses.ContextMenus.AddPartyActionContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.CopyNameContextMenu, Tibia.Addresses.ContextMenus.AddCopyNameContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.TradeWithContextMenu, Tibia.Addresses.ContextMenus.AddTradeWithContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.LookContextMenu, Tibia.Addresses.ContextMenus.AddLookContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, Tibia.Addresses.ContextMenus.OnClickContextMenuVf);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.AddContextMenuFunc, client.Addresses.ContextMenus.AddContextMenuPtr);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenu, client.Addresses.ContextMenus.OnClickContextMenuPtr);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.SetOutfitContextMenu, client.Addresses.ContextMenus.AddSetOutfitContextMenu);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PartyActionContextMenu, client.Addresses.ContextMenus.AddPartyActionContextMenu);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.CopyNameContextMenu, client.Addresses.ContextMenus.AddCopyNameContextMenu);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.TradeWithContextMenu, client.Addresses.ContextMenus.AddTradeWithContextMenu);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.LookContextMenu, client.Addresses.ContextMenus.AddLookContextMenu);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, client.Addresses.ContextMenus.OnClickContextMenuVf);
 
                 //winsock recv/send
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, Tibia.Addresses.Client.RecvPointer);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, Tibia.Addresses.Client.SendPointer);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, client.Addresses.Client.RecvPointer);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, client.Addresses.Client.SendPointer);
 
                 //event triggering
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, Tibia.Addresses.Client.EventTriggerPointer);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, client.Addresses.Client.EventTriggerPointer);
 
                 //image drawing
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawItemFunc, Tibia.Addresses.DrawItem.DrawItemFunc);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawItemFunc, client.Addresses.DrawItem.DrawItemFunc);
 
                 //skin drawing
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawSkinFunc, Tibia.Addresses.DrawSkin.DrawSkinFunc);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.DrawSkinFunc, client.Addresses.DrawSkin.DrawSkinFunc);
 
                 //Hook Display functions
                 Packets.Pipes.HooksEnableDisablePacket.Send(client, true);

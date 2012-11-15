@@ -25,7 +25,7 @@ namespace SmartPacketAnalyzer
             uxTimerShort.Enabled = true;
             uxMemoryList.Items.Add(new ListViewItem(new string[]{
                 "Current See ID",
-                Convert.ToString(Tibia.Addresses.Client.SeeId, 16).ToUpper(),
+                Convert.ToString(client.Addresses.Client.SeeId, 16).ToUpper(),
                 String.Empty,
                 DataType.Integer.ToString()
             }));

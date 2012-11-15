@@ -67,7 +67,7 @@ namespace Tibia.Objects
                 {
                     if (newActionStateAddress != IntPtr.Zero || SetupNewActionStateAddress())
                     {
-                        return Tibia.Addresses.Client.ActionStateFreezer.All(address => client.Memory.ReadUInt32(address) == newActionStateAddress.ToInt64());
+                        return client.Addresses.Client.ActionStateFreezer.All(address => client.Memory.ReadUInt32(address) == newActionStateAddress.ToInt64());
                     }
                     else
                     {
@@ -78,30 +78,14 @@ namespace Tibia.Objects
                 {
                     if (newActionStateAddress != IntPtr.Zero || SetupNewActionStateAddress())
                     {
-                        uint addr=value ? (uint)newActionStateAddress.ToInt64():Tibia.Addresses.Client.ActionState;
-                        Tibia.Addresses.Client.ActionStateFreezer.Foreach(address => client.Memory.WriteUInt32(address, addr));
-                        //Tibia.Addresses.Client.ActionStateFreezer.Select(address => client.Memory.WriteUInt32(address, addr));
+                        uint addr=value ? (uint)newActionStateAddress.ToInt64():client.Addresses.Client.ActionState;
+                        client.Addresses.Client.ActionStateFreezer.Foreach(address => client.Memory.WriteUInt32(address, addr));
                     }
                     else
                     {
                         throw new System.Exception("newActionStateAddress is not set.");
                     }
                 }
-                /*get {
-                    return client.Memory.ReadByte(Addresses.Client.ActionStateFreezer) == Addresses.Client.ActionStateFreezed[0];
-                }
-                set {
-                    Array.Copy(BitConverter.GetBytes((int)Tibia.Addresses.Client.ActionState), 0, Addresses.Client.ActionStateOriginal, 1, 4);
-                    Array.Copy(BitConverter.GetBytes((int)Tibia.Addresses.Client.ActionState), 0, Addresses.Client.ActionStateFreezed, 2, 4);
-                   
-                    if (value) {
-                        client.Memory.WriteByte((long)Tibia.Addresses.Client.ActionState, (byte)Tibia.Constants.ActionState.Using);
-                        client.Memory.WriteBytes(Addresses.Client.ActionStateFreezer, Addresses.Client.ActionStateFreezed, (uint)Addresses.Client.ActionStateFreezed.Length);
-                    }
-                    else
-                        client.Memory.WriteBytes(Addresses.Client.ActionStateFreezer, Addresses.Client.ActionStateOriginal, (uint)Addresses.Client.ActionStateOriginal.Length);
-                }
-                */
             }
 
             /// <summary>
@@ -111,8 +95,8 @@ namespace Tibia.Objects
             {
                 get
                 {
-                    int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
-                    return client.Memory.ReadDouble(frameRateBegin + Addresses.Client.FrameRateCurrentOffset);
+                    int frameRateBegin = client.Memory.ReadInt32(client.Addresses.Client.FrameRatePointer);
+                    return client.Memory.ReadDouble(frameRateBegin + client.Addresses.Client.FrameRateCurrentOffset);
                 }
             }
 
@@ -124,14 +108,14 @@ namespace Tibia.Objects
             {
                 get
                 {
-                    int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
-                    return Calculate.ConvertFPS(client.Memory.ReadDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset));
+                    int frameRateBegin = client.Memory.ReadInt32(client.Addresses.Client.FrameRatePointer);
+                    return Calculate.ConvertFPS(client.Memory.ReadDouble(frameRateBegin + client.Addresses.Client.FrameRateLimitOffset));
                 }
                 set
                 {
                     if (value <= 0) value = 1;
-                    int frameRateBegin = client.Memory.ReadInt32(Addresses.Client.FrameRatePointer);
-                    client.Memory.WriteDouble(frameRateBegin + Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
+                    int frameRateBegin = client.Memory.ReadInt32(client.Addresses.Client.FrameRatePointer);
+                    client.Memory.WriteDouble(frameRateBegin + client.Addresses.Client.FrameRateLimitOffset, Calculate.ConvertFPS(value));
                 }
             }
 
@@ -244,15 +228,15 @@ namespace Tibia.Objects
                 get
                 {
                     int screenBar;
-                    screenBar = client.Memory.ReadInt32(Addresses.Client.GameWindowBar);
+                    screenBar = client.Memory.ReadInt32(client.Addresses.Client.GameWindowBar);
                     return client.Memory.ReadInt32(screenBar + 0x50) == Size.Height;
                 }
                 set
                 {
                     int screenRect, screenBar;
-                    screenRect = client.Memory.ReadInt32(Addresses.Client.GameWindowRectPointer);
+                    screenRect = client.Memory.ReadInt32(client.Addresses.Client.GameWindowRectPointer);
                     screenRect = client.Memory.ReadInt32(screenRect + 0x18 + 0x04);
-                    screenBar = client.Memory.ReadInt32(Addresses.Client.GameWindowBar);
+                    screenBar = client.Memory.ReadInt32(client.Addresses.Client.GameWindowBar);
 
                     if (value && client.Memory.ReadInt32(screenBar + 0x50) != Size.Height)
                     {
@@ -287,17 +271,17 @@ namespace Tibia.Objects
                 get
                 {
                     int screenRect, screenBar;
-                    screenRect = client.Memory.ReadInt32(Addresses.Client.GameWindowRectPointer);
+                    screenRect = client.Memory.ReadInt32(client.Addresses.Client.GameWindowRectPointer);
                     screenRect = client.Memory.ReadInt32(screenRect + 0x18 + 0x04);
-                    screenBar = client.Memory.ReadInt32(Addresses.Client.GameWindowBar);
+                    screenBar = client.Memory.ReadInt32(client.Addresses.Client.GameWindowBar);
                     return client.Memory.ReadInt32(screenRect + 0x14) == 5;
                 }
                 set
                 {
                     int screenRect, screenBar;
-                    screenRect = client.Memory.ReadInt32(Tibia.Addresses.Client.GameWindowRectPointer);
+                    screenRect = client.Memory.ReadInt32(client.Addresses.Client.GameWindowRectPointer);
                     screenRect = client.Memory.ReadInt32(screenRect + 0x18 + 0x4);
-                    screenBar = client.Memory.ReadInt32(Tibia.Addresses.Client.GameWindowBar);
+                    screenBar = client.Memory.ReadInt32(client.Addresses.Client.GameWindowBar);
 
                     if (value && !WideScreenView)
                     {
