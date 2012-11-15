@@ -24,11 +24,11 @@ namespace Tibia.Objects
 
         public Container GetContainer(byte number)
         {
-            if (number < 0 || number > Addresses.Container.MaxContainers)
-                throw new ArgumentOutOfRangeException("number", "number must be between 0 and Addresses.Container.MaxContainers");
+            if (number < 0 || number > client.Addresses.Container.MaxContainers)
+                throw new ArgumentOutOfRangeException("number", "number must be between 0 and client.Addresses.Container.MaxContainers");
             
-            uint i = Addresses.Container.Start + (number * Addresses.Container.StepContainer);
-            if (client.Memory.ReadByte(i + Addresses.Container.DistanceIsOpen) == 1)
+            uint i = client.Addresses.Container.Start + (number * client.Addresses.Container.StepContainer);
+            if (client.Memory.ReadByte(i + client.Addresses.Container.DistanceIsOpen) == 1)
             {
                 return new Container(client, i, number);
             }
@@ -41,20 +41,20 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Container> GetContainers()
         {
-            return Enumerable.Range(0, (int)Addresses.Container.MaxContainers)
+            return Enumerable.Range(0, (int)client.Addresses.Container.MaxContainers)
                     .Select(containerNumber => new
                     {
-                        Address = (uint)(Addresses.Container.Start + containerNumber * Addresses.Container.StepContainer),
+                        Address = (uint)(client.Addresses.Container.Start + containerNumber * client.Addresses.Container.StepContainer),
                         Number = (byte)containerNumber,
                     })
-                    .Where(pair => client.Memory.ReadByte(pair.Address + Addresses.Container.DistanceIsOpen) == 1)
+                    .Where(pair => client.Memory.ReadByte(pair.Address + client.Addresses.Container.DistanceIsOpen) == 1)
                     .Select(pair => new Container(client, pair.Address, pair.Number));
 
         }
 
         public IEnumerable<Item> GetItems()
         {
-            return GetSlotItems().Union(GetContainerItems());
+            return GetSlotItems().Concat(GetContainerItems());
         }
 
         public IEnumerable<Item> GetContainerItems()
@@ -81,12 +81,13 @@ namespace Tibia.Objects
             }
             else if (location.Type == Tibia.Constants.ItemLocationType.Container)
             {
-                long address = Addresses.Container.Start +
-                              Addresses.Container.StepContainer * (int)location.ContainerId +
-                              Addresses.Container.StepSlot * (int)location.Slot;
+                long address = client.Addresses.Container.Start +
+                              client.Addresses.Container.StepContainer * (int)location.ContainerId +
+                              client.Addresses.Container.DistanceContainerSlotsBegin+
+                              client.Addresses.Container.StepSlot * (int)location.Slot;
                 return new Item(client,
-                    client.Memory.ReadUInt32(address + Addresses.Container.DistanceItemId),
-                    client.Memory.ReadByte(address + Addresses.Container.DistanceItemCount),
+                    client.Memory.ReadUInt32(address + client.Addresses.Container.DistanceContainerSlotItemId),
+                    client.Memory.ReadByte(address + client.Addresses.Container.DistanceContainerSlotItemCount),
                     "", location);
             }
             return null;
@@ -99,11 +100,11 @@ namespace Tibia.Objects
         /// <returns></returns>
         public Item GetItemInSlot(Constants.SlotNumber s)
         {
-            uint address = Addresses.Player.SlotBegin + Addresses.Player.SlotStep * (10 - (uint)s);
-            uint id = client.Memory.ReadUInt32(address);
+            uint address = client.Addresses.Player.SlotBegin + client.Addresses.Player.SlotStep * (10 - (uint)s);
+            uint id = client.Memory.ReadUInt32(address+ client.Addresses.Player.DistanceSlotId);
             if (id > 0)
             {
-                byte count = client.Memory.ReadByte(address + Addresses.Player.DistanceSlotCount);
+                byte count = client.Memory.ReadByte(address + client.Addresses.Player.DistanceSlotCount);
                 return new Item(client, id, count, "", ItemLocation.FromSlot(s));
             }
             else
@@ -114,16 +115,16 @@ namespace Tibia.Objects
 
         public IEnumerable<Item> GetSlotItems()
         {
-            return Enumerable.Range(0, Addresses.Player.MaxSlots)
+            return Enumerable.Range(0, client.Addresses.Player.MaxSlots)
                     .Select(slotNumber => new
                     {
-                        Address = (uint)(Addresses.Player.SlotBegin + slotNumber * Addresses.Player.SlotStep),
+                        Address = (uint)(client.Addresses.Player.SlotBegin + slotNumber * client.Addresses.Player.SlotStep),
                         Number = slotNumber
                     })
                     .Select(slot => new
                     {
-                        ItemID = client.Memory.ReadUInt32(slot.Address),
-                        ItemCount = client.Memory.ReadByte(slot.Address + Addresses.Player.DistanceSlotCount),
+                        ItemID = client.Memory.ReadUInt32(slot.Address + client.Addresses.Player.DistanceSlotId),
+                        ItemCount = client.Memory.ReadByte(slot.Address + client.Addresses.Player.DistanceSlotCount),
                         Position = slot.Number
                     })
                     .Where(ItemSlot => ItemSlot.ItemID > 0)
@@ -152,7 +153,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnSelf(uint id)
         {
-            return UseItemOnCreature(id, 0, client.Memory.ReadInt32(Addresses.Player.Id));
+            return UseItemOnCreature(id, 0, client.Memory.ReadInt32(client.Addresses.Player.Id));
         }
 
         /// <summary>

@@ -68,12 +68,12 @@ namespace SmartTeamMarker
         {
             if (eventId == 1002)
             {
-                client.Statusbar = client.Memory.ReadInt32(Tibia.Addresses.Client.ClickContextMenuItemId).ToString();
+                client.Statusbar = client.Memory.ReadInt32(client.Addresses.Client.ClickContextMenuItemId).ToString();
             }
             else
             {
                 Creature clicked = client.BattleList.GetCreatures().FirstOrDefault(
-                    creature => creature.Id == client.Memory.ReadInt32(Tibia.Addresses.Client.ClickContextMenuCreatureId));
+                    creature => creature.Id == client.Memory.ReadInt32(client.Addresses.Client.ClickContextMenuCreatureId));
                 if (clicked != null)
                 {
                     Website.CharInfo character = new Website.CharInfo();

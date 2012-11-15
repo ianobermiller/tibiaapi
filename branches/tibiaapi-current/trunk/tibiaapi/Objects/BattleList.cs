@@ -26,9 +26,9 @@ namespace Tibia.Objects
         /// <returns></returns>
         public IEnumerable<Creature> GetCreatures()
         {
-            return Enumerable.Range(0,(int) Addresses.BattleList.MaxCreatures)
-                    .Select(index => Addresses.BattleList.Start + (uint)index * Addresses.BattleList.StepCreatures)
-                    .Where(address => client.Memory.ReadByte(address + Addresses.Creature.DistanceIsVisible) == 1)
+            return Enumerable.Range(0,(int) client.Addresses.BattleList.MaxCreatures)
+                    .Select(index => client.Addresses.BattleList.Start + (uint)index * client.Addresses.BattleList.StepCreatures)
+                    .Where(address => client.Memory.ReadByte(address + client.Addresses.Creature.DistanceIsVisible) == 1)
                     .Select(address => new Creature(client, address));
         }
 
@@ -37,10 +37,10 @@ namespace Tibia.Objects
         /// </summary>
         public void ShowInvisible()
         {
-            client.Memory.WriteByte(Addresses.Map.RevealInvisible1,
-                Addresses.Map.RevealInvisible1Edited);
-            client.Memory.WriteByte(Addresses.Map.RevealInvisible2,
-                Addresses.Map.RevealInvisible2Edited);
+            client.Memory.WriteByte(client.Addresses.Map.RevealInvisible1,
+                client.Addresses.Map.RevealInvisible1Edited);
+            client.Memory.WriteByte(client.Addresses.Map.RevealInvisible2,
+                client.Addresses.Map.RevealInvisible2Edited);
         }
 
         /// <summary>
@@ -48,10 +48,10 @@ namespace Tibia.Objects
         /// </summary>
         public void HideInvisible()
         {
-            client.Memory.WriteByte(Addresses.Map.RevealInvisible1,
-                Addresses.Map.RevealInvisible1Default);
-            client.Memory.WriteByte(Addresses.Map.RevealInvisible2,
-                Addresses.Map.RevealInvisible2Default);
+            client.Memory.WriteByte(client.Addresses.Map.RevealInvisible1,
+                client.Addresses.Map.RevealInvisible1Default);
+            client.Memory.WriteByte(client.Addresses.Map.RevealInvisible2,
+                client.Addresses.Map.RevealInvisible2Default);
         }
     }
     

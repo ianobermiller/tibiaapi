@@ -75,7 +75,5 @@ namespace PlayerTest
             public string Property { get; set; }
             public object Value { get; set; }
         }
-
-
     }
 }

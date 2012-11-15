@@ -168,7 +168,7 @@ namespace Tibia.Packets
                 if (!client.IO.IsSendToClientCodeWritten)
                     if (!client.IO.WriteOnGetNextPacketCode()) return false;
 
-                byte[] originalStream = client.Memory.ReadBytes(Tibia.Addresses.Client.RecvStream, 12);
+                byte[] originalStream = client.Memory.ReadBytes(client.Addresses.Client.RecvStream, 12);
 
                 IntPtr myStreamAddress = WinApi.VirtualAllocEx(
                     client.ProcessHandle,
@@ -188,7 +188,7 @@ namespace Tibia.Packets
                         Array.Copy(BitConverter.GetBytes(myStreamAddress.ToInt32()), myStream, 4);
                         Array.Copy(BitConverter.GetBytes(packet.Length), 0, myStream, 4, 4);
 
-                        if (client.Memory.WriteBytes(Tibia.Addresses.Client.RecvStream,
+                        if (client.Memory.WriteBytes(client.Addresses.Client.RecvStream,
                             myStream, 12))
                         {
                             if (client.Memory.WriteByte(client.IO.SendToClientAddress.ToInt64(), 0x1))
@@ -198,7 +198,7 @@ namespace Tibia.Packets
                                                             client.ProcessHandle,
                                                             IntPtr.Zero,
                                                             0,
-                                                            new IntPtr(Tibia.Addresses.Client.ParserFunc),
+                                                            new IntPtr(client.Addresses.Client.ParserFunc),
                                                             IntPtr.Zero,
                                                             0,
                                                             IntPtr.Zero);
@@ -210,7 +210,7 @@ namespace Tibia.Packets
 
                             }
 
-                            client.Memory.WriteBytes(Tibia.Addresses.Client.RecvStream,
+                            client.Memory.WriteBytes(client.Addresses.Client.RecvStream,
                             originalStream, 12);
                         }
 

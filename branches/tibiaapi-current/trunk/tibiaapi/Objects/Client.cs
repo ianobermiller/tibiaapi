@@ -28,6 +28,7 @@ namespace Tibia.Objects
         internal Location playerLocation = Location.Invalid;
 
         // References to commonly used objects
+        private AddressesCollection addresses;
         private BattleList battleList;
         private Map map;
         private Inventory inventory;
@@ -93,6 +94,8 @@ namespace Tibia.Objects
             // every read/write operation
             processHandle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
+            addresses = new AddressesCollection(this);
+
             pathFinder = new Tibia.Util.AStarPathFinder(this);
             contextMenu = new ContextMenu(this);
 
@@ -108,7 +111,7 @@ namespace Tibia.Objects
             skin = new Skin(this);
 
             // Save the start time (it isn't changing)
-            startTime = Memory.ReadInt32(Addresses.Client.StartTime);
+            startTime = Memory.ReadInt32(addresses.Client.StartTime);
         }
 
         /// <summary>
@@ -123,6 +126,11 @@ namespace Tibia.Objects
         #endregion
 
         #region Properties
+
+        public AddressesCollection Addresses
+        {
+            get { return addresses; }
+        }
 
         public Location PlayerLocation
         {
@@ -380,6 +388,8 @@ namespace Tibia.Objects
         /// </summary>
         public static Client OpenMC(string path, string arguments)
         {
+            return Open(path, arguments);
+
             Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
             Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
 
@@ -391,16 +401,20 @@ namespace Tibia.Objects
                 System.IO.Path.GetDirectoryName(path), ref si, out pi);
 
             IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
-            Process p = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
-            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.MultiClient, Tibia.Addresses.Client.MultiClientJMP);
+            var process = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
+            var addresses = new AddressesCollection(process.MainModule.FileVersionInfo.FileVersion, process);
+
+
+            Util.Memory.WriteByte(handle, (long)addresses.Client.MultiClient, addresses.Client.MultiClientJMP);
             Util.WinApi.ResumeThread(pi.hThread);
-            p.WaitForInputIdle();
-            Util.Memory.WriteByte(handle, (long)Tibia.Addresses.Client.MultiClient, Tibia.Addresses.Client.MultiClientJNZ);
+            process.WaitForInputIdle();
+            Util.Memory.WriteByte(handle, (long)addresses.Client.MultiClient, addresses.Client.MultiClientJNZ);
+
             Util.WinApi.CloseHandle(handle);
             Util.WinApi.CloseHandle(pi.hProcess);
             Util.WinApi.CloseHandle(pi.hThread);
 
-            return new Client(p);
+            return new Client(process);
         }
 
         #endregion
@@ -412,8 +426,6 @@ namespace Tibia.Objects
         /// <returns></returns>
         public override string ToString()
         {
-            Tibia.Version.Set(Version, Process);
-
             string s = "[" + Version + "] ";
             if (!LoggedIn)
                 s += "Not logged in.";

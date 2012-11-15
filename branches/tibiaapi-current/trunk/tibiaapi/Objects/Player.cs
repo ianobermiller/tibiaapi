@@ -57,7 +57,8 @@ namespace Tibia.Objects
             {
                 GoToX = (uint)value.X;
                 GoToY = (uint)value.Y;
-                GoToZ = (uint)value.Z;
+                if (value.Z != Z)
+                    return;
                 IsWalking = true;
             }
             get

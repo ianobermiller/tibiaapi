@@ -1,41 +1,56 @@
-﻿using Tibia.Addresses;
+﻿using System;
 using System.Diagnostics;
-using System;
+using System.Runtime.InteropServices;
 using System.Linq;
 
-namespace Tibia
+namespace Tibia.Objects
 {
-    public partial class Version
+    public partial class AddressesCollection
     {
-        public static void SetVersion9_7_1_0(Process p)
+        public void SetVersion9_7_1_0(uint baseAddress)
         {
-            uint BaseAddress = Convert.ToUInt32(p.MainModule.BaseAddress.ToInt32());
+            Type creatureStructure = typeof(Tibia.Version.v971.Creature);
+            Type containerHeaderStructure = typeof(Tibia.Version.v971.ContainerHeader);
+            Type simpleItemStructure = typeof(Tibia.Version.v971.SimpleItem);
+            Type vipNodeStructure = typeof(Tibia.Version.v971.VipNode);
+            Type playerSkillStructure = typeof(Tibia.Version.v971.PlayerSkills);
+            Type playerProperties1Structure = typeof(Tibia.Version.v971.PlayerProperties1);
+            Type playerProperties2Structure = typeof(Tibia.Version.v971.PlayerProperties2);
+            Type playerSlotsStructure = typeof(Tibia.Version.v971.PlayerSlots);
+            Type datMemoryStructure = typeof(Tibia.Version.v971.DatMemory);
+            Type charListEntryStructure = typeof(Tibia.Version.v971.CharListEntry);
+            Type loginInfoStructure = typeof(Tibia.Version.v971.LoginInfo);
+            Type mapTileStructure = typeof(Tibia.Version.v971.MapTile);
+                        
 
-            BattleList.Start = 0x549008 + BaseAddress;
-            BattleList.StepCreatures = 0xB0;
+            #region BattleList
+            BattleList.Start = 0x549008 + baseAddress;
+            BattleList.StepCreatures = (uint)Marshal.SizeOf(creatureStructure);
             BattleList.MaxCreatures = 1300;
-            BattleList.End = BattleList.Start + (BattleList.StepCreatures * BattleList.MaxCreatures);
+            BattleList.End = BattleList.Start + BattleList.MaxCreatures * BattleList.StepCreatures;
+            #endregion
 
+            #region Client
             Client.StartTime = 0;//    deprecated
-            Client.XTeaKey = 0x3ABF6C + BaseAddress;
-            Client.SocketStruct = 0x59C9AC + BaseAddress;
-            Client.RecvPointer = 0x2F5940 + BaseAddress;
-            Client.SendPointer = 0x2F5970 + BaseAddress;
+            Client.XTeaKey = 0x3ABF6C + baseAddress;
+            Client.SocketStruct = 0x59C9AC + baseAddress;
+            Client.RecvPointer = 0x2F5940 + baseAddress;
+            Client.SendPointer = 0x2F5970 + baseAddress;
             Client.LastRcvPacket = 0;//    deprecated
-            Client.DecryptCall = 0x67FD7 + BaseAddress;
-            Client.GetNextPacketCall = 0x11ACC0 + BaseAddress;
-            Client.RecvStream = 0x5D5394 + BaseAddress;
-            Client.FrameRatePointer = 0x593008 + BaseAddress;
+            Client.DecryptCall = 0x67FD7 + baseAddress;
+            Client.GetNextPacketCall = 0x11ACC0 + baseAddress;
+            Client.RecvStream = 0x5D5394 + baseAddress;
+            Client.FrameRatePointer = 0x593008 + baseAddress;
             Client.FrameRateCurrentOffset = 0x60;
             Client.FrameRateLimitOffset = 0x58;
-            Client.MultiClient = 0x1309C7 + BaseAddress;
+            Client.MultiClient = 0x1309C7 + baseAddress;
             Client.MultiClientJMP = 0xEB;
             Client.MultiClientJNZ = 0x75;
-            Client.Status = 0x3BDCDC + BaseAddress;
-            Client.SafeMode = 0x3BDA97 + BaseAddress;
-            Client.FollowMode = 0x3BB670 + BaseAddress;
-            Client.AttackMode = 0x3BDAA0 + BaseAddress;
-            Client.ActionState = 0x3BDCB0 + BaseAddress;
+            Client.Status = 0x3BDCDC + baseAddress;
+            Client.SafeMode = 0x3BDA97 + baseAddress;
+            Client.FollowMode = 0x3BB670 + baseAddress;
+            Client.AttackMode = 0x3BDAA0 + baseAddress;
+            Client.ActionState = 0x3BDCB0 + baseAddress;
             Client.ActionStateFreezer = (new uint[] { 
                                         0X1202C03,//CMP DWORD PTR DS:[158DCB0],0C             DS:[0158DCB0]=00000000
                                         0X12101A5,//CMP DWORD PTR DS:[158DCB0],6              DS:[0158DCB0]=00000000
@@ -73,256 +88,291 @@ namespace Tibia
                                         0X1301538,//MOV EAX,DWORD PTR DS:[158DCB0]            [0158DCB0]=00000000
                                         0X131B0D1,//MOV EAX,DWORD PTR DS:[158DCB0]            [0158DCB0]=00000000
                                         0X131B16A,//CMP DWORD PTR DS:[158DCB0],ECX
-                                        }).Select(address => address - 0X11D0000  + BaseAddress).ToArray();
-            Client.StatusbarText = 0x3FF930 + BaseAddress;
-            Client.StatusbarTime = 0x3FF928 + BaseAddress;
-            Client.ClickId = 0x546460 + BaseAddress;
-            Client.ClickCount = Client.ClickId - 4;
-            Client.SeeId = 0x54642C + BaseAddress;
+                                        }).Select(address => address - 0X11D0000 + baseAddress).ToArray();
+            Client.StatusbarTime = 0x3FF928 + baseAddress;
+            Client.StatusbarText = 0x3FF930 + baseAddress;
+            Client.SeeId = 0x54642C + baseAddress;
             Client.SeeCount = Client.SeeId - 4;
+            Client.ClickId = 0x546460 + baseAddress;
+            Client.ClickCount = Client.ClickId - 4;
             Client.ClickContextMenuItemId = Client.SeeId;
-            Client.ClickContextMenuCreatureId = 0x3BDD38 + BaseAddress;
-            Client.LoginServerStart = 0x3B4538 + BaseAddress;
+            Client.ClickContextMenuCreatureId = 0x3BDD38 + baseAddress;
+            Client.LoginServerStart = 0x3B4538 + baseAddress;
             Client.StepLoginServer = 112;
             Client.DistancePort = 100;
             Client.MaxLoginServers = 10;
-            Client.RSA = 0x325EA8 + BaseAddress;
+            Client.RSA = 0x325EA8 + baseAddress;
 
-            Client.LoginStruct = 0x546CB0 + BaseAddress;
-            Client.LoginCharListBegin = Client.LoginStruct;
-            Client.LoginCharListEnd = Client.LoginStruct + 4;
-            Client.LoginAccount = Client.LoginStruct + 20;
-            Client.LoginPassword = Client.LoginStruct + 48;
-            Client.LoginSelectedChar = Client.LoginStruct + 76;
-            Client.LoginCharListDistanceCharName = 4;
-            Client.LoginCharListDistanceWorldName = 32;
-            Client.LoginCharListDistanceIsPreview = 60;
-            Client.LoginCharListDistanceWorldIP = 64;
-            Client.LoginCharListDistanceWorldPort = 68;
-            Client.LoginCharListStepCharacter = 72;
+            Client.LoginStruct = 0x546CB0 + baseAddress;
+            Client.LoginCharListBegin = (uint)(Client.LoginStruct + Marshal.OffsetOf(loginInfoStructure, "charListBegin").ToInt32());
+            Client.LoginCharListEnd = (uint)(Client.LoginStruct + Marshal.OffsetOf(loginInfoStructure, "charListEnd").ToInt32());
+            Client.LoginAccount = (uint)(Client.LoginStruct + Marshal.OffsetOf(loginInfoStructure, "accountTextField").ToInt32());
+            Client.LoginPassword = (uint)(Client.LoginStruct + Marshal.OffsetOf(loginInfoStructure, "passwordTextField").ToInt32());
+            Client.LoginSelectedChar = (uint)(Client.LoginStruct + Marshal.OffsetOf(loginInfoStructure, "selectedChar").ToInt32());
+            Client.LoginCharListDistanceCharName = (uint)Marshal.OffsetOf(charListEntryStructure, "charNameTextField");
+            Client.LoginCharListDistanceWorldName = (uint)Marshal.OffsetOf(charListEntryStructure, "worldNameTextField");
+            Client.LoginCharListDistanceIsPreview = (uint)Marshal.OffsetOf(charListEntryStructure, "isPreview");
+            Client.LoginCharListDistanceWorldIP = (uint)Marshal.OffsetOf(charListEntryStructure, "worldIP");
+            Client.LoginCharListDistanceWorldPort = (uint)Marshal.OffsetOf(charListEntryStructure, "worldPort");
+            Client.LoginCharListStepCharacter = (uint) Marshal.SizeOf(charListEntryStructure);
 
-            Client.DatPointer = 0x3BB5CC + BaseAddress;
-            Client.EventTriggerPointer = 0x117A70 + BaseAddress;
-            Client.DialogPointer = 0x3B450C + BaseAddress;
+            Client.DatPointer = 0x3BB5CC + baseAddress;
+            Client.EventTriggerPointer = 0x117A70 + baseAddress;
+            Client.DialogPointer = 0x3B450C + baseAddress;
             Client.DialogLeft = 0x14;
             Client.DialogTop = 0x18;
             Client.DialogWidth = 0x1C;
             Client.DialogHeight = 0x20;
             Client.DialogCaption = 0x54;
-            Client.GameWindowRectPointer = 0x5D52A0 + BaseAddress;
-            Client.GameWindowBar = 0x3FF924 + BaseAddress;
+            Client.GameWindowRectPointer = 0x5D52A0 + baseAddress;
+            Client.GameWindowBar = 0x3FF924 + baseAddress;
+            #endregion
 
-            Container.Start = 0x4033B8 + BaseAddress;
-            Container.StepContainer = 492;
+            #region Container
+            Container.Start = 0x4033B8 + baseAddress;
+            Container.MaxSlots = 36;
             Container.MaxContainers = 16;
-            Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
             Container.MaxStack = 100;
-            Container.DistanceHasParent = 0;
-            Container.DistanceId = 0 + 12;
-            Container.DistanceName = 4 + 12;
-            Container.DistanceAmount = 36 + 12;
-            Container.DistanceIsOpen = 40 + 12;
-            Container.DistanceVolume = 44 + 12;
-            Container.DistanceItemCount = 52 + 12;
-            Container.DistanceItemId = 56 + 12;
-            Container.StepSlot = 12;
 
-            ContextMenus.AddContextMenuPtr = 0x5DA90 + BaseAddress;
-            ContextMenus.OnClickContextMenuPtr = 0x5EAF0 + BaseAddress;
-            ContextMenus.OnClickContextMenuVf = 0x328268 + BaseAddress;
-            ContextMenus.AddSetOutfitContextMenu = 0x5E8A1 + BaseAddress;
-            ContextMenus.AddCopyNameContextMenu = 0x5E938 + BaseAddress;
-            ContextMenus.AddTradeWithContextMenu = 0x5E526 + BaseAddress;
-            ContextMenus.AddLookContextMenu = 0x5E3FF + BaseAddress;
+            Container.StepSlot = (uint)Marshal.SizeOf(simpleItemStructure);
+            Container.StepContainer = (uint)Marshal.SizeOf(containerHeaderStructure) +
+                                       Container.MaxSlots * Container.StepSlot;
+            Container.End = Container.Start + (Container.MaxContainers * Container.StepContainer);
 
+            Container.DistanceHasParent = (uint)Marshal.OffsetOf(containerHeaderStructure, "hasParent");
+            Container.DistanceId = (uint)Marshal.OffsetOf(containerHeaderStructure, "id");
+            Container.DistanceName = (uint)Marshal.OffsetOf(containerHeaderStructure, "name");
+            Container.DistanceAmount = (uint)Marshal.OffsetOf(containerHeaderStructure, "ammount");
+            Container.DistanceIsOpen = (uint)Marshal.OffsetOf(containerHeaderStructure, "isOpen");
+            Container.DistanceVolume = (uint)Marshal.OffsetOf(containerHeaderStructure, "volume");
 
-            Creature.DistanceId = 0;
-            Creature.DistanceType = 3;
-            Creature.DistanceName = 4;
-            Creature.DistanceZ = 36;
-            Creature.DistanceY = 40;
-            Creature.DistanceX = 44;
-            Creature.DistanceScreenOffsetVert = 48;
-            Creature.DistanceScreenOffsetHoriz = 52;
-            Creature.DistanceFaceDirection = 56;
+            Container.DistanceContainerSlotsBegin = (uint)Marshal.SizeOf(containerHeaderStructure);
+            Container.DistanceContainerSlotItemCount = (uint)Marshal.OffsetOf(simpleItemStructure, "data");
+            Container.DistanceContainerSlotItemId = (uint)Marshal.OffsetOf(simpleItemStructure, "id");
+            #endregion
 
-            Creature.DistanceIsWalking = 80;
-            Creature.DistanceWalkDirection = 84;
-            Creature.DistanceOutfit = 96;
-            Creature.DistanceColorHead = 100;
-            Creature.DistanceColorBody = 104;
-            Creature.DistanceColorLegs = 108;
-            Creature.DistanceColorFeet = 112;
-            Creature.DistanceAddon = 116;
-            Creature.DistanceMountId = 120;
-            Creature.DistanceLight = 124;
-            Creature.DistanceLightColor = 128;
-            Creature.DistanceBlackSquare = 136;
-            Creature.DistanceHPBar = 140;
-            Creature.DistanceWalkSpeed = 144;
-            Creature.DistanceIsBlocking = 148;
-            Creature.DistanceSkull = 152;
-            Creature.DistanceParty = 156;
-            Creature.DistanceWarIcon = 168;
-            Creature.DistanceIsVisible = 172;
+            #region ContextMenus
+            ContextMenus.AddContextMenuPtr = 0x5DA90 + baseAddress;
+            ContextMenus.OnClickContextMenuPtr = 0x5EAF0 + baseAddress;
+            ContextMenus.OnClickContextMenuVf = 0x328268 + baseAddress;
+            ContextMenus.AddSetOutfitContextMenu = 0x5E8A1 + baseAddress;
+            ContextMenus.AddCopyNameContextMenu = 0x5E938 + baseAddress;
+            ContextMenus.AddTradeWithContextMenu = 0x5E526 + baseAddress;
+            ContextMenus.AddLookContextMenu = 0x5E3FF + baseAddress;
+            #endregion
 
+            #region Creature
+            Creature.DistanceId = (uint)Marshal.OffsetOf(creatureStructure, "id");
+            Creature.DistanceName = (uint)Marshal.OffsetOf(creatureStructure, "name");
+            Creature.DistanceZ = (uint)Marshal.OffsetOf(creatureStructure, "z");
+            Creature.DistanceY = (uint)Marshal.OffsetOf(creatureStructure, "y");
+            Creature.DistanceX = (uint)Marshal.OffsetOf(creatureStructure, "x");
+            Creature.DistanceScreenOffsetVert = (uint)Marshal.OffsetOf(creatureStructure, "screenOffsetVertical");
+            Creature.DistanceScreenOffsetHoriz = (uint)Marshal.OffsetOf(creatureStructure, "screenOffsetHorizontal");
+            Creature.DistanceFaceDirection = (uint)Marshal.OffsetOf(creatureStructure, "faceDirection");
 
-            DatItem.StepItems = 136;
-            DatItem.MarketName = 0;
-            DatItem.Width = 32;
-            DatItem.Height = 36;
-            DatItem.MaxSizeInPixels = 40;
-            DatItem.Layers = 44;
-            DatItem.PatternX = 48;
-            DatItem.PatternY = 52;
-            DatItem.PatternDepth = 56;
-            DatItem.Phase = 60;
-            DatItem.Sprite = 64;
-            DatItem.Flags = 68;
-            DatItem.WalkSpeed = 76;
-            DatItem.TextLimit = 80;
-            DatItem.LightRadius = 84;
-            DatItem.LightColor = 88;
-            DatItem.ShiftX = 92;
-            DatItem.ShiftY = 96;
-            DatItem.WalkHeight = 100;
-            DatItem.Automap = 104;
-            DatItem.LensHelp = 108;
-            DatItem.ClothSlot = 112;
-            DatItem.MarketCategory = 116;
-            DatItem.MarketTradeAs = 120;
-            DatItem.MarketShowAs = 124;
-            DatItem.MarketRestrictProfession = 128;
-            DatItem.MarketRestrictLevel = 132;
+            Creature.DistanceIsWalking = (uint)Marshal.OffsetOf(creatureStructure, "isWalking"); ;
+            Creature.DistanceWalkDirection = (uint)Marshal.OffsetOf(creatureStructure, "walkDirection");
+            Creature.DistanceOutfit = (uint)Marshal.OffsetOf(creatureStructure, "outfit");
+            Creature.DistanceColorHead = (uint)Marshal.OffsetOf(creatureStructure, "colorHead");
+            Creature.DistanceColorBody = (uint)Marshal.OffsetOf(creatureStructure, "colorBody");
+            Creature.DistanceColorLegs = (uint)Marshal.OffsetOf(creatureStructure, "colorLegs");
+            Creature.DistanceColorFeet = (uint)Marshal.OffsetOf(creatureStructure, "colorFeet");
+            Creature.DistanceAddon = (uint)Marshal.OffsetOf(creatureStructure, "addon");
+            Creature.DistanceMountId = (uint)Marshal.OffsetOf(creatureStructure, "mountId");
+            Creature.DistanceLight = (uint)Marshal.OffsetOf(creatureStructure, "light"); ;
+            Creature.DistanceLightColor = (uint)Marshal.OffsetOf(creatureStructure, "lightColor");
+            Creature.DistanceBlackSquare = (uint)Marshal.OffsetOf(creatureStructure, "blackSquare");
+            Creature.DistanceHPBar = (uint)Marshal.OffsetOf(creatureStructure, "hpBar");
+            Creature.DistanceWalkSpeed = (uint)Marshal.OffsetOf(creatureStructure, "walkSpeed");
+            Creature.DistanceIsBlocking = (uint)Marshal.OffsetOf(creatureStructure, "isBlocking");
+            Creature.DistanceSkull = (uint)Marshal.OffsetOf(creatureStructure, "skull");
+            Creature.DistanceParty = (uint)Marshal.OffsetOf(creatureStructure, "party");
+            Creature.DistanceWarIcon = (uint)Marshal.OffsetOf(creatureStructure, "warIcon");
+            Creature.DistanceIsVisible = (uint)Marshal.OffsetOf(creatureStructure, "isVisible");
+            #endregion
 
+            #region DatItem
+            DatItem.StepItems = (uint)Marshal.SizeOf(datMemoryStructure);
+            DatItem.MarketName = (uint)Marshal.OffsetOf(datMemoryStructure, "marketName");
+            DatItem.Width = (uint)Marshal.OffsetOf(datMemoryStructure, "width");
+            DatItem.Height = (uint)Marshal.OffsetOf(datMemoryStructure, "height");
+            DatItem.MaxSizeInPixels = (uint)Marshal.OffsetOf(datMemoryStructure, "maxSizeInPixels");
+            DatItem.Layers = (uint)Marshal.OffsetOf(datMemoryStructure, "layers");
+            DatItem.PatternX = (uint)Marshal.OffsetOf(datMemoryStructure, "patternX");
+            DatItem.PatternY = (uint)Marshal.OffsetOf(datMemoryStructure, "patternY");
+            DatItem.PatternDepth = (uint)Marshal.OffsetOf(datMemoryStructure, "patternDepth");
+            DatItem.Phase = (uint)Marshal.OffsetOf(datMemoryStructure, "phase");
+            DatItem.Sprite = (uint)Marshal.OffsetOf(datMemoryStructure, "sprite");
+            DatItem.Flags = (uint)Marshal.OffsetOf(datMemoryStructure, "flags");
+            DatItem.WalkSpeed = (uint)Marshal.OffsetOf(datMemoryStructure, "walkSpeed");
+            DatItem.TextLimit = (uint)Marshal.OffsetOf(datMemoryStructure, "textLimit");
+            DatItem.LightRadius = (uint)Marshal.OffsetOf(datMemoryStructure, "lightRadius");
+            DatItem.LightColor = (uint)Marshal.OffsetOf(datMemoryStructure, "lightColor");
+            DatItem.ShiftX = (uint)Marshal.OffsetOf(datMemoryStructure, "shiftX");
+            DatItem.ShiftY = (uint)Marshal.OffsetOf(datMemoryStructure, "shiftY");
+            DatItem.WalkHeight = (uint)Marshal.OffsetOf(datMemoryStructure, "walkHeight");
+            DatItem.Automap = (uint)Marshal.OffsetOf(datMemoryStructure, "automap");
+            DatItem.LensHelp = (uint)Marshal.OffsetOf(datMemoryStructure, "lensHelp");
+            DatItem.ClothSlot = (uint)Marshal.OffsetOf(datMemoryStructure, "clothSlot");
+            DatItem.MarketCategory = (uint)Marshal.OffsetOf(datMemoryStructure, "marketCategory");
+            DatItem.MarketTradeAs = (uint)Marshal.OffsetOf(datMemoryStructure, "marketTradeAs");
+            DatItem.MarketShowAs = (uint)Marshal.OffsetOf(datMemoryStructure, "marketShowAs");
+            DatItem.MarketRestrictProfession = (uint)Marshal.OffsetOf(datMemoryStructure, "marketRestrictProfession");
+            DatItem.MarketRestrictLevel = (uint)Marshal.OffsetOf(datMemoryStructure, "marketRestrictLevel");
+            #endregion
 
-            DrawItem.DrawItemFunc = 0xCAAE0 + BaseAddress;
-            DrawSkin.DrawSkinFunc = 0xD1BD0 + BaseAddress;
+            #region DrawFunctions
+            DrawItem.DrawItemFunc = 0xCAAE0 + baseAddress;
+            DrawSkin.DrawSkinFunc = 0xD1BD0 + baseAddress;
+            #endregion
 
-
-            Hotkey.SendAutomaticallyStart = 0x3BDB48 + BaseAddress;
-            Hotkey.SendAutomaticallyStep = 0x01;
-            Hotkey.TextStart = 0x3BB678 + BaseAddress;
+            #region Hotkey
+            Hotkey.TextStart = 0x3BB678 + baseAddress;
             Hotkey.TextStep = 0x100;
-            Hotkey.ObjectStart = 0x3BDC18 + BaseAddress;
-            Hotkey.ObjectStep = 0x04;
-            Hotkey.ObjectUseTypeStart = 0x3BDAA8 + BaseAddress;
+            Hotkey.ObjectUseTypeStart = 0x3BDAA8 + baseAddress;
             Hotkey.ObjectUseTypeStep = 0x04;
+            Hotkey.SendAutomaticallyStart = 0x3BDB48 + baseAddress;
+            Hotkey.SendAutomaticallyStep = 0x01;
+            Hotkey.ObjectStart = 0x3BDC18 + baseAddress;
+            Hotkey.ObjectStep = 0x04;
             Hotkey.MaxHotkeys = 36;
+            #endregion
 
-
-            Map.MapPointer = 0x5D5364 + BaseAddress;
-            Map.StepTile = 168;
-            Map.StepTileObject = 12;
-            Map.DistanceTileObjectCount = 0;
-            Map.DistanceTileObjects = 4;
-            Map.DistanceObjectId = 0;
-            Map.DistanceObjectData = 4;
-            Map.DistanceObjectDataEx = 8;
-            Map.MaxTileObjects = 10;
+            #region Map
+            Map.MapPointer = 0x5D5364 + baseAddress;
+            Map.StepTile = (uint)Marshal.SizeOf(mapTileStructure);
+            Map.StepTileObject = (uint)Marshal.SizeOf(simpleItemStructure);
+            Map.DistanceTileItemsCount = (uint)Marshal.OffsetOf(mapTileStructure,"count");
+            Map.DistanceTileItemOrder = (uint)Marshal.OffsetOf(mapTileStructure, "stackOrder");
+            Map.DistanceTileItems = (uint)Marshal.OffsetOf(mapTileStructure, "items");
+            Map.DistanceTileEffect = (uint)Marshal.OffsetOf(mapTileStructure, "effect");
+            Map.DistanceItemDataEx = (uint)Marshal.OffsetOf(simpleItemStructure, "dataEx");
+            Map.DistanceItemData = (uint)Marshal.OffsetOf(simpleItemStructure, "data");
+            Map.DistanceItemId = (uint)Marshal.OffsetOf(simpleItemStructure, "id");
+            Map.MaxTileItems = 10;
             Map.MaxX = 18;
             Map.MaxY = 14;
             Map.MaxZ = 8;
             Map.MaxTiles = 2016;
             Map.ZAxisDefault = 7;
-            Map.NameSpy1 = 0x1105AC + BaseAddress;
-            Map.NameSpy2 = 0x1105B9 + BaseAddress;
+            Map.NameSpy1 = 0x1105AC + baseAddress;
+            Map.NameSpy2 = 0x1105B9 + baseAddress;
             Map.NameSpy1Default = 0x5075;
             Map.NameSpy2Default = 0x4375;
-            Map.LevelSpy1 = 0x10C3FF + BaseAddress;
-            Map.LevelSpy2 = 0x10C4F7 + BaseAddress;
-            Map.LevelSpy3 = 0x10C573 + BaseAddress;
+            Map.LevelSpy1 = 0x10C3FF + baseAddress;
+            Map.LevelSpy2 = 0x10C4F7 + baseAddress;
+            Map.LevelSpy3 = 0x10C573 + baseAddress;
             Map.LevelSpyDefault = new byte[] { 0x89, 0x86, 0xC0, 0x5B, 0x00, 0x00 };
             Map.LevelSpyPtr = Client.GameWindowRectPointer;
             Map.LevelSpyAdd1 = 28;
             Map.LevelSpyAdd2 = 0x5BC0;
-            Map.FullLightNop = 0x1149C9 + BaseAddress;
-            Map.FullLightAdr = 0x1149CE + BaseAddress;
+            Map.FullLightNop = 0x1149C9 + baseAddress;
+            Map.FullLightAdr = 0x1149CE + baseAddress;
             Map.FullLightNopDefault = new byte[] { 0x7E, 0x0A };
             Map.FullLightNopEdited = new byte[] { 0x90, 0x90 };
             Map.FullLightAdrDefault = 0x80;
             Map.FullLightAdrEdited = 0xFF;
+            #endregion
 
-            Player.Experience = 0x3B3EE0 + BaseAddress;
-            Player.Flags = 0x3B3E94 + BaseAddress;
-            Player.Id = 0x580EA4 + BaseAddress;
-            Player.Health = 0x549000 + BaseAddress;
-            Player.HealthMax = 0x580E9C + BaseAddress;
-            Player.Level = 0x3B3F0C + BaseAddress;
-            Player.MagicLevel = 0x3B3F14 + BaseAddress;
-            Player.LevelPercent = 0x3B3F54 + BaseAddress;
-            Player.MagicLevelPercent = 0x3B3F1C + BaseAddress;
-            Player.Mana = 0x3B3F24 + BaseAddress;
-            Player.ManaMax = 0x3B3ED4 + BaseAddress;
-            Player.Soul = 0x3B3F10 + BaseAddress;
-            Player.OfflineTraining = 0x3B3EC4 + BaseAddress;
-            Player.Stamina = 0x3B3F58 + BaseAddress;
-            Player.Capacity = 0x580E94 + BaseAddress;
-            Player.XORKey = 0x3B3ED0 + BaseAddress;
+            #region Player
+            var properties1Begin = 0x3B3E94 + baseAddress;
+            var playerSkillsPercentageBegin = properties1Begin + Marshal.SizeOf(playerProperties1Structure) + 4;
+            var afterSkillsPercentage = (uint)(playerSkillsPercentageBegin + Marshal.SizeOf(playerSkillStructure) + 12);
+            var playerSkillsBegin = 0x580E78 + baseAddress;
+            var properties2Begin = playerSkillsBegin + Marshal.SizeOf(playerSkillStructure);
 
-            Player.FistPercent = 0x3B3F2C + BaseAddress;
-            Player.ClubPercent = Player.FistPercent + 4;
-            Player.SwordPercent = Player.FistPercent + 8;
-            Player.AxePercent = Player.FistPercent + 12;
-            Player.DistancePercent = Player.FistPercent + 16;
-            Player.ShieldingPercent = Player.FistPercent + 20;
-            Player.FishingPercent = Player.FistPercent + 24;
-            Player.Fist = 0x580E78 + BaseAddress;
-            Player.Club = Player.Fist + 4;
-            Player.Sword = Player.Club + 4;
-            Player.Axe = Player.Sword + 4;
-            Player.Distance = Player.Axe + 4;
-            Player.Shielding = Player.Distance + 4;
-            Player.Fishing = Player.Shielding + 4;
+            Player.Health = 0x549000 + baseAddress;
+            Player.GoToZ = 0x549004 + baseAddress;
+            Player.AttackCount = 0x5CEEE4 + baseAddress;
+            Player.SlotBegin = 0x5D52D4 + baseAddress;
 
-            Player.WhiteSquare = 0;
-            Player.GreenSquare = 0x3B3EC8 + BaseAddress;
-            Player.RedSquare = 0x3B3F20 + BaseAddress;
+            Player.Flags = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "flags").ToInt32());
+            Player.OfflineTraining = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "offlineTraining").ToInt32());
+            Player.GreenSquare = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "greenSquare").ToInt32());
+            Player.XORKey = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "xorKey").ToInt32());
+            Player.ManaMax = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "manaMax").ToInt32());
+            Player.Experience = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "experience").ToInt32());
+            Player.Level = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "level").ToInt32());
+            Player.Soul = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "soul").ToInt32());
+            Player.MagicLevel = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "magicLevel").ToInt32());
+            Player.MagicLevelPercent = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "magicLevelPercent").ToInt32());
+            Player.RedSquare = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "redSquare").ToInt32());
+            Player.Mana = (uint)(properties1Begin + Marshal.OffsetOf(playerProperties1Structure, "mana").ToInt32());
 
-            Player.SlotAmmo = 0x5D52DC + BaseAddress;
-            Player.SlotRing = Player.SlotAmmo + Player.SlotStep;
-            Player.SlotFeet = Player.SlotRing + Player.SlotStep;
-            Player.SlotLegs = Player.SlotFeet + Player.SlotStep;
-            Player.SlotLeft = Player.SlotLegs + Player.SlotStep;
-            Player.SlotRight = Player.SlotLeft + Player.SlotStep;
-            Player.SlotArmor = Player.SlotLeft + Player.SlotStep;
-            Player.SlotBackpack = Player.SlotArmor + Player.SlotStep;
-            Player.SlotNeck = Player.SlotBackpack + Player.SlotStep;
-            Player.SlotHead = Player.SlotNeck + Player.SlotStep;
-            Player.SlotBegin = Player.SlotAmmo;
-            Player.SlotStep = 12;
-            Player.MaxSlots = 10;
-            Player.DistanceSlotCount = 4;
-            Player.CurrentTileToGo = Player.Flags + 132;
-            Player.TilesToGo = Player.CurrentTileToGo + 4;
-            Player.GoToX = 0x580EA0 + BaseAddress;
-            Player.GoToY = 0x580E98 + BaseAddress;
-            Player.GoToZ = 0x549004 + BaseAddress;
+            Player.FistPercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "fist").ToInt32());
+            Player.ClubPercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "club").ToInt32());
+            Player.SwordPercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "sword").ToInt32());
+            Player.AxePercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "axe").ToInt32());
+            Player.DistancePercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "distance").ToInt32());
+            Player.ShieldingPercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "shielding").ToInt32());
+            Player.FishingPercent = (uint)(playerSkillsPercentageBegin + Marshal.OffsetOf(playerSkillStructure, "fishing").ToInt32());
+
+            Player.LevelPercent = afterSkillsPercentage;
+            Player.Stamina = afterSkillsPercentage + 4;
+
+
             Player.TargetId = Player.RedSquare;
-
-            Player.X = 0x580EA8 + BaseAddress;
-            Player.Y = 0x580EAC + BaseAddress;
-            Player.Z = 0x580EB0 + BaseAddress;
-
-            Player.AttackCount = 0x5CEEE4 + BaseAddress;
             Player.FollowCount = Player.AttackCount;
 
-            TextDisplay.PrintName = 0x10D5E1 + BaseAddress;
-            TextDisplay.PrintFPS = 0x652D6 + BaseAddress;
-            TextDisplay.PrintTextFunc = 0xCD750 + BaseAddress;
-            TextDisplay.ShowFPS = 0x59689F + BaseAddress;
-            TextDisplay.NopFPS = 0x65141 + BaseAddress;
 
-            Vip.MarkerNodePtr = 0x546D04 + BaseAddress;
+            Player.Fist = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "fist").ToInt32());
+            Player.Club = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "club").ToInt32());
+            Player.Sword = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "sword").ToInt32());
+            Player.Axe = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "axe").ToInt32());
+            Player.Distance = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "distance").ToInt32());
+            Player.Shielding = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "shielding").ToInt32());
+            Player.Fishing = (uint)(playerSkillsBegin + Marshal.OffsetOf(playerSkillStructure, "fishing").ToInt32());
+
+            Player.Capacity = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "capacity").ToInt32());
+            Player.GoToY = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "gotoY").ToInt32());
+            Player.HealthMax = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "healthMax").ToInt32());
+            Player.GoToX = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "gotoX").ToInt32());
+            Player.Id = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "id").ToInt32());
+            Player.X = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "x").ToInt32());
+            Player.Y = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "y").ToInt32());
+            Player.Z = (uint)(properties2Begin + Marshal.OffsetOf(playerProperties2Structure, "z").ToInt32());
+
+
+            Player.MaxSlots = 10;
+            Player.SlotAmmo = Player.SlotBegin + (uint) Marshal.OffsetOf(playerSlotsStructure, "ammo");
+            Player.SlotRing = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "ring");
+            Player.SlotFeet = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "feet");
+            Player.SlotLegs = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "legs");
+            Player.SlotLeft = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "left");
+            Player.SlotRight = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "right");
+            Player.SlotArmor = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "armor");
+            Player.SlotBackpack = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "backpack");
+            Player.SlotNeck = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "neck");
+            Player.SlotHead = Player.SlotBegin + (uint)Marshal.OffsetOf(playerSlotsStructure, "head");
+            Player.SlotStep = (uint) Marshal.SizeOf(simpleItemStructure);
+            Player.DistanceSlotCount = (uint)Marshal.OffsetOf(simpleItemStructure, "data");
+            Player.DistanceSlotId = (uint)Marshal.OffsetOf(simpleItemStructure, "id");
+
+
+
+            #endregion
+
+            #region TextDisplay
+            TextDisplay.PrintName = 0x10D5E1 + baseAddress;
+            TextDisplay.PrintFPS = 0x652D6 + baseAddress;
+            TextDisplay.PrintTextFunc = 0xCD750 + baseAddress;
+            TextDisplay.ShowFPS = 0x59689F + baseAddress;
+            TextDisplay.NopFPS = 0x65141 + baseAddress;
+            #endregion
+
+            #region Vip
+            Vip.MarkerNodePtr = 0x546D04 + baseAddress;
             Vip.Count = Vip.MarkerNodePtr + 4;
-            Vip.DistancePreviousNode = 0;
-            Vip.DistanceNextNode = 4;
-            Vip.DistanceId = 16;
-            Vip.DistanceIcon = 20;
-            Vip.DistanceNotify = 21;
-            Vip.DistanceNameField = 24;
-            Vip.DistanceDescriptionField = 52;
-            Vip.DistanceStatus = 80;
+            Vip.DistancePreviousNode = (uint)Marshal.OffsetOf(vipNodeStructure, "previousNode");
+            Vip.DistanceNextNode = (uint)Marshal.OffsetOf(vipNodeStructure, "nextNode");
+            Vip.DistanceId = (uint)Marshal.OffsetOf(vipNodeStructure, "id");
+            Vip.DistanceIcon = (uint)Marshal.OffsetOf(vipNodeStructure, "icon");
+            Vip.DistanceNotify = (uint)Marshal.OffsetOf(vipNodeStructure, "notify");
+            Vip.DistanceNameField = (uint)Marshal.OffsetOf(vipNodeStructure, "nameTextField");
+            Vip.DistanceDescriptionField = (uint)Marshal.OffsetOf(vipNodeStructure, "descriptionTextField");
+            Vip.DistanceStatus = (uint)Marshal.OffsetOf(vipNodeStructure, "status");
+            #endregion
         }
     }
 }

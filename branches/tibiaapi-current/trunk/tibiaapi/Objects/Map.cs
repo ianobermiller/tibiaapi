@@ -29,11 +29,17 @@ namespace Tibia.Objects
             if (playerTile == null || playerTile.Location != client.PlayerLocation)
             {
                 uint playerId = client.Player.Id;
-                
-                playerTile = GetTiles(false, false).FirstOrDefault(
-                    t => t.Objects.Any(
-                        o => o.Id == 0x63 && o.Data == playerId));
+                playerTile = GetTiles(false, false)
+                                .Where(t => t.ObjectCount > 1)
+                                .FirstOrDefault(t => t.Objects
+                                                .Any(o => o.Id == 0x63 &&
+                                                    o.Data == playerId &&
+                                                    o.StackOrder < o.FromTile.ObjectCount));
+                if (playerTile == null)
+                    throw new Exception("Player not found.");
+
                 playerTile.Location = client.PlayerLocation;
+
             }
             return playerTile;
         }
@@ -52,7 +58,7 @@ namespace Tibia.Objects
         {
             Tile playerTile = null;
             uint startNumber = 0;
-            uint endNumber = Addresses.Map.MaxTiles + 1;
+            uint endNumber = client.Addresses.Map.MaxTiles + 1;
 
             if (sameFloor)
             {
@@ -101,12 +107,12 @@ namespace Tibia.Objects
             int minFloor = 0, maxFloor = 0;
             for (int i = 0; i < 8; i++)
             { 
-                if (playerTile.TileNumber   >= Addresses.Map.MaxTiles  * i &&
-                    playerTile.TileNumber <= Addresses.Map.MaxTiles * (i + 1))
+                if (playerTile.TileNumber   >= client.Addresses.Map.MaxTiles  * i &&
+                    playerTile.TileNumber <= client.Addresses.Map.MaxTiles * (i + 1))
                 {
              
-                    minFloor =  Convert.ToInt32(Addresses.Map.MaxTiles * i);
-                    maxFloor =  Convert.ToInt32(Addresses.Map.MaxTiles * (i + 1) - 1);
+                    minFloor =  Convert.ToInt32(client.Addresses.Map.MaxTiles * i);
+                    maxFloor =  Convert.ToInt32(client.Addresses.Map.MaxTiles * (i + 1) - 1);
                     break;
                 }
             }
@@ -156,8 +162,8 @@ namespace Tibia.Objects
         /// <param name="enable"></param>
         public void NameSpyOn()
         {
-            client.Memory.WriteBytes(Addresses.Map.NameSpy1, Addresses.Map.Nops, 2);
-            client.Memory.WriteBytes(Addresses.Map.NameSpy2, Addresses.Map.Nops, 2);
+            client.Memory.WriteBytes(client.Addresses.Map.NameSpy1, client.Addresses.Map.Nops, 2);
+            client.Memory.WriteBytes(client.Addresses.Map.NameSpy2, client.Addresses.Map.Nops, 2);
         }
         /// <summary>
         /// Disable name spying.
@@ -165,8 +171,8 @@ namespace Tibia.Objects
         /// <param name="enable"></param>
         public void NameSpyOff()
         {
-            client.Memory.WriteBytes(Addresses.Map.NameSpy1, BitConverter.GetBytes(Addresses.Map.NameSpy1Default), 2);
-            client.Memory.WriteBytes(Addresses.Map.NameSpy2, BitConverter.GetBytes(Addresses.Map.NameSpy2Default), 2);
+            client.Memory.WriteBytes(client.Addresses.Map.NameSpy1, BitConverter.GetBytes(client.Addresses.Map.NameSpy1Default), 2);
+            client.Memory.WriteBytes(client.Addresses.Map.NameSpy2, BitConverter.GetBytes(client.Addresses.Map.NameSpy2Default), 2);
         }
         #endregion
 
@@ -181,14 +187,14 @@ namespace Tibia.Objects
         {
             int playerZ, tempPtr;
 
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.Nops, 6);
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.Nops, 6);
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy1, client.Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy2, client.Addresses.Map.Nops, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy3, client.Addresses.Map.Nops, 6);
 
-            tempPtr = client.Memory.ReadInt32(Addresses.Map.LevelSpyPtr);
-            tempPtr += Addresses.Map.LevelSpyAdd1;
+            tempPtr = client.Memory.ReadInt32(client.Addresses.Map.LevelSpyPtr);
+            tempPtr += client.Addresses.Map.LevelSpyAdd1;
             tempPtr = client.Memory.ReadInt32(tempPtr);
-            tempPtr += (int)Addresses.Map.LevelSpyAdd2;
+            tempPtr += (int)client.Addresses.Map.LevelSpyAdd2;
 
             playerZ = (int)client.Player.Z;
 
@@ -218,9 +224,9 @@ namespace Tibia.Objects
         /// </summary>
         public void LevelSpyOff()
         {
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy1, Addresses.Map.LevelSpyDefault, 6);
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy2, Addresses.Map.LevelSpyDefault, 6);
-            client.Memory.WriteBytes(Addresses.Map.LevelSpy3, Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy1, client.Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy2, client.Addresses.Map.LevelSpyDefault, 6);
+            client.Memory.WriteBytes(client.Addresses.Map.LevelSpy3, client.Addresses.Map.LevelSpyDefault, 6);
         }
         #endregion
 
@@ -232,8 +238,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void FullLightOn()
         {
-            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopEdited, 2);
-            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrEdited);
+            client.Memory.WriteBytes(client.Addresses.Map.FullLightNop, client.Addresses.Map.FullLightNopEdited, 2);
+            client.Memory.WriteByte(client.Addresses.Map.FullLightAdr, client.Addresses.Map.FullLightAdrEdited);
         }
 
         /// <summary>
@@ -243,8 +249,8 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void FullLightOff()
         {
-            client.Memory.WriteBytes(Addresses.Map.FullLightNop, Addresses.Map.FullLightNopDefault, 2);
-            client.Memory.WriteByte(Addresses.Map.FullLightAdr, Addresses.Map.FullLightAdrDefault);
+            client.Memory.WriteBytes(client.Addresses.Map.FullLightNop, client.Addresses.Map.FullLightNopDefault, 2);
+            client.Memory.WriteByte(client.Addresses.Map.FullLightAdr, client.Addresses.Map.FullLightAdrDefault);
         }
         #endregion
     }
