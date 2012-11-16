@@ -119,6 +119,7 @@ namespace Tibia.Objects
                 //winsock recv/send
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, client.Addresses.Client.RecvPointer);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Send, client.Addresses.Client.SendPointer);
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Socket, client.Addresses.Client.SocketStruct);
 
                 //event triggering
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.EventTrigger, client.Addresses.Client.EventTriggerPointer);

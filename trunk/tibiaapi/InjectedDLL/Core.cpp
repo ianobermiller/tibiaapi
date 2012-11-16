@@ -42,7 +42,6 @@ list<ContextMenu> ContextMenus;    //Used for storing the context menus that wil
 //recv/send
 DWORD OrigSendAddress = 0;
 DWORD OrigRecvAddress = 0;
-SOCKET sock = 0;
 //icon
 list<Icon> Icons;
 //skin
@@ -471,7 +470,6 @@ void __declspec(naked) MyOnClickContextMenu (int eventId)
 
 int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 {	
-	//sock=s;
 	int bytesCount=OrigRecv(s,buf,len,flags);
 	if(bytesCount>0)
 	{		
@@ -486,7 +484,6 @@ int WINAPI MyRecv(SOCKET s, char* buf, int len, int flags)
 
 int WINAPI MySend(SOCKET s,char* buf, int len, int flags)
 {
-	sock=s;
 	if(len>0)
 	{
 		Packet* packet = new Packet(((WORD)buf)+1);
@@ -944,6 +941,8 @@ void ParseSetConstant(BYTE *Buffer, int position)
 	case DrawSkinFunc:
 		DrawSkin = (_DrawSkin*)value;
 		break;
+	case Socket:
+		Consts::ptrSocket = value;
 	default:
 		break;
 	};
@@ -1187,10 +1186,12 @@ void RemoveAllContextMenus()
 }
 
 void ParseHookSendToServer(BYTE *Buffer, int position)
-{			
+{	
 	int packetLen = Packet::ReadWord(Buffer,&position);
+	SOCKET sock= *(SOCKET*)(*((DWORD*)Consts::ptrSocket)+4);
 	char* buf =new char[packetLen+2];
 	memcpy((LPVOID)buf,(LPVOID)(Buffer+position-2),packetLen+2);
+	
 
 	int ret=OrigSend(sock,buf,packetLen+2,0);	
 	delete buf;

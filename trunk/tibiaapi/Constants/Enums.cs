@@ -1480,7 +1480,8 @@ namespace Tibia.Constants
         EventTrigger = 0x0F,
         LookContextMenu = 0x10,
         DrawItemFunc = 0x11,
-        DrawSkinFunc = 0x12
+        DrawSkinFunc = 0x12,
+        Socket = 0x13
     }
 
     /// <summary>
