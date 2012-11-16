@@ -24,6 +24,7 @@ namespace Consts {
 	/* Socket Stuff */
 	DWORD ptrRecv = 0;
 	DWORD ptrSend = 0;
+	DWORD ptrSocket = 0;
 
 	/* Event Trigger Stuff */
 	DWORD ptrEventTrigger = 0;

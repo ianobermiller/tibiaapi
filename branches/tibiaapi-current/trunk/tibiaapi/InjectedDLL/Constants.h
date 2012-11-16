@@ -24,6 +24,7 @@ namespace Consts {
 
 	extern DWORD ptrRecv;
 	extern DWORD ptrSend;
+	extern DWORD ptrSocket;
 
 	extern DWORD ptrEventTrigger;
 }
@@ -66,6 +67,7 @@ enum PipeConstantType : BYTE
 		LookContextMenu = 0x10,
 		DrawItemFunc = 0x11,
 		DrawSkinFunc = 0x12,
+		Socket = 0x13
 };
 
 /* Structures */
