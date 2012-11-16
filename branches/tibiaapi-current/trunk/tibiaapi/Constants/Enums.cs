@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-
 namespace Tibia.Constants
 {
     #region General
@@ -715,11 +714,59 @@ namespace Tibia.Constants
         None,
         Location,
         ChannelId,
-        Time
+        Time,
+        Receiver
     }
 
     public static class Enums
     {
+        private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo971 = new Dictionary<byte, SpeechTypeInfo>();
+        private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo971 = new Dictionary<SpeechType, SpeechTypeInfo>()
+        {
+            { SpeechType.None,new SpeechTypeInfo(SpeechType.None, 0, AdditionalSpeechData.None) },
+            { SpeechType.Say,new SpeechTypeInfo(SpeechType.Say, 1, AdditionalSpeechData.Location) },
+            { SpeechType.Whisper,new SpeechTypeInfo(SpeechType.Whisper, 2, AdditionalSpeechData.Location) },
+            { SpeechType.Yell,new SpeechTypeInfo(SpeechType.Yell, 3, AdditionalSpeechData.Location) },
+            { SpeechType.PrivateFrom,new SpeechTypeInfo(SpeechType.PrivateFrom, 4, AdditionalSpeechData.None) },
+            { SpeechType.PrivateTo, new SpeechTypeInfo(SpeechType.PrivateTo, 5, AdditionalSpeechData.Receiver) },
+            { SpeechType.ChannelManagement,new SpeechTypeInfo(SpeechType.ChannelManagement, 6, AdditionalSpeechData.ChannelId) },
+            { SpeechType.Channel,new SpeechTypeInfo(SpeechType.Channel, 7, AdditionalSpeechData.ChannelId) },
+            { SpeechType.ChannelHighlight,new SpeechTypeInfo(SpeechType.ChannelHighlight, 8, AdditionalSpeechData.ChannelId) },
+            { SpeechType.Spell,new SpeechTypeInfo(SpeechType.Spell, 9, AdditionalSpeechData.Location) },
+            { SpeechType.NpcFrom, new SpeechTypeInfo(SpeechType.NpcFrom, 10, AdditionalSpeechData.Location) },
+            { SpeechType.NpcTo,new SpeechTypeInfo(SpeechType.NpcTo, 11, AdditionalSpeechData.Location) },
+            { SpeechType.GamemasterBroadcast,new SpeechTypeInfo(SpeechType.GamemasterBroadcast, 12, AdditionalSpeechData.None) },
+            { SpeechType.GamemasterChannel,new SpeechTypeInfo(SpeechType.GamemasterChannel, 13, AdditionalSpeechData.ChannelId) },
+            { SpeechType.GamemasterPrivateFrom, new SpeechTypeInfo(SpeechType.GamemasterPrivateFrom, 14, AdditionalSpeechData.None) },
+            { SpeechType.GamemasterPrivateTo, new SpeechTypeInfo(SpeechType.GamemasterPrivateTo, 15, AdditionalSpeechData.Receiver) },
+            { SpeechType.Login, new SpeechTypeInfo(SpeechType.Login, 16, AdditionalSpeechData.None) },
+            { SpeechType.Warning, new SpeechTypeInfo(SpeechType.Warning, 17, AdditionalSpeechData.None) },
+            { SpeechType.Game, new SpeechTypeInfo(SpeechType.Game, 18, AdditionalSpeechData.None) },
+            { SpeechType.Failure, new SpeechTypeInfo(SpeechType.Failure, 19, AdditionalSpeechData.None) },
+            { SpeechType.Look, new SpeechTypeInfo(SpeechType.Look, 20, AdditionalSpeechData.None) },
+            { SpeechType.DamageDealed, new SpeechTypeInfo(SpeechType.DamageDealed, 21, AdditionalSpeechData.None) },
+            { SpeechType.DamageReceived, new SpeechTypeInfo(SpeechType.DamageReceived, 22, AdditionalSpeechData.None) },
+            { SpeechType.Heal, new SpeechTypeInfo(SpeechType.Heal, 23, AdditionalSpeechData.None) },
+            { SpeechType.Exp, new SpeechTypeInfo(SpeechType.Exp, 24, AdditionalSpeechData.None) },
+            { SpeechType.DamageOthers, new SpeechTypeInfo(SpeechType.DamageOthers, 25, AdditionalSpeechData.None) },
+            { SpeechType.HealOthers, new SpeechTypeInfo(SpeechType.HealOthers, 26, AdditionalSpeechData.None) },
+            { SpeechType.ExpOthers, new SpeechTypeInfo(SpeechType.ExpOthers, 27, AdditionalSpeechData.None) },
+            { SpeechType.Status, new SpeechTypeInfo(SpeechType.Status, 28, AdditionalSpeechData.None) },
+            { SpeechType.Loot, new SpeechTypeInfo(SpeechType.Loot, 29, AdditionalSpeechData.None) },
+            { SpeechType.TradeNpc, new SpeechTypeInfo(SpeechType.TradeNpc, 30, AdditionalSpeechData.None) },
+            { SpeechType.Guild, new SpeechTypeInfo(SpeechType.Guild, 31, AdditionalSpeechData.None) },
+            { SpeechType.PartyManagement, new SpeechTypeInfo(SpeechType.PartyManagement, 32, AdditionalSpeechData.None) },
+            { SpeechType.Party, new SpeechTypeInfo(SpeechType.Party, 33, AdditionalSpeechData.None) },
+            { SpeechType.BarkLow, new SpeechTypeInfo(SpeechType.BarkLow, 34, AdditionalSpeechData.Location) },
+            { SpeechType.BarkLoud, new SpeechTypeInfo(SpeechType.BarkLoud, 35, AdditionalSpeechData.Location) },
+            { SpeechType.Report, new SpeechTypeInfo(SpeechType.Report, 36, AdditionalSpeechData.None) },
+            { SpeechType.HotkeyUse, new SpeechTypeInfo(SpeechType.HotkeyUse, 37, AdditionalSpeechData.None) },
+            { SpeechType.TutorialHint, new SpeechTypeInfo(SpeechType.TutorialHint, 38, AdditionalSpeechData.None) },
+            { SpeechType.Thankyou, new SpeechTypeInfo(SpeechType.Thankyou, 39, AdditionalSpeechData.None) },
+            { SpeechType.Market, new SpeechTypeInfo(SpeechType.Market, 40, AdditionalSpeechData.None) },
+            { SpeechType.BeyondLast, new SpeechTypeInfo(SpeechType.BeyondLast, 41, AdditionalSpeechData.None) }
+        };
+
         private static Dictionary<byte, SpeechTypeInfo> valueToSpeechTypeInfo872 = new Dictionary<byte, SpeechTypeInfo>();
         private static Dictionary<SpeechType, SpeechTypeInfo> enumToSpeechTypeInfo872 = new Dictionary<SpeechType, SpeechTypeInfo>()
         {
@@ -791,6 +838,7 @@ namespace Tibia.Constants
 
         static Enums()
         {
+            enumToSpeechTypeInfo971.Values.Foreach(s => valueToSpeechTypeInfo971.Add(s.Value, s));
             enumToSpeechTypeInfo872.Values.Foreach(s => valueToSpeechTypeInfo872.Add(s.Value, s));
             enumToSpeechTypeInfoPre872.Values.Foreach(s => valueToSpeechTypeInfoPre872.Add(s.Value, s));
             enumToSpeechTypeInfo861.Values.Foreach(s => valueToSpeechTypeInfo861.Add(s.Value, s));
@@ -799,7 +847,11 @@ namespace Tibia.Constants
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, byte value)
         {
-            if (version >= 872)
+            if (version == 971)
+            {
+                return valueToSpeechTypeInfo971[value];
+            } 
+            else if (version >= 872)
             {
                 return valueToSpeechTypeInfo872[value];
             }
@@ -819,7 +871,11 @@ namespace Tibia.Constants
 
         public static SpeechTypeInfo GetSpeechTypeInfo(ushort version, SpeechType speechType)
         {
-            if (version >= 872)
+            if (version == 971)
+            {
+                return enumToSpeechTypeInfo971[speechType];
+            }
+            else if (version >= 872)
             {
                 return enumToSpeechTypeInfo872[speechType];
             }
@@ -854,11 +910,51 @@ namespace Tibia.Constants
         RuleViolationReport,
         RuleViolationAnswer,
         RuleViolationContinue,
-        MonsterSay,
         // Old
         Broadcast,
+        MonsterSay,
         MonsterYell,
-        PrivateRed
+        PrivateRed,
+        //otclient
+        None,
+        PrivateFrom,
+        PrivateTo,
+        ChannelManagement,
+        Channel,
+        ChannelHighlight,
+        Spell,
+        NpcFrom,
+        NpcTo,
+        GamemasterBroadcast,
+        GamemasterChannel,
+        GamemasterPrivateFrom,
+        GamemasterPrivateTo,
+        Login,
+        Warning,
+        Game,
+        Failure,
+        Look,
+        DamageDealed,
+        DamageReceived,
+        Heal,
+        Exp,
+        DamageOthers,
+        HealOthers,
+        ExpOthers,
+        Status,
+        Loot,
+        TradeNpc,
+        Guild,
+        PartyManagement,
+        Party,
+        BarkLow,
+        BarkLoud,
+        Report,
+        HotkeyUse,
+        TutorialHint,
+        Thankyou,
+        Market,
+        BeyondLast
     }
 
     public enum TextMessageColor : byte

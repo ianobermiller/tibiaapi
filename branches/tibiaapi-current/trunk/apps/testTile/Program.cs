@@ -35,6 +35,7 @@ namespace testTile
                 PrintTile(nextTile);
                 s.Console.WriteLine("......read again......");
                 s.Console.ReadLine();
+                //client.Console.Say("ahmed");
             }
         }
 

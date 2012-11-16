@@ -34,44 +34,17 @@ namespace Tibia.Packets.Incoming
             SenderName = msg.GetString();
             SenderLevel = msg.GetUInt16();
 
+
             byte Mode = msg.GetByte();
 
-            switch (Mode)
-            {
-                case 1://say
-                case 2://whisper
-                case 3://yell
-                    msg.GetLocation();
-                    break;
-                case 4://private from
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(971, Mode);
+            SpeechType = info.SpeechType;
 
-                    break;
-                case 7://channel
-                case 8://channel highlight
-                    msg.GetUInt16();//channelid
-                    break;
-                case 9://spell
-                    msg.GetLocation();
-                    break;
-                case 10://npc from
-                    msg.GetLocation();
-                    break;
-                case 12://gm broadcast
 
-                    break;
-                case 13://gm channel
-                    msg.GetUInt16();//channelid
-                    break;
-                case 14://gm private from
-
-                    break;
-                case 34://bark low
-                case 35://bark loud
-                    msg.GetLocation();
-                    break;
-                default:
-                    break;
-            }
+            if (info.AdditionalSpeechData == AdditionalSpeechData.Location)
+                Position = msg.GetLocation();
+            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
+                ChannelId = (Tibia.Constants.ChatChannel)msg.GetUInt16();
 
             Message = msg.GetString();
 
