@@ -49,11 +49,26 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
+            SpeechTypeInfo info = Enums.GetSpeechTypeInfo(971, SpeechType);
+
+            msg.AddByte(info.Value);
+
+            if (info.AdditionalSpeechData == AdditionalSpeechData.Receiver)
+                msg.AddString(Receiver);
+            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
+                msg.AddUInt16((ushort)ChannelId);
+
+            msg.AddString(Message);
         }
 
         public static bool Send(Objects.Client client, SpeechType type, string receiver, string message, ChatChannel channel)
         {
             TalkPacket p = new TalkPacket(client);
+
+            p.SpeechType = type;
+            p.Receiver = receiver;
+            p.Message = message;
+            p.ChannelId = channel;
 
             return p.Send();
         }
