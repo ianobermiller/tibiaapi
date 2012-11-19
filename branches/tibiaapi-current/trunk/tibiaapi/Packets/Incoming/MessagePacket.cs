@@ -77,18 +77,5 @@ namespace Tibia.Packets.Incoming
 
             return true;
         }
-
-        public override void ToNetworkMessage(NetworkMessage msg)
-        {
-            msg.AddByte((byte)Type);
-        }
-
-        public static bool Send(Objects.Client client, TextMessageColor color, string msg)
-        {
-            MessagePacket p = new MessagePacket(client);
-
-            return p.Send();
-        }
-
     }
 }

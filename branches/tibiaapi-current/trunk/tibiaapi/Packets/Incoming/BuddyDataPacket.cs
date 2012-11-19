@@ -30,7 +30,7 @@ namespace Tibia.Packets.Incoming
             Id = msg.GetUInt32();
             Name = msg.GetString();
 
-            if (Client.VersionNumber >= 9620)
+            if (Client.VersionNumber >= 962)
             {
                 Description = msg.GetString();
                 Icon = msg.GetUInt32();
@@ -48,7 +48,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(Id);
             msg.AddString(Name);
 
-            if (Client.VersionNumber >= 9620)
+            if (Client.VersionNumber >= 962)
             {
                 msg.AddString(Description);
                 msg.AddUInt32(Icon);
@@ -58,16 +58,5 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(System.Convert.ToByte(IsOnline));
         }
 
-        public static bool Send(Objects.Client client, uint playerId, string playerName, string description, uint icon, bool notifyAtLogin, bool isOnline)
-        {
-            BuddyDataPacket p = new BuddyDataPacket(client);
-            p.Id = playerId;
-            p.Name = playerName;
-            p.Description = description;
-            p.Icon = icon;
-            p.NotifyAtLogin = notifyAtLogin;
-            p.IsOnline = isOnline;
-            return p.Send();
-        }
     }
 }

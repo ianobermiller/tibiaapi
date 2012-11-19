@@ -7,6 +7,12 @@ namespace Tibia.Packets
         public OutgoingPacketType Type { get; set; }
 
         public OutgoingPacket(Objects.Client c)
-            : base(c) {}
+            : base(c) { }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            throw new System.NotImplementedException();
+        }
     }
 }

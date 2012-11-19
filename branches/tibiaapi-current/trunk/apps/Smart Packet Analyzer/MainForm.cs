@@ -89,27 +89,27 @@ namespace SmartPacketAnalyzer
             ProxyBase proxy;
 
 #if UseHookProxy
-                client.Dll.InitializePipe();
-                proxy = new HookProxy(client);
+            client.Dll.InitializePipe();
+            proxy = new HookProxy(client);
 #else
                 client.IO.StartProxy();
                 proxy = client.IO.Proxy;
 #endif
 
-            proxy.ReceivedTalkIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedTextMessageIncomingPacket);
+            //proxy.ReceivedMessageIncomingPacket += new Proxy.IncomingPacketListener(Proxy_ReceivedMessageIncomingPacket);
             proxy.SplitPacketFromServer += SplitMessageFromServer;
             proxy.SplitPacketFromClient += SplitMessageFromClient;
         }
 
-        bool Proxy_ReceivedTextMessageIncomingPacket(IncomingPacket packet)
-        {
-            Tibia.Packets.Incoming.MessagePacket p = (Tibia.Packets.Incoming.MessagePacket)packet;
+        //bool Proxy_ReceivedMessageIncomingPacket(IncomingPacket packet)
+        //{
+        //    Tibia.Packets.Incoming.MessagePacket p = (Tibia.Packets.Incoming.MessagePacket)packet;
 
-            if (p.Mode == 20)
-                p.Message = p.Message + " [" + client.Memory.ReadInt32(client.Addresses.Client.SeeId) + "]";
+        //    if (p.Mode == 20)
+        //        p.Message = p.Message + " [" + client.Memory.ReadInt32(client.Addresses.Client.SeeId) + "]";
 
-            return true;
-        }
+        //    return true;
+        //}
 
         void SplitMessageFromClient(byte type, byte[] data)
         {

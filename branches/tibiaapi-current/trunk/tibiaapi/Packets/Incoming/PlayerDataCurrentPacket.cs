@@ -69,42 +69,5 @@ namespace Tibia.Packets.Incoming
 
             return true;
         }
-
-        public override void ToNetworkMessage(NetworkMessage msg)
-        {
-            msg.AddByte((byte)Type);
-
-            msg.AddUInt16(Health);
-            msg.AddUInt16(MaxHealth);
-
-            msg.AddUInt32(Capacity);
-            //uint32
-
-            if (Client.VersionNumber >= 870)
-            {
-                msg.AddUInt64(Experience);
-            }
-            else
-            {
-                msg.AddUInt32((uint)Experience);
-            }
-
-            msg.AddUInt16(Level);
-            msg.AddByte(LevelPercent);
-
-            msg.AddUInt16(Mana);
-            msg.AddUInt16(MaxMana);
-
-            msg.AddByte(MagicLevel);
-            msg.AddByte(MagicLevelPercent);
-            //byte
-
-            msg.AddByte(Soul);
-
-            msg.AddUInt16(Stamina);
-
-            //short
-            //short
-        }
     }
 }

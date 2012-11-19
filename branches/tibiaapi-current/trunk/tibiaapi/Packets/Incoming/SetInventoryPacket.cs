@@ -39,12 +39,5 @@ namespace Tibia.Packets.Incoming
             msg.AddItem(Item);
         }
 
-        public static bool Send(Objects.Client client, byte slot, Objects.Item item)
-        {
-            SetInventoryPacket p = new SetInventoryPacket(client);
-            p.Slot = slot;
-            p.Item = item;
-            return p.Send();
-        }
     }
 }

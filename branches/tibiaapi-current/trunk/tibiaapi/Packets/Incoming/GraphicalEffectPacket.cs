@@ -37,14 +37,5 @@ namespace Tibia.Packets.Incoming
             msg.AddLocation(Location);
             msg.AddByte((byte)Effect);
         }
-
-        public static bool Send(Objects.Client client, Location location, Effect effect)
-        {
-            GraphicalEffectPacket p = new GraphicalEffectPacket(client);
-            p.Location = location;
-            p.Effect = effect;
-
-            return p.Send();
-        }
     }
 }

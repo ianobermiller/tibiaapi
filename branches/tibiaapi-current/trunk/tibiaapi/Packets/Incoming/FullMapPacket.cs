@@ -25,10 +25,5 @@ namespace Tibia.Packets.Incoming
 
             return ParseMapDescription(msg, Client.playerLocation.X - 8, Client.playerLocation.Y - 6, Client.playerLocation.Z, 18, 14, outMsg);
         }
-
-        public override void ToNetworkMessage(NetworkMessage msg)
-        {
-            msg.AddByte((byte)Type);
-        }
     }
 }

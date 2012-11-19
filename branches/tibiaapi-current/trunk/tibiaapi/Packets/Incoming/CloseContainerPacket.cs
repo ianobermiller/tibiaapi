@@ -33,12 +33,5 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddByte(Id);
         }
-
-        public static bool Send(Objects.Client client, byte id)
-        {
-            CloseContainerPacket p = new CloseContainerPacket(client);
-            p.Id = id;
-            return p.Send();
-        }
     }
 }

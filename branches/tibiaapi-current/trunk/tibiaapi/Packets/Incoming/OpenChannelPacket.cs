@@ -68,28 +68,5 @@ namespace Tibia.Packets.Incoming
                 }
             }
         }
-
-        public static bool Send(Objects.Client client, ChatChannel channel, string name, string[] participants, string[] invitees)
-        {
-            OpenChannelPacket p = new OpenChannelPacket(client);
-            p.ChannelId = channel;
-            p.ChannelName = name;
-
-            if (client.VersionNumber >= 872)
-            {
-                p.NumberOfParticipants = (ushort)(participants.Length);
-                for (ushort n = 0; n < p.NumberOfParticipants; n++)
-                {
-                    p.Participants[n] = participants[n];
-                }
-                p.NumberOfInvitees = (ushort)(invitees.Length);
-                for (ushort i = 0; i < p.NumberOfInvitees; i++)
-                {
-                    p.Invitees[i] = invitees[i];
-                }
-            }
-
-            return p.Send();
-        }
     }
 }
