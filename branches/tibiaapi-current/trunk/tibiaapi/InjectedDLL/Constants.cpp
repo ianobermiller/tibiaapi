@@ -4,6 +4,7 @@
 #include "Constants.h"
 
 namespace Consts {
+	DWORD clientVersion = 0;
 
 	/* Displaying Text Stuff */
 	DWORD ptrPrintName = 0;
