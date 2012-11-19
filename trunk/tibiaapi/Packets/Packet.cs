@@ -12,8 +12,8 @@ namespace Tibia.Packets
         public PacketDestination Destination { get; set; }
         public Objects.Client Client { get; set; }
 
-        private static object msgLock = new object();
-        private static NetworkMessage msg;
+        private object msgLock = new object();
+        private NetworkMessage msg;
 
         public Packet(Objects.Client c)
         {
@@ -132,9 +132,9 @@ namespace Tibia.Packets
                 if (!client.IO.IsSendToServerCodeWritten)
                     if (!client.IO.WriteSocketSendCode()) return false;
 
-                uint bufferSize = (uint)(4 + msg.Length);
+                uint bufferSize = (uint)(4 + packet.Length);
                 byte[] readyPacket = new byte[bufferSize];
-                Array.Copy(BitConverter.GetBytes(msg.Length), readyPacket, 4);
+                Array.Copy(BitConverter.GetBytes(packet.Length), readyPacket, 4);
                 Array.Copy(packet, 0, readyPacket, 4, packet.Length);
 
                 IntPtr pRemote = WinApi.VirtualAllocEx(client.ProcessHandle, IntPtr.Zero, /*bufferSize*/
@@ -158,9 +158,8 @@ namespace Tibia.Packets
             }
             else return false;
         }
-        #endregion
 
-        public bool SendPacketToClientByMemory(Objects.Client client, byte[] packet)
+        public static bool SendPacketToClientByMemory(Objects.Client client, byte[] packet)
         {
             bool ret = false;
             if (client.LoggedIn)
@@ -227,9 +226,8 @@ namespace Tibia.Packets
             }
             return ret;
         }
-
-
-
+        #endregion
+        
         public virtual bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
             return false;
