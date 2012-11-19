@@ -1463,25 +1463,30 @@ namespace Tibia.Constants
 
     public enum PipeConstantType : byte
     {
-        PrintName = 0x01,
-        PrintFPS = 0x02,
-        ShowFPS = 0x03,
-        PrintTextFunc = 0x04,
-        NopFPS = 0x05,
-        AddContextMenuFunc = 0x06,
-        OnClickContextMenu = 0x07,
-        SetOutfitContextMenu = 0x08,
-        PartyActionContextMenu = 0x09,
-        CopyNameContextMenu = 0x0A,
-        OnClickContextMenuVf = 0x0B,
-        TradeWithContextMenu = 0x0C,
-        Recv = 0x0D,
-        Send = 0x0E,
-        EventTrigger = 0x0F,
-        LookContextMenu = 0x10,
-        DrawItemFunc = 0x11,
-        DrawSkinFunc = 0x12,
-        Socket = 0x13
+        ClientVersion = 1,
+
+        PrintName = 2,
+        PrintFPS = 3,
+        ShowFPS = 4,
+        PrintTextFunc = 5,
+        NopFPS = 6,
+        
+        OnClickContextMenuVf = 7,
+        AddContextMenuFunc = 8,
+        OnClickContextMenu = 9,
+        SetOutfitContextMenu = 10,
+        PartyActionContextMenu = 11,
+        CopyNameContextMenu = 12,
+        TradeWithContextMenu = 13,
+        LookContextMenu = 14,
+
+        Recv = 15,
+        Send = 16,
+        Socket = 17,
+
+        EventTrigger = 18,
+        DrawItemFunc = 19,
+        DrawSkinFunc = 20
     }
 
     /// <summary>

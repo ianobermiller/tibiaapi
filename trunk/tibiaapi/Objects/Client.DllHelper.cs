@@ -99,6 +99,7 @@ namespace Tibia.Objects
 
             private void OnPipeConnect()
             {
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.ClientVersion, client.VersionNumber);
                 //Set constants for displaying
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintName, client.Addresses.TextDisplay.PrintName);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.PrintFPS, client.Addresses.TextDisplay.PrintFPS);
@@ -107,6 +108,7 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.NopFPS, client.Addresses.TextDisplay.NopFPS);
 
                 //Context Menus
+                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, client.Addresses.ContextMenus.OnClickContextMenuVf);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.AddContextMenuFunc, client.Addresses.ContextMenus.AddContextMenuPtr);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenu, client.Addresses.ContextMenus.OnClickContextMenuPtr);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.SetOutfitContextMenu, client.Addresses.ContextMenus.AddSetOutfitContextMenu);
@@ -114,7 +116,6 @@ namespace Tibia.Objects
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.CopyNameContextMenu, client.Addresses.ContextMenus.AddCopyNameContextMenu);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.TradeWithContextMenu, client.Addresses.ContextMenus.AddTradeWithContextMenu);
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.LookContextMenu, client.Addresses.ContextMenus.AddLookContextMenu);
-                Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.OnClickContextMenuVf, client.Addresses.ContextMenus.OnClickContextMenuVf);
 
                 //winsock recv/send
                 Packets.Pipes.SetConstantPacket.Send(client, PipeConstantType.Recv, client.Addresses.Client.RecvPointer);

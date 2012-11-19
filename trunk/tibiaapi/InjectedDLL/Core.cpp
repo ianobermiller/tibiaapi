@@ -369,6 +369,12 @@ void __declspec(naked) MySetOutfitContextMenu (int eventId, const char* text)
 	}
 }
 
+void __declspec(naked) MyPartyActionContextMenu (int eventId, const char* text)
+{
+	//needs to be implemented when ported to a version that supports it
+}
+
+
 void __declspec(naked) MyCopyNameContextMenu (int eventId, const char* text)
 {
 	__asm
@@ -537,6 +543,10 @@ void EnableHooks()
 
 	
 	OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
+	if(Consts::clientVersion != 971)
+	{
+		OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
+	}
 	OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
 	OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 	OldLookContextMenu = HookCall(Consts::ptrLookContextMenu,(DWORD) &MyLookContextMenu);
@@ -851,10 +861,13 @@ void ParseHooksEnableDisable(BYTE *Buffer, int position)
 {
 	BYTE Enable = Packet::ReadByte(Buffer, &position);
 	/* Testing that every constant contains a value */
-	if(!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
-		!Consts::ptrCopyNameContextMenu || !Consts::ptrSetOutfitContextMenu || 
-		!Consts::prtOnClickContextMenuVf || !Consts::ptrTradeWithContextMenu || !Consts::ptrRecv || !Consts::ptrSend || 
-		!Consts::ptrEventTrigger || !Consts::ptrLookContextMenu || !Consts::ptrAddContextMenu) 
+	if(!Consts::clientVersion ||
+		!Consts::ptrPrintFPS || !Consts::ptrPrintName || !Consts::ptrShowFPS || !Consts::ptrNopFPS || 
+		!Consts::prtOnClickContextMenuVf || !Consts::ptrAddContextMenu || !Consts::ptrOnClickContextMenu ||
+		!Consts::ptrSetOutfitContextMenu || !Consts::ptrPartyActionContextMenu || !Consts::ptrCopyNameContextMenu ||
+		!Consts::ptrTradeWithContextMenu || !Consts::ptrLookContextMenu ||
+		!Consts::ptrRecv ||!Consts::ptrSend || !Consts::ptrSocket ||
+		!Consts::ptrEventTrigger) 
 	{
 		#if _DEBUG
 			MessageBoxA(0, "Every constant must contain a value before injecting.", "Error", MB_ICONERROR);
@@ -887,6 +900,9 @@ void ParseSetConstant(BYTE *Buffer, int position)
 
 	switch(type)
 	{
+	case ClientVersion:
+		Consts::clientVersion = value;
+		break;
 	case PrintName:
 		Consts::ptrPrintName = value;
 		break;
@@ -929,7 +945,7 @@ void ParseSetConstant(BYTE *Buffer, int position)
 	case Send:
 		Consts::ptrSend = value;
 		break;
-	case EventTriggered:
+	case EventTrigger:
 		Consts::ptrEventTrigger = value;
 		break;
 	case LookContextMenu:
@@ -1202,7 +1218,7 @@ void ParseEventTrigger(BYTE *Buffer, int position)
 	int type = Packet::ReadDWord(Buffer, &position);
 
 	EnterCriticalSection(&EventTriggerCriticalSection);
-	EventTrigger(type, NULL, NULL);
+	EventTriggerFun(type, NULL, NULL);
 	LeaveCriticalSection(&EventTriggerCriticalSection);
 }
 

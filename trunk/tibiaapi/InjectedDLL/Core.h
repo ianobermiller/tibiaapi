@@ -44,7 +44,7 @@ typedef int (WINAPI *PSEND)(SOCKET s, char* buf, int len, int flags);
 static PSEND OrigSend = 0;
 
 typedef void _EventTrigger(int type, void* maw, void* mow);
-static _EventTrigger *EventTrigger = 0;
+static _EventTrigger *EventTriggerFun = 0;
 
 //char* lpText passed on ECX
 typedef void _PrintText(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, int nAlign);
@@ -72,6 +72,7 @@ void MyPrintName(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, 
 void MyPrintFps(int nSurface, int nX, int nY, int nFont, int nRed, int nGreen, int nBlue, int nAlign);
 //edx carries char *shortcut
 void MySetOutfitContextMenu (int eventId, const char* text);
+void MyPartyActionContextMenu (int eventId, const char* text);
 void MyCopyNameContextMenu (int eventId, const char* text);
 void MyTradeWithContextMenu (int eventId, const char* text);
 void MyLookContextMenu (int eventId, const char* text);

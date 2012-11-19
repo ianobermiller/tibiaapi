@@ -152,10 +152,11 @@ namespace Tibia.Objects
             #endregion
 
             #region ContextMenus
+            ContextMenus.OnClickContextMenuVf = 0x328268 + baseAddress;
             ContextMenus.AddContextMenuPtr = 0x5DA90 + baseAddress;
             ContextMenus.OnClickContextMenuPtr = 0x5EAF0 + baseAddress;
-            ContextMenus.OnClickContextMenuVf = 0x328268 + baseAddress;
             ContextMenus.AddSetOutfitContextMenu = 0x5E8A1 + baseAddress;
+            ContextMenus.AddPartyActionContextMenu = 0xFFFFFFFF;
             ContextMenus.AddCopyNameContextMenu = 0x5E938 + baseAddress;
             ContextMenus.AddTradeWithContextMenu = 0x5E526 + baseAddress;
             ContextMenus.AddLookContextMenu = 0x5E3FF + baseAddress;
