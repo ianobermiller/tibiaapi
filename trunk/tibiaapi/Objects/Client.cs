@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Tibia.Util;
 
 namespace Tibia.Objects
 {
@@ -92,7 +93,7 @@ namespace Tibia.Objects
 
             // Save a copy of the handle so the process doesn't have to be opened
             // every read/write operation
-            processHandle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
+            processHandle = WinApi.OpenProcess(WinApi.PROCESS_ALL_ACCESS, 0, (uint)process.Id);
 
             addresses = new AddressesCollection(this);
 
@@ -121,7 +122,7 @@ namespace Tibia.Objects
         ~Client()
         {
             // Close the process handle
-            Util.WinApi.CloseHandle(ProcessHandle);
+            WinApi.CloseHandle(ProcessHandle);
         }
         #endregion
 
@@ -388,31 +389,67 @@ namespace Tibia.Objects
         /// </summary>
         public static Client OpenMC(string path, string arguments)
         {
-            return Open(path, arguments);
-
-            Util.WinApi.PROCESS_INFORMATION pi = new Tibia.Util.WinApi.PROCESS_INFORMATION();
-            Util.WinApi.STARTUPINFO si = new Tibia.Util.WinApi.STARTUPINFO();
+            WinApi.PROCESS_INFORMATION pi = new WinApi.PROCESS_INFORMATION();
+            WinApi.STARTUPINFO si = new WinApi.STARTUPINFO();
 
             if (arguments == null)
                 arguments = "";
 
-            Util.WinApi.CreateProcess(path, " " + arguments, IntPtr.Zero, IntPtr.Zero,
-                false, Util.WinApi.CREATE_SUSPENDED, IntPtr.Zero,
-                System.IO.Path.GetDirectoryName(path), ref si, out pi);
+            if (!WinApi.CreateProcess(path, " " + arguments, IntPtr.Zero, IntPtr.Zero,
+                false, WinApi.CREATE_SUSPENDED, IntPtr.Zero, System.IO.Path.GetDirectoryName(path), ref si, out pi))
+                return null;
 
-            IntPtr handle = Util.WinApi.OpenProcess(Util.WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
+
+            uint baseAddress = 0;
+            IntPtr hThread = WinApi.CreateRemoteThread(pi.hProcess, IntPtr.Zero, 0,
+                                    WinApi.GetProcAddress(WinApi.GetModuleHandle("Kernel32"), "GetModuleHandleA"), IntPtr.Zero, 0, IntPtr.Zero);
+            if (hThread == IntPtr.Zero)
+            {
+                WinApi.CloseHandle(pi.hProcess);
+                WinApi.CloseHandle(pi.hThread);
+                return null;
+            }
+
+            WinApi.WaitForSingleObject(hThread, 0xFFFFFFFF);
+            WinApi.GetExitCodeThread(hThread, out baseAddress);
+            WinApi.CloseHandle(hThread);
+
+            if (baseAddress == 0)
+            {
+                WinApi.CloseHandle(pi.hProcess);
+                WinApi.CloseHandle(pi.hThread);
+                return null;
+            }
+
+            IntPtr handle = WinApi.OpenProcess(WinApi.PROCESS_ALL_ACCESS, 0, pi.dwProcessId);
+            if (handle == IntPtr.Zero)
+            {
+                WinApi.CloseHandle(pi.hProcess);
+                WinApi.CloseHandle(pi.hThread);
+                return null;
+            }
+
             var process = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
             var addresses = new AddressesCollection(process.MainModule.FileVersionInfo.FileVersion, process);
+            if (process == null || addresses == null)
+            {
+                WinApi.CloseHandle(pi.hProcess);
+                WinApi.CloseHandle(pi.hThread);
+                WinApi.CloseHandle(handle);
+                return null;
+            }
 
 
             Util.Memory.WriteByte(handle, (long)addresses.Client.MultiClient, addresses.Client.MultiClientJMP);
-            Util.WinApi.ResumeThread(pi.hThread);
+            WinApi.ResumeThread(pi.hThread);
             process.WaitForInputIdle();
             Util.Memory.WriteByte(handle, (long)addresses.Client.MultiClient, addresses.Client.MultiClientJNZ);
+            
+            
+            WinApi.CloseHandle(pi.hProcess);
+            WinApi.CloseHandle(pi.hThread);
+            WinApi.CloseHandle(handle);
 
-            Util.WinApi.CloseHandle(handle);
-            Util.WinApi.CloseHandle(pi.hProcess);
-            Util.WinApi.CloseHandle(pi.hThread);
 
             return new Client(process);
         }
@@ -468,7 +505,7 @@ namespace Tibia.Objects
             foreach (Process process in Process.GetProcesses())
             {
                 StringBuilder classname = new StringBuilder();
-                Util.WinApi.GetClassName(process.MainWindowHandle, classname, 12);
+                WinApi.GetClassName(process.MainWindowHandle, classname, 12);
 
                 if (classname.ToString().Equals("TibiaClient", StringComparison.CurrentCultureIgnoreCase))
                 {

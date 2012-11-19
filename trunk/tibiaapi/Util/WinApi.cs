@@ -168,6 +168,9 @@ namespace Tibia.Util
            IntPtr lpThreadAttributes, uint dwStackSize, IntPtr
            lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
 
+        [DllImport("kernel32.dll")]
+        public static extern bool GetExitCodeThread(IntPtr hThread, out uint lpExitCode);
+
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
