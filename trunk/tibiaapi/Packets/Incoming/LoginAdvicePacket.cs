@@ -34,12 +34,5 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddString(Message);
         }
-
-        public static bool Send(Objects.Client client, string message)
-        {
-            LoginAdvicePacket p = new LoginAdvicePacket(client);
-            p.Message = message;
-            return p.Send();
-        }
     }
 }

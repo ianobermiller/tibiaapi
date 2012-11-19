@@ -23,7 +23,7 @@ namespace Tibia.Packets
 
         public virtual void ToNetworkMessage(NetworkMessage msg)
         {
-            throw new Exception("ToNetworkMessage not implemented.");
+            throw new System.NotImplementedException();
         }
 
         public bool Send()

@@ -28,6 +28,7 @@ namespace Tibia.Packets.Incoming
             while (Count >= 0)
             {
                 //read market buy offer
+                return false;
             }
 
             Count = msg.GetByte();
@@ -35,14 +36,10 @@ namespace Tibia.Packets.Incoming
             while (Count >= 0)
             {
                 //read market sell offer
+                return false;
             }
 
             return true;
-        }
-
-        public override void ToNetworkMessage(NetworkMessage msg)
-        {
-            msg.AddByte((byte)Type);
         }
     }
 }

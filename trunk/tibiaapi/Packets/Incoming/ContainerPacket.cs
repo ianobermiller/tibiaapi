@@ -5,8 +5,6 @@ namespace Tibia.Packets.Incoming
 {
     public class ContainerPacket : IncomingPacket
     {
-
-        public Objects.Item Item { get; set; }
         public ushort ItemId { get; set; }
         public string Name { get; set; }
         public byte Id { get; set; }
@@ -56,7 +54,6 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddByte(Id);
-            //msg.AddItem(Item);
             msg.AddString(Name);
             msg.AddByte(Capacity);
             msg.AddByte(HasParent);
@@ -67,34 +64,6 @@ namespace Tibia.Packets.Incoming
             {
                 msg.AddItem(i);
             }
-        }
-
-        public static bool Send(Objects.Client client, byte id, Objects.Item item, string name, byte capacity, byte hasParent, List<Objects.Item> items)
-        {
-            ContainerPacket p = new ContainerPacket(client);
-
-            p.Id = id;
-            p.Item = item;
-            p.Name = name;
-            p.Capacity = capacity;
-            p.HasParent = hasParent;
-            p.Items = items;
-
-            return p.Send();
-        }
-
-        public static bool Send(Objects.Client client, byte id, ushort itemId, string name, byte capacity, byte hasParent, List<Objects.Item> items)
-        {
-            ContainerPacket p = new ContainerPacket(client);
-
-            p.Id = id;
-            p.ItemId = itemId;
-            p.Name = name;
-            p.Capacity = capacity;
-            p.HasParent = hasParent;
-            p.Items = items;
-
-            return p.Send();
         }
     }
 }

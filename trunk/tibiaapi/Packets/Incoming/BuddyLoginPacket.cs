@@ -32,5 +32,6 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddUInt32(PlayerId);
         }
+
     }
 }

@@ -33,12 +33,5 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
             msg.AddString(Name);
         }
-
-        public static bool Send(Objects.Client client, string name)
-        {
-            PrivateChannelPacket p = new PrivateChannelPacket(client);
-            p.Name = name;
-            return p.Send();
-        }
     }
 }

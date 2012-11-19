@@ -48,12 +48,5 @@ namespace Tibia.Packets.Incoming
                 msg.AddString(c.Name);
             }
         }
-
-        public static bool Send(Objects.Client client, List<Objects.Channel> channels)
-        {
-            ChannelsPacket p = new ChannelsPacket(client);
-            p.Channels = channels;
-            return p.Send();
-        }
     }
 }

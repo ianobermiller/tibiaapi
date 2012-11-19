@@ -40,5 +40,6 @@ namespace Tibia.Packets.Incoming
             msg.AddByte(Mark);
             msg.AddString(Description);
         }
+
     }
 }

@@ -31,6 +31,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
+            msg.AddString(Message);
         }
     }
 }

@@ -37,13 +37,5 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(CreatureId);
             msg.AddByte((byte)Color);
         }
-
-        public static bool Send(Objects.Client client, uint creatureId, SquareColor color)
-        {
-            MarkCreaturePacket p = new MarkCreaturePacket(client);
-            p.CreatureId = creatureId;
-            p.Color = color;
-            return p.Send();
-        }
     }
 }

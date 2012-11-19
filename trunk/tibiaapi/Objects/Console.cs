@@ -64,13 +64,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="recipient"></param>
-        public static ChatMessage CreatePrivateMessage(string text, string recipient)
+        public ChatMessage(string text, string recipient)
         {
-            ChatMessage cm = new ChatMessage(text);
-            cm.Recipient = recipient;
-            cm.Channel = ChatChannel.None;
-            cm.Type = SpeechType.Private;
-            return cm;
+            this.Text = text;
+            this.Recipient = recipient;
+            this.Channel = ChatChannel.None;
+            this.Type = SpeechType.PrivateTo;
         }
 
         /// <summary>
@@ -78,13 +77,12 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="channel"></param>
-        public static ChatMessage CreateChannelMessage(string text, ChatChannel channel)
+        public ChatMessage(string text, ChatChannel channel)
         {
-            ChatMessage cm = new ChatMessage(text);
-            cm.Recipient = "";
-            cm.Channel = channel;
-            cm.Type = SpeechType.ChannelYellow;
-            return cm;
+            this.Text=text;
+            this.Recipient = "";
+            this.Channel = channel;
+            this.Type = SpeechType.Channel;
         }
 
         /// <summary>
@@ -92,13 +90,20 @@ namespace Tibia.Objects
         /// </summary>
         /// <param name="text"></param>
         /// <param name="type"></param>
-        public static ChatMessage CreateNormalMessage(string text, SpeechType type)
+        public ChatMessage(string text, SpeechType type)
         {
-            ChatMessage cm = new ChatMessage(text);
-            cm.Recipient = "";
-            cm.Channel = ChatChannel.None;
-            cm.Type = type;
-            return cm;
+            this.Text = text;
+            this.Recipient = "";
+            this.Channel = ChatChannel.None;
+            this.Type = type;
+        }
+
+        public ChatMessage(string text, string recipient, ChatChannel channel, SpeechType type)
+        {
+            this.Text = text;
+            this.Recipient = recipient;
+            this.Channel = channel;
+            this.Type = type;
         }
     }
 }
