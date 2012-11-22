@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tibia.Packets;
 using Tibia.Util;
 
@@ -17,6 +18,10 @@ namespace Tibia.Objects
 
             private bool sendToClientCodeWritten = false;
             private IntPtr pSendToClient;
+            private IntPtr pMyGetNextPacket;
+            private IntPtr pStreamHolderAddress;
+            private IntPtr pMyStreamAddress;
+            private IntPtr pFlagAddress;
             private byte[] oldCallBytes;
 
             internal IOHelper(Client client) { this.client = client; }
@@ -78,7 +83,7 @@ namespace Tibia.Objects
 
             #endregion
 
-            #region Socket.Send wrappers
+            #region SendToServer stuff
             /// <summary>
             /// Get the base address of our send (to server) function
             /// </summary>
@@ -98,58 +103,48 @@ namespace Tibia.Objects
                 }
             }
 
-            public bool WriteSocketSendCode()
-            {
-                byte[] OpCodes = new byte[]{
-                //push	0						;_flag
-        		0x6A, 0x00,
-                //push	dword ptr [ebx]			;_length
-                0xFF, 0x33,
-                //add	ebx, 4
-                0x83, 0xC3, 0x04,
-                //push	ebx						;_buffer
-                0x53,
-                //mov	eax, ds:SocketStruct	;_socketstruct
-                0xA1, 0xFF, 0xFF, 0xFF, 0xFF,
-                //push	dword ptr [eax+4]		;_socket
-                0xFF, 0x70, 0x04,
-                //call	dword ptr ds:Send		;call send
-                0xFF, 0x15, 0xFF, 0xFF, 0xFF, 0xFF,
-                //retn
-                0xC3
+
+            byte[] sendToServerOpcodes = new byte[]{                
+        		0x6A, 0x00,                             //PUSH 0                            ;_flag                
+                0xFF, 0x33,                             //PUSH DWORD PTR [EBX]			    ;_length
+                0x83, 0xC3, 0x04,                       //ADD EBX,4                
+                0x53,                                   //PUSH EBX						    ;_buffer                
+                0xA1, 0xFF, 0xFF, 0xFF, 0xFF,           //MOV EAX,DWORD PTR [SocketStruct]	;_socketstruct
+                0xFF, 0x70, 0x04,                       //PUSH DWORD PTR [EAX]      		;_socket                
+                0xFF, 0x15, 0xFF, 0xFF, 0xFF, 0xFF,     //CALL DWORD PTR [Send]		;call send
+                0xC3                                    //RETN
 	        };
 
-                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SocketStruct), 0, OpCodes, 9, 4);
-                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SendPointer), 0, OpCodes, 18, 4);
+            public bool WriteSocketSendCode()
+            {
+                bool result = true;
+                sendToServerOpcodes = this.sendToServerOpcodes;
 
-                if (pSendToServer == IntPtr.Zero)
+                List<uint> indeces = new List<uint>();
+                for (int ii = 0; ii < sendToServerOpcodes.Length - 4; ii++)
                 {
-                    pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
+                    if (BitConverter.ToUInt32(sendToServerOpcodes,ii) == 0xFFFFFFFF)
+                        indeces.Add((uint)ii);
+                }
+
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SocketStruct), 0, sendToServerOpcodes, indeces[0], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SendPointer), 0, sendToServerOpcodes, indeces[1], 4);
+
+                var pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
                         client.ProcessHandle,
                         IntPtr.Zero,
-                        (uint)OpCodes.Length,
+                        (uint)sendToServerOpcodes.Length,
                         WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
                         WinApi.MemoryProtection.ExecuteReadWrite);
-                }
 
-                if (pSendToServer != IntPtr.Zero)
-                {
+                if (pSendToServer == IntPtr.Zero)
+                    return false;
 
-                    if (client.Memory.WriteBytes(pSendToServer.ToInt64(), OpCodes, (uint)OpCodes.Length))
-                    {
-                        sendToServerCodeWritten = true;
-                        return true;
-                    }
-                    WinApi.VirtualFreeEx(
-                        client.ProcessHandle,
-                        pSendToServer,
-                        0,
-                        WinApi.AllocationType.Release);
-                    pSendToServer = IntPtr.Zero;
-                }
-                sendToServerCodeWritten = false;
-                return false;
 
+                result &= client.Memory.WriteBytes((uint)pSendToServer, sendToServerOpcodes, (uint)sendToServerOpcodes.Length);
+                result &= WinApi.VirtualFreeEx(client.ProcessHandle, pSendToServer, 0, WinApi.AllocationType.Release);
+                sendToServerCodeWritten = result;
+                return result;
             }
             #endregion
 
@@ -160,6 +155,10 @@ namespace Tibia.Objects
             public IntPtr SendToClientAddress
             {
                 get { return pSendToClient; }
+            }
+            public IntPtr MyStreamAddress
+            {
+                get { return pMyStreamAddress; }
             }
 
             /// <summary>
@@ -173,168 +172,282 @@ namespace Tibia.Objects
                 }
             }
 
+
+            #region SendToClient
+            byte[] sendToClientOpCodes = new byte[]{
+                                                        //SendToClient:
+                0xC6,0x05,0xFF,0xFF,0xFF,0xFF,0x01,     //MOV BYTE PTR [ADDR_FLAG],1                    <--const 0
+                
+                0x60,                                   //PUSHAD
+                0x9C,                                   //PUSHFD
+                0xB8,0xFF,0xFF,0xFF,0xFF,    			//MOV EAX, ADDR_RECV_STREAM						<--const 1
+                0xBB,0xFF,0xFF,0xFF,0xFF,    			//MOV EBX, ADDR_MY_STREAM						<--const 2
+                0xBA,0xFF,0xFF,0xFF,0xFF,               //MOV EDX, ADDR_STREAM_HOLDER                   <--const 3
+                                                        //save and replace ADDR_RECV_STREAM
+                0x8B,0x08,                              //MOV ECX,DWORD PTR DS:[EAX]
+                0x89,0x0A,                    			//MOV DWORD PTR DS:[EDX],ECX		
+                0x8B,0x0B,                              //MOV ECX,DWORD PTR DS:[EBX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx
+                0x83,0xC0,0x04,        					//ADD EAX,4
+                0x83,0xC3,0x04,        					//ADD EBX,4
+                0x83,0xC2,0x04,        					//ADD EDX,4                                    
+                                                        //save and replace ADDR_RECV_STREAM+4
+                0x8B,0x08,                              //MOV ECX,DWORD PTR DS:[EAX]
+                0x89,0x0A,                    			//MOV DWORD PTR DS:[EDX],ECX		
+                0x8B,0x0B,                              //MOV ECX,DWORD PTR DS:[EBX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx                
+                0x83,0xC0,0x04,        					//ADD EAX,4
+                0x83,0xC3,0x04,        					//ADD EBX,4
+                0x83,0xC2,0x04,        					//ADD EDX,4
+                                                        //save and replace ADDR_RECV_STREAM+8
+                0x8B,0x08,                              //MOV ECX,DWORD PTR DS:[EAX]
+                0x89,0x0A,                    			//MOV DWORD PTR DS:[EDX],ECX		
+                0x8B,0x0B,                              //MOV ECX,DWORD PTR DS:[EBX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx
+                0x9D,                                   //POPFD
+                0x61,                                   //POPAD
+ 
+                0xB8,0xFF,0xFF,0xFF,0xFF,    			//MOV EAX,FUNC_PARSER							<--const 4
+                0x90,                                   //NOP
+                0xFF,0xD0,           					//CALL EAX
+                
+                0x60,                                   //PUSHAD
+                0x9C,                                   //PUSHFD                    
+                0xB8,0xFF,0xFF,0xFF,0xFF,    			//MOV EAX, ADDR_RECV_STREAM						<--const 5
+                0xBA,0xFF,0xFF,0xFF,0xFF,               //MOV EDX, ADDR_STREAM_HOLDER                   <--const 6                
+                                                        //restore ADDR_RECV_STREAM
+                0x8B,0x0A,                              //MOV ECX, DWORD PTR DS:[EDX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx	                
+                0x83,0xC0,0x04,        					//ADD EAX,4
+                0x83,0xC2,0x04,        					//ADD EDX,4                
+                                                        //restore ADDR_RECV_STREAM+4
+                0x8B,0x0A,                              //MOV ECX, DWORD PTR DS:[EDX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx	                
+                0x83,0xC0,0x04,        					//ADD EAX,4
+                0x83,0xC2,0x04,        					//ADD EDX,4                
+                                                        //restore ADDR_RECV_STREAM+8
+                0x8B,0x0A,                              //MOV ECX, DWORD PTR DS:[EDX]
+                0x89,0x08,           					//MOV DWORD PTR DS:[EAX],ecx	                
+
+                0x9D,                                   //POPFD
+                0x61,                                   //POPAD
+                
+                0xC6,0x05,0xFF,0xFF,0xFF,0xFF,0x00,     //MOV BYTE PTR [ADDR_FLAG],0                    <--const 7
+                0xC3,                                   //RETN
+            };
+            #endregion
+
+            #region MyGetNextPacket
+            byte[] myGetNextPacketOpCodes = new byte[]{
+                                                        //MyGetNextPacket:
+                0X80,0x3D,0xFF,0xFF,0xFF,0xFF,0x00,		//CMP BYTE PTR [ADDR_FLAG],1                    <--const 0
+                0x7D,43,              				    //JGE SHORT ...	<-----jump to line of const 6	
+                                                        
+                0x8B,0x15,0xFF,0xFF,0xFF,0xFF,          //MOV EDX, DWORD PTR [ ADDR_RECV_STREAM+8]      <--const 1 
+                0x3B,0x15,0xFF,0xFF,0xFF,0xFF,          //CMP EDX, DWORD PTR [ ADDR_RECV_STREAM+4]      <--const 2
+                0x7C,23,                                //JL SHORT ...	<-----jump to line of const 5
+
+                0x8B,0x1D,0xFF,0xFF,0xFF,0xFF,          //MOV EBX, [ADDR_RECV_STREAM]                   <--const 3
+                0x03,0xDA,                              //ADD EBX, EDX
+                0xB8,0x00,0x00,0x00,0x00,               //MOV EAX, 0
+                0x8A,0x03,                              //MOV AL, BYTE PTR [EBX]
+                                                        
+                0x42,                                   //INC EDX
+                0x89,0x15,0xFF,0xFF,0xFF,0xFF,          //MOV DWORD PTR [ ADDR_RECV_STREAM+8], EDX      <--const 4
+                0xC3,                                   //RETN
+
+                0xB8,0xFF,0xFF,0xFF,0xFF,               //MOV EAX, -1                                   <--const 5
+                0xC3,                                   //RETN
+                                                        
+                0xB8,0xFF,0xFF,0xFF,0xFF,    			//MOV EAX,oldAddress	<----------jump here	<--const 6
+                0x90,                                   //NOP
+                0xFF,0xD0,           					//CALL EAX
+                0xC3             						//RETN
+                };
+            #endregion
+
+
             public bool WriteOnGetNextPacketCode()
             {
+                sendToClientCodeWritten = false;
+
                 oldCallBytes = client.Memory.ReadBytes(
                             client.Addresses.Client.GetNextPacketCall,
                             5);
-                #region opcodes
-                byte[] opCodes = new byte[]{
-                //fSendingToClient @ flagAddress
-                0x00, 0x00, 0x00, 0x00, 
-                                  
-                //mov eax,dword ptr ds:[flagAddress]
-                0xA1, 0x00, 0x00, 0x00, 0x00,
 
-                //cmp eax,1
-                0x83, 0xF8, 0x01,
+                var sendToClientOpCodes = this.sendToClientOpCodes;
+                var myGetNextPacketOpCodes = this.myGetNextPacketOpCodes;
+                List<uint> consts;
 
-                //JNZ SHORT~ -> mov eax,origAddress
-                0x75, 0x26,
-
-                //mov eax,dword ptr ds:[ADDR_RECV_STREAM+4]                         //dwSize
-                0xA1, 0x00, 0x00, 0x00, 0x00, 
-
-                //mov ebx,dword ptr ds:[ADDR_RECV_STREAM+8]                          //dwPos
-                0x8B, 0x1D, 0x00, 0x00, 0x00, 0x00,
-
-                //cmp ebx,eax
-                0x39, 0xC3,
-
-                //JGE SHORT~ -> //mov eax,-1
-                0x7D, 0x11,
-
-                //add ebx,dword ptr ds:[ADDR_RECV_STREAM]
-                0x03, 0x1D, 0x00, 0x00, 0x00, 0x00,
-
-                //mov al,byte ptr ds:[ebx]
-                0x8A, 0x03,
-
-                //mov ebx,ADDR_RECV_STREAM+8
-                0xBB, 0x00, 0x00, 0x00, 0x00,
-
-                //add dword ptr ds:[ebx],1
-                0x83, 0x03, 0x01,
-
-                //retn  
-                0xC3,
-
-                //mov eax,-1
-                0xB8, 0xFF, 0xFF, 0xFF, 0xFF,
-
-                //retn,
-                0xC3,
-
-                //mov eax,oldAddress
-                0xB8, 0x00, 0x00, 0x00, 0x00,
-
-                //call eax
-                0xFF, 0xD0,
-
-                //retn
-                0xC3
-                };
-                #endregion
-                #region fixing opcodes
-                Array.Copy(
-                    BitConverter.GetBytes(client.Addresses.Client.RecvStream + 4),
-                    0,
-                    opCodes,
-                    15,
-                    4);//mov eax,dword ptr ds:[ADDR_RECV_STREAM+4]  
-
-                Array.Copy(
-                    BitConverter.GetBytes(client.Addresses.Client.RecvStream + 8),
-                    0,
-                    opCodes,
-                    21,
-                    4); //mov ebx,dword ptr ds:[ADDR_RECV_STREAM+8]
-
-                Array.Copy(
-                    BitConverter.GetBytes(client.Addresses.Client.RecvStream),
-                    0,
-                    opCodes,
-                    31,
-                    4);//add ebx,dword ptr ds:[ADDR_RECV_STREAM]
-
-                Array.Copy(
-                    BitConverter.GetBytes(client.Addresses.Client.RecvStream + 8),
-                    0,
-                    opCodes,
-                    38,
-                    4);//mov ebx,ADDR_RECV_STREAM+8
-                #endregion
-
-                pSendToClient = WinApi.VirtualAllocEx(
+                #region pStreamHolderAddress
+                pStreamHolderAddress =  WinApi.VirtualAllocEx(
                     client.ProcessHandle,
                     IntPtr.Zero,
-                    (uint)opCodes.Length,
+                    (uint)12,
                     WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
                     WinApi.MemoryProtection.ExecuteReadWrite);
+                if (pStreamHolderAddress == IntPtr.Zero)
+                {
+                    CleanUp();
+                    return false;
+                }
+                #endregion
 
+                #region pMyStreamAddress
+                pMyStreamAddress = WinApi.VirtualAllocEx(
+                    client.ProcessHandle,
+                    IntPtr.Zero,
+                    (uint)12,
+                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                    WinApi.MemoryProtection.ExecuteReadWrite);
+                if (pMyStreamAddress == IntPtr.Zero)
+                {
+                    CleanUp();
+                    return false;
+                }
+                #endregion
+
+                #region pFlagAddress
+                pFlagAddress = WinApi.VirtualAllocEx(
+                            client.ProcessHandle,
+                            IntPtr.Zero,
+                            (uint)1,
+                            WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                            WinApi.MemoryProtection.ExecuteReadWrite);
+                if (pFlagAddress == IntPtr.Zero || !client.Memory.WriteByte((uint)pFlagAddress, 0))
+                {
+                    CleanUp();
+                    return false;
+                }
+                #endregion
+
+                #region pSendToClient
+                pSendToClient = WinApi.VirtualAllocEx(
+                            client.ProcessHandle,
+                            IntPtr.Zero,
+                            (uint)sendToClientOpCodes.Length,
+                            WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                            WinApi.MemoryProtection.ExecuteReadWrite);
+                if (pSendToClient == IntPtr.Zero) return false;
+
+                consts = new List<uint>();
+                for (int ii = 0; ii < sendToClientOpCodes.Length - 4; ii++)
+                {
+                    if (BitConverter.ToUInt32(sendToClientOpCodes, ii) == 0xFFFFFFFF)
+                        consts.Add((uint)ii);
+                }
+
+
+                Array.Copy(BitConverter.GetBytes((uint)pFlagAddress), 0, sendToClientOpCodes, consts[0], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream), 0, sendToClientOpCodes, consts[1], 4);
+                Array.Copy(BitConverter.GetBytes((uint)pMyStreamAddress), 0, sendToClientOpCodes, consts[2], 4);
+                Array.Copy(BitConverter.GetBytes((uint)pStreamHolderAddress), 0, sendToClientOpCodes, consts[3], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.ParserFunc), 0, sendToClientOpCodes, consts[4], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream), 0, sendToClientOpCodes, consts[5], 4);
+                Array.Copy(BitConverter.GetBytes((uint)pStreamHolderAddress), 0, sendToClientOpCodes, consts[6], 4);
+                Array.Copy(BitConverter.GetBytes((uint)pFlagAddress), 0, sendToClientOpCodes, consts[7], 4);
+
+                if (!client.Memory.WriteBytes((uint)pSendToClient, sendToClientOpCodes, (uint)sendToClientOpCodes.Length))
+                {
+                    CleanUp();
+                    return false;
+                }
+                #endregion
+                
+                
+                #region pMyGetNextPacket
+                pMyGetNextPacket = WinApi.VirtualAllocEx(
+                            client.ProcessHandle,
+                            IntPtr.Zero,
+                            (uint)myGetNextPacketOpCodes.Length,
+                            WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                            WinApi.MemoryProtection.ExecuteReadWrite);
+                if (pMyGetNextPacket == IntPtr.Zero) return false;
+
+
+                #region calls
+                uint newCall, oldCall;
+
+                byte[] call = new byte[] { 0xE8, 0x00, 0x00, 0x00, 0x00 };
+                newCall = (uint)pMyGetNextPacket - client.Addresses.Client.GetNextPacketCall - 5;
+                Array.Copy(BitConverter.GetBytes(newCall), 0, call, 1, 4);
+
+                oldCall = BitConverter.ToUInt32(
+                    client.Memory.ReadBytes(client.Addresses.Client.GetNextPacketCall + 1, 4),
+                    0);
+                uint oldAddress = (uint)(client.Addresses.Client.GetNextPacketCall + oldCall + 5);
+                #endregion
+
+
+                consts = new List<uint>();
+                for (int ii = 0; ii < myGetNextPacketOpCodes.Length - 4; ii++)
+                {
+                    if (BitConverter.ToUInt32(myGetNextPacketOpCodes,ii)==0xFFFFFFFF)
+                        consts.Add((uint)ii);
+                }
+
+
+                Array.Copy(BitConverter.GetBytes((uint)pFlagAddress), 0, myGetNextPacketOpCodes, consts[0], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream + 8), 0, myGetNextPacketOpCodes, consts[1], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream + 4), 0, myGetNextPacketOpCodes, consts[2], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream), 0, myGetNextPacketOpCodes, consts[3], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.RecvStream + 8), 0, myGetNextPacketOpCodes, consts[4], 4);
+                Array.Copy(BitConverter.GetBytes(oldAddress ), 0, myGetNextPacketOpCodes, consts[6], 4);
+
+                if (!client.Memory.WriteBytes((uint)pMyGetNextPacket, myGetNextPacketOpCodes, (uint)myGetNextPacketOpCodes.Length))
+                {
+                    CleanUp();
+                    return false;
+                }
+                #endregion
+
+                #region hook GetNextPacket
+                //Begin HookCall
+                WinApi.MemoryProtection oldProtect = WinApi.MemoryProtection.NoAccess;
+                WinApi.MemoryProtection newProtect = WinApi.MemoryProtection.NoAccess;
+
+                if (!WinApi.VirtualProtectEx(client.ProcessHandle,
+                    new IntPtr(client.Addresses.Client.GetNextPacketCall),
+                    new IntPtr(5),
+                    WinApi.MemoryProtection.ExecuteReadWrite,
+                    ref oldProtect)
+                    ||
+                    !client.Memory.WriteBytes(client.Addresses.Client.GetNextPacketCall, call, 5)
+                    )
+                {
+                    CleanUp();
+                    return false;
+                } 
+                #endregion
+
+                WinApi.VirtualProtectEx(client.ProcessHandle,
+                    new IntPtr(client.Addresses.Client.GetNextPacketCall),
+                    new IntPtr(5),
+                    oldProtect,
+                    ref newProtect);
+
+                sendToClientCodeWritten = true;
+                return true;
+            }
+
+            private void CleanUp()
+            {
+                if (pStreamHolderAddress != IntPtr.Zero)
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pStreamHolderAddress, 12, WinApi.AllocationType.Release);
+                if (pMyStreamAddress != IntPtr.Zero)
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pMyStreamAddress, 12, WinApi.AllocationType.Release);
+                if (pFlagAddress != IntPtr.Zero)
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pFlagAddress, 1, WinApi.AllocationType.Release);
                 if (pSendToClient != IntPtr.Zero)
-                {
-                    Array.Copy(BitConverter.GetBytes(pSendToClient.ToInt32()), 0, opCodes, 5, 4);
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pSendToClient, (uint)sendToClientOpCodes.Length, WinApi.AllocationType.Release);
+                if (pMyGetNextPacket != IntPtr.Zero)
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pSendToClient, (uint)myGetNextPacketOpCodes.Length, WinApi.AllocationType.Release);
 
-                    //Begin HookCall
-                    WinApi.MemoryProtection oldProtect = WinApi.MemoryProtection.NoAccess;
-                    WinApi.MemoryProtection newProtect = WinApi.MemoryProtection.NoAccess;
-                    uint newCall, oldCall;
-                    byte[] call = new byte[] { 0xE8, 0x00, 0x00, 0x00, 0x00 };
-
-                    newCall = (uint)(pSendToClient.ToInt32() + 4) - client.Addresses.Client.GetNextPacketCall - 5;
-                    Array.Copy(BitConverter.GetBytes(newCall), 0, call, 1, 4);
-
-                    if (WinApi.VirtualProtectEx(client.ProcessHandle,
-                        new IntPtr(client.Addresses.Client.GetNextPacketCall),
-                        new IntPtr(5),
-                        WinApi.MemoryProtection.ReadWrite,
-                        ref oldProtect))
-                    {
-
-                        oldCall = BitConverter.ToUInt32(
-                            client.Memory.ReadBytes(client.Addresses.Client.GetNextPacketCall + 1, 4),
-                            0);
-
-                        int oldAddress = (int)(client.Addresses.Client.GetNextPacketCall + oldCall + 5);
-
-                        Array.Copy(
-                            BitConverter.GetBytes(oldAddress),
-                            0,
-                            opCodes,
-                            53,
-                            4);//mov eax,oldAddress
-
-                        if (client.Memory.WriteBytes(pSendToClient.ToInt64(), opCodes, (uint)opCodes.Length))
-                        {
-                            if (client.Memory.WriteBytes(client.Addresses.Client.GetNextPacketCall, call, 5))
-                            {
-                                WinApi.VirtualProtectEx(client.ProcessHandle,
-                                    new IntPtr(client.Addresses.Client.GetNextPacketCall),
-                                    new IntPtr(5),
-                                    oldProtect,
-                                    ref newProtect);
-                                sendToClientCodeWritten = true;
-                                return true;
-                            }
-                        }
-                        WinApi.VirtualProtectEx(client.ProcessHandle,
-                            new IntPtr(client.Addresses.Client.GetNextPacketCall),
-                            new IntPtr(5),
-                            oldProtect,
-                            ref newProtect);
-                    }
-                }
-                if (pSendToClient == IntPtr.Zero)
-                {
-                    WinApi.VirtualFreeEx(
-                        client.ProcessHandle,
-                        pSendToClient,
-                        (uint)opCodes.Length,
-                        WinApi.AllocationType.Release);
-                }
-                sendToClientCodeWritten = false;
-                return false;
+                pStreamHolderAddress = IntPtr.Zero;
+                pMyStreamAddress = IntPtr.Zero;
+                pFlagAddress = IntPtr.Zero;
+                pSendToClient = IntPtr.Zero;
+                pMyGetNextPacket = IntPtr.Zero;
             }
 
             public bool RestoreOldGetNextPacketCall()
@@ -345,10 +458,16 @@ namespace Tibia.Objects
                         WinApi.VirtualFreeEx(
                             client.ProcessHandle,
                             pSendToClient,
-                            60/*(uint)opCodes.Length*/,
+                            (uint)sendToClientOpCodes.Length,
+                            WinApi.AllocationType.Release) &&
+                        WinApi.VirtualFreeEx(
+                            client.ProcessHandle,
+                            pMyGetNextPacket,
+                            (uint)myGetNextPacketOpCodes.Length,
                             WinApi.AllocationType.Release))
                     {
                         pSendToClient = IntPtr.Zero;
+                        pMyGetNextPacket = IntPtr.Zero;
                         sendToClientCodeWritten = false;
                         return true;
                     }
