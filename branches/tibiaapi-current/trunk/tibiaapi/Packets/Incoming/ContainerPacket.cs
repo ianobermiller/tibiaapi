@@ -54,6 +54,7 @@ namespace Tibia.Packets.Incoming
             msg.AddByte((byte)Type);
 
             msg.AddByte(Id);
+            msg.AddUInt16(ItemId);
             msg.AddString(Name);
             msg.AddByte(Capacity);
             msg.AddByte(HasParent);

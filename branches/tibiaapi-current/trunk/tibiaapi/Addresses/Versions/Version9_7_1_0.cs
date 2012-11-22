@@ -36,9 +36,9 @@ namespace Tibia.Objects
             Client.SocketStruct = 0x59C9AC + baseAddress;
             Client.RecvPointer = 0x2F5940 + baseAddress;
             Client.SendPointer = 0x2F5970 + baseAddress;
-            Client.LastRcvPacket = 0;//    deprecated
+            Client.ParserFunc = 0x67F90 + baseAddress;
             Client.DecryptCall = 0x67FD7 + baseAddress;
-            Client.GetNextPacketCall = 0x11ACC0 + baseAddress;
+            Client.GetNextPacketCall = 0x67FD7 + baseAddress;//0x11ACC0
             Client.RecvStream = 0x5D5394 + baseAddress;
             Client.FrameRatePointer = 0x593008 + baseAddress;
             Client.FrameRateCurrentOffset = 0x60;

@@ -161,70 +161,40 @@ namespace Tibia.Packets
 
         public static bool SendPacketToClientByMemory(Objects.Client client, byte[] packet)
         {
-            bool ret = false;
             if (client.LoggedIn)
             {
+                bool result = true;
+
                 if (!client.IO.IsSendToClientCodeWritten)
                     if (!client.IO.WriteOnGetNextPacketCode()) return false;
 
-                byte[] originalStream = client.Memory.ReadBytes(client.Addresses.Client.RecvStream, 12);
-
-                IntPtr myStreamAddress = WinApi.VirtualAllocEx(
-                    client.ProcessHandle,
-                    IntPtr.Zero,
-                    (uint)packet.Length,
-                    WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
-                    WinApi.MemoryProtection.ExecuteReadWrite);
-                if (myStreamAddress != IntPtr.Zero)
-                {
-
-                    if (client.Memory.WriteBytes(
-                        myStreamAddress.ToInt64(),
-                        packet,
-                        (uint)packet.Length))
-                    {
-                        byte[] myStream = new byte[12];
-                        Array.Copy(BitConverter.GetBytes(myStreamAddress.ToInt32()), myStream, 4);
-                        Array.Copy(BitConverter.GetBytes(packet.Length), 0, myStream, 4, 4);
-
-                        if (client.Memory.WriteBytes(client.Addresses.Client.RecvStream,
-                            myStream, 12))
-                        {
-                            if (client.Memory.WriteByte(client.IO.SendToClientAddress.ToInt64(), 0x1))
-                            {
-
-                                IntPtr threadHandle = WinApi.CreateRemoteThread(
-                                                            client.ProcessHandle,
+                var myPacketAddress = WinApi.VirtualAllocEx(client.ProcessHandle,
                                                             IntPtr.Zero,
-                                                            0,
-                                                            new IntPtr(client.Addresses.Client.ParserFunc),
-                                                            IntPtr.Zero,
-                                                            0,
-                                                            IntPtr.Zero);
-                                WinApi.WaitForSingleObject(threadHandle, 0xFFFFFFFF);//INFINITE=0xFFFFFFFF
-                                WinApi.CloseHandle(threadHandle);
+                                                            (uint)packet.Length,
+                                                            WinApi.AllocationType.Commit | WinApi.AllocationType.Reserve,
+                                                            WinApi.MemoryProtection.ExecuteReadWrite);
+                if (myPacketAddress == IntPtr.Zero)
+                    return false;
 
-                                ret = true;
-                                client.Memory.WriteByte(client.IO.SendToClientAddress.ToInt64(), 0x0);
+                result &= client.Memory.WriteBytes(myPacketAddress.ToInt64(), packet, (uint)packet.Length);
+                result &= client.Memory.WriteUInt32(client.IO.MyStreamAddress.ToInt64(), (uint)myPacketAddress);
+                result &= client.Memory.WriteUInt32(client.IO.MyStreamAddress.ToInt64() + 4, (uint)packet.Length);
+                result &= client.Memory.WriteUInt32(client.IO.MyStreamAddress.ToInt64() + 8, 0);
 
-                            }
-
-                            client.Memory.WriteBytes(client.Addresses.Client.RecvStream,
-                            originalStream, 12);
-                        }
-
-                    }
-                }
-                if (myStreamAddress != IntPtr.Zero)
+                if (result)
                 {
-                    WinApi.VirtualFreeEx(
-                        client.ProcessHandle,
-                        myStreamAddress,
-                        12,
-                        WinApi.AllocationType.Release);
+                    IntPtr threadHandle = Tibia.Util.WinApi.CreateRemoteThread(client.ProcessHandle, IntPtr.Zero, 0,
+                        client.IO.SendToClientAddress, IntPtr.Zero, 0, IntPtr.Zero);
+                    Tibia.Util.WinApi.WaitForSingleObject(threadHandle, 0xFFFFFFFF);//INFINITE=0xFFFFFFFF
+                    Tibia.Util.WinApi.CloseHandle(threadHandle);
+                    result = true;
                 }
+
+
+                WinApi.VirtualFreeEx(client.ProcessHandle, myPacketAddress, (uint)packet.Length, WinApi.AllocationType.Release);
+                return result;
             }
-            return ret;
+            else return false;
         }
         #endregion
         

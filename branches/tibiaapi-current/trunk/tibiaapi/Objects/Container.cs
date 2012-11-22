@@ -83,14 +83,14 @@ namespace Tibia.Objects
         /// <returns></returns>
         public void Rename(string newName)
         {
-            if (client.IO.UsingProxy)
-                (new Packets.Incoming.ContainerPacket(client) { Id = number, 
+            //if (client.IO.UsingProxy)
+            var p = new Packets.Incoming.ContainerPacket(client) { Id = number, 
                                                                 ItemId = (ushort)Id,
                                                                 Name = newName,
                                                                 Capacity =(byte) Volume,
                                                                 HasParent = Convert.ToByte(HasParent),
-                                                                Items = GetItems().ToList() })
-                                                                .Send();
+                                                                Items = GetItems().ToList() };
+            p.Send();
         }
 
         public override string ToString()
