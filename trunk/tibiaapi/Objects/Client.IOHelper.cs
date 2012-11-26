@@ -26,6 +26,12 @@ namespace Tibia.Objects
 
             internal IOHelper(Client client) { this.client = client; }
 
+            ~IOHelper()
+            {
+                CleanUpToClient();
+                CleanUpToServer();
+            }
+
             #region Encryption
             public uint[] XteaKey
             {
@@ -115,8 +121,12 @@ namespace Tibia.Objects
                 0xC3                                    //RETN
 	        };
 
-            public bool WriteSocketSendCode()
+            public bool WriteSendToServerCode()
             {
+                CleanUpToServer();
+                sendToServerCodeWritten = false;
+
+
                 bool result = true;
                 sendToServerOpcodes = this.sendToServerOpcodes;
 
@@ -128,9 +138,9 @@ namespace Tibia.Objects
                 }
 
                 Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SocketStruct), 0, sendToServerOpcodes, indeces[0], 4);
-                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SendPointer), 0, sendToServerOpcodes, indeces[1], 4);
+                Array.Copy(BitConverter.GetBytes(client.Addresses.Client.SendPointer), 0, sendToServerOpcodes, indeces[2], 4);
 
-                var pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
+                pSendToServer = Tibia.Util.WinApi.VirtualAllocEx(
                         client.ProcessHandle,
                         IntPtr.Zero,
                         (uint)sendToServerOpcodes.Length,
@@ -142,10 +152,20 @@ namespace Tibia.Objects
 
 
                 result &= client.Memory.WriteBytes((uint)pSendToServer, sendToServerOpcodes, (uint)sendToServerOpcodes.Length);
-                result &= WinApi.VirtualFreeEx(client.ProcessHandle, pSendToServer, 0, WinApi.AllocationType.Release);
+
                 sendToServerCodeWritten = result;
                 return result;
             }
+
+            void CleanUpToServer()
+            {
+                if (pSendToServer != IntPtr.Zero)
+                {
+                    WinApi.VirtualFreeEx(client.ProcessHandle, pSendToServer, (uint)this.sendToServerOpcodes.Length, WinApi.AllocationType.Release);
+                    pSendToServer = IntPtr.Zero;
+                } 
+            }
+
             #endregion
 
             #region SendToClient stuff
@@ -267,8 +287,9 @@ namespace Tibia.Objects
             #endregion
 
 
-            public bool WriteOnGetNextPacketCode()
+            public bool WriteSendToClientCode()
             {
+                CleanUpToClient();
                 sendToClientCodeWritten = false;
 
                 oldCallBytes = client.Memory.ReadBytes(
@@ -288,7 +309,7 @@ namespace Tibia.Objects
                     WinApi.MemoryProtection.ExecuteReadWrite);
                 if (pStreamHolderAddress == IntPtr.Zero)
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
                 }
                 #endregion
@@ -302,7 +323,7 @@ namespace Tibia.Objects
                     WinApi.MemoryProtection.ExecuteReadWrite);
                 if (pMyStreamAddress == IntPtr.Zero)
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
                 }
                 #endregion
@@ -316,7 +337,7 @@ namespace Tibia.Objects
                             WinApi.MemoryProtection.ExecuteReadWrite);
                 if (pFlagAddress == IntPtr.Zero || !client.Memory.WriteByte((uint)pFlagAddress, 0))
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
                 }
                 #endregion
@@ -349,7 +370,7 @@ namespace Tibia.Objects
 
                 if (!client.Memory.WriteBytes((uint)pSendToClient, sendToClientOpCodes, (uint)sendToClientOpCodes.Length))
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
                 }
                 #endregion
@@ -396,7 +417,7 @@ namespace Tibia.Objects
 
                 if (!client.Memory.WriteBytes((uint)pMyGetNextPacket, myGetNextPacketOpCodes, (uint)myGetNextPacketOpCodes.Length))
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
                 }
                 #endregion
@@ -415,65 +436,80 @@ namespace Tibia.Objects
                     !client.Memory.WriteBytes(client.Addresses.Client.GetNextPacketCall, call, 5)
                     )
                 {
-                    CleanUp();
+                    CleanUpToClient();
                     return false;
-                } 
-                #endregion
+                }
 
                 WinApi.VirtualProtectEx(client.ProcessHandle,
                     new IntPtr(client.Addresses.Client.GetNextPacketCall),
                     new IntPtr(5),
                     oldProtect,
                     ref newProtect);
-
+                #endregion
+                
                 sendToClientCodeWritten = true;
                 return true;
             }
 
-            private void CleanUp()
+            private void CleanUpToClient()
             {
                 if (pStreamHolderAddress != IntPtr.Zero)
+                {
                     WinApi.VirtualFreeEx(client.ProcessHandle, pStreamHolderAddress, 12, WinApi.AllocationType.Release);
+                    pStreamHolderAddress = IntPtr.Zero;
+                }
                 if (pMyStreamAddress != IntPtr.Zero)
+                {
                     WinApi.VirtualFreeEx(client.ProcessHandle, pMyStreamAddress, 12, WinApi.AllocationType.Release);
+                    pMyStreamAddress = IntPtr.Zero;
+                }
                 if (pFlagAddress != IntPtr.Zero)
+                {
                     WinApi.VirtualFreeEx(client.ProcessHandle, pFlagAddress, 1, WinApi.AllocationType.Release);
+                    pFlagAddress = IntPtr.Zero;
+                }
                 if (pSendToClient != IntPtr.Zero)
+                {
                     WinApi.VirtualFreeEx(client.ProcessHandle, pSendToClient, (uint)sendToClientOpCodes.Length, WinApi.AllocationType.Release);
+                    pSendToClient = IntPtr.Zero;
+                }
                 if (pMyGetNextPacket != IntPtr.Zero)
+                {
                     WinApi.VirtualFreeEx(client.ProcessHandle, pSendToClient, (uint)myGetNextPacketOpCodes.Length, WinApi.AllocationType.Release);
-
-                pStreamHolderAddress = IntPtr.Zero;
-                pMyStreamAddress = IntPtr.Zero;
-                pFlagAddress = IntPtr.Zero;
-                pSendToClient = IntPtr.Zero;
-                pMyGetNextPacket = IntPtr.Zero;
+                    pMyGetNextPacket = IntPtr.Zero;
+                }
             }
 
             public bool RestoreOldGetNextPacketCall()
             {
+                bool result = false;
                 if (oldCallBytes != null && sendToClientCodeWritten)
                 {
-                    if (client.Memory.WriteBytes(client.Addresses.Client.GetNextPacketCall, oldCallBytes, 5) &&
-                        WinApi.VirtualFreeEx(
-                            client.ProcessHandle,
-                            pSendToClient,
-                            (uint)sendToClientOpCodes.Length,
-                            WinApi.AllocationType.Release) &&
-                        WinApi.VirtualFreeEx(
-                            client.ProcessHandle,
-                            pMyGetNextPacket,
-                            (uint)myGetNextPacketOpCodes.Length,
-                            WinApi.AllocationType.Release))
-                    {
-                        pSendToClient = IntPtr.Zero;
-                        pMyGetNextPacket = IntPtr.Zero;
-                        sendToClientCodeWritten = false;
-                        return true;
-                    }
+                    WinApi.MemoryProtection oldProtect = WinApi.MemoryProtection.NoAccess;
+                    WinApi.MemoryProtection newProtect = WinApi.MemoryProtection.NoAccess;
 
+                    if (WinApi.VirtualProtectEx(client.ProcessHandle,
+                                        new IntPtr(client.Addresses.Client.GetNextPacketCall),
+                                        new IntPtr(5),
+                                        WinApi.MemoryProtection.ExecuteReadWrite,
+                                        ref oldProtect))
+                    {
+
+                        if (client.Memory.WriteBytes(client.Addresses.Client.GetNextPacketCall, oldCallBytes, 5))
+                        {
+                            CleanUpToClient();
+                            sendToClientCodeWritten = false;
+                            result = true;
+                        }
+
+                        WinApi.VirtualProtectEx(client.ProcessHandle,
+                                        new IntPtr(client.Addresses.Client.GetNextPacketCall),
+                                        new IntPtr(5),
+                                        oldProtect,
+                                        ref newProtect);
+                    }
                 }
-                return false;
+                return result;
 
             }
             #endregion
