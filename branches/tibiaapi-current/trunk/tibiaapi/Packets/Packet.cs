@@ -130,7 +130,7 @@ namespace Tibia.Packets
             if (client.LoggedIn)
             {
                 if (!client.IO.IsSendToServerCodeWritten)
-                    if (!client.IO.WriteSocketSendCode()) return false;
+                    if (!client.IO.WriteSendToServerCode()) return false;
 
                 uint bufferSize = (uint)(4 + packet.Length);
                 byte[] readyPacket = new byte[bufferSize];
@@ -166,7 +166,7 @@ namespace Tibia.Packets
                 bool result = true;
 
                 if (!client.IO.IsSendToClientCodeWritten)
-                    if (!client.IO.WriteOnGetNextPacketCode()) return false;
+                    if (!client.IO.WriteSendToClientCode()) return false;
 
                 var myPacketAddress = WinApi.VirtualAllocEx(client.ProcessHandle,
                                                             IntPtr.Zero,
