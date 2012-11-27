@@ -15,6 +15,7 @@ namespace InventoryTest
         System.Threading.Timer timer;
         List<Tibia.Objects.Container> containers;
         ContextMenuStrip cmsContainer;
+        ContextMenuStrip cmsItem;
 
         public uxForm()
         {
@@ -24,6 +25,11 @@ namespace InventoryTest
             cmsContainer.Items.Add("Open parent", null, new EventHandler(OpenParent));
             cmsContainer.Items.Add("Close", null, new EventHandler(Close));
             cmsContainer.Items.Add("Rename", null, new EventHandler(Rename));
+
+            cmsItem = new ContextMenuStrip();
+            cmsItem.Items.Add("Use", null, new EventHandler(Use));
+            cmsItem.Items.Add("Use on self", null, new EventHandler(UseOnSelf));
+            cmsItem.Items.Add("Look", null, new EventHandler(Look));
         }
 
         private void uxForm_Load(object sender, EventArgs e)
@@ -65,11 +71,13 @@ namespace InventoryTest
                         int k=0;
                         foreach (Item i in c.GetItems())
                         {
-                            tnslots.Nodes.Add(new TreeNode( k.ToString() + " - " + i.Id.ToString(), new TreeNode[]{
+                            TreeNode tnitem = new TreeNode(k.ToString() + " - " + i.Id.ToString(), new TreeNode[]{
                                 new TreeNode("Id:"+i.Id),
                                 new TreeNode("Count:"+i.Count)
-                            }));
-                            
+                            });
+                            tnitem.ContextMenuStrip = cmsItem;
+                            tnitem.Tag = (Item)i;
+                            tnslots.Nodes.Add(tnitem);
                             k++;
                         }
                         tncontainer.Nodes.Add(tnslots);
@@ -98,7 +106,21 @@ namespace InventoryTest
 
         }
 
-
+        private void Use(object sender, EventArgs e)
+        {
+            if (uxInventoryTV.SelectedNode != null && uxInventoryTV.SelectedNode.Tag is Tibia.Objects.Item)
+                ((Tibia.Objects.Item)uxInventoryTV.SelectedNode.Tag).Use();
+        }
+        private void UseOnSelf(object sender, EventArgs e)
+        {
+            if (uxInventoryTV.SelectedNode != null && uxInventoryTV.SelectedNode.Tag is Tibia.Objects.Item)
+                ((Tibia.Objects.Item)uxInventoryTV.SelectedNode.Tag).UseOnSelf();
+        }
+        private void Look(object sender, EventArgs e)
+        {
+            if (uxInventoryTV.SelectedNode != null && uxInventoryTV.SelectedNode.Tag is Tibia.Objects.Item)
+                ((Tibia.Objects.Item)uxInventoryTV.SelectedNode.Tag).Look();
+        }
         private void OpenParent(object sender, EventArgs e)
         {
             if (uxInventoryTV.SelectedNode != null && uxInventoryTV.SelectedNode.Tag is Tibia.Objects.Container)
