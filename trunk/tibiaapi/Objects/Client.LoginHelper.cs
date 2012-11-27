@@ -185,16 +185,19 @@ namespace Tibia.Objects
                     client.Input.SendString(login);
                     if (Report != null)
                         Report.Invoke(State.InputAccName);
+                    Thread.Sleep(100);
 
                     //press tab
                     client.Input.SendKey(Keys.Tab);
                     if (Report != null)
                         Report.Invoke(State.PressTab);
+                    Thread.Sleep(100);
 
                     //put the pass
                     client.Input.SendString(password);
                     if (Report != null)
                         Report.Invoke(State.InputPassword);
+                    Thread.Sleep(100);
 
                     //press enter..
                     client.Input.SendKey(Keys.Enter);
@@ -217,7 +220,7 @@ namespace Tibia.Objects
                     if (Report != null)
                         Report.Invoke(State.CharListReceived);
 
-                    waitTime = 1000;
+                    waitTime = 2000;
                     while (client.DialogCaption == "Connecting")
                     {
                         Thread.Sleep(100);
@@ -238,7 +241,7 @@ namespace Tibia.Objects
                     if (client.DialogCaption != "Select Character")
                     {
                         client.Input.SendKey(Keys.Enter);
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
                         if (Report != null)
                             Report.Invoke(State.Motd);
                     }
