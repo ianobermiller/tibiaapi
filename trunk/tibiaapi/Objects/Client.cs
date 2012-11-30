@@ -410,7 +410,6 @@ namespace Tibia.Objects
                 return null;
             }
 
-            WinApi.WaitForSingleObject(hThread, 0xFFFFFFFF);
             WinApi.GetExitCodeThread(hThread, out baseAddress);
             WinApi.CloseHandle(hThread);
 
