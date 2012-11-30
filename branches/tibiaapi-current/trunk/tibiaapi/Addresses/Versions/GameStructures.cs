@@ -93,8 +93,8 @@ namespace Tibia
                 public uint xorKey;
                 public uint manaMax;
                 public fixed byte unk3[8];
-                public uint experience;
-                private fixed byte unk4[40];
+                public ulong experience;
+                private fixed byte unk4[36];
                 public uint level;
                 public uint soul;
                 public uint magicLevel;

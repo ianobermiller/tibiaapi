@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.Threading;
 using Tibia.Objects;
 
-
 namespace PlayerTest
 {
     public partial class uxForm : Form
