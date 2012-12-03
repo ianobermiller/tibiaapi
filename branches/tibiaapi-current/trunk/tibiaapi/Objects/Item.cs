@@ -134,7 +134,18 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Move(Objects.ItemLocation toLocation, byte count)
         {
-            return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.ToBytes()[4], toLocation.ToLocation(), count);
+            byte c = (byte)((count == 0) ? 1 : count);
+            switch (Location.Type)
+            {
+                case Constants.ItemLocationType.Ground:
+                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, toLocation.ToLocation(), c);
+                case Constants.ItemLocationType.Container:
+                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, 0, toLocation.ToLocation(), c);
+                case Constants.ItemLocationType.Slot:
+                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, (byte)location.Slot, toLocation.ToLocation(), c);
+                default:
+                    throw new Exception("Unknown ItemLocationType");
+            }
         }
 
         /// <summary>

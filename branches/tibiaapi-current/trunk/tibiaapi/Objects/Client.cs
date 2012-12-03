@@ -410,6 +410,10 @@ namespace Tibia.Objects
                 return null;
             }
 
+
+            if (WinApi.WaitForSingleObject(hThread, 60 * 1000) != 0)
+                throw new Exception("pi.hThread didn't signal its state");
+
             WinApi.GetExitCodeThread(hThread, out baseAddress);
             WinApi.CloseHandle(hThread);
 
