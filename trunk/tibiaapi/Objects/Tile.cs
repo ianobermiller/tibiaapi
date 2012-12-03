@@ -115,7 +115,7 @@ namespace Tibia.Objects
                 List<TileObject> objects = new List<TileObject>();
                 uint pointerItems = address + client.Addresses.Map.DistanceTileItems;
                 uint pointerOrder = address + client.Addresses.Map.DistanceTileItemOrder;
-                for (uint i = 0; i < objectCount; i++)
+                for (uint i = 0; i < ObjectCount; i++)
                 {
 
                     objects.Add(new TileObject(
@@ -149,18 +149,13 @@ namespace Tibia.Objects
         {
             get
             {
-                if (items != null)
-                    return items;
-                else
-                {
-                    items = new List<Item>();
+                items = new List<Item>();
 
-                    foreach (TileObject tileObject in Objects)
-                        items.Add(new Item(client, (uint)tileObject.Id, (byte)tileObject.Data, "",
-                            ItemLocation.FromLocation(location, (byte)tileObject.StackOrder)));
+                foreach (TileObject tileObject in Objects)
+                    items.Add(new Item(client, (uint)tileObject.Id, (byte)tileObject.Data, "",
+                        ItemLocation.FromLocation(location, (byte)tileObject.StackOrder)));
 
-                    return items;
-                }
+                return items;
             }
         }
         #endregion
