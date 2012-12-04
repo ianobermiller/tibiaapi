@@ -16,6 +16,8 @@ namespace ClientTest
         string clientPath;
         //0=normal, 1=worldonly, 2=widescreen
         int mode = 0;
+        StringBuilder sb;
+
 
         public uxForm()
         {
@@ -34,6 +36,7 @@ namespace ClientTest
                 return;
             }
             fpsUpdateTimer.Start();
+            client.Login.Report += new Client.LoginHelper.LoginProgressReporter(AppendReport);
         }
 
 
@@ -150,7 +153,8 @@ namespace ClientTest
 
         private void uxLoginBtn_Click(object sender, EventArgs e)
         {
-            client.Login.Login(uxAccountTxt.Text, uxPasswordTxt.Text, uxCharacterTxt.Text);
+            sb = new StringBuilder();
+            MessageBox.Show(client.Login.Login(uxAccountTxt.Text, uxPasswordTxt.Text, uxCharacterTxt.Text).ToString() + "\n" + sb.ToString());
         }
 
         private void uxFreezeChk_CheckedChanged(object sender, EventArgs e)
@@ -204,6 +208,12 @@ namespace ClientTest
         private void uxReplaceTreesBtn_Click(object sender, EventArgs e)
         {
             client.Map.ReplaceTrees();
+        }
+
+
+        void AppendReport(Client.LoginHelper.State state)
+        {
+            sb.AppendLine(DateTime.Now.ToString() + " - " + state.ToString());
         }
 
     }

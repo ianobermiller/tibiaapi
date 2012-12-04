@@ -41,7 +41,7 @@ namespace Tibia.Util
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, UIntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -186,7 +186,7 @@ namespace Tibia.Util
             public int bottom;
         }
 
-        public static int MakeLParam(int LoWord, int HiWord)
+        public static uint MakeLParam(uint LoWord, uint HiWord)
         {
             return ((HiWord << 16) | (LoWord & 0xffff));
         }

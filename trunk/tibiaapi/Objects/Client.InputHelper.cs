@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace Tibia.Objects
 {
@@ -21,7 +22,7 @@ namespace Tibia.Objects
             public void SendString(string s)
             {
                 foreach (var c in s)
-                    SendMessage(Hooks.WM_CHAR, Convert.ToInt32(c), 0);
+                    SendMessage(Hooks.WM_CHAR, Convert.ToUInt32(c), 0);
             }
 
             /// <summary>
@@ -30,16 +31,16 @@ namespace Tibia.Objects
             /// <param name="key"></param>
             public void SendKey(Keys key)
             {
-                SendMessage(Hooks.WM_KEYDOWN, (int)key, 0);
-                SendMessage(Hooks.WM_CHAR, (int)key, 0);
-                SendMessage(Hooks.WM_KEYUP, (int)key, 0);
+                SendMessage(Hooks.WM_KEYDOWN, (uint)key, 0);
+                SendMessage(Hooks.WM_CHAR, (uint)key, 0);
+                SendMessage(Hooks.WM_KEYUP, (uint)key, 0);
             }
 
             /// <summary>
             /// Sends a key to the client
             /// </summary>
             /// <param name="key"></param>
-            public void SendKey(int key)
+            public void SendKey(uint key)
             {
                 SendMessage(Hooks.WM_KEYDOWN, key, 0);
                 SendMessage(Hooks.WM_CHAR, key, 0);
@@ -53,9 +54,9 @@ namespace Tibia.Objects
             /// <param name="wParam"></param>
             /// <param name="lParam"></param>
             /// <returns></returns>
-            public void SendMessage(uint MessageId, int wParam, int lParam)
+            public void SendMessage(uint MessageId, uint wParam, uint lParam)
             {
-                Util.WinApi.SendMessage(client.Window.Handle, MessageId, wParam, lParam);
+                Util.WinApi.SendMessage(client.Window.Handle, MessageId, new UIntPtr(wParam), new UIntPtr(lParam));
             }
 
             /// <summary>
@@ -63,10 +64,10 @@ namespace Tibia.Objects
             /// </summary>
             /// <param name="x"></param>
             /// <param name="y"></param>
-            public void Click(int x, int y)
+            public void Click(uint x, uint y)
             {
                 SendMessage(Util.WinApi.WM_LBUTTONUP, 0, 0);
-                int lpara = Util.WinApi.MakeLParam(x, y);
+                uint lpara = Util.WinApi.MakeLParam(x, y);
                 SendMessage(Util.WinApi.WM_LBUTTONDOWN, 0, lpara);
                 SendMessage(Util.WinApi.WM_LBUTTONUP, 0, lpara);
             }
