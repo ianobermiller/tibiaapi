@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Tibia.Util;
 
 namespace Tibia.Objects
 {
@@ -27,13 +28,14 @@ namespace Tibia.Objects
 
             public enum State
             {
-                LoggedIn,
-                Minimized,
-                InBattle,
+                AlreadyLoggedIn,
+                ClientMinimized,
+                ClientInBattle,
                 DialogsCleaned,
                 ResetSelectedCharValue,
                 ResetSelectedCharCount,
                 ClickEnterButton,
+                ForceLogoutFailed,
                 LoginDialogOpened,
                 LoginDialogDidntOpen,
                 InputAccName,
@@ -42,12 +44,15 @@ namespace Tibia.Objects
                 PressEnter,
                 CharListReceived,
                 CharListNotReceived,
+                CharListUnknownCondition,
                 ConnectingDialogGone,
                 ConnectingDialogNotGone,
                 Motd,
                 SelectedCharFound,
                 GoToNextChar,
-                SelectedCharNotFound
+                SelectedCharNotFound,
+                LoginSuccessfull,
+                LoginFailed
             }
 
             private Client client;
@@ -113,38 +118,21 @@ namespace Tibia.Objects
                 get { return openTibiaServer; }
                 set { openTibiaServer = value; }
             }
-           
+
             public bool Login(string login, string password, string charName)
             {
-                //if the player is logged or the window is minimazed return false.
+                //if the window is minimized return false.
                 if (client.Window.IsMinimized)
                 {
                     if (Report != null)
-                        Report.Invoke(State.Minimized);
-                    return false;
-                }
-                else if (client.LoggedIn)
-                {
-                    if (client.GetPlayer().HasFlag(Tibia.Constants.Flag.InBattle))
-                    {
-                        if (Report != null)
-                            Report.Invoke(State.InBattle);
-                        return false;
-                    }
-                    //send CTRL+G, or however it is done
-                    //TO DO
-                    /*
-                    client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.Control, 0);
-                    client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.G, 0);
-                    client.Input.SendMessage(Hooks.WM_CHAR, (int)Keys.G, 0);
-                    client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.G, 0);
-                    client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.Control, 0);
-                    Thread.Sleep(300);*/
+                        Report.Invoke(State.ClientMinimized);
                     return false;
                 }
                 else
                 {
+                    int waitTime;
                     //assure the screen is clean, no dialog open
+                    client.Input.SendKey(Keys.Escape);
                     client.Input.SendKey(Keys.Escape);
                     client.Input.SendKey(Keys.Escape);
                     if (Report != null)
@@ -155,18 +143,59 @@ namespace Tibia.Objects
                     if (Report != null)
                         Report.Invoke(State.ResetSelectedCharValue);
 
+                    if (client.LoggedIn)
+                    {
+                        if (Report != null)
+                            Report.Invoke(State.AlreadyLoggedIn);
+
+                        if (client.GetPlayer().HasFlag(Tibia.Constants.Flag.InBattle))
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.ClientInBattle);
+                            return false;
+                        }
+
+                        //logout first CTRL + L
+                        //hardcoded from spy++ capture
+                        client.Input.SendMessage(Hooks.WM_KEYDOWN, Hooks.VK_CONTROL, 1 | (0x1D << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.L, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_CHAR, 12, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.L, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYUP, Hooks.VK_CONTROL, 1 | 0x1D << 16 | 1 << 30 | (uint)1 << 31);
+
+                        waitTime = 4000;
+                        while (client.LoggedIn && waitTime > 0)
+                        {
+                            Thread.Sleep(100);
+                            waitTime -= 100;
+                            if (waitTime <= 0)
+                            {
+                                if (Report != null)
+                                    Report.Invoke(State.ForceLogoutFailed);
+
+                                return false;
+                            }
+                        }
+
+
+                        client.Input.SendKey(Keys.Escape);
+                        client.Input.SendKey(Keys.Escape);
+                        client.Input.SendKey(Keys.Escape);
+                        if (Report != null)
+                            Report.Invoke(State.DialogsCleaned);
+                    }
                     //reset the char count value..
                     client.Memory.WriteInt32(client.Addresses.Client.LoginCharListLength, 0);
                     if (Report != null)
                         Report.Invoke(State.ResetSelectedCharCount);
 
                     //click the enter the game button
-                    client.Input.Click(120, client.Window.Size.Height - 205);
+                    client.Input.Click(120, (uint)client.Window.Size.Height - 205);
                     if (Report != null)
                         Report.Invoke(State.ClickEnterButton);
 
                     //wait the dialog open
-                    int waitTime = 2000;
+                    waitTime = 2000;
                     while (!client.IsDialogOpen && client.DialogCaption != "Enter Game")
                     {
                         Thread.Sleep(100);
@@ -220,8 +249,8 @@ namespace Tibia.Objects
                     if (Report != null)
                         Report.Invoke(State.CharListReceived);
 
-                    waitTime = 2000;
-                    while (client.DialogCaption == "Connecting")
+                    waitTime = 4000;
+                    while (client.IsDialogOpen && client.DialogCaption == "Connecting")
                     {
                         Thread.Sleep(100);
                         waitTime -= 100;
@@ -235,44 +264,76 @@ namespace Tibia.Objects
                     if (Report != null)
                         Report.Invoke(State.ConnectingDialogGone);
 
-                    Thread.Sleep(100);
+                    // Wait until new dialog pops up
+                    waitTime = 4000;
+                    while (!client.IsDialogOpen && waitTime > 0)
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                    }
 
                     // Check if there is a message of the day
-                    if (client.DialogCaption != "Select Character")
+                    if (client.DialogCaption != "Select Character" && client.IsDialogOpen)
                     {
                         client.Input.SendKey(Keys.Enter);
-                        Thread.Sleep(1000);
                         if (Report != null)
                             Report.Invoke(State.Motd);
                     }
-                }
 
-                //now we loop at the charlist to find the selected char..
-                foreach (var ch in CharacterList)
-                {
 
-                    Thread.Sleep(100); //make sure the client process the msg
-                    //we start at position 0
-                    if (string.Compare(ch.CharName, charName, true) == 0)
+                    if (client.IsDialogOpen && client.DialogCaption == "Select Character")
                     {
-                        //we found the char
-                        //lets press the entrer key
-                        client.Input.SendKey(Keys.Enter);
+                        //now we loop at the charlist to find the selected char..
+                        foreach (var ch in CharacterList)
+                        {
+
+                            Thread.Sleep(100); //make sure the client process the msg
+                            //we start at position 0
+                            if (string.Compare(ch.CharName, charName, true) == 0)
+                            {
+                                //we found the char
+                                //lets press the enter key
+                                client.Input.SendKey(Keys.Enter);
+                                if (Report != null)
+                                    Report.Invoke(State.SelectedCharFound);
+
+                                waitTime = 3000;
+                                while (!client.LoggedIn && waitTime > 0)
+                                {
+                                    Thread.Sleep(100);
+                                    waitTime -= 100;
+                                }
+
+                                if (Report != null)
+                                    Report.Invoke(client.LoggedIn ? State.LoginSuccessfull : State.LoginFailed);
+
+                                return client.LoggedIn;
+                            }
+
+                            //move to the next char
+                            client.Input.SendKey(Keys.Down);
+                            if (Report != null)
+                                Report.Invoke(State.GoToNextChar);
+                        }
+
+                        //char not found.
                         if (Report != null)
-                            Report.Invoke(State.SelectedCharFound);
-                        return true;
+                            Report.Invoke(State.SelectedCharNotFound);
+                    }
+                    else
+                    {
+                        if (Report != null)
+                            Report.Invoke(State.CharListUnknownCondition);
                     }
 
-                    //move to the next char
-                    client.Input.SendKey(Keys.Down);
-                    if (Report != null)
-                        Report.Invoke(State.GoToNextChar);
-                }
+                    //clean up
+                    //assure the screen is clean, no dialog open
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
 
-                //char not found.
-                if (Report != null)
-                    Report.Invoke(State.SelectedCharNotFound);
-                return false;
+                    return false;
+                }
             }
 
             /// <summary>

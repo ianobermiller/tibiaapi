@@ -76,6 +76,10 @@ namespace Tibia
         internal const int XBUTTON1 = 0x1;
         internal const int XBUTTON2 = 0x2;
 
+        internal const int VK_SHIFT = 0x10;
+        internal const int VK_CONTROL = 0x11;
+        internal const int VK_MENU = 0x12;
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct MouseHookStruct
         {

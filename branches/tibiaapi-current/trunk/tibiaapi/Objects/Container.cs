@@ -180,7 +180,7 @@ namespace Tibia.Objects
                     client.Memory.WriteString(address + client.Addresses.Container.DistanceName, value);
                     Tibia.Util.WinApi.RECT clientRect = new Tibia.Util.WinApi.RECT();
                     Tibia.Util.WinApi.GetClientRect(client.Process.MainWindowHandle, out clientRect);
-                    client.Input.SendMessage(Hooks.WM_SIZE, 0, Tibia.Util.WinApi.MakeLParam(clientRect.right, clientRect.bottom));
+                    client.Input.SendMessage(Hooks.WM_SIZE, 0, Tibia.Util.WinApi.MakeLParam((uint)clientRect.right, (uint)clientRect.bottom));
                 }
             }
         }
