@@ -140,7 +140,7 @@ namespace Tibia.Objects
                 case Constants.ItemLocationType.Ground:
                     return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, toLocation.ToLocation(), c);
                 case Constants.ItemLocationType.Container:
-                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, 0, toLocation.ToLocation(), c);
+                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.ContainerSlot, toLocation.ToLocation(), c);
                 case Constants.ItemLocationType.Slot:
                     return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, (byte)location.Slot, toLocation.ToLocation(), c);
                 default:
