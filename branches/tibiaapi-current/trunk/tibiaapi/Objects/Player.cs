@@ -55,10 +55,13 @@ namespace Tibia.Objects
         {
             set
             {
-                GoToX = (uint)value.X;
-                GoToY = (uint)value.Y;
                 if (value.Z != Z)
                     return;
+
+                GoToX = (uint)value.X;
+                GoToY = (uint)value.Y;
+                GoToZ = (uint)value.Z;
+
                 IsWalking = true;
             }
             get
