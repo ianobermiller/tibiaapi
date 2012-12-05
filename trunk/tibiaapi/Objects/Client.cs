@@ -137,19 +137,19 @@ namespace Tibia.Objects
         {
             get
             {
-                if (IO.UsingProxy)
-                {
-                    return playerLocation;
-                }
-                else if (LoggedIn)
+                //if (IO.UsingProxy)
+                //{
+                //    return playerLocation;
+                //}
+                //else if (LoggedIn)
+                if (LoggedIn)
                 {
                     return new Location(
                         (int)Player.X,
                         (int)Player.Y,
                         (int)Player.Z);
                 }
-
-                return Location.Invalid;
+                else return Location.Invalid;
             }
         }
 
