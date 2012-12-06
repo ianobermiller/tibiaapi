@@ -51,8 +51,7 @@ namespace Tibia.Packets.Outgoing
 
             if (client.VersionNumber >= 860)
             {
-                uint count = client.Player.AttackCount;
-                p.Count = count;
+                p.Count = client.Player.AttackCount;
             }
             return p.Send();
         }

@@ -34,9 +34,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, string message)
         {
-            BugReportPacket p = new BugReportPacket(client);
-            p.Message = message;
-            return p.Send();
+            return new BugReportPacket(client) { Message = message }.Send();
         }
     }
 }

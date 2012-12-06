@@ -29,8 +29,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client)
         {
-            RejectTradePacket p = new RejectTradePacket(client);
-            return p.Send();
+            return new RejectTradePacket(client).Send();
         }
     }
 }

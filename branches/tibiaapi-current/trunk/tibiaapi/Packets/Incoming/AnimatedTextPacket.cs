@@ -2,16 +2,16 @@
 
 namespace Tibia.Packets.Incoming
 {
-    public class AnimatedTextPacket : IncomingPacket
+    public class TextEffectPacket : IncomingPacket
     {
         public Objects.Location Location { get; set; }
         public string Message { get; set; }
         public TextColor Color { get; set; }
 
-        public AnimatedTextPacket(Objects.Client c)
+        public TextEffectPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.AnimatedText;
+            Type = IncomingPacketType.TextEffect;
             Destination = PacketDestination.Client;
         }
 
@@ -19,11 +19,11 @@ namespace Tibia.Packets.Incoming
         {
             int position = msg.Position;
 
-            if (msg.GetByte() != (byte)IncomingPacketType.AnimatedText)
+            if (msg.GetByte() != (byte)IncomingPacketType.TextEffect)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.AnimatedText;
+            Type = IncomingPacketType.TextEffect;
 
             Location = msg.GetLocation();
             Color = (TextColor)msg.GetByte();
@@ -42,7 +42,7 @@ namespace Tibia.Packets.Incoming
 
         public static bool Send(Objects.Client client, string message, Objects.Location position, TextColor color)
         {
-            AnimatedTextPacket p = new AnimatedTextPacket(client);
+            TextEffectPacket p = new TextEffectPacket(client);
             p.Message = message;
             p.Location = position;
             p.Color = color;

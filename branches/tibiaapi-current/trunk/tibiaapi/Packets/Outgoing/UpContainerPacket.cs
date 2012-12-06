@@ -4,7 +4,7 @@ namespace Tibia.Packets.Outgoing
 {
     public class UpContainerPacket : OutgoingPacket
     {
-        public byte Id { get; set; }
+        public byte ContainerId { get; set; }
 
         public UpContainerPacket(Objects.Client c)
             : base(c)
@@ -21,7 +21,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.UpContainer;
 
-            Id = msg.GetByte();
+            ContainerId = msg.GetByte();
 
             return true;
         }
@@ -29,14 +29,12 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Id);
+            msg.AddByte(ContainerId);
         }
 
-        public static bool Send(Objects.Client client, byte id)
+        public static bool Send(Objects.Client client, byte containerId)
         {
-            UpContainerPacket p = new UpContainerPacket(client);
-            p.Id = id;
-            return p.Send();
+            return new UpContainerPacket(client) { ContainerId = containerId }.Send();
         }
     }
 }

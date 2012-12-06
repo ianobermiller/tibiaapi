@@ -4,58 +4,50 @@ namespace Tibia.Packets.Outgoing
 {
     public class MovePacket : OutgoingPacket
     {
-        public Constants.Direction Direction { get; set; }
+        public Objects.Location FromLocation { get; set; }
+        public ushort SpriteId { get; set; }
+        public byte FromStackPosition { get; set; }
+        public Objects.Location ToLocation { get; set; }
+        public byte Count { get; set; }
 
-        public MovePacket(Objects.Client c, Constants.Direction direction)
+        public MovePacket(Objects.Client c)
             : base(c)
         {
-            Direction = direction;
-
-            switch (direction)
-            {
-                case Tibia.Constants.Direction.Down:
-                    Type = OutgoingPacketType.GoSouth;
-                    break;
-                case Tibia.Constants.Direction.Up:
-                    Type = OutgoingPacketType.GoNorth;
-                    break;
-                case Tibia.Constants.Direction.Right:
-                    Type = OutgoingPacketType.GoEast;
-                    break;
-                case Tibia.Constants.Direction.Left:
-                    Type = OutgoingPacketType.GoWest;
-                    break;
-                case Tibia.Constants.Direction.DownLeft:
-                    Type = OutgoingPacketType.GoSouthWest;
-                    break;
-                case Tibia.Constants.Direction.DownRight:
-                    Type = OutgoingPacketType.GoSouthEast;
-                    break;
-                case Tibia.Constants.Direction.UpLeft:
-                    Type = OutgoingPacketType.GoNorthWest;
-                    break;
-                case Tibia.Constants.Direction.UpRight:
-                    Type = OutgoingPacketType.GoNorthEast;
-                    break;
-            }
-
+            Type = OutgoingPacketType.Move;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
+            if (msg.GetByte() != (byte)OutgoingPacketType.Move)
+                return false;
+
+            Destination = destination;
+            Type = OutgoingPacketType.Move;
+
+            FromLocation = msg.GetLocation();
+            SpriteId = msg.GetUInt16();
+            FromStackPosition = msg.GetByte();
+            ToLocation = msg.GetLocation();
+            Count = msg.GetByte();
+
             return true;
         }
 
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
+
+            msg.AddLocation(FromLocation);
+            msg.AddUInt16(SpriteId);
+            msg.AddByte(FromStackPosition);
+            msg.AddLocation(ToLocation);
+            msg.AddByte(Count);
         }
 
-        public static bool Send(Objects.Client client, Constants.Direction direction)
+        public static bool Send(Objects.Client client, Objects.Location fromLocation, ushort spriteId, byte fromStackPostion, Objects.Location toLocation, byte count)
         {
-            MovePacket p = new MovePacket(client, direction);
-            return p.Send();
+            return new MovePacket(client) { FromLocation = fromLocation, SpriteId = spriteId, FromStackPosition = fromStackPostion, ToLocation = toLocation, Count = count }.Send();
         }
     }
 }

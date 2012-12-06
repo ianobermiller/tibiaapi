@@ -13,7 +13,7 @@ namespace Tibia.Packets.Outgoing
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.Ping)
+            if (msg.GetByte() != (byte)OutgoingPacketType.PingBack)
                 return false;
 
             Destination = destination;

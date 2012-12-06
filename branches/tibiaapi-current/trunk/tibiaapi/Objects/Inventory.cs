@@ -143,7 +143,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItem(uint id)
         {
-            return Packets.Outgoing.UseObjectPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, 0x0F);
+            return Packets.Outgoing.UseItemPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, 0x0F);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnCreature(uint id, byte stack, int creatureId)
         {
-            return Packets.Outgoing.UseOnCreaturePacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, (uint)creatureId);
+            return Packets.Outgoing.UseItemOnCreaturePacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, (uint)creatureId);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool UseItemOnTile(uint id, Tile onTile)
         {
-            return Packets.Outgoing.UseTwoObjectsPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
+            return Packets.Outgoing.UseItemWithPacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>

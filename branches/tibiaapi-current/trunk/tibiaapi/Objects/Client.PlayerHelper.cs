@@ -22,7 +22,7 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool Turn(Constants.Direction direction)
             {
-                return Packets.Outgoing.RotatePacket.Send(client, direction);
+                return Packets.Outgoing.TurnPacket.Send(client, direction);
             }
 
             /// <summary>
@@ -32,7 +32,7 @@ namespace Tibia.Objects
             /// <returns></returns>
             public bool Walk(Constants.Direction direction)
             {
-                return Packets.Outgoing.MovePacket.Send(client, direction);
+                return Packets.Outgoing.WalkPacket.Send(client, direction);
             }
 
             /// <summary>
@@ -54,7 +54,7 @@ namespace Tibia.Objects
                 // if a destination has been chosen
                 GoToX = 0;
 
-                return Packets.Outgoing.CancelPacket.Send(client);
+                return Packets.Outgoing.CancelAttackAndFollowPacket.Send(client);
             }
 
             /// <summary>
@@ -62,7 +62,7 @@ namespace Tibia.Objects
             /// </summary>
             public bool SetOutfit(Constants.OutfitType outfitType, byte headColor, byte bodyColor, byte legsColor, byte feetColor, Constants.OutfitAddon addons, byte mountId)
             {
-                return Packets.Outgoing.SetOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons, mountId));
+                return Packets.Outgoing.ChangeOutfitPacket.Send(client, new Outfit((ushort)outfitType, headColor, bodyColor, legsColor, feetColor, (byte)addons, mountId));
             }
 
             /// <summary>
@@ -70,7 +70,7 @@ namespace Tibia.Objects
             /// </summary>
             public bool SetOutfit(Outfit outfit)
             {
-                return Packets.Outgoing.SetOutfitPacket.Send(client, outfit);
+                return Packets.Outgoing.ChangeOutfitPacket.Send(client, outfit);
             }
 
             #endregion

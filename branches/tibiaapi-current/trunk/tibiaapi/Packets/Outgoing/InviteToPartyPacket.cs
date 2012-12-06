@@ -34,9 +34,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, uint creatureId)
         {
-            InviteToPartyPacket p = new InviteToPartyPacket(client);
-            p.CreatureId = creatureId;
-            return p.Send();
+            return new InviteToPartyPacket(client) { CreatureId = creatureId }.Send();
         }
     }
 }

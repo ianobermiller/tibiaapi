@@ -37,10 +37,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, byte side, byte position)
         {
-            InspectTradePacket p = new InspectTradePacket(client);
-            p.Side = side;
-            p.Position = position;
-            return p.Send();
+            return new InspectTradePacket(client) { Side = side, Position = position }.Send();
         }
     }
 }

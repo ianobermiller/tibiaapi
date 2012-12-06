@@ -34,9 +34,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, byte containerId)
         {
-            RefreshContainerPacket p = new RefreshContainerPacket(client);
-            p.ContainerId = containerId;
-            return p.Send();
+            return new RefreshContainerPacket(client) { ContainerId = containerId }.Send();
         }
     }
 }

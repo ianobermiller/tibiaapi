@@ -57,7 +57,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool OpenAsContainer(byte container)
         {
-            return Packets.Outgoing.UseObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, container);
+            return Packets.Outgoing.UseItemPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, container);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Tibia.Objects
         /// Use function should never send anything more than 0 for using food(but only for open containers.)(Klusbert)
         public bool Use()
         {
-            return Packets.Outgoing.UseObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, 0);
+            return Packets.Outgoing.UseItemPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, 0);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Tile onTile)
         {
-            return Packets.Outgoing.UseTwoObjectsPacket.Send(client, location.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
+            return Packets.Outgoing.UseItemWithPacket.Send(client, location.ToLocation(), (ushort)id, 0, onTile.Location, (ushort)onTile.Ground.Id, 0);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Item onItem)
         {
-            return Packets.Outgoing.UseTwoObjectsPacket.Send(client, location.ToLocation(), (ushort)id, 0, onItem.Location.ToLocation(), (ushort)onItem.Id, 0);
+            return Packets.Outgoing.UseItemWithPacket.Send(client, location.ToLocation(), (ushort)id, 0, onItem.Location.ToLocation(), (ushort)onItem.Id, 0);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool Use(Objects.Creature onCreature)
         {
-            return Packets.Outgoing.UseTwoObjectsPacket.Send(client, location.ToLocation(), (ushort)id, location.ToBytes()[4], onCreature.Location, 0x63, 0);
+            return Packets.Outgoing.UseItemWithPacket.Send(client, location.ToLocation(), (ushort)id, location.ToBytes()[4], onCreature.Location, 0x63, 0);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Tibia.Objects
             if (id == Constants.Items.Bottle.Vial.Id)
                 stack = count;
 
-            return Packets.Outgoing.UseOnCreaturePacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, playerId);
+            return Packets.Outgoing.UseItemOnCreaturePacket.Send(client, ItemLocation.FromHotkey().ToLocation(), (ushort)id, stack, playerId);
         }
 
         /// <summary>
@@ -138,11 +138,11 @@ namespace Tibia.Objects
             switch (Location.Type)
             {
                 case Constants.ItemLocationType.Ground:
-                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, toLocation.ToLocation(), c);
+                    return Packets.Outgoing.MovePacket.Send(client, location.ToLocation(), (ushort)id, location.StackOrder, toLocation.ToLocation(), c);
                 case Constants.ItemLocationType.Container:
-                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, location.ContainerSlot, toLocation.ToLocation(), c);
+                    return Packets.Outgoing.MovePacket.Send(client, location.ToLocation(), (ushort)id, location.ContainerSlot, toLocation.ToLocation(), c);
                 case Constants.ItemLocationType.Slot:
-                    return Packets.Outgoing.MoveObjectPacket.Send(client, location.ToLocation(), (ushort)id, (byte)location.Slot, toLocation.ToLocation(), c);
+                    return Packets.Outgoing.MovePacket.Send(client, location.ToLocation(), (ushort)id, (byte)location.Slot, toLocation.ToLocation(), c);
                 default:
                     throw new Exception("Unknown ItemLocationType");
             }

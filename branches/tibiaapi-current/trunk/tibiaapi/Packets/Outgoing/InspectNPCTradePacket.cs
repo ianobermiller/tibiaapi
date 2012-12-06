@@ -4,7 +4,7 @@ namespace Tibia.Packets.Outgoing
 {
     public class InspectNPCTradePacket : OutgoingPacket
     {
-        public ushort TradeType { get; set; }
+        public ushort ItemId { get; set; }
         public byte Data { get; set; }
 
         public InspectNPCTradePacket(Objects.Client c)
@@ -22,7 +22,7 @@ namespace Tibia.Packets.Outgoing
             Destination = destination;
             Type = OutgoingPacketType.InspectNPCTrade;
 
-            TradeType = msg.GetUInt16();
+            ItemId = msg.GetUInt16();
             Data = msg.GetByte();
 
             return true;
@@ -31,16 +31,13 @@ namespace Tibia.Packets.Outgoing
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddUInt16(TradeType);
+            msg.AddUInt16(ItemId);
             msg.AddByte(Data);
         }
 
-        public static bool Send(Objects.Client client, ushort tradeType, byte data)
+        public static bool Send(Objects.Client client, ushort itemId, byte data)
         {
-            InspectNPCTradePacket p = new InspectNPCTradePacket(client);
-            p.TradeType = tradeType;
-            p.Data = data;
-            return p.Send();
+            return new InspectNPCTradePacket(client) { ItemId = itemId, Data = data }.Send();
         }
     }
 }

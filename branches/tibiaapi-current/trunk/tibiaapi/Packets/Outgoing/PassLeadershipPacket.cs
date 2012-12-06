@@ -35,9 +35,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, uint creatureId)
         {
-            PassLeadershipPacket p = new PassLeadershipPacket(client);
-            p.CreatureId = creatureId;
-            return p.Send();
+            return new PassLeadershipPacket(client) { CreatureId = creatureId }.Send();
         }
     }
 }

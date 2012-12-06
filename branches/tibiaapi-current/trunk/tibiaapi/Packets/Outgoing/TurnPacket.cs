@@ -15,16 +15,16 @@ namespace Tibia.Packets.Outgoing
             switch (direction)
             {
                 case Tibia.Constants.Direction.Down:
-                    Type = OutgoingPacketType.RotateSouth;
+                    Type = OutgoingPacketType.TurnSouth;
                     break;
                 case Tibia.Constants.Direction.Up:
-                    Type = OutgoingPacketType.RotateNorth;
+                    Type = OutgoingPacketType.TurnNorth;
                     break;
                 case Tibia.Constants.Direction.Right:
-                    Type = OutgoingPacketType.RotateEast;
+                    Type = OutgoingPacketType.TurnEast;
                     break;
                 case Tibia.Constants.Direction.Left:
-                    Type = OutgoingPacketType.RotateWest;
+                    Type = OutgoingPacketType.TurnWest;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(

@@ -1,5 +1,4 @@
-﻿using System;
-using Tibia.Constants;
+﻿using Tibia.Constants;
 
 namespace Tibia.Packets.Incoming
 {
@@ -9,7 +8,8 @@ namespace Tibia.Packets.Incoming
         public FloorChangeUpPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.FloorChangeUp ;
+            Type = IncomingPacketType.FloorChangeUp;
+            Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)
@@ -46,6 +46,5 @@ namespace Tibia.Packets.Incoming
                 Client.playerLocation.Y++;
             }
         }
-
     }
 }

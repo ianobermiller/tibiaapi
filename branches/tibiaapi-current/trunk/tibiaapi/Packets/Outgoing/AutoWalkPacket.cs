@@ -24,10 +24,10 @@ namespace Tibia.Packets.Outgoing
 
             Directions = new List<Tibia.Constants.Direction> { };
             byte count = msg.GetByte();
+            Constants.Direction direction;
 
             for (int i = 0; i < count; i++)
             {
-                Constants.Direction direction;
                 byte dir = msg.GetByte();
 
                 switch (dir)
@@ -39,8 +39,8 @@ namespace Tibia.Packets.Outgoing
                     case 5: direction = Tibia.Constants.Direction.Left; break;
                     case 6: direction = Tibia.Constants.Direction.DownLeft; break;
                     case 7: direction = Tibia.Constants.Direction.Down; break;
-                    case 8: direction = Tibia.Constants.Direction.DownRight; break;
-                    default: continue;
+                    case 8: direction = Tibia.Constants.Direction.DownRight; break;                       
+                    default: throw new System.Exception("Unknown Constants.Direction.");
                 }
 
                 Directions.Add(direction);
@@ -67,16 +67,14 @@ namespace Tibia.Packets.Outgoing
                     case Tibia.Constants.Direction.DownLeft: msg.AddByte(6); break;
                     case Tibia.Constants.Direction.Down: msg.AddByte(7); break;
                     case Tibia.Constants.Direction.DownRight: msg.AddByte(8); break;
-                    default: continue;
+                    default: throw new System.Exception("Unknown Constants.Direction.");
                 }
             }
         }
 
         public static bool Send(Objects.Client client, List<Constants.Direction> directions)
         {
-            AutoWalkPacket p = new AutoWalkPacket(client);
-            p.Directions = directions;
-            return p.Send();
+            return new AutoWalkPacket(client) { Directions = directions }.Send();
         }
     }
 }
