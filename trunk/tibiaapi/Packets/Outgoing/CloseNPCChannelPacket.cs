@@ -29,8 +29,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client)
         {
-            CloseNPCChannelPacket p = new CloseNPCChannelPacket(client);
-            return p.Send();
+            return new CloseNPCChannelPacket(client).Send();
         }
     }
 }

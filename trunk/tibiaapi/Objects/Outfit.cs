@@ -89,6 +89,7 @@ namespace Tibia.Objects
 
             if (LookType != 0)
             {
+                //TODO: check if the version supports mounts
                 temp = new byte[9];
                 Array.Copy(BitConverter.GetBytes(LookType), temp, 2);
                 temp[2] = Head;
@@ -96,6 +97,7 @@ namespace Tibia.Objects
                 temp[4] = Legs;
                 temp[5] = Feet;
                 temp[6] = Addons;
+                //TODO: check if the version supports mounts
                 Array.Copy(BitConverter.GetBytes(mountId), 0, temp, 7, 2);
             }
             else

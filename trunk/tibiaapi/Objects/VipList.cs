@@ -37,7 +37,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool AddPlayer(string name)
         {
-            return Packets.Outgoing.AddBuddyPacket.Send(client, name);
+            return Packets.Outgoing.AddVipPacket.Send(client, name);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Tibia.Objects
         /// <returns></returns>
         public bool RemovePlayer(Vip vip)
         {
-            return Packets.Outgoing.RemoveBuddyPacket.Send(client, (uint)vip.Id);
+            return Packets.Outgoing.RemoveVipPacket.Send(client, (uint)vip.Id);
         }
 
         #region IEnumerable<Vip> Members

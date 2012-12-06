@@ -29,8 +29,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client)
         {
-            LeavePartyPacket p = new LeavePartyPacket(client);
-            return p.Send();
+            return new LeavePartyPacket(client).Send();
         }
     }
 }

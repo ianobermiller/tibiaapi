@@ -276,8 +276,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Message:
-                    packet = new Packets.Incoming.MessagePacket(client);
+                case IncomingPacketType.TextMessage:
+                    packet = new Packets.Incoming.TextMessagePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedMessageIncomingPacket != null)
@@ -379,8 +379,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.CreateInContainer:
-                    packet = new Packets.Incoming.CreateInContainerPacket(client);
+                case IncomingPacketType.CreateContainer:
+                    packet = new Packets.Incoming.CreateContainerPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedCreateInContainerIncomingPacket != null)
@@ -412,8 +412,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Container:
-                    packet = new Packets.Incoming.ContainerPacket(client);
+                case IncomingPacketType.OpenContainer:
+                    packet = new Packets.Incoming.OpenContainerPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedContainerIncomingPacket != null)
@@ -434,8 +434,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Ambiente:
-                    packet = new Packets.Incoming.AmbientePacket(client);
+                case IncomingPacketType.Ambient:
+                    packet = new Packets.Incoming.AmbientPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedAmbienteIncomingPacket != null)
@@ -518,24 +518,24 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.BottomFloor:
-                    packet = new Packets.Incoming.BottomFloorPacket(client);
+                case IncomingPacketType.FloorChangeDown:
+                    packet = new Packets.Incoming.FloorChangeDownPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client, outMsg))
                     {
                         if (ReceivedBottomFloorIncomingPacket != null)
                             packet.Forward = ReceivedBottomFloorIncomingPacket.Invoke(packet);
                     }
                     break;
-                case IncomingPacketType.TopFloor:
-                    packet = new Packets.Incoming.TopFloorPacket(client);
+                case IncomingPacketType.FloorChangeUp:
+                    packet = new Packets.Incoming.FloorChangeUpPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client, outMsg))
                     {
                         if (ReceivedTopFloorIncomingPacket != null)
                             packet.Forward = ReceivedTopFloorIncomingPacket.Invoke(packet);
                     }
                     break;
-                case IncomingPacketType.PlayerDataCurrent:
-                    packet = new Packets.Incoming.PlayerDataCurrentPacket(client);
+                case IncomingPacketType.PlayerData:
+                    packet = new Packets.Incoming.PlayerDataPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedPlayerDataCurrentIncomingPacket != null)
@@ -578,8 +578,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Dead:
-                    packet = new Packets.Incoming.DeadPacket(client);
+                case IncomingPacketType.Death:
+                    packet = new Packets.Incoming.DeathPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedDeadIncomingPacket != null)
@@ -589,8 +589,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.FieldData:
-                    packet = new Packets.Incoming.FieldDataPacket(client);
+                case IncomingPacketType.UpdateTile:
+                    packet = new Packets.Incoming.UpdateTilePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client, outMsg))
                     {
                         if (ReceivedFieldDataIncomingPacket != null)
@@ -630,8 +630,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.OwnOffer:
-                    packet = new Packets.Incoming.OwnOfferPacket(client);
+                case IncomingPacketType.OwnTrade:
+                    packet = new Packets.Incoming.OwnTradePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedOwnOfferIncomingPacket != null)
@@ -641,8 +641,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.CounterOffer:
-                    packet = new Packets.Incoming.CounterOfferPacket(client);
+                case IncomingPacketType.CounterTrade:
+                    packet = new Packets.Incoming.CounterTradePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedCounterOfferIncomingPacket != null)
@@ -685,8 +685,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.PrivateChannel:
-                    packet = new Packets.Incoming.PrivateChannelPacket(client);
+                case IncomingPacketType.OpenPrivateChannel:
+                    packet = new Packets.Incoming.OpenPrivateChannelPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedPrivateChannelIncomingPacket != null)
@@ -718,8 +718,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.BuddyData:
-                    packet = new Packets.Incoming.BuddyDataPacket(client);
+                case IncomingPacketType.VipAdd:
+                    packet = new Packets.Incoming.VipAddPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedBuddyDataIncomingPacket != null)
@@ -729,8 +729,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.BuddyLogin:
-                    packet = new Packets.Incoming.BuddyLoginPacket(client);
+                case IncomingPacketType.VipLogin:
+                    packet = new Packets.Incoming.VipLoginPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedBuddyLoginIncomingPacket != null)
@@ -740,8 +740,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.BuddyLogout:
-                    packet = new Packets.Incoming.BuddyLogoutPacket(client);
+                case IncomingPacketType.VipLogout:
+                    packet = new Packets.Incoming.VipLogoutPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedBuddyLogoutIncomingPacket != null)
@@ -762,8 +762,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.NPCOffer:
-                    packet = new Packets.Incoming.NPCOfferPacket(client);
+                case IncomingPacketType.OpenNPCTrade:
+                    packet = new Packets.Incoming.OpenNPCTradePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedNPCOfferIncomingPacket != null)
@@ -784,8 +784,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Outfit:
-                    packet = new Packets.Incoming.OutfitPacket(client);
+                case IncomingPacketType.ChooseOutfit:
+                    packet = new Packets.Incoming.ChooseOutfitPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedOutfitIncomingPacket != null)
@@ -938,8 +938,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.ObjectInfo:
-                    packet = new Packets.Incoming.ObjectInfoPacket(client);
+                case IncomingPacketType.ItemInfo:
+                    packet = new Packets.Incoming.ItemInfoPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedObjectInfoIncomingPacket != null)
@@ -1015,8 +1015,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.SnapBack:
-                    packet = new Packets.Incoming.SnapBackPacket(client);
+                case IncomingPacketType.CancelWalk:
+                    packet = new Packets.Incoming.CancelWalkPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedSnapBackIncomingPacket != null)
@@ -1070,8 +1070,8 @@ namespace Tibia.Packets
                             packet.ToNetworkMessage(outMsg);
                     }
                     break;
-                case IncomingPacketType.Wait:
-                    packet = new Packets.Incoming.WaitPacket(client);
+                case IncomingPacketType.WalkWait:
+                    packet = new Packets.Incoming.WalkWaitPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Client))
                     {
                         if (ReceivedWaitIncomingPacket != null)
@@ -1148,40 +1148,40 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedLookOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.LookAtCreature:
-                    packet = new Packets.Outgoing.LookAtCreaturePacket(client);
+                case OutgoingPacketType.LookCreature:
+                    packet = new Packets.Outgoing.LookCreaturePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedLookCreatureOutgoingPacket != null)
                             packet.Forward = ReceivedLookCreatureOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.UseObject:
-                    packet = new Packets.Outgoing.UseObjectPacket(client);
+                case OutgoingPacketType.UseItem:
+                    packet = new Packets.Outgoing.UseItemPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedUseObjectOutgoingPacket != null)
                             packet.Forward = ReceivedUseObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.UseTwoObjects:
-                    packet = new Packets.Outgoing.UseTwoObjectsPacket(client);
+                case OutgoingPacketType.UseItemWith:
+                    packet = new Packets.Outgoing.UseItemWithPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedUseTwoObjectsOutgoingPacket != null)
                             packet.Forward = ReceivedUseTwoObjectsOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.MoveObject:
-                    packet = new Packets.Outgoing.MoveObjectPacket(client);
+                case OutgoingPacketType.Move:
+                    packet = new Packets.Outgoing.MovePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedMoveObjectOutgoingPacket != null)
                             packet.Forward = ReceivedMoveObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.Cancel:
-                    packet = new Packets.Outgoing.CancelPacket(client);
+                case OutgoingPacketType.CancelAttackAndFollow:
+                    packet = new Packets.Outgoing.CancelAttackAndFollowPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedCancelOutgoingPacket != null)
@@ -1189,7 +1189,7 @@ namespace Tibia.Packets
                     }
                     break;
                 case OutgoingPacketType.UseOnCreature:
-                    packet = new Packets.Outgoing.UseOnCreaturePacket(client);
+                    packet = new Packets.Outgoing.UseItemOnCreaturePacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedUseOnCreatureOutgoingPacket != null)
@@ -1220,25 +1220,25 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedUpContainerOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.BuyObject:
-                    packet = new Packets.Outgoing.BuyObjectPacket(client);
+                case OutgoingPacketType.BuyItem:
+                    packet = new Packets.Outgoing.BuyItemPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedBuyObjectOutgoingPacket != null)
                             packet.Forward = ReceivedBuyObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.SellObject:
-                    packet = new Packets.Outgoing.SellObjectPacket(client);
+                case OutgoingPacketType.SellItem:
+                    packet = new Packets.Outgoing.SellItemPacket(client);
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
                         if (ReceivedSellObjectOutgoingPacket != null)
                             packet.Forward = ReceivedSellObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RotateSouth:
+                case OutgoingPacketType.TurnSouth:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.RotatePacket(client, Tibia.Constants.Direction.Down);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Down);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1246,9 +1246,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRotateOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RotateNorth:
+                case OutgoingPacketType.TurnNorth:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.RotatePacket(client, Tibia.Constants.Direction.Up);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Up);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1256,9 +1256,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRotateOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RotateWest:
+                case OutgoingPacketType.TurnWest:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.RotatePacket(client, Tibia.Constants.Direction.Left);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Left);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1266,9 +1266,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRotateOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RotateEast:
+                case OutgoingPacketType.TurnEast:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.RotatePacket(client, Tibia.Constants.Direction.Right);
+                    packet = new Packets.Outgoing.TurnPacket(client, Tibia.Constants.Direction.Right);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1276,9 +1276,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRotateOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoSouth:
+                case OutgoingPacketType.WalkSouth:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Down);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.Down);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1286,9 +1286,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoSouthWest:
+                case OutgoingPacketType.WalkSouthWest:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.DownLeft);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.DownLeft);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1296,9 +1296,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoSouthEast:
+                case OutgoingPacketType.WalkSouthEast:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.DownRight);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.DownRight);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1306,9 +1306,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoWest:
+                case OutgoingPacketType.WalkWest:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Left);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.Left);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1316,9 +1316,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoEast:
+                case OutgoingPacketType.WalkEast:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Right);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.Right);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1326,9 +1326,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoNorth:
+                case OutgoingPacketType.WalkNorth:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.Up);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.Up);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1336,9 +1336,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoNorthWest:
+                case OutgoingPacketType.WalkNorthWest:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.UpLeft);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.UpLeft);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1346,9 +1346,9 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMoveOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GoNorthEast:
+                case OutgoingPacketType.WalkNorthEast:
                     msg.GetByte();
-                    packet = new Packets.Outgoing.MovePacket(client, Tibia.Constants.Direction.UpRight);
+                    packet = new Packets.Outgoing.WalkPacket(client, Tibia.Constants.Direction.UpRight);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1365,8 +1365,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAutoWalkOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.AddBuddy:
-                    packet = new Packets.Outgoing.AddBuddyPacket(client);
+                case OutgoingPacketType.AddVip:
+                    packet = new Packets.Outgoing.AddVipPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1374,8 +1374,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAddBuddyOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RemoveBuddy:
-                    packet = new Packets.Outgoing.RemoveBuddyPacket(client);
+                case OutgoingPacketType.RemoveVip:
+                    packet = new Packets.Outgoing.RemoveVipPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1383,8 +1383,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRemoveBuddyOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.TurnObject:
-                    packet = new Packets.Outgoing.TurnObjectPacket(client);
+                case OutgoingPacketType.RotateItem:
+                    packet = new Packets.Outgoing.RotateItemPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1392,8 +1392,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTurnObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.SetOutfit:
-                    packet = new Packets.Outgoing.SetOutfitPacket(client);
+                case OutgoingPacketType.ChangeOutfit:
+                    packet = new Packets.Outgoing.ChangeOutfitPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1419,8 +1419,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPingOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.SetTactics:
-                    packet = new Packets.Outgoing.SetTacticsPacket(client);
+                case OutgoingPacketType.ChangeFightModes:
+                    packet = new Packets.Outgoing.ChangeFightModesPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1446,7 +1446,7 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedCloseNPCChannelOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.PrivateChannel:
+                case OutgoingPacketType.OpenPrivateChannel:
                     packet = new Packets.Outgoing.PrivateChannelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
@@ -1455,8 +1455,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPrivateChannelOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GetChannels:
-                    packet = new Packets.Outgoing.GetChannelsPacket(client);
+                case OutgoingPacketType.RequestChannels:
+                    packet = new Packets.Outgoing.RequestChannelsPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1473,8 +1473,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedMarketAcceptOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GetQuestLog:
-                    packet = new Packets.Outgoing.GetQuestLogPacket(client);
+                case OutgoingPacketType.RequestQuestLog:
+                    packet = new Packets.Outgoing.RequestQuestLogPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1482,8 +1482,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedGetQuestLogOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GetQuestLine:
-                    packet = new Packets.Outgoing.GetQuestLinePacket(client);
+                case OutgoingPacketType.RequestQuestLine:
+                    packet = new Packets.Outgoing.RequestQuestLinePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1500,8 +1500,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPassLeadershipOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GetObjectInfo:
-                    packet = new Packets.Outgoing.GetObjectInfoPacket(client);
+                case OutgoingPacketType.RequestItemInfo:
+                    packet = new Packets.Outgoing.RequestItemInfoPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1536,8 +1536,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAcceptTradeOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.TradeObject:
-                    packet = new Packets.Outgoing.TradeObjectPacket(client);
+                case OutgoingPacketType.RequestTrade:
+                    packet = new Packets.Outgoing.RequestTradePacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1545,8 +1545,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedTradeObjectOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.ExcludeFromChannel:
-                    packet = new Packets.Outgoing.ExcludeFromChannelPacket(client);
+                case OutgoingPacketType.ExcludeFromOwnChannel:
+                    packet = new Packets.Outgoing.ExcludeFromOwnChannelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1590,8 +1590,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedAnswerModalDialogOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.ThankYou:
-                    packet = new Packets.Outgoing.ThankYouPacket(client);
+                case OutgoingPacketType.RuleViolation:
+                    packet = new Packets.Outgoing.RuleViolationPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1608,8 +1608,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedInspectNPCTradeOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.InviteToChannel:
-                    packet = new Packets.Outgoing.InviteToChannelPacket(client);
+                case OutgoingPacketType.InviteToOwnChannel:
+                    packet = new Packets.Outgoing.InviteToOwnChannelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1635,8 +1635,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedPingBackOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.RuleViolationReport:
-                    packet = new Packets.Outgoing.RuleViolationReportPacket(client);
+                case OutgoingPacketType.NewRuleViolation:
+                    packet = new Packets.Outgoing.NewRuleViolationPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1671,17 +1671,17 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedLeavePartyOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.EquipObject:
-                    packet = new Packets.Outgoing.EquipObjectPacket(client);
+                //case OutgoingPacketType.EquipObject:
+                //    packet = new Packets.Outgoing.EquipObjectPacket(client);
 
-                    if (packet.ParseMessage(msg, PacketDestination.Server))
-                    {
-                        if (ReceivedEquipObjectOutgoingPacket != null)
-                            packet.Forward = ReceivedEquipObjectOutgoingPacket.Invoke(packet);
-                    }
-                    break;
-                case OutgoingPacketType.OpenChannel:
-                    packet = new Packets.Outgoing.OpenChannelPacket(client);
+                //    if (packet.ParseMessage(msg, PacketDestination.Server))
+                //    {
+                //        if (ReceivedEquipObjectOutgoingPacket != null)
+                //            packet.Forward = ReceivedEquipObjectOutgoingPacket.Invoke(packet);
+                //    }
+                //    break;
+                case OutgoingPacketType.OpenOwnChannel:
+                    packet = new Packets.Outgoing.OpenOwnChannelPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1734,8 +1734,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedShareExperienceOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.GetOutfit:
-                    packet = new Packets.Outgoing.GetOutfitPacket(client);
+                case OutgoingPacketType.RequestOutfit:
+                    packet = new Packets.Outgoing.RequestOutfitPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {
@@ -1761,8 +1761,8 @@ namespace Tibia.Packets
                             packet.Forward = ReceivedRefreshContainerOutgoingPacket.Invoke(packet);
                     }
                     break;
-                case OutgoingPacketType.EditBuddy:
-                    packet = new Packets.Outgoing.EditBuddyPacket(client);
+                case OutgoingPacketType.EditVip:
+                    packet = new Packets.Outgoing.EditVipPacket(client);
 
                     if (packet.ParseMessage(msg, PacketDestination.Server))
                     {

@@ -84,7 +84,7 @@ namespace Tibia.Objects
         public void Rename(string newName)
         {
             //if (client.IO.UsingProxy)
-            var p = new Packets.Incoming.ContainerPacket(client) { Id = number, 
+            var p = new Packets.Incoming.OpenContainerPacket(client) { Id = number, 
                                                                 ItemId = (ushort)Id,
                                                                 Name = newName,
                                                                 Capacity =(byte) Volume,

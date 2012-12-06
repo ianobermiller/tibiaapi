@@ -2,6 +2,7 @@
 
 namespace Tibia.Packets.Outgoing
 {
+    //TODO: check if the version supports mounts
     public class MountPacket : OutgoingPacket
     {
         public bool Mount { get; set; }
@@ -34,9 +35,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, bool mount)
         {
-            MountPacket p = new MountPacket(client);
-            p.Mount = mount;
-            return p.Send();
+            return new MountPacket(client) { Mount = mount }.Send();
         }
     }
 }

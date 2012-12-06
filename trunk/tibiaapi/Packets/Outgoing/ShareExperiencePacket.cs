@@ -23,6 +23,9 @@ namespace Tibia.Packets.Outgoing
 
             Enabled = System.Convert.ToBoolean(msg.GetByte());
 
+            if (Client.VersionNumber < 910)
+                msg.GetByte();
+
             return true;
         }
 
@@ -30,13 +33,15 @@ namespace Tibia.Packets.Outgoing
         {
             msg.AddByte((byte)Type);
             msg.AddByte(System.Convert.ToByte(Enabled));
+
+            if (Client.VersionNumber < 910)
+                msg.AddByte(0);
+
         }
 
         public static bool Send(Objects.Client client, bool enabled)
         {
-            ShareExperiencePacket p = new ShareExperiencePacket(client);
-            p.Enabled = enabled;
-            return p.Send();
+            return new ShareExperiencePacket(client) { Enabled = enabled }.Send();
         }
     }
 }

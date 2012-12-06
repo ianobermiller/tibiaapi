@@ -50,8 +50,7 @@ namespace Tibia.Packets.Outgoing
 
             if (client.VersionNumber >= 860)
             {
-                uint count = client.Player.FollowCount;
-                p.Count = count;
+                p.Count = client.Player.FollowCount; 
             }
             return p.Send();
         }

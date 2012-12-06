@@ -27,10 +27,9 @@ namespace Tibia.Packets.Outgoing
             msg.AddByte((byte)Type);
         }
 
-        public static bool Send(Objects.Client client)
+        public bool Send(Objects.Client client)
         {
-            QuitGamePacket p = new QuitGamePacket(client);
-            return p.Send();
+            return new StopPacket(client).Send();
         }
     }
 }

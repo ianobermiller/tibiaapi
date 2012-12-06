@@ -35,9 +35,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, ChatChannel channel)
         {
-            JoinChannelPacket p = new JoinChannelPacket(client);
-            p.ChannelId = channel;
-            return p.Send();
+            return new JoinChannelPacket(client) { ChannelId = channel }.Send();
         }
     }
 }

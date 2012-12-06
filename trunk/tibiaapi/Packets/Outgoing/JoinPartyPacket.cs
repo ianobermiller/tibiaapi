@@ -34,9 +34,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, uint creatureId)
         {
-            JoinPartyPacket p = new JoinPartyPacket(client);
-            p.CreatureId = creatureId;
-            return p.Send();
+            return new JoinPartyPacket(client) { CreatureId = creatureId }.Send();
         }
     }
 }

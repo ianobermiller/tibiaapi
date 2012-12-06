@@ -26,15 +26,18 @@ namespace Tibia.Packets.Outgoing
             Type = OutgoingPacketType.Talk;
 
             byte Mode = msg.GetByte();
+            var speechType = Constants.Enums.GetSpeechTypeInfo(Client.VersionNumber, Mode);
 
-            switch (Mode)
+            switch (speechType.SpeechType)
             {
-                case 0x05:
-                case 0x0F:
+                case SpeechType.PrivateTo:
+                case SpeechType.GamemasterPrivateTo:
                     Receiver = msg.GetString();
                     break;
-                case 0x07:
-                case 0x0D:
+                case SpeechType.Channel:
+                case SpeechType.ChannelHighlight:
+                case SpeechType.ChannelManagement:
+                case SpeechType.GamemasterChannel:
                     msg.GetUInt16(); //channelid
                     break;
                 default:
@@ -53,24 +56,28 @@ namespace Tibia.Packets.Outgoing
 
             msg.AddByte(info.Value);
 
-            if (info.AdditionalSpeechData == AdditionalSpeechData.Receiver)
-                msg.AddString(Receiver);
-            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
-                msg.AddUInt16((ushort)ChannelId);
+            switch (SpeechType)
+            {
+                case SpeechType.PrivateTo:
+                case SpeechType.GamemasterPrivateTo:
+                    msg.AddString(Receiver);
+                    break;
+                case SpeechType.Channel:
+                case SpeechType.ChannelHighlight:
+                case SpeechType.ChannelManagement:
+                case SpeechType.GamemasterChannel:
+                    msg.AddUInt16((ushort)ChannelId);
+                    break;
+                default:
+                    break;
+            }
 
             msg.AddString(Message);
         }
 
         public static bool Send(Objects.Client client, SpeechType type, string receiver, string message, ChatChannel channel)
         {
-            TalkPacket p = new TalkPacket(client);
-
-            p.SpeechType = type;
-            p.Receiver = receiver;
-            p.Message = message;
-            p.ChannelId = channel;
-
-            return p.Send();
+            return new TalkPacket(client) { SpeechType = type, Receiver = receiver, Message = message, ChannelId = channel }.Send();
         }
 
 

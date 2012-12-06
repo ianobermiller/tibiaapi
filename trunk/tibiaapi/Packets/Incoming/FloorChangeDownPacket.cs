@@ -9,6 +9,7 @@ namespace Tibia.Packets.Incoming
             : base(c)
         {
             Type = IncomingPacketType.FloorChangeDown;
+            Destination = PacketDestination.Client;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination, NetworkMessage outMsg)

@@ -20,15 +20,9 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.Death;
 
-            //no data
-
+            msg.GetByte(); //?
 
             return true;
-        }
-
-        public override void ToNetworkMessage(NetworkMessage msg)
-        {
-            msg.AddByte((byte)Type);
         }
     }
 }

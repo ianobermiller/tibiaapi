@@ -9,17 +9,17 @@ namespace Tibia.Packets.Outgoing
         public PrivateChannelPacket(Objects.Client c)
             : base(c)
         {
-            Type = OutgoingPacketType.PrivateChannel;
+            Type = OutgoingPacketType.OpenPrivateChannel;
             Destination = PacketDestination.Server;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)OutgoingPacketType.PrivateChannel)
+            if (msg.GetByte() != (byte)OutgoingPacketType.OpenPrivateChannel)
                 return false;
 
             Destination = destination;
-            Type = OutgoingPacketType.PrivateChannel;
+            Type = OutgoingPacketType.OpenPrivateChannel;
             Receiver = msg.GetString();
 
             return true;
@@ -33,9 +33,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, string receiver)
         {
-            PrivateChannelPacket p = new PrivateChannelPacket(client);
-            p.Receiver = receiver;
-            return p.Send();
+            return new PrivateChannelPacket(client) { Receiver = receiver }.Send();
         }
     }
 }

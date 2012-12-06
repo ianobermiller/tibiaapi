@@ -37,10 +37,7 @@ namespace Tibia.Packets.Outgoing
 
         public static bool Send(Objects.Client client, uint id, string text)
         {
-            EditTextPacket p = new EditTextPacket(client);
-            p.Id = id;
-            p.Text = text;
-            return p.Send();
+            return new EditTextPacket(client) { Id = id, Text = text }.Send();
         }
     }
 }
