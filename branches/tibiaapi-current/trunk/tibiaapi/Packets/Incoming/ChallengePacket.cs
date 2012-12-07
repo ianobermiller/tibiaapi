@@ -4,6 +4,9 @@ namespace Tibia.Packets.Incoming
 {
     public class ChallengePacket : IncomingPacket
     {
+        public uint TimeStamp { get; set; }
+        public byte Random { get; set; }
+
         public ChallengePacket(Objects.Client c)
             : base(c)
         {
@@ -21,10 +24,16 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.Challenge;
 
-            msg.GetUInt32();
-            msg.GetByte();
+            TimeStamp=msg.GetUInt32();
+            Random=msg.GetByte();
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddUInt32(TimeStamp);
+            msg.AddByte(Random);
         }
     }
 }

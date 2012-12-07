@@ -4,6 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class TutorialHintPacket : IncomingPacket
     {
+        public uint TutorialId { get; set; }
         public TutorialHintPacket(Objects.Client c)
             : base(c)
         {
@@ -21,9 +22,14 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.TutorialHint;
 
-            msg.GetByte();
+            TutorialId = msg.GetByte();
 
             return true;
+        }
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            msg.AddUInt32(TutorialId);
         }
     }
 }

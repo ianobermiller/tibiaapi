@@ -4,8 +4,16 @@ namespace Tibia.Packets.Incoming
 {
     public class TextMessagePacket : IncomingPacket
     {
-        public string Message { get; set; }
+        public string Text { get; set; }
         public byte Mode { get; set; }
+        public Objects.Location Location { get; set; }
+        public uint NumValue { get; set; }
+        public byte NumColor { get; set; }
+        public uint PhysicalDmgValue { get; set; }
+        public byte PhysicalDmgColor { get; set; }
+        public uint MagicDmgValue { get; set; }
+        public byte MagicDmgColor { get; set; }
+        public ushort ChannelId { get; set; }
 
         public TextMessagePacket(Objects.Client c)
             : base(c)
@@ -25,57 +33,65 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.TextMessage;
 
             Mode = msg.GetByte();
+            var speechType = Constants.Enums.GetSpeechTypeInfo(Client.VersionNumber, Mode).SpeechType;
 
-            switch (Mode)
+            switch (speechType)
             {
-                case 6://channel management
-                    msg.GetUInt16();//channelid
-                    msg.GetString();//text
+                case SpeechType.ChannelManagement://channel management
+                    ChannelId = msg.GetUInt16();//channelid
                     break;
-                case 16://login
-                case 17://admin
-                case 18://game
-                case 19://failure
-                case 20://look
-                case 28://status
-                case 29://loot
-                case 30://trade npc
-                case 31://guild
-                case 32://party management
-                case 33://party
-                case 37://hotkey use
-                    Message = msg.GetString();//text
+                case SpeechType.DamageDealed:
+                case SpeechType.DamageReceived:
+                case SpeechType.DamageOthers:
+                    Location = msg.GetLocation();
+                    PhysicalDmgValue = msg.GetUInt32();//value
+                    PhysicalDmgColor = msg.GetByte();//color
+                    MagicDmgValue = msg.GetUInt32();//value
+                    MagicDmgColor = msg.GetByte();//color
                     break;
-                case 40://market
-                    msg.GetString();//text
-                    break;
-                case 36://report
-                    msg.GetString();//text
-                    break;
-                case 21://damage dealed
-                case 22://damage received
-                case 25://damage others
-                    msg.GetLocation();
-                    msg.GetUInt32();//value
-                    msg.GetByte();//color
-                    msg.GetUInt32();//value
-                    msg.GetByte();//color
-                    msg.GetString();//text
-                    break;
-                case 23://heal
-                case 24://exp
-                case 26://heal others
-                case 27://exp others
-                    msg.GetLocation();
-                    msg.GetUInt32();//value
-                    msg.GetByte();//color
-                    msg.GetString();//text
-                    break;
-                default:
+                case SpeechType.Heal://heal
+                case SpeechType.Exp://exp
+                case SpeechType.HealOthers://heal others
+                case SpeechType.ExpOthers://exp others
+                    Location = msg.GetLocation();
+                    NumValue = msg.GetUInt32();//value
+                    NumColor = msg.GetByte();//color
                     break;
             }
+            Text = msg.GetString();//text
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+              msg.AddByte(Mode);
+            var speechType = Constants.Enums.GetSpeechTypeInfo(Client.VersionNumber, Mode).SpeechType;
+
+            switch (speechType)
+            {
+                case SpeechType.ChannelManagement://channel management
+                    msg.AddUInt16(ChannelId);//channelid
+                    break;
+                case SpeechType.DamageDealed:
+                case SpeechType.DamageReceived:
+                case SpeechType.DamageOthers:
+                    msg.AddLocation(Location);
+                     msg.AddUInt32(PhysicalDmgValue);//value
+                     msg.AddByte(PhysicalDmgColor);//color
+                     msg.AddUInt32(MagicDmgValue);//value
+                     msg.AddByte(MagicDmgColor);//color
+                    break;
+                case SpeechType.Heal://heal
+                case SpeechType.Exp://exp
+                case SpeechType.HealOthers://heal others
+                case SpeechType.ExpOthers://exp others
+                      msg.AddLocation(Location);
+                      msg.AddUInt32(NumValue);//value
+                      msg.AddByte(NumColor);//color
+                    break;
+            }
+            msg.AddString(Text);//text
         }
     }
 }

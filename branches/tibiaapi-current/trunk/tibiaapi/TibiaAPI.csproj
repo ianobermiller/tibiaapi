@@ -150,7 +150,12 @@
     <Compile Include="Packets\HookProxy.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\Incoming\AmbientPacket.cs" />
-    <Compile Include="Packets\Incoming\AnimatedTextPacket.cs" />
+    <Compile Include="Packets\Incoming\GMActionsPacket.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationLock.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationCancel.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationRemove.cs" />
+    <Compile Include="Packets\Incoming\RuleViolationChannelPacket.cs" />
+    <Compile Include="Packets\Incoming\TextEffectPacket.cs" />
     <Compile Include="Packets\Incoming\AutomapFlagPacket.cs" />
     <Compile Include="Packets\Incoming\FloorChangeDownPacket.cs" />
     <Compile Include="Packets\Incoming\BottomRowPacket.cs" />

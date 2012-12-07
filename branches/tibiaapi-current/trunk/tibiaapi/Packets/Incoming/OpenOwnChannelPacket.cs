@@ -28,15 +28,22 @@ namespace Tibia.Packets.Incoming
             ChannelId = msg.GetUInt16();
             Name = msg.GetString();
 
-            ushort JoinedCount = msg.GetUInt16();
-            for (int i = 0; i < JoinedCount; i++)
-                msg.GetString(); //player names
+            //ushort JoinedCount = msg.GetUInt16();
+            //for (int i = 0; i < JoinedCount; i++)
+            //    msg.GetString(); //player names
 
-            ushort InvitedCount = msg.GetUInt16();
-            for (int x = 0; x < InvitedCount; x++)
-                msg.GetString(); //player names
+            //ushort InvitedCount = msg.GetUInt16();
+            //for (int x = 0; x < InvitedCount; x++)
+            //    msg.GetString(); //player names
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            msg.AddUInt16(ChannelId);
+            msg.AddString(Name);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
             msg.AddUInt32(YourId);
-            msg.AddUInt16(0x0032); // Related to client-side drawing speed
+            msg.AddUInt16(BeatDuration); // Related to client-side drawing speed
             msg.AddByte(CanReportBug);
         }
     }

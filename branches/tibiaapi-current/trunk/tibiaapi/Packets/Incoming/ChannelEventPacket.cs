@@ -4,6 +4,10 @@ namespace Tibia.Packets.Incoming
 {
     public class ChannelEventPacket : IncomingPacket
     {
+        public ushort ChannelId { get; set; }
+        public string PlayerName { get; set; }
+        public byte EventType { get; set; }
+
         public ChannelEventPacket(Objects.Client c)
             : base(c)
         {
@@ -21,11 +25,19 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ChannelEvent;
 
-            msg.GetUInt16();
-            msg.GetString();
-            msg.GetByte();
+            ChannelId = msg.GetUInt16();
+            PlayerName = msg.GetString();
+            EventType = msg.GetByte();
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            msg.AddUInt16(ChannelId);
+            msg.AddString(PlayerName);
+            msg.AddByte(EventType);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class DeleteInContainerPacket : IncomingPacket
     {
-        public byte Container { get; set; }
+        public byte ContainerId { get; set; }
         public byte Slot { get; set; }
 
         public DeleteInContainerPacket(Objects.Client c)
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.DeleteInContainer;
 
-            Container = msg.GetByte();
+            ContainerId = msg.GetByte();
             Slot = msg.GetByte();
 
             return true;
@@ -33,7 +33,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Container);
+            msg.AddByte(ContainerId);
             msg.AddByte(Slot);
         }
 

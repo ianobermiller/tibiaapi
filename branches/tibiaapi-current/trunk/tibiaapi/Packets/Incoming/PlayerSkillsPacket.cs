@@ -45,39 +45,39 @@ namespace Tibia.Packets.Incoming
             Type = IncomingPacketType.PlayerSkills;
 
             Fist = msg.GetByte();
-            FistPercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 FistBase = msg.GetByte();
+            FistPercent = msg.GetByte();
 
             Club = msg.GetByte();
-            ClubPercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 ClubBase = msg.GetByte();
+            ClubPercent = msg.GetByte();
 
             Sword = msg.GetByte();
-            SwordPercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 SwordBase = msg.GetByte();
+            SwordPercent = msg.GetByte();
 
             Axe = msg.GetByte();
-            AxePercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 AxeBase = msg.GetByte();
+            AxePercent = msg.GetByte();
 
             Distance = msg.GetByte();
-            DistancePercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 DistanceBase = msg.GetByte();
+            DistancePercent = msg.GetByte();
 
             Shield = msg.GetByte();
-            ShieldPercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 ShieldBase = msg.GetByte();
+            ShieldPercent = msg.GetByte();
 
             Fish = msg.GetByte();
-            FishPercent = msg.GetByte();
             if (Client.VersionNumber >= 954)
                 FishBase = msg.GetByte();
+            FishPercent = msg.GetByte();
 
             return true;
         }
@@ -86,39 +86,39 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
             msg.AddByte(Fist);
-            msg.AddByte(FistPercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(FistBase);
+            msg.AddByte(FistPercent);
 
             msg.AddByte(Club);
-            msg.AddByte(ClubPercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(ClubBase);
+            msg.AddByte(ClubPercent);
 
             msg.AddByte(Sword);
-            msg.AddByte(SwordPercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(SwordBase);
+            msg.AddByte(SwordPercent);
 
             msg.AddByte(Axe);
-            msg.AddByte(AxePercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(AxeBase);
+            msg.AddByte(AxePercent);
 
             msg.AddByte(Distance);
-            msg.AddByte(DistancePercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(DistanceBase);
+            msg.AddByte(DistancePercent);
 
             msg.AddByte(Shield);
-            msg.AddByte(ShieldPercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(ShieldBase);
+            msg.AddByte(ShieldPercent);
 
             msg.AddByte(Fish);
-            msg.AddByte(FishPercent);
             if (Client.VersionNumber >= 954)
                 msg.AddByte(FishBase);
+            msg.AddByte(FishPercent);
 
         }
     }

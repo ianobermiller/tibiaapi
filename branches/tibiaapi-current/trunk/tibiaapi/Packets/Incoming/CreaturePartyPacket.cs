@@ -4,7 +4,8 @@ namespace Tibia.Packets.Incoming
 {
     public class CreaturePartyPacket : IncomingPacket
     {
-        public PacketCreature Creature { get; set; }
+        public uint CreatureId { get; set; }
+        public PartyShield PartyShield { get; set; }
 
         public CreaturePartyPacket(Objects.Client c)
             : base(c)
@@ -23,8 +24,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreatureParty;
 
-            Creature.Id = msg.GetUInt32();
-            Creature.PartyShield = (PartyShield)msg.GetByte();
+            CreatureId = msg.GetUInt32();
+            PartyShield = (PartyShield)msg.GetByte();
 
             return true;
         }
@@ -32,8 +33,8 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddUInt32(Creature.Id);
-            msg.AddByte((byte)Creature.PartyShield);
+            msg.AddUInt32(CreatureId);
+            msg.AddByte((byte)PartyShield);
         }
     }
 }

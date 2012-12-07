@@ -1344,7 +1344,7 @@ namespace Tibia.Constants
         LoginServerRequest = 1,
         EnterGame = 10,
         QuitGame = 20,
-        Ping = 29,//otclient
+        Ping = 29,
         PingBack = 30,
 
         AutoWalk = 100,
