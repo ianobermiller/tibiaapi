@@ -5,7 +5,7 @@ namespace Tibia.Packets.Incoming
     public class EditListPacket : IncomingPacket
     {
 
-        public byte Edit { get; set; }
+        public byte DoorId { get; set; }
         public uint Id { get; set; }
         public string Text { get; set; }
 
@@ -26,7 +26,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.EditList;
 
-            Edit = msg.GetByte();
+            DoorId = msg.GetByte();
             Id = msg.GetUInt32();
             Text = msg.GetString();
 
@@ -36,7 +36,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Edit);
+            msg.AddByte(DoorId);
             msg.AddUInt32(Id);
             msg.AddString(Text);
         }

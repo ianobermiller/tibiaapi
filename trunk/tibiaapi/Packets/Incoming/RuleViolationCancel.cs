@@ -2,26 +2,27 @@
 
 namespace Tibia.Packets.Incoming
 {
-    public class DeathPacket : IncomingPacket
+    public class RuleViolationCancelPacket : IncomingPacket
     {
-        public byte Penalty { get; set; }
-        public DeathPacket(Objects.Client c)
+        public string Name { get; set; }
+        public RuleViolationCancelPacket(Objects.Client c)
             : base(c)
         {
-            Type = IncomingPacketType.Death;
+            Type = IncomingPacketType.RuleViolationCancel;
             Destination = PacketDestination.Client;
-            Penalty = 100;
         }
 
         public override bool ParseMessage(NetworkMessage msg, PacketDestination destination)
         {
-            if (msg.GetByte() != (byte)IncomingPacketType.Death)
+            int position = msg.Position;
+
+            if (msg.GetByte() != (byte)IncomingPacketType.RuleViolationRemove)
                 return false;
 
             Destination = destination;
-            Type = IncomingPacketType.Death;
+            Type = IncomingPacketType.RuleViolationRemove;
 
-            Penalty = msg.GetByte(); //?
+            Name = msg.GetString();
 
             return true;
         }
@@ -29,7 +30,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Penalty);
+            msg.AddString(Name);
         }
     }
 }

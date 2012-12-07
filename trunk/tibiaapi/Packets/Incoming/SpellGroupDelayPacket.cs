@@ -5,8 +5,8 @@ namespace Tibia.Packets.Incoming
     public class SpellGroupDelayPacket : IncomingPacket
     {
 
-        public byte Unknown1 { get; set; }
-        public uint Unknown2 { get; set; }
+        public byte GroupId { get; set; }
+        public uint Delay { get; set; }
 
         public SpellGroupDelayPacket(Objects.Client c)
             : base(c)
@@ -25,8 +25,8 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.SpellGroupDelay;
 
-            Unknown1 = msg.GetByte();
-            Unknown2 = msg.GetUInt32();
+            GroupId = msg.GetByte();
+            Delay = msg.GetUInt32();
 
             return true;
         }
@@ -34,8 +34,8 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Unknown1);
-            msg.AddUInt32(Unknown2);
+            msg.AddByte(GroupId);
+            msg.AddUInt32(Delay);
         }
     }
 }

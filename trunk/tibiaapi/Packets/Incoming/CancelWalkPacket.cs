@@ -4,6 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class CancelWalkPacket : IncomingPacket
     {
+        public Direction Direction { get; set; }
         public CancelWalkPacket(Objects.Client c)
             : base(c)
         {
@@ -21,9 +22,15 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CancelWalk;
 
-            msg.GetByte();
+            Direction= (Direction)msg.GetByte();
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            msg.AddByte((byte)Direction);
         }
     }
 }

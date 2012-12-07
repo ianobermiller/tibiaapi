@@ -4,6 +4,12 @@ namespace Tibia.Packets.Incoming
 {
     public class EditTextPacket : IncomingPacket
     {
+        public uint Id { get; set; }
+        public ushort ItemId { get; set; }
+        public ushort MaxLength { get; set; }
+        public string Text { get; set; }
+        public string Writer { get; set; }
+        public string Date { get; set; }
         public EditTextPacket(Objects.Client c)
             : base(c)
         {
@@ -21,14 +27,24 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.EditText;
 
-            msg.GetUInt32();//id
-            msg.GetItem();
-            msg.GetUInt16();//max chars
-            msg.GetString();//text
-            msg.GetString();//author
-            msg.GetString();//date
+            Id = msg.GetUInt32();//id
+            ItemId = msg.GetUInt16();
+            MaxLength = msg.GetUInt16();//max chars
+            Text = msg.GetString();//text
+            Writer = msg.GetString();//author
+            Date = msg.GetString();//date
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddUInt32(Id);//id
+            msg.AddUInt16(ItemId);
+            msg.AddUInt16(MaxLength);//max chars
+            msg.AddString(Text);//text
+            msg.AddString(Writer);//author
+            msg.AddString(Date);//date
         }
     }
 }

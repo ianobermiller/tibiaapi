@@ -39,12 +39,35 @@ namespace Tibia.Packets.Incoming
 
             SpeechTypeInfo info = Enums.GetSpeechTypeInfo(971, Mode);
             SpeechType = info.SpeechType;
+            
+            switch(SpeechType) {
+                case SpeechType.Say:
+                case SpeechType.Whisper:
+                case SpeechType.Yell:
+                case SpeechType.MonsterSay:
+                case SpeechType.MonsterYell:
+                case SpeechType.NpcTo:
+                case SpeechType.NpcFrom:
+                case SpeechType.BarkLow:
+                case SpeechType.BarkLoud:
+                case SpeechType.Spell:
+                    Position = msg.GetLocation();
+                    break;
+                case SpeechType.Channel:
+                case SpeechType.ChannelManagement:
+                case SpeechType.ChannelHighlight:
+                case SpeechType.GamemasterChannel:
+                    ChannelId = (Tibia.Constants.ChatChannel)msg.GetUInt16();
+                    break;
+                case SpeechType.PrivateFrom:
+                case SpeechType.GamemasterBroadcast:
+                case SpeechType.GamemasterPrivateFrom:
+                    break;
+                default:
+                    throw new System.Exception("Unknown Constants.SpeechType");
+                    break;
+            }
 
-
-            if (info.AdditionalSpeechData == AdditionalSpeechData.Location)
-                Position = msg.GetLocation();
-            else if (info.AdditionalSpeechData == AdditionalSpeechData.ChannelId)
-                ChannelId = (Tibia.Constants.ChatChannel)msg.GetUInt16();
 
             Message = msg.GetString();
 

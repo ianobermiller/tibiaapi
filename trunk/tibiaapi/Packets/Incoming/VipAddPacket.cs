@@ -30,7 +30,7 @@ namespace Tibia.Packets.Incoming
             Id = msg.GetUInt32();
             Name = msg.GetString();
 
-            if (Client.VersionNumber >= 962)
+            if (Client.VersionNumber >= 963)
             {
                 Description = msg.GetString();
                 Icon = msg.GetUInt32();
@@ -48,7 +48,7 @@ namespace Tibia.Packets.Incoming
             msg.AddUInt32(Id);
             msg.AddString(Name);
 
-            if (Client.VersionNumber >= 962)
+            if (Client.VersionNumber >= 963)
             {
                 msg.AddString(Description);
                 msg.AddUInt32(Icon);

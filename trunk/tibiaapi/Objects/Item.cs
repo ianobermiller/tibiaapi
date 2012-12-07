@@ -476,7 +476,7 @@ namespace Tibia.Objects
             {
 
                 return GetFlag(AddressesCollection.DatItemAddresses.Flag.IsStackable) ||
-                       //GetFlag(Tibia.Addresses.DatItem.Flag.IsRune) || // unused in 8.60, always returns false
+                       GetFlag(AddressesCollection.DatItemAddresses.Flag.IsRune) || //needs verification
                        GetFlag(AddressesCollection.DatItemAddresses.Flag.IsSplash) ||
                        GetFlag(AddressesCollection.DatItemAddresses.Flag.IsFluidContainer);
             }

@@ -4,7 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class CreateContainerPacket : IncomingPacket
     {
-        public byte Container { get; set; }
+        public byte ContainerId { get; set; }
         public Objects.Item Item { get; set; }
 
         public CreateContainerPacket(Objects.Client c)
@@ -24,7 +24,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CreateContainer;
 
-            Container = msg.GetByte();
+            ContainerId = msg.GetByte();
             Item = msg.GetItem();
 
             return true;
@@ -33,7 +33,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Container);
+            msg.AddByte(ContainerId);
             msg.AddItem(Item);
         }
 

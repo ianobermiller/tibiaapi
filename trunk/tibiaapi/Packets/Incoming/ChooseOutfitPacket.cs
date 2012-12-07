@@ -22,7 +22,7 @@ namespace Tibia.Packets.Incoming
     {
         public List<AvalibleOutfit> OutfitList { get; set; }
         public List<MountDescription> MountList { get; set; }
-        public Objects.Outfit Default { get; set; }
+        public Objects.Outfit Current { get; set; }
 
         public ChooseOutfitPacket(Objects.Client c)
             : base(c)
@@ -41,7 +41,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.ChooseOutfit;
 
-            Default = msg.GetOutfit();
+            Current = msg.GetOutfit();
 
             byte count = msg.GetByte();
             OutfitList = new List<AvalibleOutfit> { };
@@ -80,7 +80,7 @@ namespace Tibia.Packets.Incoming
         {
             msg.AddByte((byte)Type);
 
-            msg.AddOutfit(Default);
+            msg.AddOutfit(Current);
 
             msg.AddByte((byte)OutfitList.Count);
 

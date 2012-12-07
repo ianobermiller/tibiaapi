@@ -4,7 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class CloseContainerPacket : IncomingPacket
     {
-        public byte Id { get; set; }
+        public byte ContainerId { get; set; }
 
         public CloseContainerPacket(Objects.Client c)
             : base(c)
@@ -23,7 +23,7 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.CloseContainer;
 
-            Id = msg.GetByte();
+            ContainerId = msg.GetByte();
 
             return true;
         }
@@ -31,7 +31,7 @@ namespace Tibia.Packets.Incoming
         public override void ToNetworkMessage(NetworkMessage msg)
         {
             msg.AddByte((byte)Type);
-            msg.AddByte(Id);
+            msg.AddByte(ContainerId);
         }
     }
 }

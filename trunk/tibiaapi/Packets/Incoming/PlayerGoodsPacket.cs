@@ -35,7 +35,7 @@ namespace Tibia.Packets.Incoming
                 ShopInfo item = new ShopInfo();
 
                 item.ItemId = msg.GetUInt16();
-                item.SubType = msg.GetByte();
+                item.CountOrSubType = msg.GetByte();
 
                 ItemList.Add(item);
             }
@@ -53,7 +53,7 @@ namespace Tibia.Packets.Incoming
             foreach (ShopInfo i in ItemList)
             {
                 msg.AddUInt16(i.ItemId);
-                msg.AddByte(i.SubType);
+                msg.AddByte(i.CountOrSubType);
             }
         }
     }

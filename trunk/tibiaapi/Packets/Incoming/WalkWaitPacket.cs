@@ -4,6 +4,7 @@ namespace Tibia.Packets.Incoming
 {
     public class WalkWaitPacket : IncomingPacket
     {
+        public ushort WaitMs { get; set; }
         public WalkWaitPacket(Objects.Client c)
             : base(c)
         {
@@ -21,9 +22,15 @@ namespace Tibia.Packets.Incoming
             Destination = destination;
             Type = IncomingPacketType.WalkWait;
 
-            msg.GetUInt16(); //?
+            WaitMs = msg.GetUInt16();
 
             return true;
+        }
+
+        public override void ToNetworkMessage(NetworkMessage msg)
+        {
+            msg.AddByte((byte)Type);
+            msg.AddUInt16(WaitMs);
         }
     }
 }
