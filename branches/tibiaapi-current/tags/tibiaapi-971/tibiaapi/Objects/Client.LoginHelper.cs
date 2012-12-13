@@ -1,0 +1,488 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Tibia.Util;
+
+namespace Tibia.Objects
+{
+    public partial class Client
+    {
+        public class LoginHelper
+        {
+            public readonly LoginServer[] DefaultServers = 
+            {
+                new LoginServer("login01.tibia.com"),
+                new LoginServer("login02.tibia.com"),
+                new LoginServer("login03.tibia.com"),
+                new LoginServer("login04.tibia.com"),
+                new LoginServer("login05.tibia.com"),
+                new LoginServer("tibia01.cipsoft.com"),
+                new LoginServer("tibia02.cipsoft.com"),
+                new LoginServer("tibia03.cipsoft.com"),
+                new LoginServer("tibia04.cipsoft.com"),
+                new LoginServer("tibia05.cipsoft.com")
+            };
+
+            public enum State
+            {
+                AlreadyLoggedIn,
+                ClientMinimized,
+                ClientInBattle,
+                DialogsCleaned,
+                ResetSelectedCharValue,
+                ResetSelectedCharCount,
+                ClickEnterButton,
+                ForceLogoutFailed,
+                LoginDialogOpened,
+                LoginDialogDidntOpen,
+                InputAccName,
+                InputPassword,
+                PressTab,
+                PressEnter,
+                CharListReceived,
+                CharListNotReceived,
+                CharListUnknownCondition,
+                ConnectingDialogGone,
+                ConnectingDialogNotGone,
+                Motd,
+                SelectedCharFound,
+                GoToNextChar,
+                SelectedCharNotFound,
+                LoginSuccessfull,
+                LoginFailed
+            }
+
+            private Client client;
+            private LoginServer openTibiaServer = null;
+
+            public delegate void LoginProgressReporter(State state);
+            public LoginProgressReporter Report;
+
+            internal LoginHelper(Client client) 
+            {
+                this.client = client; 
+            }
+
+            #region Account Info
+
+            [System.Obsolete]
+            public void SetAccountInfo(string account, string password)
+            {
+                AccountName = account;
+                AccountPassword = password;
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch, Tibia.Misc.CreateNopArray(5), 5);
+            }
+
+            [System.Obsolete]
+            public void ClearAccountInfo()
+            {
+                AccountName = "";
+                AccountPassword = string.Empty;
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch, client.Addresses.Client.LoginPatchOrig, 5);
+                client.Memory.WriteBytes(client.Addresses.Client.LoginPatch2, client.Addresses.Client.LoginPatchOrig2, 5);
+            }
+
+            /// <summary>
+            /// Sets the account name.
+            /// </summary>
+            public string AccountName
+            {
+                set { client.Memory.WriteString(client.Addresses.Client.LoginAccount, value); }
+            }
+
+            /// <summary>
+            /// Sets the account password.
+            /// </summary>
+            public string AccountPassword
+            {
+                set { client.Memory.WriteString(client.Addresses.Client.LoginPassword, value); }
+            }
+
+            #endregion
+
+            /// <summary>
+            /// Get/Set the RSA key, wrapper for Memory.WriteRSA
+            /// </summary>
+            /// <returns></returns>
+            public string RSA
+            {
+                get { return client.Memory.ReadString(client.Addresses.Client.RSA, 309); }
+                set { Util.Memory.WriteRSA(client.ProcessHandle, client.Addresses.Client.RSA, value); }
+            }
+
+            public LoginServer OpenTibiaServer
+            {
+                get { return openTibiaServer; }
+                set { openTibiaServer = value; }
+            }
+
+            public bool Login(string login, string password, string charName)
+            {
+                //if the window is minimized return false.
+                if (client.Window.IsMinimized)
+                {
+                    if (Report != null)
+                        Report.Invoke(State.ClientMinimized);
+                    return false;
+                }
+                else
+                {
+                    int waitTime;
+                    //assure the screen is clean, no dialog open
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+                    if (Report != null)
+                        Report.Invoke(State.DialogsCleaned);
+
+                    //reset the selected char value..
+                    client.Memory.WriteUInt32(client.Addresses.Client.LoginSelectedChar, 0);
+                    if (Report != null)
+                        Report.Invoke(State.ResetSelectedCharValue);
+
+                    if (client.LoggedIn)
+                    {
+                        if (Report != null)
+                            Report.Invoke(State.AlreadyLoggedIn);
+
+                        if (client.GetPlayer().HasFlag(Tibia.Constants.Flag.InBattle))
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.ClientInBattle);
+                            return false;
+                        }
+
+                        //logout first CTRL + L
+                        //hardcoded from spy++ capture
+                        client.Input.SendMessage(Hooks.WM_KEYDOWN, Hooks.VK_CONTROL, 1 | (0x1D << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYDOWN, (int)Keys.L, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_CHAR, 12, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYUP, (int)Keys.L, 1 | (0x26 << 16));
+                        client.Input.SendMessage(Hooks.WM_KEYUP, Hooks.VK_CONTROL, 1 | 0x1D << 16 | 1 << 30 | (uint)1 << 31);
+
+                        waitTime = 4000;
+                        while (client.LoggedIn && waitTime > 0)
+                        {
+                            Thread.Sleep(100);
+                            waitTime -= 100;
+                            if (waitTime <= 0)
+                            {
+                                if (Report != null)
+                                    Report.Invoke(State.ForceLogoutFailed);
+
+                                return false;
+                            }
+                        }
+
+
+                        client.Input.SendKey(Keys.Escape);
+                        client.Input.SendKey(Keys.Escape);
+                        client.Input.SendKey(Keys.Escape);
+                        if (Report != null)
+                            Report.Invoke(State.DialogsCleaned);
+                    }
+                    //reset the char count value..
+                    client.Memory.WriteInt32(client.Addresses.Client.LoginCharListLength, 0);
+                    if (Report != null)
+                        Report.Invoke(State.ResetSelectedCharCount);
+
+                    //click the enter the game button
+                    client.Input.Click(120, (uint)client.Window.Size.Height - 205);
+                    if (Report != null)
+                        Report.Invoke(State.ClickEnterButton);
+
+                    //wait the dialog open
+                    waitTime = 2000;
+                    while (!client.IsDialogOpen && client.DialogCaption != "Enter Game")
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.LoginDialogDidntOpen);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.LoginDialogOpened);
+
+                    //now we have to send the login and the password
+                    client.Input.SendString(login);
+                    if (Report != null)
+                        Report.Invoke(State.InputAccName);
+                    Thread.Sleep(100);
+
+                    //press tab
+                    client.Input.SendKey(Keys.Tab);
+                    if (Report != null)
+                        Report.Invoke(State.PressTab);
+                    Thread.Sleep(100);
+
+                    //put the pass
+                    client.Input.SendString(password);
+                    if (Report != null)
+                        Report.Invoke(State.InputPassword);
+                    Thread.Sleep(100);
+
+                    //press enter..
+                    client.Input.SendKey(Keys.Enter);
+                    if (Report != null)
+                        Report.Invoke(State.PressEnter);
+
+                    //wait for the charlist dialog
+                    waitTime = 4000;
+                    while (CharListCount == 0)
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.CharListNotReceived);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.CharListReceived);
+
+                    waitTime = 4000;
+                    while (client.IsDialogOpen && client.DialogCaption == "Connecting")
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                        if (waitTime <= 0)
+                        {
+                            if (Report != null)
+                                Report.Invoke(State.ConnectingDialogNotGone);
+                            return false;
+                        }
+                    }
+                    if (Report != null)
+                        Report.Invoke(State.ConnectingDialogGone);
+
+                    // Wait until new dialog pops up
+                    waitTime = 4000;
+                    while (!client.IsDialogOpen && waitTime > 0)
+                    {
+                        Thread.Sleep(100);
+                        waitTime -= 100;
+                    }
+
+                    // Check if there is a message of the day
+                    if (client.DialogCaption != "Select Character" && client.IsDialogOpen)
+                    {
+                        client.Input.SendKey(Keys.Enter);
+                        if (Report != null)
+                            Report.Invoke(State.Motd);
+                    }
+
+
+                    if (client.IsDialogOpen && client.DialogCaption == "Select Character")
+                    {
+                        //now we loop at the charlist to find the selected char..
+                        foreach (var ch in CharacterList)
+                        {
+
+                            Thread.Sleep(100); //make sure the client process the msg
+                            //we start at position 0
+                            if (string.Compare(ch.CharName, charName, true) == 0)
+                            {
+                                //we found the char
+                                //lets press the enter key
+                                client.Input.SendKey(Keys.Enter);
+                                if (Report != null)
+                                    Report.Invoke(State.SelectedCharFound);
+
+                                waitTime = 3000;
+                                while (!client.LoggedIn && waitTime > 0)
+                                {
+                                    Thread.Sleep(100);
+                                    waitTime -= 100;
+                                }
+
+                                if (Report != null)
+                                    Report.Invoke(client.LoggedIn ? State.LoginSuccessfull : State.LoginFailed);
+
+                                return client.LoggedIn;
+                            }
+
+                            //move to the next char
+                            client.Input.SendKey(Keys.Down);
+                            if (Report != null)
+                                Report.Invoke(State.GoToNextChar);
+                        }
+
+                        //char not found.
+                        if (Report != null)
+                            Report.Invoke(State.SelectedCharNotFound);
+                    }
+                    else
+                    {
+                        if (Report != null)
+                            Report.Invoke(State.CharListUnknownCondition);
+                    }
+
+                    //clean up
+                    //assure the screen is clean, no dialog open
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+                    client.Input.SendKey(Keys.Escape);
+
+                    return false;
+                }
+            }
+
+            /// <summary>
+            /// Get/Set the Login Servers
+            /// </summary>
+            public LoginServer[] Servers
+            {
+                get
+                {
+                    LoginServer[] servers = new LoginServer[client.Addresses.Client.MaxLoginServers];
+                    long address = client.Addresses.Client.LoginServerStart;
+
+                    for (int i = 0; i < client.Addresses.Client.MaxLoginServers; i++)
+                    {
+                        servers[i] = new LoginServer(
+                            client.Memory.ReadString(address),
+                            (short)client.Memory.ReadInt32(address + client.Addresses.Client.DistancePort)
+                        );
+                        address += client.Addresses.Client.StepLoginServer;
+                    }
+                    return servers;
+                }
+                set
+                {
+                    long address = client.Addresses.Client.LoginServerStart;
+                    if (value.Length == 1)
+                    {
+                        for (int i = 0; i < client.Addresses.Client.MaxLoginServers; i++)
+                        {
+                            client.Memory.WriteString(address, value[0].Server);
+                            client.Memory.WriteInt32(address + client.Addresses.Client.DistancePort, value[0].Port);
+                            address += client.Addresses.Client.StepLoginServer;
+                        }
+                    }
+                    else if (value.Length > 1 && value.Length <= client.Addresses.Client.MaxLoginServers)
+                    {
+                        for (int i = 0; i < value.Length; i++)
+                        {
+                            client.Memory.WriteString(address, value[i].Server);
+                            client.Memory.WriteInt32(address + client.Addresses.Client.DistancePort, value[i].Port);
+                            address += client.Addresses.Client.StepLoginServer;
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Set the client to connect to a different server and port.
+            /// </summary>
+            /// <param name="ip"></param>
+            /// <param name="port"></param>
+            /// <returns></returns>
+            public void SetServer(string ip, short port)
+            {
+                Servers = new LoginServer[] { new LoginServer(ip, port) };
+            }
+
+            /// <summary>
+            /// Set the client to connect to an OT server (changes IP, port, and RSA key).
+            /// </summary>
+            /// <param name="ip"></param>
+            /// <param name="port"></param>
+            /// <returns></returns>
+            public void SetOT(string ip, short port)
+            {
+                client.Login.OpenTibiaServer = new LoginServer(ip, port);
+                SetServer(ip, port);
+                RSA = Constants.RSAKey.OpenTibia;
+            }
+
+            /// <summary>
+            /// Set the client to use the given OT server
+            /// </summary>
+            /// <param name="ls"></param>
+            /// <returns></returns>
+            public void SetOT(LoginServer ls)
+            {
+                SetOT(ls.Server, ls.Port);
+            }
+
+            public void SetCharListServer(byte[] ipAddress, ushort port)
+            {
+                uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
+
+                for (int i = 0; i < CharListCount; i++)
+                {
+                    client.Memory.WriteBytes(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP, ipAddress, 4);
+                    client.Memory.WriteUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort, port);
+                    pointer += client.Addresses.Client.LoginCharListStepCharacter;
+                }
+            }
+
+            public bool SetCharListServer(CharacterLoginInfo[] charList)
+            {
+                byte count = CharListCount;
+
+                if (count != charList.Length)
+                    return false;
+
+                uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
+
+                for (int i = 0; i < count; i++)
+                {
+                    client.Memory.WriteUInt32(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP, charList[i].WorldIP);
+                    client.Memory.WriteUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort, charList[i].WorldPort);
+                    pointer += client.Addresses.Client.LoginCharListStepCharacter;
+                }
+
+                return true;
+            }
+
+            public CharacterLoginInfo[] CharacterList
+            {
+                get
+                {
+                    CharacterLoginInfo[] charList = new CharacterLoginInfo[CharListCount];
+
+                    uint pointer = client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin);
+
+                    for (int i = 0; i < charList.Length; i++)
+                    {
+                        charList[i].CharName = client.Memory.ReadTextField(pointer + client.Addresses.Client.LoginCharListDistanceCharName);
+                        charList[i].WorldName = client.Memory.ReadTextField(pointer + client.Addresses.Client.LoginCharListDistanceWorldName);
+                        charList[i].IsPreview = Convert.ToBoolean(client.Memory.ReadByte(pointer + client.Addresses.Client.LoginCharListDistanceIsPreview));
+                        charList[i].WorldIP = client.Memory.ReadUInt32(pointer + client.Addresses.Client.LoginCharListDistanceWorldIP);
+                        charList[i].WorldPort = client.Memory.ReadUInt16(pointer + client.Addresses.Client.LoginCharListDistanceWorldPort);
+                        pointer += client.Addresses.Client.LoginCharListStepCharacter;
+                    }
+
+                    return charList;
+                }
+            }
+
+            public byte CharListCount
+            {
+                get 
+                {
+                    return (byte)((client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListEnd) -
+                        client.Memory.ReadUInt32(client.Addresses.Client.LoginCharListBegin)) /
+                        client.Addresses.Client.LoginCharListStepCharacter);
+                }
+            }
+
+            public int SelectedChar
+            {
+                get { return client.Memory.ReadInt32(client.Addresses.Client.LoginSelectedChar); }
+                set { client.Memory.WriteInt32(client.Addresses.Client.LoginSelectedChar, value); }
+            }
+
+        }
+    }
+}
