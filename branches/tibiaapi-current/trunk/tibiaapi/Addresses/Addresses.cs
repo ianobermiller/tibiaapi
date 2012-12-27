@@ -28,6 +28,9 @@ namespace Tibia.Objects
                 case "9.7.1.0":
                     SetVersion9_7_1_0(baseAddress);
                     break;
+                case "9.8.1.0":
+                    SetVersion9_8_1_0(baseAddress);
+                    break;
                 default:
                     throw new Exceptions.VersionNotSupportedException("Tibia version " + version + " is not supported by TibiaAPI.");
             }

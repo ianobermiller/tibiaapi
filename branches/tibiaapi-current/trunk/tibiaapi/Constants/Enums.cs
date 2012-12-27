@@ -89,8 +89,8 @@ namespace Tibia.Constants
     {
         LoggedOut = 0,
         NotLoggedIn = LoggedOut,
-        LoggingIn = 6,
-        LoggedIn = 8
+        LoggingIn = 9,
+        LoggedIn = 10,
     }
 
     public static class RSAKey

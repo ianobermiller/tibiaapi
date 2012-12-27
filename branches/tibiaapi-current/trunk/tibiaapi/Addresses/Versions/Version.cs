@@ -4,8 +4,8 @@ namespace Tibia
 {
     public partial class Version
     {
-        public static ushort CurrentVersion = 971;
-        public static string CurrentVersionString = "9.7.1.0";
+        public static ushort CurrentVersion = 981;
+        public static string CurrentVersionString = "9.8.1.0";
 
         public static string VersionToString(ushort version)
         {

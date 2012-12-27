@@ -115,6 +115,7 @@
     <Compile Include="Addresses\TextDisplayAddresses.cs" />
     <Compile Include="Addresses\Versions\GameStructures.cs" />
     <Compile Include="Addresses\Versions\Version9_7_1_0.cs" />
+    <Compile Include="Addresses\Versions\Version9_8_1_0.cs" />
     <Compile Include="Addresses\VipAddresses.cs" />
     <Compile Include="Clientless\GameServerConnection.cs" />
     <Compile Include="Clientless\LoginServerConnection.cs" />
@@ -406,6 +407,7 @@
     <None Include="TibiaAPI.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\Debug\TibiaAPI_Inject.dll" />
     <Content Include="CurrentForumPost.txt" />
   </ItemGroup>
   <ItemGroup>
