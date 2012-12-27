@@ -542,20 +542,21 @@ void EnableHooks()
 	OldNopFPS = Nop(Consts::ptrNopFPS, 6);
 
 	
-	OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
-	if(Consts::clientVersion != 971)
+	
+	if(Consts::clientVersion != 981)
 	{
 		OldPartyActionContextMenu = HookCall(Consts::ptrPartyActionContextMenu, (DWORD)&MyPartyActionContextMenu);
 	}
+	OldSetOutfitContextMenu = HookCall(Consts::ptrSetOutfitContextMenu, (DWORD)&MySetOutfitContextMenu);
 	OldCopyNameContextMenu = HookCall(Consts::ptrCopyNameContextMenu, (DWORD)&MyCopyNameContextMenu);
 	OldTradeWithContextMenu = HookCall(Consts::ptrTradeWithContextMenu, (DWORD)&MyTradeWithContextMenu);
 	OldLookContextMenu = HookCall(Consts::ptrLookContextMenu,(DWORD) &MyLookContextMenu);
-
+	
 	funcAddress = (DWORD)&MyOnClickContextMenu;
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, PAGE_READWRITE, &dwOldProtect);
 	memcpy((LPVOID)Consts::prtOnClickContextMenuVf, &funcAddress, 4);
 	VirtualProtect((LPVOID)Consts::prtOnClickContextMenuVf, 4, dwOldProtect, &dwNewProtect);
-				
+		
 	
 	OrigSendAddress=(DWORD)GetProcAddress(GetModuleHandleA("WS2_32.dll"),"send");
 	OrigSend=(PSEND)OrigSendAddress;
@@ -571,7 +572,7 @@ void EnableHooks()
 	memcpy((LPVOID)Consts::ptrRecv, &funcAddress, 4);
 	VirtualProtect((LPVOID)Consts::ptrRecv, 4, dwOldProtect, &dwNewProtect);
 	
-
+	
 	oldWndProc = (WNDPROC) ((fUnicode) ? SetWindowLongPtrW(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc) : 
 											SetWindowLongPtrA(hwndTibia, GWLP_WNDPROC, (LONG_PTR)SubClassProc));
 
