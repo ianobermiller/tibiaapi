@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using Tibia.Util;
+
 
 namespace Tibia.Objects
 {
@@ -10,6 +12,24 @@ namespace Tibia.Objects
     {
         protected Client client;
         protected uint address;
+        protected Timer tmrPositionTracker;
+
+        protected Location lastLocation;
+
+        private bool trackPosition;
+
+        public bool TrackPosition
+        {
+            get => trackPosition;
+            set
+            {
+                if (value && !trackPosition)
+                {
+                    StartTracking();
+                }
+                trackPosition = value;
+            }
+        }
 
         /// <summary>
         /// Create a new creature object with the given client and address.
@@ -20,6 +40,30 @@ namespace Tibia.Objects
         {
             this.client = client;
             this.address = address;
+
+            if (TrackPosition)
+            {
+                StartTracking();
+            }
+        }
+
+        private void StartTracking()
+        {
+            lastLocation = Location;
+            this.tmrPositionTracker = new Timer(50, false);
+            tmrPositionTracker.Execute += TmrPositionTracker_Execute;
+            tmrPositionTracker.Start();
+        }
+
+        private void TmrPositionTracker_Execute()
+        {
+            tmrPositionTracker.Stop();
+            if (Location != lastLocation)
+            {
+                PositionChanged(new OnPositionChangedArgs { newLocation = Location, oldLocation = lastLocation });
+                lastLocation = Location;
+            }
+            tmrPositionTracker.Start();
         }
 
         /// <summary>
@@ -402,5 +446,18 @@ namespace Tibia.Objects
         {
             return string.Format("{0}: {1}%", Name, HPBar.ToString());
         }
+
+        public event EventHandler<OnPositionChangedArgs> OnPositionChanged;
+
+        protected virtual void PositionChanged(OnPositionChangedArgs e)
+        {
+            OnPositionChanged?.Invoke(this, e);
+        }
+    }
+
+    public class OnPositionChangedArgs : EventArgs
+    {
+        public Location oldLocation;
+        public Location newLocation;
     }
 }
